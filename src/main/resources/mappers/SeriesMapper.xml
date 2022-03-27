@@ -1,0 +1,39 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.SeriesMapper">
+
+    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.Series">
+        <result column="series_id" property="seriesId" />
+        <result column="list_list_id" property="seriesListId" />
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <sql id="selectAll">
+        select  s.series_id,
+                s.list_list_id,
+                s.title
+        from lists.series s
+    </sql>
+
+
+    <select id="getOne" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        where s.series_id=#{seriesId}
+        and s.list_list_id=#{readListId}
+    </select>
+
+    <select id="getAll" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        where s.list_list_id=#{readListId}
+    </select>
+
+    <select id="getBookCount" resultType="int">
+        select count(*)
+        from lists.series_books
+        where series_series_id = #{seriesId}
+        and series_list_id = #{readListId}
+    </select>
+
+</mapper>

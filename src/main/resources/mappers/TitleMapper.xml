@@ -1,0 +1,64 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.TitleMapper">
+
+    <resultMap id="TitleResultMap" type="ru.rerumu.lists.model.Title">
+        <result column="title_id" property="titleId" />
+        <result column="list_list_id" property="watchListId" />
+        <result column="name" property="name"/>
+        <result column="create_date_utc" property="createDateUTC" />
+        <result column="status_status_id" property="statusId" />
+        <association property="videoType" resultMap="VideoTypeResultMap" />
+    </resultMap>
+
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
+        <result column="type_id" property="typeId" />
+        <result column="type_name" property="name" />
+    </resultMap>
+
+    <sql id="selectAll">
+        select  title_id,
+                list_list_id,
+                t.name as name,
+                create_date_utc  AT TIME ZONE 'UTC' as create_date_utc,
+                status_status_id,
+                vt.type_id,
+                vt.name as type_name
+        from lists.titles t
+             inner join lists.video_types vt
+                        on vt.type_id = t.type_type_id
+    </sql>
+
+    <select id="getAllTitles" resultMap="TitleResultMap">
+        <include refid="selectAll"/>
+        where list_list_id=#{watchListId}
+    </select>
+
+    <select id="getOne" resultMap="TitleResultMap">
+        <include refid="selectAll"/>
+        where list_list_id=#{watchListId}
+          and title_id=#{titleId}
+    </select>
+
+    <select id="getNextId" resultType="Long">
+        select max("title_id")+1 as res
+        from lists.titles
+    </select>
+
+    <update id="update">
+        update lists.titles
+        set name=#{name},
+            create_date_utc=#{createDateUTC},
+            status_status_id=#{statusId},
+            type_type_id=#{videoType}
+        where title_id=#{titleId}
+        and list_list_id=#{watchListId}
+    </update>
+
+    <insert id="addOne">
+        insert into lists.titles(title_id, name, create_date_utc, list_list_id, status_status_id, type_type_id)
+        values(#{titleId},#{name},#{createDateUTC},#{watchListId},#{statusId},#{typeId})
+    </insert>
+</mapper>
