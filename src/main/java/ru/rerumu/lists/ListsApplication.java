@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
-@ImportResource("classpath:applicationContext.xml")
 @SpringBootApplication
 public class ListsApplication {
 

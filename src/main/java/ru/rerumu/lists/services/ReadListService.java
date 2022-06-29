@@ -1,5 +1,7 @@
 package ru.rerumu.lists.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @Component
 public class ReadListService {
+    private final Logger logger = LoggerFactory.getLogger(ReadListService.class);
 
     @Autowired
     private BookRepository bookRepository;
@@ -43,7 +46,9 @@ public class ReadListService {
     }
 
     public Book getBook(Long readListId, Long bookId) {
-        return this.bookRepository.getOne(readListId, bookId);
+        Book book = this.bookRepository.getOne(readListId, bookId);
+        logger.info(String.format("Got book '%s'",book.toString()));
+        return book;
     }
 
     public List<Book> getAllBooks(Long readListId) {
