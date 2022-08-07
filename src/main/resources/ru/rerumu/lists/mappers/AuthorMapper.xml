@@ -20,4 +20,12 @@
         and a.list_list_id=#{readListId}
     </select>
 
+    <select id="getAll" resultMap="AuthorResultMap">
+        select  a.author_id,
+                a.list_list_id as author_list_id,
+                a.name as author_name
+        from lists.authors a
+        where a.list_list_id=#{readListId}
+    </select>
+
 </mapper>

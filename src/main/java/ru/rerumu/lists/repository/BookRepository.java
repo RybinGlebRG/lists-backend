@@ -10,4 +10,6 @@ public interface BookRepository {
 
     Book getOne(Long readListId, Long bookId);
     List<Book> getAll(Long readListId);
+
+    Long getNextId();
 }

@@ -2,6 +2,8 @@ package ru.rerumu.lists.controller;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.views.AddBookView;
 import ru.rerumu.lists.views.BookListView;
 
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class BooksController {
-
+    private final Logger logger = LoggerFactory.getLogger(BooksController.class);
     @Autowired
     private ReadListService readListService;
 
@@ -46,16 +49,8 @@ public class BooksController {
     ResponseEntity<String> getOne(@PathVariable Long readListId,
                                   @PathVariable Long bookId,
                                   @RequestAttribute("username") String username) {
-        ResponseEntity<String> resEnt;
-        try {
-//            ReadListService readListService = new ReadListService();
-            Book book = readListService.getBook(readListId, bookId);
-            resEnt = new ResponseEntity<>(book.toString(), HttpStatus.OK);
-        } catch (Exception e){
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Book book = readListService.getBook(readListId, bookId);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(book.toString(), HttpStatus.OK);
         return resEnt;
     }
 
@@ -78,5 +73,19 @@ public class BooksController {
         }
         return resEnt;
     }
+
+    @PostMapping(value = "/api/v0.2/readLists/{readListId}/books",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> addOne(
+            @PathVariable Long readListId,
+            @RequestBody AddBookView addBookView,
+            @RequestAttribute("username") String username
+    ){
+        Book newBook = addBookView.getBook();
+        // TODO: write
+        throw new UnsupportedOperationException();
+    }
+
 }
 
