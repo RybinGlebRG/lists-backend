@@ -45,4 +45,9 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> getAll(Long readListId) {
         return bookMapper.getAll(readListId);
     }
+
+    @Override
+    public Long getNextId() {
+        return bookMapper.getNextId();
+    }
 }

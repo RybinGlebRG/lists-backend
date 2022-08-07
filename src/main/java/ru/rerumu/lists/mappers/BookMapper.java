@@ -1,11 +1,11 @@
 package ru.rerumu.lists.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 import ru.rerumu.lists.model.Book;
 
 import java.util.Date;
 import java.util.List;
-
 
 public interface BookMapper {
     Book getOne(Long readListId, Long bookId);
@@ -27,4 +27,6 @@ public interface BookMapper {
     );
 
     List<Book> getAll(Long readListId);
+
+    Long getNextId();
 }

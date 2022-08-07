@@ -111,4 +111,9 @@
         and book_list_id=#{readListId}
     </update>
 
+    <select id="getNextId" resultType="Long">
+        select max(book_id)+1 as res
+        from lists.books
+    </select>
+
 </mapper>
