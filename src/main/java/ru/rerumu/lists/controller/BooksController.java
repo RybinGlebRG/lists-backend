@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.views.AddBookView;
 import ru.rerumu.lists.views.BookListView;
 
 import java.util.List;
@@ -72,5 +73,19 @@ public class BooksController {
         }
         return resEnt;
     }
+
+    @PostMapping(value = "/api/v0.2/readLists/{readListId}/books",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> addOne(
+            @PathVariable Long readListId,
+            @RequestBody AddBookView addBookView,
+            @RequestAttribute("username") String username
+    ){
+        Book newBook = addBookView.getBook();
+        // TODO: write
+        throw new UnsupportedOperationException();
+    }
+
 }
 

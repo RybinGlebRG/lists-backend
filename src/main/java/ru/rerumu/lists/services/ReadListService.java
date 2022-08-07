@@ -1,5 +1,6 @@
 package ru.rerumu.lists.services;
 
+import liquibase.pro.packaged.D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.repository.AuthorsRepository;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesRepository;
+import ru.rerumu.lists.views.AddBookView;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -47,7 +50,7 @@ public class ReadListService {
 
     public Book getBook(Long readListId, Long bookId) {
         Book book = this.bookRepository.getOne(readListId, bookId);
-        logger.info(String.format("Got book '%s'",book.toString()));
+        logger.info(String.format("Got book '%s'", book.toString()));
         return book;
     }
 
@@ -60,9 +63,9 @@ public class ReadListService {
     }
 
     public List<Series> getAllSeries(Long readListId) {
-        List<Series> seriesList =seriesRepository.getAll(readListId);
-        for (Series item: seriesList){
-            int bookCount = seriesRepository.getBookCount(readListId,item.getSeriesId());
+        List<Series> seriesList = seriesRepository.getAll(readListId);
+        for (Series item : seriesList) {
+            int bookCount = seriesRepository.getBookCount(readListId, item.getSeriesId());
             item.setBookCount(bookCount);
         }
         return seriesList;
@@ -70,5 +73,29 @@ public class ReadListService {
 
     public Author getAuthor(Long readListId, Long authorId) {
         return authorsRepository.getOne(readListId, authorId);
+    }
+
+    public List<Author> getAuthors(Long readListId) {
+        return authorsRepository.getAll(readListId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Book addBook(Long readListId, AddBookView addBookView) {
+        Book book = addBookView.getBook();
+        Long bookId = bookRepository.getNextId();
+        Book newBook = new Book(
+                bookId,
+                readListId,
+                book.getTitle(),
+                book.getStatusId(),
+                new Date(),
+                new Date(),
+                book.getLastChapter(),
+                book.getSeriesId(),
+                book.getAuthorId(),
+                book.getSeriesOrder()
+        );
+        // TODO: write
+        throw new  UnsupportedOperationException();
     }
 }

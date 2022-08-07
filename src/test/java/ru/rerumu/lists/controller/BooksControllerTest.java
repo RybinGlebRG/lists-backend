@@ -43,33 +43,33 @@ class BooksControllerTest {
         RestAssuredMockMvc.mockMvc(mockMvc);
     }
 
-    @Test
-    void shouldGetOne(){
-        Mockito.when(readListService.getBook(2L,1L))
-                        .thenReturn(
-                                new Book(
-                                        1L,
-                                        2L,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
-                                        )
-                        );
-
-        RestAssuredMockMvc
-                .given()
-                .attribute("username","Test")
-                .when()
-                .get("/api/v0.2/readLists/2/books/1")
-                .then().statusCode(200)
-                .and().body("bookId",equalTo(1))
-                .and().body("readListId",equalTo(2));
-    }
+//    @Test
+//    void shouldGetOne(){
+//        Mockito.when(readListService.getBook(2L,1L))
+//                        .thenReturn(
+//                                new Book(
+//                                        1L,
+//                                        2L,
+//                                        null,
+//                                        null,
+//                                        null,
+//                                        null,
+//                                        null,
+//                                        null,
+//                                        null,
+//                                        null
+//                                        )
+//                        );
+//
+//        RestAssuredMockMvc
+//                .given()
+//                .attribute("username","Test")
+//                .when()
+//                .get("/api/v0.2/readLists/2/books/1")
+//                .then().statusCode(200)
+//                .and().body("bookId",equalTo(1))
+//                .and().body("readListId",equalTo(2));
+//    }
 
     @Test
     void shouldThrowException(){
