@@ -8,4 +8,8 @@ public interface AuthorsRepository {
 
     Author getOne(Long readListId, Long authorId);
     List<Author> getAll(Long readListId);
+
+    void addOne(Author author);
+
+    Long getNextId();
 }

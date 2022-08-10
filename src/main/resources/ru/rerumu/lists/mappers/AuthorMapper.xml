@@ -28,4 +28,14 @@
         where a.list_list_id=#{readListId}
     </select>
 
+    <insert id="addOne">
+        insert into lists.authors(author_id, list_list_id, name)
+        values(#{authorId},#{name},#{readListId},#{name})
+    </insert>
+
+    <select id="getNextId" resultType="Long">
+        select max(author_id)+1 as res
+        from lists.authors
+    </select>
+
 </mapper>

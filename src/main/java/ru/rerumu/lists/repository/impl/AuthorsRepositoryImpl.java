@@ -27,4 +27,14 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     public List<Author> getAll(Long readListId) {
         return authorMapper.getAll(readListId);
     }
+
+    @Override
+    public void addOne(Author author) {
+        authorMapper.addOne(author.getReadListId(), author.getAuthorId(), author.getName());
+    }
+
+    @Override
+    public Long getNextId() {
+        return authorMapper.getNextId();
+    }
 }

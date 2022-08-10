@@ -1,6 +1,5 @@
 package ru.rerumu.lists.services;
 
-import liquibase.pro.packaged.D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +70,12 @@ public class ReadListService {
         return seriesList;
     }
 
+    @Deprecated
     public Author getAuthor(Long readListId, Long authorId) {
         return authorsRepository.getOne(readListId, authorId);
     }
 
+    @Deprecated
     public List<Author> getAuthors(Long readListId) {
         return authorsRepository.getAll(readListId);
     }

@@ -3,6 +3,7 @@ package ru.rerumu.lists.controller;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.path.json.JsonPath;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.views.AddAuthorView;
 
 import java.util.List;
 
@@ -31,6 +37,12 @@ class AuthorsControllerTest {
 
     @MockBean
     private ReadListService readListService;
+
+    @MockBean
+    private AuthorsService authorsService;
+
+    @MockBean
+    private UserService userService;
 
     @BeforeAll
     static void setup() {
@@ -63,6 +75,53 @@ class AuthorsControllerTest {
                 .and().body("items[1].authorId",equalTo(2))
                 .and().body("items[2].authorId",equalTo(3));
 
+
+    }
+
+    @Test
+    void shouldAddOne()throws  Exception{
+        Mockito.when(authorsService.addAuthor(Mockito.anyLong(), Mockito.any()))
+                .thenReturn(new Author(1L,2L,"TestAuthor"));
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","TestAuthor");
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/2/authors")
+                .then().statusCode(201)
+                .body("authorId",equalTo(1))
+                .and().body("readListId",equalTo(2))
+                .and().body("name",equalTo("TestAuthor"));
+
+        Mockito.verify(authorsService).addAuthor(2L,new AddAuthorView("TestAuthor"));
+
+    }
+
+    @Test
+    void shouldNotAddNotOwner()throws  Exception{
+        Mockito.doThrow(new UserIsNotOwnerException())
+                .when(userService).checkOwnership(Mockito.any(), Mockito.anyLong());
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","TestAuthor");
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/2/authors")
+                .then().statusCode(403);
+
+        Mockito.verify(authorsService, Mockito.never())
+                .addAuthor(Mockito.anyLong(),Mockito.any());
+        Mockito.verify(userService).checkOwnership("Test",2L);
 
     }
 

@@ -44,4 +44,29 @@ public class Author {
     public String toString() {
         return this.toJSONObject().toString();
     }
+
+    public static class Builder{
+        private  Long authorId;
+        private  Long readListId;
+        private String name;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder authorId(Long authorId){
+            this.authorId = authorId;
+            return this;
+        }
+
+        public Builder readListId(Long readListId) {
+            this.readListId = readListId;
+            return this;
+        }
+
+        public Author build(){
+            return  new Author(authorId,readListId,name);
+        }
+    }
 }

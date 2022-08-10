@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.IncorrectPasswordException;
+import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.User;
@@ -91,5 +93,11 @@ public class UserService {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         return jws;
+    }
+
+    public void checkOwnership(String username, Long listId)throws UserIsNotOwnerException {
+        if (!usersRepository.isOwner(username, listId)){
+            throw new UserIsNotOwnerException();
+        }
     }
 }
