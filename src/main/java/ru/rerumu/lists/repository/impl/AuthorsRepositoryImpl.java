@@ -37,4 +37,10 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     public Long getNextId() {
         return authorMapper.getNextId();
     }
+
+    @Override
+    public void deleteOne(Long authorId) {
+        throw new UnsupportedOperationException();
+        // TODO: write
+    }
 }

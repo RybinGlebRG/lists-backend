@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.AuthorsRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +20,8 @@ class AuthorsServiceTest {
 
     @Mock
     private AuthorsRepository authorsRepository;
+    @Mock
+    private AuthorsBooksRepository authorsBooksRepository;
 
     @Test
     void shouldGetAuthor()throws Exception{
@@ -27,7 +30,7 @@ class AuthorsServiceTest {
         Mockito.when(authorsRepository.getOne(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(author);
 
-        AuthorsService authorsService = new AuthorsService(authorsRepository);
+        AuthorsService authorsService = new AuthorsService(authorsRepository,authorsBooksRepository);
         Author gotAuthor = authorsService.getAuthor(2L,1L);
 
         Assertions.assertEquals(author,gotAuthor);

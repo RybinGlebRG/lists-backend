@@ -9,4 +9,5 @@ public interface UsersRepository {
     User getOne(String name);
 
     boolean isOwner(String name, Long listId);
+    boolean isOwnerAuthor(String name, Long authorId);
 }

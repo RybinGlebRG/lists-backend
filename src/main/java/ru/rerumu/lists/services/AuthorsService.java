@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.AuthorsRepository;
 import ru.rerumu.lists.views.AddAuthorView;
 
@@ -14,9 +15,14 @@ import java.util.List;
 public class AuthorsService {
 
     private final AuthorsRepository authorsRepository;
+    private final AuthorsBooksRepository authorsBooksRepository;
 
-    public AuthorsService(AuthorsRepository authorsRepository){
+    public AuthorsService(
+            AuthorsRepository authorsRepository,
+            AuthorsBooksRepository authorsBooksRepository
+            ){
         this.authorsRepository = authorsRepository;
+        this.authorsBooksRepository = authorsBooksRepository;
     }
 
     public Author getAuthor(Long readListId, Long authorId) {
@@ -39,5 +45,11 @@ public class AuthorsService {
                 .build();
         authorsRepository.addOne(newAuthor);
         return authorsRepository.getOne(readListId,nextId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAuthor(Long authorId) {
+        authorsBooksRepository.deleteByAuthor(authorId);
+        authorsRepository.deleteOne(authorId);
     }
 }

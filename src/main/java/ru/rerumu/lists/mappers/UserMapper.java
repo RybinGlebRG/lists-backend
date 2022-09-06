@@ -7,4 +7,5 @@ public interface UserMapper {
     User getOne(String name);
 
     int count(String name, Long listId);
+    int countAuthor(String name, Long authorId);
 }

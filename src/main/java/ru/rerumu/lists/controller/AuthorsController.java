@@ -65,5 +65,17 @@ public class AuthorsController {
         Author author = authorsService.addAuthor(readListId, addAuthorView);
         return new ResponseEntity<>(author.toString(), HttpStatus.CREATED);
     }
+
+    @DeleteMapping(
+            value = "/api/v0.2/readLists/authors/{authorId}"
+    )
+    ResponseEntity<String> deleteOne(
+            @PathVariable Long authorId,
+            @RequestAttribute("username") String username
+    ) throws UserIsNotOwnerException {
+        userService.checkOwnershipAuthor(username, authorId);
+        authorsService.deleteAuthor(authorId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
 

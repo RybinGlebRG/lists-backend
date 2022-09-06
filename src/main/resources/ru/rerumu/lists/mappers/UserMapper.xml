@@ -28,4 +28,15 @@
           and u.name=#{name}
     </select>
 
+    <select id="countAuthor" resultType="int">
+        select count(*) as cnt
+        from lists.authors a
+            inner join lists.lists l
+                        on l.list_id = a.list_list_id
+            inner join lists.users u
+                        on u."USER_ID" = l."USER_USER_ID"
+        where a.author_id=#{authorId}
+        and u.name=#{name}
+    </select>
+
 </mapper>

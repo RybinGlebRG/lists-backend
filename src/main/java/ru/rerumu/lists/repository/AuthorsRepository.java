@@ -12,4 +12,6 @@ public interface AuthorsRepository {
     void addOne(Author author);
 
     Long getNextId();
+
+    void deleteOne(Long authorId);
 }

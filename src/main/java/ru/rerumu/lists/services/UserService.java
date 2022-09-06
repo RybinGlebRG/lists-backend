@@ -100,4 +100,10 @@ public class UserService {
             throw new UserIsNotOwnerException();
         }
     }
+
+    public void checkOwnershipAuthor(String username, Long authorId)throws UserIsNotOwnerException {
+        if (!usersRepository.isOwnerAuthor(username, authorId)){
+            throw new UserIsNotOwnerException();
+        }
+    }
 }

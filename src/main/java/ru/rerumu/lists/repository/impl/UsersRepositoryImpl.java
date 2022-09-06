@@ -25,4 +25,10 @@ public class UsersRepositoryImpl implements UsersRepository {
         int count = userMapper.count(name, listId);
         return count>0;
     }
+
+    @Override
+    public boolean isOwnerAuthor(String name, Long authorId) {
+        int count = userMapper.countAuthor(name, authorId);
+        return count>0;
+    }
 }
