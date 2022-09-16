@@ -1,13 +1,19 @@
 package ru.rerumu.lists.repository.impl;
 
+import org.springframework.stereotype.Component;
+import ru.rerumu.lists.mappers.AuthorBookMapper;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 
-import javax.naming.OperationNotSupportedException;
-
+@Component
 public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
+
+    private final AuthorBookMapper authorBookMapper;
+
+    public AuthorsBooksRepositoryImpl(AuthorBookMapper authorBookMapper){
+        this.authorBookMapper = authorBookMapper;
+    }
     @Override
     public void deleteByAuthor(Long authorId) {
-        throw new UnsupportedOperationException();
-        // TODO: write
+        authorBookMapper.deleteByAuthor(authorId);
     }
 }

@@ -125,6 +125,21 @@ class AuthorsControllerTest {
 
     }
 
+    @Test
+    void shouldDelete()throws  Exception{
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .when()
+                .delete("/api/v0.2/authors/1111")
+                .then().statusCode(204);
+
+        Mockito.verify(userService).checkOwnershipAuthor("Test",1111L);
+        Mockito.verify(authorsService).deleteAuthor(1111L);
+
+    }
+
 //    @Test
 //    void shouldGetOne(){
 //        Mockito.when(readListService.getBook(2L,1L))

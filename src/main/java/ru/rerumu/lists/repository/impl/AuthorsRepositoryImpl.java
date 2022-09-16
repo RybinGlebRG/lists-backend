@@ -40,7 +40,6 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
 
     @Override
     public void deleteOne(Long authorId) {
-        throw new UnsupportedOperationException();
-        // TODO: write
+        authorMapper.deleteOne(authorId);
     }
 }

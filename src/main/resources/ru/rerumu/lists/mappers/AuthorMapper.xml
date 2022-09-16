@@ -37,5 +37,10 @@
         select max(author_id)+1 as res
         from lists.authors
     </select>
+    
+    <delete id="deleteOne">
+        delete from lists.authors
+        where author_id=#{authorId}
+    </delete>
 
 </mapper>

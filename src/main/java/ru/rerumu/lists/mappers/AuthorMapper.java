@@ -14,4 +14,6 @@ public interface AuthorMapper {
 
     void addOne(Long readListId,Long authorId, String name);
     Long getNextId();
+
+    void deleteOne(Long authorId);
 }

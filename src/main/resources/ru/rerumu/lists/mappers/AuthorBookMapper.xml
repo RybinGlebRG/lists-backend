@@ -1,0 +1,12 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.AuthorBookMapper">
+
+    <delete id="deleteByAuthor">
+        delete from lists.books_authors
+        where author_author_id=#{authorId}
+    </delete>
+
+</mapper>

@@ -67,7 +67,8 @@ public class AuthorsController {
     }
 
     @DeleteMapping(
-            value = "/api/v0.2/readLists/authors/{authorId}"
+            value = "/api/v0.2/authors/{authorId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<String> deleteOne(
             @PathVariable Long authorId,
