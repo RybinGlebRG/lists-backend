@@ -116,4 +116,9 @@
         from lists.books
     </select>
 
+    <insert id="addOne">
+        insert into lists.books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter)
+        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter})
+    </insert>
+
 </mapper>

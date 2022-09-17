@@ -9,13 +9,13 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.repository.AuthorsRepository;
-import ru.rerumu.lists.repository.BookRepository;
-import ru.rerumu.lists.repository.SeriesRepository;
+import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.AddBookView;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReadListService {
@@ -27,6 +27,19 @@ public class ReadListService {
     private SeriesRepository seriesRepository;
     @Autowired
     private AuthorsRepository authorsRepository;
+
+    private final AuthorsService authorsService;
+    private final AuthorsBooksRepository authorsBooksRepository;
+    private final SeriesBooksRespository seriesBooksRespository;
+    public ReadListService(
+            AuthorsService authorsService,
+            AuthorsBooksRepository authorsBooksRepository,
+            SeriesBooksRespository seriesBooksRespository
+    ){
+        this.authorsService = authorsService;
+        this.authorsBooksRepository = authorsBooksRepository;
+        this.seriesBooksRespository = seriesBooksRespository;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public Book updateBook(Long readListId, Long bookId, Book newBook) throws EmptyMandatoryParameterException {
@@ -83,20 +96,43 @@ public class ReadListService {
     @Transactional(rollbackFor = Exception.class)
     public Book addBook(Long readListId, AddBookView addBookView) {
         Book book = addBookView.getBook();
+
+        Optional<Author> author = addBookView.getAuthor();
+        if (author.isPresent()){
+            author = Optional.of(
+                    authorsService.getAuthor(
+                            readListId,
+                            author.get().getAuthorId()
+                    )
+            );
+        }
+
+        Optional<Series> series = addBookView.getSeries();
+        if (series.isPresent()){
+            series = Optional.of(
+                    getSeries(readListId,series.get().getSeriesId())
+            );
+        }
+
         Long bookId = bookRepository.getNextId();
-        Book newBook = new Book(
-                bookId,
-                readListId,
-                book.getTitle(),
-                book.getStatusId(),
-                new Date(),
-                new Date(),
-                book.getLastChapter(),
-                book.getSeriesId(),
-                book.getAuthorId(),
-                book.getSeriesOrder()
-        );
-        // TODO: write
-        throw new  UnsupportedOperationException();
+
+        Book.Builder bookBuilder = new Book.Builder();
+        bookBuilder
+                .bookId(bookId)
+                .readListId(readListId)
+                .title(book.getTitle())
+                .statusId(book.getStatusId())
+                .lastChapter(book.getLastChapter())
+                .insertDate(new Date())
+                .lastUpdateDate(new Date());
+
+        Book newBook = bookBuilder.build();
+
+        bookRepository.addOne(newBook);
+
+        author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
+        series.ifPresent(value -> seriesBooksRespository.add(newBook.getBookId(), value.getSeriesId(), readListId));
+
+        return getBook(readListId, newBook.getBookId());
     }
 }

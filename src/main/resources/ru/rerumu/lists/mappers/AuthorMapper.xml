@@ -30,7 +30,7 @@
 
     <insert id="addOne">
         insert into lists.authors(author_id, list_list_id, name)
-        values(#{authorId},#{name},#{readListId},#{name})
+        values(#{authorId},#{readListId},#{name})
     </insert>
 
     <select id="getNextId" resultType="Long">

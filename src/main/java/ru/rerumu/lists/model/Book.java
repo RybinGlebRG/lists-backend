@@ -180,4 +180,83 @@ public class Book {
     public String toString() {
         return this.toJSONObject().toString();
     }
+
+    public static class Builder{
+        private Long bookId;
+        private Long readListId;
+        private String title;
+        private Integer statusId;
+        private Date insertDate;
+        private Date lastUpdateDate;
+        private Integer lastChapter;
+        private Long seriesId;
+        private Long authorId;
+        private Long seriesOrder;
+
+        public Builder bookId(Long bookId){
+            this.bookId = bookId;
+            return this;
+        }
+
+        public Builder readListId(Long readListId){
+            this.readListId = readListId;
+            return this;
+        }
+
+        public Builder title(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder statusId(Integer statusId){
+            this.statusId = statusId;
+            return this;
+        }
+
+        public Builder insertDate(Date insertDate){
+            this.insertDate = insertDate;
+            return this;
+        }
+
+        public Builder lastUpdateDate(Date lastUpdateDate){
+            this.lastUpdateDate = lastUpdateDate;
+            return this;
+        }
+
+        public Builder lastChapter(Integer lastChapter){
+            this.lastChapter = lastChapter;
+            return this;
+        }
+
+        public Builder seriesId(Long seriesId){
+            this.seriesId = seriesId;
+            return this;
+        }
+
+        public Builder authorId(Long authorId){
+            this.authorId = authorId;
+            return this;
+        }
+
+        public Builder seriesOrder(Long seriesOrder){
+            this.seriesOrder = seriesOrder;
+            return this;
+        }
+
+
+        public Book build(){
+            return new Book(
+                    bookId,
+                    readListId,
+                    title,
+                    statusId,
+                    insertDate,
+                    lastUpdateDate,
+                    lastChapter,
+                    seriesId,
+                    authorId,
+                    seriesOrder
+            );
+        }
+    }
 }

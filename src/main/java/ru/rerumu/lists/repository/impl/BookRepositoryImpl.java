@@ -50,4 +50,17 @@ public class BookRepositoryImpl implements BookRepository {
     public Long getNextId() {
         return bookMapper.getNextId();
     }
+
+    @Override
+    public void addOne(Book book) {
+        bookMapper.addOne(
+                book.getBookId(),
+                book.getReadListId(),
+                book.getTitle(),
+                book.getStatusId(),
+                book.getInsertDate(),
+                book.getLastUpdateDate(),
+                book.getLastChapter()
+        );
+    }
 }

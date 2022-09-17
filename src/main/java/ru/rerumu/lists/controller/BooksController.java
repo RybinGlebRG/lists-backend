@@ -10,12 +10,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.AddBookView;
 import ru.rerumu.lists.views.BookListView;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -23,6 +29,12 @@ public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(BooksController.class);
     @Autowired
     private ReadListService readListService;
+
+    @Autowired
+    private AuthorsService authorsService;
+
+    @Autowired
+    private UserService userService;
 
     @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -81,10 +93,21 @@ public class BooksController {
             @PathVariable Long readListId,
             @RequestBody AddBookView addBookView,
             @RequestAttribute("username") String username
-    ){
-        Book newBook = addBookView.getBook();
-        // TODO: write
-        throw new UnsupportedOperationException();
+    ) throws UserIsNotOwnerException {
+
+        // Checking ownership
+        userService.checkOwnership(username,readListId);
+        if (addBookView.getAuthor().isPresent()){
+            userService.checkOwnershipAuthor(username,addBookView.getAuthor().get().getAuthorId());
+        }
+        if (addBookView.getSeries().isPresent()){
+            // TODO: Check ownership
+        }
+
+        Book book = readListService.addBook(readListId,addBookView);
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(book.toString(), HttpStatus.OK);
+        return resEnt;
     }
 
 }

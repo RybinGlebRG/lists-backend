@@ -102,6 +102,7 @@ public class UserService {
     }
 
     public void checkOwnershipAuthor(String username, Long authorId)throws UserIsNotOwnerException {
+        // TODO: check not null
         if (!usersRepository.isOwnerAuthor(username, authorId)){
             throw new UserIsNotOwnerException();
         }

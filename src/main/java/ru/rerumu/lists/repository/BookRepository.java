@@ -12,4 +12,6 @@ public interface BookRepository {
     List<Book> getAll(Long readListId);
 
     Long getNextId();
+
+    void addOne(Book book);
 }

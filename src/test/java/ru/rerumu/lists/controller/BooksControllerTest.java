@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.views.AddAuthorView;
 
 import java.util.List;
 
@@ -99,6 +100,45 @@ class BooksControllerTest {
                 .when()
                 .get("/api/v0.2/readLists/2/books")
                 .then().statusCode(200);
+    }
+
+
+    @Test
+    void shouldAdd() throws Exception{
+        Mockito.when(readListService.addBook(Mockito.anyLong(), Mockito.any()))
+                        .thenReturn(
+                                new Book.Builder()
+                                        .readListId(5L)
+                                        .title("newTitle")
+                                        .authorId(1L)
+                                        .statusId(2)
+                                        .seriesId(3L)
+                                        .seriesOrder(4L)
+                                        .build()
+                        );
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","newTitle");
+        requestBody.put("authorId",1);
+        requestBody.put("status",2);
+        requestBody.put("seriesId",3);
+        requestBody.put("order",4);
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/5/books")
+                .then().statusCode(200)
+                .body("title",equalTo("newTitle"))
+                .and().body("readListId",equalTo(5))
+                .and().body("statusId",equalTo(2))
+                .and().body("seriesId",equalTo(3))
+                .and().body("seriesOrder",equalTo(4))
+        ;
+
     }
 
 }
