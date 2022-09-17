@@ -9,9 +9,8 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.*;
-import ru.rerumu.lists.views.AddBookView;
+import ru.rerumu.lists.views.BookAddView;
 
 import java.util.Date;
 import java.util.List;
@@ -31,11 +30,12 @@ public class ReadListService {
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
+
     public ReadListService(
             AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesBooksRespository seriesBooksRespository
-    ){
+    ) {
         this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
@@ -46,18 +46,20 @@ public class ReadListService {
         if (readListId == null || bookId == null || newBook == null) {
             throw new EmptyMandatoryParameterException();
         }
-        Book currentBook = this.bookRepository.getOne(readListId, bookId);
+        Book currentBook = bookRepository.getOne(readListId, bookId);
 
-        currentBook.setInsertDate(newBook.getInsertDate());
-        currentBook.setLastChapter(newBook.getLastChapter());
-        currentBook.setLastUpdateDate(newBook.getLastUpdateDate());
-        currentBook.setStatusId(newBook.getStatusId());
-        currentBook.setTitle(newBook.getTitle());
-        currentBook.setAuthorId(newBook.getAuthorId());
-        currentBook.setSeriesId(newBook.getSeriesId());
-        currentBook.setSeriesOrder(newBook.getSeriesOrder());
+        Book updatedBook = new Book.Builder(currentBook)
+                .insertDate(newBook.getInsertDate())
+                .lastChapter(newBook.getLastChapter())
+                .lastUpdateDate(newBook.getLastUpdateDate())
+                .statusId(newBook.getStatusId())
+                .title(newBook.getTitle())
+                .authorId(newBook.getAuthorId())
+                .seriesId(newBook.getSeriesId())
+                .seriesOrder(newBook.getSeriesOrder())
+                .build();
 
-        return this.bookRepository.update(currentBook);
+        return bookRepository.update(updatedBook);
     }
 
     public Book getBook(Long readListId, Long bookId) {
@@ -83,10 +85,10 @@ public class ReadListService {
         return seriesList;
     }
 
-    @Deprecated
-    public Author getAuthor(Long readListId, Long authorId) {
-        return authorsRepository.getOne(readListId, authorId);
-    }
+//    @Deprecated
+//    public Author getAuthor(Long readListId, Long authorId) {
+//        return authorsRepository.getOne(readListId, authorId);
+//    }
 
     @Deprecated
     public List<Author> getAuthors(Long readListId) {
@@ -94,23 +96,21 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Book addBook(Long readListId, AddBookView addBookView) {
-        Book book = addBookView.getBook();
+    public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException {
+        Book book = bookAddView.getBook();
 
-        Optional<Author> author = addBookView.getAuthor();
-        if (author.isPresent()){
-            author = Optional.of(
-                    authorsService.getAuthor(
-                            readListId,
-                            author.get().getAuthorId()
-                    )
+        Optional<Author> author = Optional.empty();
+        if (bookAddView.getAuthorId() != null) {
+            author = authorsService.getAuthor(
+                    readListId,
+                    bookAddView.getAuthorId()
             );
         }
 
-        Optional<Series> series = addBookView.getSeries();
-        if (series.isPresent()){
+        Optional<Series> series = Optional.empty();
+        if (bookAddView.getSeriesId() != null) {
             series = Optional.of(
-                    getSeries(readListId,series.get().getSeriesId())
+                    getSeries(readListId, bookAddView.getSeriesId())
             );
         }
 
@@ -131,7 +131,12 @@ public class ReadListService {
         bookRepository.addOne(newBook);
 
         author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
-        series.ifPresent(value -> seriesBooksRespository.add(newBook.getBookId(), value.getSeriesId(), readListId));
+        series.ifPresent(value -> seriesBooksRespository.add(
+                newBook.getBookId(),
+                value.getSeriesId(),
+                readListId,
+                bookAddView.getOrder())
+        );
 
         return getBook(readListId, newBook.getBookId());
     }

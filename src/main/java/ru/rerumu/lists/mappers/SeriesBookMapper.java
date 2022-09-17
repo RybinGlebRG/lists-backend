@@ -1,6 +1,6 @@
-package ru.rerumu.lists.repository;
+package ru.rerumu.lists.mappers;
 
-public interface SeriesBooksRespository {
+public interface SeriesBookMapper {
 
     void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
 }

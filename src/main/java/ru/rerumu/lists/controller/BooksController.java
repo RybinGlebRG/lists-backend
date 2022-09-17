@@ -1,10 +1,7 @@
 package ru.rerumu.lists.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +10,12 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.views.AddBookView;
+import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookListView;
+import ru.rerumu.lists.views.BookView;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +24,20 @@ import java.util.Optional;
 @RestController
 public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(BooksController.class);
-    @Autowired
-    private ReadListService readListService;
+    private final ReadListService readListService;
+    private final UserService userService;
 
-    @Autowired
-    private AuthorsService authorsService;
+    private final AuthorsService authorsService;
 
-    @Autowired
-    private UserService userService;
+    public BooksController(
+            ReadListService readListService,
+            UserService userService,
+            AuthorsService authorsService
+    ) {
+        this.readListService = readListService;
+        this.userService = userService;
+        this.authorsService = authorsService;
+    }
 
     @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -56,13 +59,24 @@ public class BooksController {
     }
 
 
-    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
+    @GetMapping(value = "/api/v0.2/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getOne(@PathVariable Long readListId,
                                   @PathVariable Long bookId,
-                                  @RequestAttribute("username") String username) {
+                                  @RequestAttribute("username") String username)
+            throws UserIsNotOwnerException {
+        userService.checkOwnership(username, readListId);
+        // TODO: Check book ownership
+
         Book book = readListService.getBook(readListId, bookId);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(book.toString(), HttpStatus.OK);
+        Optional<Author> author = authorsService.getAuthor(readListId,book.getAuthorId());
+
+        BookView.Builder builder = new BookView.Builder()
+                .book(book);
+        author.ifPresent(builder::author);
+        // TODO: write status, series
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.toString(), HttpStatus.OK);
         return resEnt;
     }
 
@@ -78,7 +92,7 @@ public class BooksController {
             bookListView.sort();
 
             resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,22 +105,25 @@ public class BooksController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> addOne(
             @PathVariable Long readListId,
-            @RequestBody AddBookView addBookView,
+            @RequestBody BookAddView bookAddView,
             @RequestAttribute("username") String username
-    ) throws UserIsNotOwnerException {
+    ) throws UserIsNotOwnerException, EmptyMandatoryParameterException {
 
         // Checking ownership
-        userService.checkOwnership(username,readListId);
-        if (addBookView.getAuthor().isPresent()){
-            userService.checkOwnershipAuthor(username,addBookView.getAuthor().get().getAuthorId());
+        userService.checkOwnership(username, readListId);
+        if (bookAddView.getAuthorId() != null) {
+            userService.checkOwnershipAuthor(username, bookAddView.getAuthorId());
         }
-        if (addBookView.getSeries().isPresent()){
+        if (bookAddView.getSeriesId() != null) {
             // TODO: Check ownership
         }
 
-        Book book = readListService.addBook(readListId,addBookView);
+        Book book = readListService.addBook(readListId, bookAddView);
 
-        ResponseEntity<String> resEnt = new ResponseEntity<>(book.toString(), HttpStatus.OK);
+        BookView.Builder builder = new BookView.Builder()
+                .book(book);
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.toString(), HttpStatus.OK);
         return resEnt;
     }
 

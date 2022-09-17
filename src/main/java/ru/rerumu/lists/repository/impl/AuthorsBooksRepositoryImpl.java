@@ -16,4 +16,9 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     public void deleteByAuthor(Long authorId) {
         authorBookMapper.deleteByAuthor(authorId);
     }
+
+    @Override
+    public void add(Long bookId, Long authorId, Long readListId) {
+        authorBookMapper.add(bookId, authorId, readListId);
+    }
 }

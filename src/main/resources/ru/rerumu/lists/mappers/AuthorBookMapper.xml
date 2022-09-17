@@ -9,4 +9,9 @@
         where author_author_id=#{authorId}
     </delete>
 
+    <insert id="add">
+        insert into lists.books_authors(book_book_id, book_list_id, author_author_id, author_list_id)
+        values(#{bookId},#{readListId},#{authorId},#{readListId})
+    </insert>
+
 </mapper>

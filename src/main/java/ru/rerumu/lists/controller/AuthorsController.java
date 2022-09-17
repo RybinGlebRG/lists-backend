@@ -5,17 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.AddAuthorView;
-import ru.rerumu.lists.views.AddBookView;
 import ru.rerumu.lists.views.AuthorsListView;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -37,9 +37,13 @@ public class AuthorsController {
                                   @PathVariable Long authorId,
                                   @RequestAttribute("username") String username) throws UserIsNotOwnerException {
         userService.checkOwnership(username, readListId);
-        Author author = readListService.getAuthor(readListId, authorId);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(author.toString(), HttpStatus.OK);
-        return resEnt;
+        Optional<Author> author = authorsService.getAuthor(readListId, authorId);
+        if (author.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            ResponseEntity<String> resEnt = new ResponseEntity<>(author.get().toString(), HttpStatus.OK);
+            return resEnt;
+        }
     }
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/authors",
@@ -60,7 +64,8 @@ public class AuthorsController {
     )
     ResponseEntity<String> addOne(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username,
-                                  @RequestBody AddAuthorView addAuthorView) throws UserIsNotOwnerException {
+                                  @RequestBody AddAuthorView addAuthorView)
+            throws UserIsNotOwnerException, EntityNotFoundException {
         userService.checkOwnership(username, readListId);
         Author author = authorsService.addAuthor(readListId, addAuthorView);
         return new ResponseEntity<>(author.toString(), HttpStatus.CREATED);

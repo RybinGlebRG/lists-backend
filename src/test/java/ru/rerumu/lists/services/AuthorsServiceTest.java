@@ -13,6 +13,8 @@ import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.AuthorsRepository;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,12 +30,14 @@ class AuthorsServiceTest {
         Author author = new Author(1L,2L,"TestAuthor");
 
         Mockito.when(authorsRepository.getOne(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(author);
+                .thenReturn(Optional.of(author));
 
         AuthorsService authorsService = new AuthorsService(authorsRepository,authorsBooksRepository);
-        Author gotAuthor = authorsService.getAuthor(2L,1L);
+        Optional<Author> gotAuthor = authorsService.getAuthor(2L,1L);
 
-        Assertions.assertEquals(author,gotAuthor);
+        Assertions.assertTrue(gotAuthor.isPresent());
+
+        Assertions.assertEquals(author,gotAuthor.get());
         Mockito.verify(authorsRepository).getOne(2L,1L);
     }
 

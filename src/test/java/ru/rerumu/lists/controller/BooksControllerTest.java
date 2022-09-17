@@ -16,9 +16,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.AddAuthorView;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -32,6 +35,12 @@ class BooksControllerTest {
 
     @MockBean
     private ReadListService readListService;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private AuthorsService authorsService;
 
     @BeforeAll
     static void setup() {
@@ -81,7 +90,7 @@ class BooksControllerTest {
                 .given()
                 .attribute("username","Test")
                 .when()
-                .get("/api/v0.2/readLists/2/books/1")
+                .get("/api/v0.2/books/1")
                 .then().statusCode(500)
                 .and().body("error",equalTo("java.lang.IllegalArgumentException"))
                 .and().body("errorMessage",equalTo(null));
@@ -112,6 +121,8 @@ class BooksControllerTest {
                                         .title("newTitle")
                                         .authorId(1L)
                                         .statusId(2)
+                                        .insertDate(new Date())
+                                        .lastUpdateDate(new Date())
                                         .seriesId(3L)
                                         .seriesOrder(4L)
                                         .build()

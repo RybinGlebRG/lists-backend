@@ -6,19 +6,17 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Book {
+public final class Book {
     private final Long bookId;
     private final Long readListId;
-    private String title;
-    private Integer statusId;
-    private Date insertDate;
-    private Date lastUpdateDate;
-    private Integer lastChapter;
-    private Long seriesId;
-    private Long authorId;
-    private Long seriesOrder;
-    private BookStatus bookStatus;
-    private Author author;
+    private final String title;
+    private final Integer statusId;
+    private final Date insertDate;
+    private final Date lastUpdateDate;
+    private final Integer lastChapter;
+    private final Long seriesId;
+    private final Long authorId;
+    private final Long seriesOrder;
 
     public Book(Long bookId,
                 Long readListId,
@@ -29,13 +27,30 @@ public class Book {
                 Integer lastChapter,
                 Long seriesId,
                 Long authorId,
-                Long seriesOrder) {
+                Long seriesOrder) throws EmptyMandatoryParameterException {
         this.bookId = bookId;
         this.readListId = readListId;
+
+        if (title == null) {
+            throw new EmptyMandatoryParameterException("title is null");
+        }
         this.title = title;
+
+        if (statusId == null) {
+            throw new EmptyMandatoryParameterException("statusId is null");
+        }
         this.statusId = statusId;
+
+        if (insertDate == null) {
+            throw new EmptyMandatoryParameterException("insertDate is null");
+        }
         this.insertDate = insertDate;
+
+        if (lastUpdateDate == null) {
+            throw new EmptyMandatoryParameterException("lastUpdateDate is null");
+        }
         this.lastUpdateDate = lastUpdateDate;
+
         this.lastChapter = lastChapter;
         this.seriesId = seriesId;
         this.seriesOrder = seriesOrder;
@@ -51,6 +66,7 @@ public class Book {
     }
 
     public String getTitle() {
+
         return title;
     }
 
@@ -78,53 +94,53 @@ public class Book {
         return authorId;
     }
 
-    public void setSeriesId(Long seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
+//    public void setSeriesId(Long seriesId) {
+//        this.seriesId = seriesId;
+//    }
+//
+//    public void setAuthorId(Long authorId) {
+//        this.authorId = authorId;
+//    }
+//
     public Long getSeriesOrder() {
         return seriesOrder;
     }
-
-    public void setSeriesOrder(Long seriesOrder) {
-        this.seriesOrder = seriesOrder;
-    }
-
-    public void setTitle(String title) throws EmptyMandatoryParameterException {
-        if (title == null) {
-            throw new EmptyMandatoryParameterException("title is null");
-        }
-        this.title = title;
-    }
-
-    public void setStatusId(Integer statusId) throws EmptyMandatoryParameterException {
-        if (statusId == null) {
-            throw new EmptyMandatoryParameterException("statusId is null");
-        }
-        this.statusId = statusId;
-    }
-
-    public void setInsertDate(Date insertDate) throws EmptyMandatoryParameterException {
-        if (insertDate == null) {
-            throw new EmptyMandatoryParameterException("insertDate is null");
-        }
-        this.insertDate = insertDate;
-    }
-
-    public void setLastUpdateDate(Date lastUpdateDate) throws EmptyMandatoryParameterException {
-        if (lastUpdateDate == null) {
-            throw new EmptyMandatoryParameterException("lastUpdateDate is null");
-        }
-        this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public void setLastChapter(Integer lastChapter) {
-        this.lastChapter = lastChapter;
-    }
+//
+//    public void setSeriesOrder(Long seriesOrder) {
+//        this.seriesOrder = seriesOrder;
+//    }
+//
+//    public void setTitle(String title) throws EmptyMandatoryParameterException {
+//        if (title == null) {
+//            throw new EmptyMandatoryParameterException("title is null");
+//        }
+//        this.title = title;
+//    }
+//
+//    public void setStatusId(Integer statusId) throws EmptyMandatoryParameterException {
+//        if (statusId == null) {
+//            throw new EmptyMandatoryParameterException("statusId is null");
+//        }
+//        this.statusId = statusId;
+//    }
+//
+//    public void setInsertDate(Date insertDate) throws EmptyMandatoryParameterException {
+//        if (insertDate == null) {
+//            throw new EmptyMandatoryParameterException("insertDate is null");
+//        }
+//        this.insertDate = insertDate;
+//    }
+//
+//    public void setLastUpdateDate(Date lastUpdateDate) throws EmptyMandatoryParameterException {
+//        if (lastUpdateDate == null) {
+//            throw new EmptyMandatoryParameterException("lastUpdateDate is null");
+//        }
+//        this.lastUpdateDate = lastUpdateDate;
+//    }
+//
+//    public void setLastChapter(Integer lastChapter) {
+//        this.lastChapter = lastChapter;
+//    }
 
     public int getdd() {
         return Integer.parseInt(new SimpleDateFormat("dd").format(this.insertDate));
@@ -160,18 +176,17 @@ public class Book {
         obj.put("statusId", statusId);
         obj.put(
                 "insertDate",
-                insertDate != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(insertDate) : JSONObject.NULL
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(insertDate)
         );
         obj.put(
                 "lastUpdateDate",
-                lastUpdateDate != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastUpdateDate) : JSONObject.NULL
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastUpdateDate)
         );
         obj.put("lastChapter", lastChapter);
         obj.put("seriesId", seriesId);
         obj.put("seriesOrder", seriesOrder);
         obj.put("authorId", authorId);
-        obj.put("bookStatus", bookStatus.toJSONObject());
-        obj.put("author", author != null ? author.toJSONObject() : null);
+        obj.put("statusId", statusId);
 
         return obj;
     }
@@ -181,7 +196,7 @@ public class Book {
         return this.toJSONObject().toString();
     }
 
-    public static class Builder{
+    public final static class Builder {
         private Long bookId;
         private Long readListId;
         private String title;
@@ -193,58 +208,73 @@ public class Book {
         private Long authorId;
         private Long seriesOrder;
 
-        public Builder bookId(Long bookId){
+        public Builder(){}
+
+        public Builder(Book book){
+            this.bookId = book.bookId;
+            this.readListId = book.readListId;
+            this.title = book.title;
+            this.statusId = book.statusId;
+            this.insertDate = book.insertDate;
+            this.lastUpdateDate = book.lastUpdateDate;
+            this.lastChapter = book.lastChapter;
+            this.seriesId = book.seriesId;
+            this.authorId = book.authorId;
+            this.seriesOrder = book.seriesOrder;
+        }
+
+        public Builder bookId(Long bookId) {
             this.bookId = bookId;
             return this;
         }
 
-        public Builder readListId(Long readListId){
+        public Builder readListId(Long readListId) {
             this.readListId = readListId;
             return this;
         }
 
-        public Builder title(String title){
+        public Builder title(String title)  {
             this.title = title;
             return this;
         }
 
-        public Builder statusId(Integer statusId){
+        public Builder statusId(Integer statusId)  {
             this.statusId = statusId;
             return this;
         }
 
-        public Builder insertDate(Date insertDate){
+        public Builder insertDate(Date insertDate)  {
             this.insertDate = insertDate;
             return this;
         }
 
-        public Builder lastUpdateDate(Date lastUpdateDate){
+        public Builder lastUpdateDate(Date lastUpdateDate)  {
             this.lastUpdateDate = lastUpdateDate;
             return this;
         }
 
-        public Builder lastChapter(Integer lastChapter){
+        public Builder lastChapter(Integer lastChapter) {
             this.lastChapter = lastChapter;
             return this;
         }
 
-        public Builder seriesId(Long seriesId){
+        public Builder seriesId(Long seriesId) {
             this.seriesId = seriesId;
             return this;
         }
 
-        public Builder authorId(Long authorId){
+        public Builder authorId(Long authorId) {
             this.authorId = authorId;
             return this;
         }
 
-        public Builder seriesOrder(Long seriesOrder){
+        public Builder seriesOrder(Long seriesOrder) {
             this.seriesOrder = seriesOrder;
             return this;
         }
 
 
-        public Book build(){
+        public Book build() throws EmptyMandatoryParameterException {
             return new Book(
                     bookId,
                     readListId,
