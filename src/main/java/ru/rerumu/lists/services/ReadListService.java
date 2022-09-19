@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
@@ -18,27 +19,37 @@ import java.util.Optional;
 
 @Component
 public class ReadListService {
-    private final Logger logger = LoggerFactory.getLogger(ReadListService.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private SeriesRepository seriesRepository;
-    @Autowired
-    private AuthorsRepository authorsRepository;
+
+    private final BookRepository bookRepository;
+
+    private final SeriesRepository seriesRepository;
+
+    private final AuthorsRepository authorsRepository;
 
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
 
+    private final DateFactory dateFactory;
+
     public ReadListService(
+            BookRepository bookRepository,
+            SeriesRepository seriesRepository,
+            AuthorsRepository authorsRepository,
             AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
-            SeriesBooksRespository seriesBooksRespository
+            SeriesBooksRespository seriesBooksRespository,
+            DateFactory dateFactory
     ) {
+        this.bookRepository = bookRepository;
+        this.seriesRepository = seriesRepository;
+        this.authorsRepository = authorsRepository;
         this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
+        this.dateFactory = dateFactory;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -97,7 +108,6 @@ public class ReadListService {
 
     @Transactional(rollbackFor = Exception.class)
     public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException {
-        Book book = bookAddView.getBook();
 
         Optional<Author> author = Optional.empty();
         if (bookAddView.getAuthorId() != null) {
@@ -116,15 +126,16 @@ public class ReadListService {
 
         Long bookId = bookRepository.getNextId();
 
+        Date dt = dateFactory.getCurrentDate();
+
         Book.Builder bookBuilder = new Book.Builder();
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
-                .title(book.getTitle())
-                .statusId(book.getStatusId())
-                .lastChapter(book.getLastChapter())
-                .insertDate(new Date())
-                .lastUpdateDate(new Date());
+                .title(bookAddView.getTitle())
+                .statusId(bookAddView.getStatus())
+                .insertDate(dt)
+                .lastUpdateDate(dt);
 
         Book newBook = bookBuilder.build();
 
@@ -138,6 +149,6 @@ public class ReadListService {
                 bookAddView.getOrder())
         );
 
-        return getBook(readListId, newBook.getBookId());
+        return getBook(readListId, bookId);
     }
 }

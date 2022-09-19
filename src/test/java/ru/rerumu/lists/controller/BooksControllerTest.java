@@ -90,7 +90,7 @@ class BooksControllerTest {
                 .given()
                 .attribute("username","Test")
                 .when()
-                .get("/api/v0.2/books/1")
+                .get("/api/v0.2/readLists/2/books/1")
                 .then().statusCode(500)
                 .and().body("error",equalTo("java.lang.IllegalArgumentException"))
                 .and().body("errorMessage",equalTo(null));

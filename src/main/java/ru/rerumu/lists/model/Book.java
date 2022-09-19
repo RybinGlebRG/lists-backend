@@ -5,6 +5,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public final class Book {
     private final Long bookId;
@@ -94,7 +95,7 @@ public final class Book {
         return authorId;
     }
 
-//    public void setSeriesId(Long seriesId) {
+    //    public void setSeriesId(Long seriesId) {
 //        this.seriesId = seriesId;
 //    }
 //
@@ -196,6 +197,23 @@ public final class Book {
         return this.toJSONObject().toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId)
+                && Objects.equals(title, book.title) && Objects.equals(statusId, book.statusId)
+                && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate)
+                && Objects.equals(lastChapter, book.lastChapter) && Objects.equals(seriesId, book.seriesId)
+                && Objects.equals(authorId, book.authorId) && Objects.equals(seriesOrder, book.seriesOrder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookId, readListId, title, statusId, insertDate, lastUpdateDate, lastChapter, seriesId, authorId, seriesOrder);
+    }
+
     public final static class Builder {
         private Long bookId;
         private Long readListId;
@@ -208,9 +226,10 @@ public final class Book {
         private Long authorId;
         private Long seriesOrder;
 
-        public Builder(){}
+        public Builder() {
+        }
 
-        public Builder(Book book){
+        public Builder(Book book) {
             this.bookId = book.bookId;
             this.readListId = book.readListId;
             this.title = book.title;
@@ -233,22 +252,22 @@ public final class Book {
             return this;
         }
 
-        public Builder title(String title)  {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public Builder statusId(Integer statusId)  {
+        public Builder statusId(Integer statusId) {
             this.statusId = statusId;
             return this;
         }
 
-        public Builder insertDate(Date insertDate)  {
+        public Builder insertDate(Date insertDate) {
             this.insertDate = insertDate;
             return this;
         }
 
-        public Builder lastUpdateDate(Date lastUpdateDate)  {
+        public Builder lastUpdateDate(Date lastUpdateDate) {
             this.lastUpdateDate = lastUpdateDate;
             return this;
         }

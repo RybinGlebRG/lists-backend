@@ -48,16 +48,16 @@ public class BookAddView {
         return title;
     }
 
-    public Book getBook() throws EmptyMandatoryParameterException {
-
-        return new Book.Builder()
-                .title(title)
-                .authorId(authorId)
-                .statusId(status)
-                .seriesId(seriesId)
-                .seriesOrder(order)
-                .build();
-    }
+//    public Book getBook() throws EmptyMandatoryParameterException {
+//
+//        return new Book.Builder()
+//                .title(title)
+//                .authorId(authorId)
+//                .statusId(status)
+//                .seriesId(seriesId)
+//                .seriesOrder(order)
+//                .build();
+//    }
 
 //    public Optional<Author> getAuthor(){
 //        if (authorId != null) {

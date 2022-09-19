@@ -59,7 +59,7 @@ public class BooksController {
     }
 
 
-    @GetMapping(value = "/api/v0.2/books/{bookId}",
+    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getOne(@PathVariable Long readListId,
                                   @PathVariable Long bookId,
@@ -76,7 +76,7 @@ public class BooksController {
         author.ifPresent(builder::author);
         // TODO: write status, series
 
-        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.toString(), HttpStatus.OK);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
         return resEnt;
     }
 
@@ -123,7 +123,7 @@ public class BooksController {
         BookView.Builder builder = new BookView.Builder()
                 .book(book);
 
-        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.toString(), HttpStatus.OK);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
         return resEnt;
     }
 

@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.repository.AuthorsBooksRepository;
-import ru.rerumu.lists.repository.AuthorsRepository;
+import ru.rerumu.lists.repository.*;
 
 import java.util.Optional;
 
@@ -24,6 +23,7 @@ class AuthorsServiceTest {
     private AuthorsRepository authorsRepository;
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;
+
 
     @Test
     void shouldGetAuthor()throws Exception{
