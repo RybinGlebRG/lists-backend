@@ -33,6 +33,7 @@ public class ReadListService {
     private final SeriesBooksRespository seriesBooksRespository;
 
     private final DateFactory dateFactory;
+    private final BookSeriesService bookSeriesService;
 
     public ReadListService(
             BookRepository bookRepository,
@@ -41,7 +42,8 @@ public class ReadListService {
             AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesBooksRespository seriesBooksRespository,
-            DateFactory dateFactory
+            DateFactory dateFactory,
+            BookSeriesService bookSeriesService
     ) {
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
@@ -50,6 +52,7 @@ public class ReadListService {
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.dateFactory = dateFactory;
+        this.bookSeriesService = bookSeriesService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -83,6 +86,7 @@ public class ReadListService {
         return this.bookRepository.getAll(readListId);
     }
 
+    @Deprecated
     public Series getSeries(Long readListId, Long seriesId) {
         return seriesRepository.getOne(readListId, seriesId);
     }
@@ -111,17 +115,12 @@ public class ReadListService {
 
         Optional<Author> author = Optional.empty();
         if (bookAddView.getAuthorId() != null) {
-            author = authorsService.getAuthor(
-                    readListId,
-                    bookAddView.getAuthorId()
-            );
+            author = authorsService.getAuthor(readListId, bookAddView.getAuthorId());
         }
 
         Optional<Series> series = Optional.empty();
         if (bookAddView.getSeriesId() != null) {
-            series = Optional.of(
-                    getSeries(readListId, bookAddView.getSeriesId())
-            );
+            series = bookSeriesService.getSeries(readListId, bookAddView.getSeriesId());
         }
 
         Long bookId = bookRepository.getNextId();

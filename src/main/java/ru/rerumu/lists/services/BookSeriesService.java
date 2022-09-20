@@ -1,0 +1,28 @@
+package ru.rerumu.lists.services;
+
+import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.repository.SeriesRepository;
+
+import java.util.Optional;
+
+public class BookSeriesService {
+
+    private final SeriesRepository seriesRepository;
+
+    public BookSeriesService(
+            SeriesRepository seriesRepository
+    ) {
+        this.seriesRepository = seriesRepository;
+    }
+
+
+    public Optional<Series> getSeries(Long readListId, Long seriesId) {
+        Series series = seriesRepository.getOne(readListId, seriesId);
+        if (series != null) {
+            return Optional.of(series);
+        } else {
+            return Optional.empty();
+        }
+
+    }
+}
