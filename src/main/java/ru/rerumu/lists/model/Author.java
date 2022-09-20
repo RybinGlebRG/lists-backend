@@ -2,6 +2,8 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class Author {
 
     private final Long authorId;
@@ -43,6 +45,19 @@ public class Author {
     @Override
     public String toString() {
         return this.toJSONObject().toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return authorId.equals(author.authorId) && readListId.equals(author.readListId) && name.equals(author.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authorId, readListId, name);
     }
 
     public static class Builder{

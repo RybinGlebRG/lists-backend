@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BookRepository {
 
-    Book update(Book book);
+    void update(Book book);
 
     Book getOne(Long readListId, Long bookId);
     List<Book> getAll(Long readListId);

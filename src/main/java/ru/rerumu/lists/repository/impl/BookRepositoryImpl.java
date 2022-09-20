@@ -16,7 +16,7 @@ public class BookRepositoryImpl implements BookRepository {
 
 
     @Override
-    public Book update(Book book) {
+    public void update(Book book) {
         bookMapper.update(
                 book.getReadListId(),
                 book.getBookId(),
@@ -26,13 +26,13 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastUpdateDate(),
                 book.getLastChapter()
         );
-        bookMapper.updateAuthor(
-                book.getReadListId(),
-                book.getBookId(),
-                book.getReadListId(),
-                book.getAuthorId()
-        );
-        return getOne(book.getReadListId(), book.getBookId());
+//        bookMapper.updateAuthor(
+//                book.getReadListId(),
+//                book.getBookId(),
+//                book.getReadListId(),
+//                book.getAuthorId()
+//        );
+//        return getOne(book.getReadListId(), book.getBookId());
     }
 
     @Override

@@ -15,6 +15,7 @@ import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookListView;
+import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.BookView;
 
 import java.util.List;
@@ -39,22 +40,36 @@ public class BooksController {
         this.authorsService = authorsService;
     }
 
-    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
+//    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
+//            produces = MediaType.APPLICATION_JSON_VALUE,
+//            consumes = MediaType.APPLICATION_JSON_VALUE)
+//    ResponseEntity<String> updateOne(@PathVariable Long readListId,
+//                                     @PathVariable Long bookId,
+//                                     @RequestBody Book newBook,
+//                                     @RequestAttribute("username") String username) {
+//        ResponseEntity<String> resEnt;
+//        try {
+//            Book updatedBook = readListService.updateBook(readListId, bookId, newBook);
+//            resEnt = new ResponseEntity<>(updatedBook.toString(), HttpStatus.OK);
+//        } catch (EmptyMandatoryParameterException e) {
+//            resEnt = new ResponseEntity<>(
+//                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
+//                    HttpStatus.BAD_REQUEST);
+//        }
+//        return resEnt;
+//    }
+
+
+    @PutMapping(value = "/api/v0.2/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> updateOne(@PathVariable Long readListId,
-                                     @PathVariable Long bookId,
-                                     @RequestBody Book newBook,
-                                     @RequestAttribute("username") String username) {
-        ResponseEntity<String> resEnt;
-        try {
-            Book updatedBook = readListService.updateBook(readListId, bookId, newBook);
-            resEnt = new ResponseEntity<>(updatedBook.toString(), HttpStatus.OK);
-        } catch (EmptyMandatoryParameterException e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.BAD_REQUEST);
-        }
+    ResponseEntity<String> updateOne(@PathVariable Long bookId,
+                                     @RequestBody BookUpdateView bookUpdateView,
+                                     @RequestAttribute("username") String username)
+            throws EmptyMandatoryParameterException {
+
+        readListService.updateBook(bookUpdateView);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.OK);
         return resEnt;
     }
 
@@ -69,7 +84,7 @@ public class BooksController {
         // TODO: Check book ownership
 
         Book book = readListService.getBook(readListId, bookId);
-        Optional<Author> author = authorsService.getAuthor(readListId,book.getAuthorId());
+        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
 
         BookView.Builder builder = new BookView.Builder()
                 .book(book);

@@ -8,14 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.views.BookUpdateView;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class ReadListService {
@@ -26,7 +29,7 @@ public class ReadListService {
 
     private final SeriesRepository seriesRepository;
 
-    private final AuthorsRepository authorsRepository;
+//    private final AuthorsRepository authorsRepository;
 
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
@@ -47,7 +50,7 @@ public class ReadListService {
     ) {
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
-        this.authorsRepository = authorsRepository;
+//        this.authorsRepository = authorsRepository;
         this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
@@ -55,25 +58,71 @@ public class ReadListService {
         this.bookSeriesService = bookSeriesService;
     }
 
+//    @Transactional(rollbackFor = Exception.class)
+//    public Book updateBook(Long readListId, Long bookId, Book newBook) throws EmptyMandatoryParameterException {
+//        if (readListId == null || bookId == null || newBook == null) {
+//            throw new EmptyMandatoryParameterException();
+//        }
+//        Book currentBook = bookRepository.getOne(readListId, bookId);
+//
+//        Book updatedBook = new Book.Builder(currentBook)
+//                .insertDate(newBook.getInsertDate())
+//                .lastChapter(newBook.getLastChapter())
+//                .lastUpdateDate(newBook.getLastUpdateDate())
+//                .statusId(newBook.getStatusId())
+//                .title(newBook.getTitle())
+//                .authorId(newBook.getAuthorId())
+//                .seriesId(newBook.getSeriesId())
+//                .seriesOrder(newBook.getSeriesOrder())
+//                .build();
+//
+//        return bookRepository.update(updatedBook);
+//    }
+
     @Transactional(rollbackFor = Exception.class)
-    public Book updateBook(Long readListId, Long bookId, Book newBook) throws EmptyMandatoryParameterException {
-        if (readListId == null || bookId == null || newBook == null) {
+    public void updateBook(BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException {
+        if (
+                bookUpdateView == null
+                || bookUpdateView.getReadListId() == null
+                || bookUpdateView.getBookId() == null
+        ) {
             throw new EmptyMandatoryParameterException();
         }
-        Book currentBook = bookRepository.getOne(readListId, bookId);
+
+        Book currentBook = bookRepository.getOne(bookUpdateView.getReadListId(), bookUpdateView.getBookId());
 
         Book updatedBook = new Book.Builder(currentBook)
-                .insertDate(newBook.getInsertDate())
-                .lastChapter(newBook.getLastChapter())
-                .lastUpdateDate(newBook.getLastUpdateDate())
-                .statusId(newBook.getStatusId())
-                .title(newBook.getTitle())
-                .authorId(newBook.getAuthorId())
-                .seriesId(newBook.getSeriesId())
-                .seriesOrder(newBook.getSeriesOrder())
+//                .insertDate(newBook.getInsertDate())
+//                .lastChapter(newBook.getLastChapter())
+//                .lastUpdateDate(newBook.getLastUpdateDate())
+                .statusId(bookUpdateView.getStatus())
+                .title(bookUpdateView.getTitle())
+//                .authorId(newBook.getAuthorId())
+//                .seriesId(newBook.getSeriesId())
+//                .seriesOrder(newBook.getSeriesOrder())
                 .build();
 
-        return bookRepository.update(updatedBook);
+        bookRepository.update(updatedBook);
+
+        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookUpdateView.getBookId());
+
+        if (bookUpdateView.getAuthorId() != null) {
+            Optional<Author> optionalAuthor = authorsService.getAuthor(bookUpdateView.getReadListId(), bookUpdateView.getAuthorId());
+            authorsBooksRepositoryList.stream()
+                    .map(AuthorBookRelation::getAuthor)
+                    .filter(item -> optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item))
+                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
+
+            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(updatedBook.getBookId(), author.getAuthorId(), author.getReadListId()));
+
+        } else {
+            authorsBooksRepositoryList.stream()
+                    .map(AuthorBookRelation::getAuthor)
+                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
+        }
+
+        // TODO: Same for series
+
     }
 
     public Book getBook(Long readListId, Long bookId) {
@@ -107,7 +156,7 @@ public class ReadListService {
 
     @Deprecated
     public List<Author> getAuthors(Long readListId) {
-        return authorsRepository.getAll(readListId);
+        return authorsService.getAuthors(readListId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -128,6 +177,8 @@ public class ReadListService {
         Date dt = dateFactory.getCurrentDate();
 
         Book.Builder bookBuilder = new Book.Builder();
+
+        // TODO: Add last chapter
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
