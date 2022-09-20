@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
@@ -122,7 +123,7 @@ public class BooksController {
             @PathVariable Long readListId,
             @RequestBody BookAddView bookAddView,
             @RequestAttribute("username") String username
-    ) throws UserIsNotOwnerException, EmptyMandatoryParameterException {
+    ) throws UserIsNotOwnerException, EmptyMandatoryParameterException, EntityNotFoundException {
 
         // Checking ownership
         userService.checkOwnership(username, readListId);

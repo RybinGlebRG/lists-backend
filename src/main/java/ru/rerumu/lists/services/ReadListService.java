@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
@@ -160,17 +161,7 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException {
-
-        Optional<Author> author = Optional.empty();
-        if (bookAddView.getAuthorId() != null) {
-            author = authorsService.getAuthor(readListId, bookAddView.getAuthorId());
-        }
-
-        Optional<Series> series = Optional.empty();
-        if (bookAddView.getSeriesId() != null) {
-            series = bookSeriesService.getSeries(readListId, bookAddView.getSeriesId());
-        }
+    public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
         Long bookId = bookRepository.getNextId();
 
@@ -191,13 +182,27 @@ public class ReadListService {
 
         bookRepository.addOne(newBook);
 
-        author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
-        series.ifPresent(value -> seriesBooksRespository.add(
-                newBook.getBookId(),
-                value.getSeriesId(),
-                readListId,
-                bookAddView.getOrder())
-        );
+        if (bookAddView.getAuthorId() != null) {
+            Optional<Author> author = authorsService.getAuthor(readListId, bookAddView.getAuthorId());
+            if (author.isEmpty()){
+                throw new EntityNotFoundException();
+            }
+            author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
+        }
+
+        if (bookAddView.getSeriesId() != null) {
+            Optional<Series> series = bookSeriesService.getSeries(readListId, bookAddView.getSeriesId());
+            if (series.isEmpty()){
+                throw new EntityNotFoundException();
+            }
+            series.ifPresent(value -> seriesBooksRespository.add(
+                    newBook.getBookId(),
+                    value.getSeriesId(),
+                    readListId,
+                    bookAddView.getOrder())
+            );
+        }
+
 
         return getBook(readListId, bookId);
     }
