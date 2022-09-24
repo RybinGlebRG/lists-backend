@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
@@ -59,33 +56,54 @@ public class ReadListService {
         this.bookSeriesService = bookSeriesService;
     }
 
-//    @Transactional(rollbackFor = Exception.class)
-//    public Book updateBook(Long readListId, Long bookId, Book newBook) throws EmptyMandatoryParameterException {
-//        if (readListId == null || bookId == null || newBook == null) {
-//            throw new EmptyMandatoryParameterException();
-//        }
-//        Book currentBook = bookRepository.getOne(readListId, bookId);
-//
-//        Book updatedBook = new Book.Builder(currentBook)
-//                .insertDate(newBook.getInsertDate())
-//                .lastChapter(newBook.getLastChapter())
-//                .lastUpdateDate(newBook.getLastUpdateDate())
-//                .statusId(newBook.getStatusId())
-//                .title(newBook.getTitle())
-//                .authorId(newBook.getAuthorId())
-//                .seriesId(newBook.getSeriesId())
-//                .seriesOrder(newBook.getSeriesOrder())
-//                .build();
-//
-//        return bookRepository.update(updatedBook);
-//    }
+    private void updateAuthor(Long bookId, Long authorId, Long readListId) {
+        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId);
+
+        if (authorId != null) {
+            Optional<Author> optionalAuthor = authorsService.getAuthor(readListId, authorId);
+            authorsBooksRepositoryList.stream()
+                    .map(AuthorBookRelation::getAuthor)
+                    .filter(item -> optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item))
+                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
+
+            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
+
+        } else {
+            authorsBooksRepositoryList.stream()
+                    .map(AuthorBookRelation::getAuthor)
+                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
+        }
+    }
+
+    private void updateSeries(Long bookId, Long seriesId, Long readListId, Long seriesOrder) {
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId);
+
+        if (seriesId != null) {
+            Optional<Series> optionalSeries = bookSeriesService.getSeries(readListId, seriesId);
+            seriesBookRelationList.stream()
+                    .map(SeriesBookRelation::getSeries)
+                    .filter(item -> optionalSeries.isEmpty() || !optionalSeries.get().equals(item))
+                    .forEach(series -> seriesBooksRespository.deleteBySeries(series.getSeriesId()));
+
+            optionalSeries.ifPresent(series -> seriesBooksRespository.add(
+                    bookId,
+                    series.getSeriesId(),
+                    series.getSeriesListId(),
+                    seriesOrder)
+            );
+        } else {
+            seriesBookRelationList.stream()
+                    .map(SeriesBookRelation::getSeries)
+                    .forEach(series -> seriesBooksRespository.deleteBySeries(series.getSeriesId()));
+        }
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public void updateBook(BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException {
         if (
                 bookUpdateView == null
-                || bookUpdateView.getReadListId() == null
-                || bookUpdateView.getBookId() == null
+                        || bookUpdateView.getReadListId() == null
+                        || bookUpdateView.getBookId() == null
         ) {
             throw new EmptyMandatoryParameterException();
         }
@@ -105,24 +123,9 @@ public class ReadListService {
 
         bookRepository.update(updatedBook);
 
-        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookUpdateView.getBookId());
+        updateAuthor(bookUpdateView.getBookId(), bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
 
-        if (bookUpdateView.getAuthorId() != null) {
-            Optional<Author> optionalAuthor = authorsService.getAuthor(bookUpdateView.getReadListId(), bookUpdateView.getAuthorId());
-            authorsBooksRepositoryList.stream()
-                    .map(AuthorBookRelation::getAuthor)
-                    .filter(item -> optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item))
-                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
-
-            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(updatedBook.getBookId(), author.getAuthorId(), author.getReadListId()));
-
-        } else {
-            authorsBooksRepositoryList.stream()
-                    .map(AuthorBookRelation::getAuthor)
-                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
-        }
-
-        // TODO: Same for series
+        updateSeries(bookUpdateView.getBookId(), bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder());
 
     }
 
@@ -149,11 +152,6 @@ public class ReadListService {
         }
         return seriesList;
     }
-
-//    @Deprecated
-//    public Author getAuthor(Long readListId, Long authorId) {
-//        return authorsRepository.getOne(readListId, authorId);
-//    }
 
     @Deprecated
     public List<Author> getAuthors(Long readListId) {
@@ -184,7 +182,7 @@ public class ReadListService {
 
         if (bookAddView.getAuthorId() != null) {
             Optional<Author> author = authorsService.getAuthor(readListId, bookAddView.getAuthorId());
-            if (author.isEmpty()){
+            if (author.isEmpty()) {
                 throw new EntityNotFoundException();
             }
             author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
@@ -192,7 +190,7 @@ public class ReadListService {
 
         if (bookAddView.getSeriesId() != null) {
             Optional<Series> series = bookSeriesService.getSeries(readListId, bookAddView.getSeriesId());
-            if (series.isEmpty()){
+            if (series.isEmpty()) {
                 throw new EntityNotFoundException();
             }
             series.ifPresent(value -> seriesBooksRespository.add(

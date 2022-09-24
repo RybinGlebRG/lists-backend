@@ -70,7 +70,7 @@ public class BooksController {
             throws EmptyMandatoryParameterException {
 
         readListService.updateBook(bookUpdateView);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return resEnt;
     }
 
