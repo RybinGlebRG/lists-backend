@@ -3,6 +3,7 @@ package ru.rerumu.lists.views;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.Series;
 
 import java.util.Optional;

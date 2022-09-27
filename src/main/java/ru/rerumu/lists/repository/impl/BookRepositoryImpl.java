@@ -21,7 +21,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getReadListId(),
                 book.getBookId(),
                 book.getTitle(),
-                book.getStatusId(),
+                book.getBookStatus().getId(),
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
                 book.getLastChapter()
@@ -57,7 +57,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookId(),
                 book.getReadListId(),
                 book.getTitle(),
-                book.getStatusId(),
+                book.getBookStatus().getId(),
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
                 book.getLastChapter()

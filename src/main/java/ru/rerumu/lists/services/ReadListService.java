@@ -167,12 +167,26 @@ public class ReadListService {
 
         Book.Builder bookBuilder = new Book.Builder();
 
+        BookStatus bookStatus;
+        switch (bookAddView.getStatus()){
+            case 1:
+                bookStatus=BookStatus.IN_PROGRESS;
+                break;
+            case 2:
+                bookStatus=BookStatus.COMPLETED;
+                break;
+            default:
+                bookStatus=null;
+        }
+
+
         // TODO: Add last chapter
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(bookAddView.getTitle())
                 .statusId(bookAddView.getStatus())
+                .bookStatus(bookStatus)
                 .insertDate(dt)
                 .lastUpdateDate(dt);
 

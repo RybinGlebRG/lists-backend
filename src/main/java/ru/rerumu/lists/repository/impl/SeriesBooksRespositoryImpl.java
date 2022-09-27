@@ -1,11 +1,13 @@
 package ru.rerumu.lists.repository.impl;
 
+import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 
 import java.util.List;
 
+@Component
 public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     private final SeriesBookMapper seriesBookMapper;

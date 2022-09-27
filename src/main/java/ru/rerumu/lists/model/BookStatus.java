@@ -1,31 +1,22 @@
 package ru.rerumu.lists.model;
 
-import org.json.JSONObject;
+public enum BookStatus {
+    IN_PROGRESS(1,"In Progress"),
+    COMPLETED(2,"Completed");
 
-import java.text.SimpleDateFormat;
+    private final int id;
+    private final String nice;
 
-public class BookStatus {
-
-    private final Long statusId;
-    private final String name;
-
-    public BookStatus(Long statusId, String name){
-        this.statusId = statusId;
-        this.name = name;
+    private BookStatus(int id, String nice){
+        this.id = id;
+        this.nice = nice;
     }
 
-    public JSONObject toJSONObject(){
-        JSONObject obj = new JSONObject();
-
-        obj.put("statusId", statusId);
-        obj.put("name", name);
-
-        return obj;
+    public int getId() {
+        return this.id;
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
+    public String getNice() {
+        return nice;
     }
-
 }

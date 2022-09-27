@@ -1,6 +1,5 @@
 package ru.rerumu.lists.services;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -10,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
@@ -50,21 +50,21 @@ class BookServiceTest {
 
         Date dt = new Date();
 
-        Book.Builder builder = new Book.Builder()
+        Book shouldBook = new Book.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .statusId(2)
+                .bookStatus(BookStatus.COMPLETED)
+//                .bookStatus(new BookStatus(2L,null))
 //                .authorId(1L)
 //                .lastChapter(1)
                 .readListId(5L)
 //                .seriesId(3L)
 //                .seriesOrder(4L)
+                .build()
                 ;
-
-        Book shouldBook = builder.build();
-
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
@@ -116,6 +116,7 @@ class BookServiceTest {
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .statusId(2)
+                .bookStatus(BookStatus.COMPLETED)
 //                .authorId(1L)
 //                .lastChapter(1)
                 .readListId(5L)
@@ -173,6 +174,7 @@ class BookServiceTest {
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .statusId(2)
+                .bookStatus(BookStatus.COMPLETED)
 //                .authorId(1L)
 //                .lastChapter(1)
                 .readListId(5L)

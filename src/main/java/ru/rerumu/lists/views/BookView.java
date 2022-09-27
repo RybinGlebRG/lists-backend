@@ -2,10 +2,7 @@ package ru.rerumu.lists.views;
 
 
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.*;
 
 public class BookView {
     private Book book;
@@ -28,7 +25,7 @@ public class BookView {
     public JSONObject toJSONObject() {
         JSONObject obj = book.toJSONObject();
         obj.put("author", author != null ? author.toJSONObject() : null);
-        obj.put("status", bookStatus != null ? bookStatus.toJSONObject() : null);
+        obj.put("status", bookStatus.getNice());
         obj.put("series", series != null ? series.toJSONObject() : null);
         return obj;
     }

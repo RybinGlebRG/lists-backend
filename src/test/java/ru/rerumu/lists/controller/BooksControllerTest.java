@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
@@ -121,6 +122,7 @@ class BooksControllerTest {
                                         .title("newTitle")
                                         .authorId(1L)
                                         .statusId(2)
+                                        .bookStatus(BookStatus.COMPLETED)
                                         .insertDate(new Date())
                                         .lastUpdateDate(new Date())
                                         .seriesId(3L)
@@ -146,6 +148,7 @@ class BooksControllerTest {
                 .body("title",equalTo("newTitle"))
                 .and().body("readListId",equalTo(5))
                 .and().body("statusId",equalTo(2))
+                .and().body("bookStatus",equalTo("Completed"))
                 .and().body("seriesId",equalTo(3))
                 .and().body("seriesOrder",equalTo(4))
         ;

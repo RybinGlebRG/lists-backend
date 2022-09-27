@@ -12,6 +12,8 @@ public final class Book {
     private final Long readListId;
     private final String title;
     private final Integer statusId;
+    private final BookStatus bookStatus;
+
     private final Date insertDate;
     private final Date lastUpdateDate;
     private final Integer lastChapter;
@@ -23,6 +25,7 @@ public final class Book {
                 Long readListId,
                 String title,
                 Integer statusId,
+                BookStatus bookStatus,
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter,
@@ -41,6 +44,11 @@ public final class Book {
             throw new EmptyMandatoryParameterException("statusId is null");
         }
         this.statusId = statusId;
+
+        if (bookStatus == null){
+            throw new EmptyMandatoryParameterException("bookStatus is null");
+        }
+        this.bookStatus = bookStatus;
 
         if (insertDate == null) {
             throw new EmptyMandatoryParameterException("insertDate is null");
@@ -73,6 +81,10 @@ public final class Book {
 
     public Integer getStatusId() {
         return statusId;
+    }
+
+    public BookStatus getBookStatus() {
+        return bookStatus;
     }
 
     public Date getInsertDate() {
@@ -175,6 +187,7 @@ public final class Book {
         obj.put("readListId", readListId);
         obj.put("title", title);
         obj.put("statusId", statusId);
+        obj.put("bookStatus", bookStatus);
         obj.put(
                 "insertDate",
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(insertDate)
@@ -219,6 +232,8 @@ public final class Book {
         private Long readListId;
         private String title;
         private Integer statusId;
+
+        private BookStatus bookStatus;
         private Date insertDate;
         private Date lastUpdateDate;
         private Integer lastChapter;
@@ -234,6 +249,7 @@ public final class Book {
             this.readListId = book.readListId;
             this.title = book.title;
             this.statusId = book.statusId;
+            this.bookStatus = book.bookStatus;
             this.insertDate = book.insertDate;
             this.lastUpdateDate = book.lastUpdateDate;
             this.lastChapter = book.lastChapter;
@@ -259,6 +275,11 @@ public final class Book {
 
         public Builder statusId(Integer statusId) {
             this.statusId = statusId;
+            return this;
+        }
+
+        public Builder bookStatus(BookStatus bookStatus){
+            this.bookStatus = bookStatus;
             return this;
         }
 
@@ -299,6 +320,7 @@ public final class Book {
                     readListId,
                     title,
                     statusId,
+                    bookStatus,
                     insertDate,
                     lastUpdateDate,
                     lastChapter,

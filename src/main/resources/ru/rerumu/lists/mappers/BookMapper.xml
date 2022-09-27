@@ -9,17 +9,20 @@
         <result column="list_list_id" property="readListId" />
         <result column="title" property="title"/>
         <result column="status_status_id" property="statusId"/>
+        <result column="status_name" property="bookStatus" />
         <result column="insert_date" property="insertDate" />
         <result column="last_update_date" property="lastUpdateDate" />
         <result column="last_chapter" property="lastChapter" />
         <result column="author_author_id" property="authorId" />
         <result column="series_series_id" property="seriesId" />
         <result column="series_order" property="seriesOrder" />
-        <association property="bookStatus" resultMap="BookStatusResultMap" />
-        <association property="author" resultMap="ru.rerumu.lists.mappers.AuthorMapper.AuthorResultMap" />
+
+
+<!--        <association property="bookStatus" resultMap="BookStatusResultMap" />-->
+<!--        <association property="author" resultMap="ru.rerumu.lists.mappers.AuthorMapper.AuthorResultMap" />-->
     </resultMap>
 
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus">
+    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus_">
         <result column="status_id" property="statusId" />
         <result column="status_name" property="name" />
     </resultMap>
@@ -37,7 +40,7 @@
                 sb.series_series_id,
                 sb.series_order,
                 s."STATUS_ID" as status_id,
-                s."NAME" as status_name,
+                upper(s."NAME") as status_name,
                 a.author_id,
                 a.list_list_id as author_list_id,
                 a.name as author_name
@@ -71,7 +74,7 @@
                         sb.series_series_id,
                         sb.series_order,
                         s."STATUS_ID" as status_id,
-                        s."NAME" as status_name,
+                        upper(s."NAME") as status_name,
                         a.author_id,
                         a.list_list_id as author_list_id,
                         a.name as author_name

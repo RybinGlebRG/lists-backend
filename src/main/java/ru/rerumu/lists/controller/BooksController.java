@@ -101,18 +101,11 @@ public class BooksController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) {
-        ResponseEntity<String> resEnt;
-        try {
-            List<Book> books = readListService.getAllBooks(readListId);
-            BookListView bookListView = new BookListView(books);
-            bookListView.sort();
+        List<Book> books = readListService.getAllBooks(readListId);
+        BookListView bookListView = new BookListView(books);
+        bookListView.sort();
 
-            resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
-        } catch (Exception e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ResponseEntity<String>  resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
         return resEnt;
     }
 
