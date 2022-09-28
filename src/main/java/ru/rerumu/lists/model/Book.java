@@ -187,7 +187,10 @@ public final class Book {
         obj.put("readListId", readListId);
         obj.put("title", title);
         obj.put("statusId", statusId);
-        obj.put("bookStatus", bookStatus);
+        JSONObject bookStatusJson = new JSONObject();
+        bookStatusJson.put("statusId",bookStatus.getId());
+        bookStatusJson.put("statusName",bookStatus.getNice());
+        obj.put("bookStatus", bookStatusJson);
         obj.put(
                 "insertDate",
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(insertDate)

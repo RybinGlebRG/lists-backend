@@ -25,7 +25,7 @@ public class BookView {
     public JSONObject toJSONObject() {
         JSONObject obj = book.toJSONObject();
         obj.put("author", author != null ? author.toJSONObject() : null);
-        obj.put("status", bookStatus.getNice());
+        obj.put("status", bookStatus != null ? bookStatus.getNice() : null);
         obj.put("series", series != null ? series.toJSONObject() : null);
         return obj;
     }

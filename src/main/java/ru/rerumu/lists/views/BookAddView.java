@@ -6,6 +6,7 @@ import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.Series;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class BookAddView {
@@ -49,7 +50,24 @@ public class BookAddView {
         return title;
     }
 
-//    public Book getBook() throws EmptyMandatoryParameterException {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookAddView that = (BookAddView) o;
+        return status == that.status &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(authorId, that.authorId) &&
+                Objects.equals(seriesId, that.seriesId) &&
+                Objects.equals(order, that.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, authorId, status, seriesId, order);
+    }
+
+    //    public Book getBook() throws EmptyMandatoryParameterException {
 //
 //        return new Book.Builder()
 //                .title(title)

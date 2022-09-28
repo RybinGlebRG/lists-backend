@@ -2,6 +2,7 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
 
+@Deprecated
 public class BookStatus_ {
 
     private final Long statusId;
