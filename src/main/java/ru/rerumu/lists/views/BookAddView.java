@@ -15,19 +15,22 @@ public class BookAddView {
     private final int status;
     private final Long seriesId;
     private final Long order;
+    private final Integer lastChapter;
 
     public BookAddView(
             String title,
             Long authorId,
             int status,
             Long seriesId,
-            Long order
+            Long order,
+            Integer lastChapter
     ){
         this.title = title;
         this.status = status;
         this.authorId = authorId;
         this.seriesId = seriesId;
         this.order = order;
+        this.lastChapter = lastChapter;
     }
 
     public int getStatus() {
@@ -50,21 +53,21 @@ public class BookAddView {
         return title;
     }
 
+    public Integer getLastChapter() {
+        return lastChapter;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookAddView that = (BookAddView) o;
-        return status == that.status &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(authorId, that.authorId) &&
-                Objects.equals(seriesId, that.seriesId) &&
-                Objects.equals(order, that.order);
+        return status == that.status && Objects.equals(title, that.title) && Objects.equals(authorId, that.authorId) && Objects.equals(seriesId, that.seriesId) && Objects.equals(order, that.order) && Objects.equals(lastChapter, that.lastChapter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, authorId, status, seriesId, order);
+        return Objects.hash(title, authorId, status, seriesId, order, lastChapter);
     }
 
     //    public Book getBook() throws EmptyMandatoryParameterException {

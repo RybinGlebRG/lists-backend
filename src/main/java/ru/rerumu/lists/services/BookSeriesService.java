@@ -19,6 +19,9 @@ public class BookSeriesService {
 
 
     public Optional<Series> getSeries(Long readListId, Long seriesId) {
+        if (seriesId == null || readListId == null){
+            throw new IllegalArgumentException();
+        }
         Series series = seriesRepository.getOne(readListId, seriesId);
         if (series != null) {
             return Optional.of(series);

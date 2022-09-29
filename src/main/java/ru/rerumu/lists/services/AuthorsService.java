@@ -1,5 +1,7 @@
 package ru.rerumu.lists.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @Service
 public class AuthorsService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final AuthorsRepository authorsRepository;
     private final AuthorsBooksRepository authorsBooksRepository;
 
@@ -28,7 +32,9 @@ public class AuthorsService {
     }
 
     public Optional<Author> getAuthor(Long readListId, Long authorId) {
-        // TODO: Check parameters are not null
+        if (authorId == null || readListId == null){
+            throw new IllegalArgumentException();
+        }
         return authorsRepository.getOne(readListId, authorId);
     }
 

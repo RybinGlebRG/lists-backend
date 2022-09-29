@@ -179,8 +179,6 @@ public class ReadListService {
                 bookStatus=null;
         }
 
-
-        // TODO: Add last chapter
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
@@ -188,7 +186,8 @@ public class ReadListService {
                 .statusId(bookAddView.getStatus())
                 .bookStatus(bookStatus)
                 .insertDate(dt)
-                .lastUpdateDate(dt);
+                .lastUpdateDate(dt)
+                .lastChapter(bookAddView.getLastChapter());
 
         Book newBook = bookBuilder.build();
 

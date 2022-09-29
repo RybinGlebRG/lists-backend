@@ -155,6 +155,7 @@ class BooksControllerTest {
         requestBody.put("status",1);
         requestBody.put("seriesId",5);
         requestBody.put("order",7);
+        requestBody.put("lastChapter",4);
 
         RestAssuredMockMvc
                 .given()
@@ -180,7 +181,7 @@ class BooksControllerTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,5L,7L));
+                new BookAddView("Title",6L,1,5L,7L, 4));
     }
 
 }

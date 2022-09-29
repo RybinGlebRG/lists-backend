@@ -42,11 +42,11 @@ class BookServiceTest {
     @Test
     void shouldAddBook() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, null, null
+                "Test", 1L, 2, 3L, 4L, 7
         );
 
-//        Author author = new Author(1L, 5L, "Author");
-//        Series series = new Series(3L,5L,"Series");
+        Author author = new Author(1L, 5L, "Author");
+        Series series = new Series(3L,5L,"Series");
 
         Date dt = new Date();
 
@@ -57,80 +57,15 @@ class BookServiceTest {
                 .lastUpdateDate(dt)
                 .statusId(2)
                 .bookStatus(BookStatus.COMPLETED)
-//                .bookStatus(new BookStatus(2L,null))
-//                .authorId(1L)
-//                .lastChapter(1)
+                .lastChapter(7)
                 .readListId(5L)
-//                .seriesId(3L)
-//                .seriesOrder(4L)
                 .build()
                 ;
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-//        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-//        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
-        Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
-
-        ReadListService readListService = new ReadListService(
-                bookRepository,
-                seriesRepository,
-                authorsRepository,
-                authorsService,
-                authorsBooksRepository,
-                seriesBooksRespository,
-                dateFactory,
-                bookSeriesService
-        );
-
-        readListService.addBook(5L, bookAddView);
-
-        InOrder inOrder = Mockito.inOrder(bookRepository, authorsBooksRepository, seriesBooksRespository);
-
-
-        inOrder.verify(bookRepository).addOne(shouldBook);
-//        inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
-//        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
-
-        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-        Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-
-    }
-
-
-    @Test
-    void shouldAddBookSeries() throws Exception {
-        BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, 3L, 4L
-        );
-
-//        Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
-
-        Date dt = new Date();
-
-        Book.Builder builder = new Book.Builder()
-                .bookId(6L)
-                .title("Test")
-                .insertDate(dt)
-                .lastUpdateDate(dt)
-                .statusId(2)
-                .bookStatus(BookStatus.COMPLETED)
-//                .authorId(1L)
-//                .lastChapter(1)
-                .readListId(5L)
-//                .seriesId(3L)
-//                .seriesOrder(4L)
-                ;
-
-        Book shouldBook = builder.build();
-
-
-
-        Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-//        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.empty());
+        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
         Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
@@ -151,16 +86,123 @@ class BookServiceTest {
 
 
         inOrder.verify(bookRepository).addOne(shouldBook);
-//        inOrder.verify(authorsBooksRepository, M).add(6L, 1L, 5L);
+        inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
         inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
 
-        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+//        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+//        Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+
     }
 
     @Test
-    void shouldAddBookAuthor() throws Exception {
+    void shouldAddBookNoChapter() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, null, null
+                "Test", 1L, 2, 3L, 4L, null
+        );
+
+        Author author = new Author(1L, 5L, "Author");
+        Series series = new Series(3L,5L,"Series");
+
+        Date dt = new Date();
+
+        Book shouldBook = new Book.Builder()
+                .bookId(6L)
+                .title("Test")
+                .insertDate(dt)
+                .lastUpdateDate(dt)
+                .statusId(2)
+                .bookStatus(BookStatus.COMPLETED)
+                .readListId(5L)
+                .build()
+                ;
+
+
+        Mockito.when(bookRepository.getNextId()).thenReturn(6L);
+        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
+        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
+
+        ReadListService readListService = new ReadListService(
+                bookRepository,
+                seriesRepository,
+                authorsRepository,
+                authorsService,
+                authorsBooksRepository,
+                seriesBooksRespository,
+                dateFactory,
+                bookSeriesService
+        );
+
+        readListService.addBook(5L, bookAddView);
+
+        InOrder inOrder = Mockito.inOrder(bookRepository, authorsBooksRepository, seriesBooksRespository);
+
+
+        inOrder.verify(bookRepository).addOne(shouldBook);
+        inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
+        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
+    }
+
+    @Test
+    void shouldAddBookNoAuthor() throws Exception {
+        BookAddView bookAddView = new BookAddView(
+                "Test", null, 2, 3L, 4L, 7
+        );
+
+//        Author author = new Author(1L, 5L, "Author");
+        Series series = new Series(3L,5L,"Series");
+
+        Date dt = new Date();
+
+        Book shouldBook = new Book.Builder()
+                .bookId(6L)
+                .title("Test")
+                .insertDate(dt)
+                .lastUpdateDate(dt)
+                .statusId(2)
+                .bookStatus(BookStatus.COMPLETED)
+                .lastChapter(7)
+                .readListId(5L)
+                .build()
+                ;
+
+
+        Mockito.when(bookRepository.getNextId()).thenReturn(6L);
+        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+//        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
+        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
+
+        ReadListService readListService = new ReadListService(
+                bookRepository,
+                seriesRepository,
+                authorsRepository,
+                authorsService,
+                authorsBooksRepository,
+                seriesBooksRespository,
+                dateFactory,
+                bookSeriesService
+        );
+
+        readListService.addBook(5L, bookAddView);
+
+        InOrder inOrder = Mockito.inOrder(bookRepository, authorsBooksRepository, seriesBooksRespository);
+
+
+        inOrder.verify(bookRepository).addOne(shouldBook);
+//        inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
+        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
+
+        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+//        Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+
+    }
+
+    @Test
+    void shouldAddBookNoSeries() throws Exception {
+        BookAddView bookAddView = new BookAddView(
+                "Test", 1L, 2, null, null, 7
         );
 
         Author author = new Author(1L, 5L, "Author");
@@ -168,22 +210,17 @@ class BookServiceTest {
 
         Date dt = new Date();
 
-        Book.Builder builder = new Book.Builder()
+        Book shouldBook = new Book.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .statusId(2)
                 .bookStatus(BookStatus.COMPLETED)
-//                .authorId(1L)
-//                .lastChapter(1)
+                .lastChapter(7)
                 .readListId(5L)
-//                .seriesId(3L)
-//                .seriesOrder(4L)
+                .build()
                 ;
-
-        Book shouldBook = builder.build();
-
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
@@ -212,7 +249,9 @@ class BookServiceTest {
         inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
 //        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
 
+//        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
+
     }
 
     // TODO: Test update
