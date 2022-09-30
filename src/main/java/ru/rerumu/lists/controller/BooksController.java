@@ -133,7 +133,6 @@ public class BooksController {
             @RequestAttribute("username") String username
     ) throws UserIsNotOwnerException, EmptyMandatoryParameterException, EntityNotFoundException {
 
-        // Checking ownership
         userService.checkOwnership(username, readListId);
         if (bookAddView.getAuthorId() != null) {
             userService.checkOwnershipAuthor(username, bookAddView.getAuthorId());
@@ -142,13 +141,14 @@ public class BooksController {
             // TODO: Check ownership
         }
 
-        Book book = readListService.addBook(readListId, bookAddView);
+        readListService.addBook(readListId, bookAddView);
 
-        BookView.Builder builder = new BookView.Builder()
-                .book(book);
-
-        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
-        return resEnt;
+//        BookView.Builder builder = new BookView.Builder()
+//                .book(book);
+//
+//        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
+//        return resEnt;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
