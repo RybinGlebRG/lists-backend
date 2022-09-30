@@ -6,6 +6,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.Book;
@@ -38,6 +39,7 @@ class BookServiceTest {
 
     @Mock
     private BookSeriesService bookSeriesService;
+
 
     @Test
     void shouldAddBook() throws Exception {
@@ -88,10 +90,6 @@ class BookServiceTest {
         inOrder.verify(bookRepository).addOne(shouldBook);
         inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
         inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
-
-//        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-//        Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-
     }
 
     @Test
@@ -150,7 +148,6 @@ class BookServiceTest {
                 "Test", null, 2, 3L, 4L, 7
         );
 
-//        Author author = new Author(1L, 5L, "Author");
         Series series = new Series(3L,5L,"Series");
 
         Date dt = new Date();
@@ -170,7 +167,6 @@ class BookServiceTest {
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-//        Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
         Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
@@ -191,12 +187,9 @@ class BookServiceTest {
 
 
         inOrder.verify(bookRepository).addOne(shouldBook);
-//        inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
         inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
 
         Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-//        Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
-
     }
 
     @Test
@@ -206,7 +199,6 @@ class BookServiceTest {
         );
 
         Author author = new Author(1L, 5L, "Author");
-//        Series series = new Series(3L,5L,"Series");
 
         Date dt = new Date();
 
@@ -226,7 +218,6 @@ class BookServiceTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-//        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -247,9 +238,7 @@ class BookServiceTest {
 
         inOrder.verify(bookRepository).addOne(shouldBook);
         inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
-//        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
 
-//        Mockito.verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(seriesBooksRespository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
 
     }

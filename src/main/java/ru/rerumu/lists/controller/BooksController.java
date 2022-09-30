@@ -10,10 +10,10 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.services.AuthorsService;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookListView;
 import ru.rerumu.lists.views.BookUpdateView;
@@ -31,14 +31,22 @@ public class BooksController {
 
     private final AuthorsService authorsService;
 
+    private final BookSeriesService bookSeriesService;
+
+    private final AuthorsBooksService authorsBooksService;
+
     public BooksController(
             ReadListService readListService,
             UserService userService,
-            AuthorsService authorsService
+            AuthorsService authorsService,
+            BookSeriesService bookSeriesService,
+            AuthorsBooksService authorsBooksService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.authorsService = authorsService;
+        this.bookSeriesService = bookSeriesService;
+        this.authorsBooksService = authorsBooksService;
     }
 
 //    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
@@ -80,17 +88,24 @@ public class BooksController {
     ResponseEntity<String> getOne(@PathVariable Long readListId,
                                   @PathVariable Long bookId,
                                   @RequestAttribute("username") String username)
-            throws UserIsNotOwnerException {
+            throws UserIsNotOwnerException, EntityNotFoundException {
         userService.checkOwnership(username, readListId);
         // TODO: Check book ownership
 
         Book book = readListService.getBook(readListId, bookId);
-        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
+
+        if (book == null) {
+            throw new EntityNotFoundException();
+        }
+        List<AuthorBookRelation> authorBookRelationList = authorsBooksService.getByBookId(book.getBookId());
+//        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
+        Optional<Series> series = bookSeriesService.getSeries(readListId, book.getSeriesId());
 
         BookView.Builder builder = new BookView.Builder()
-                .book(book);
-        author.ifPresent(builder::author);
-        // TODO: write status, series
+                .book(book)
+                .authorBookRelation(authorBookRelationList);
+//        author.ifPresent(builder::author);
+        series.ifPresent(builder::series);
 
         ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
         return resEnt;
@@ -105,7 +120,7 @@ public class BooksController {
         BookListView bookListView = new BookListView(books);
         bookListView.sort();
 
-        ResponseEntity<String>  resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
         return resEnt;
     }
 
