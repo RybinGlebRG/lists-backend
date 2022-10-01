@@ -11,4 +11,8 @@ public interface SeriesBookMapper {
     void deleteBySeries(Long seriesId);
 
     List<SeriesBookRelation> getByBookId(Long bookId);
+
+    void update(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
+
+    void delete(Long bookId, Long seriesId, Long readListId);
 }

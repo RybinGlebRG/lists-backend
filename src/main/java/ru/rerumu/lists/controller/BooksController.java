@@ -75,9 +75,9 @@ public class BooksController {
     ResponseEntity<String> updateOne(@PathVariable Long bookId,
                                      @RequestBody BookUpdateView bookUpdateView,
                                      @RequestAttribute("username") String username)
-            throws EmptyMandatoryParameterException {
+            throws EmptyMandatoryParameterException, CloneNotSupportedException {
 
-        readListService.updateBook(bookUpdateView);
+        readListService.updateBook(bookId, bookUpdateView);
         ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return resEnt;
     }

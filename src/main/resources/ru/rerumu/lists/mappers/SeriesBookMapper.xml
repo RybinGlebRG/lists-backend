@@ -27,6 +27,13 @@
         where series_series_id=#{seriesId}
     </delete>
 
+    <delete id="delete">
+        delete from lists.series_books
+        where series_series_id=#{seriesId}
+          and book_book_id = #{bookId}
+          and book_list_id = #{readListId}
+    </delete>
+
     <select id="getByBookId" resultMap="SeriesBookResultMap">
         select  sb.book_book_id,
                 sb.book_list_id as readListId,
@@ -35,5 +42,13 @@
         from lists.series_books sb
         where sb.book_book_id = #{bookId}
     </select>
+
+    <update id="update">
+        update lists.series_books sb
+        set series_order=#{seriesOrder}
+        where sb.book_book_id = #{bookId}
+          and sb.series_series_id = #{seriesId}
+          and sb.book_list_id = #{readListId}
+    </update>
 
 </mapper>

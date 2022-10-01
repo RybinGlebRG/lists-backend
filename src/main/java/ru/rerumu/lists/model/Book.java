@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public final class Book {
+public final class Book implements Cloneable{
     private final Long bookId;
     private final Long readListId;
     private final String title;
@@ -180,6 +180,21 @@ public final class Book {
     }
 
 
+//    @Override
+//    protected Object clone() throws CloneNotSupportedException {
+//        return super.clone();
+//    }
+
+    @Override
+    public Book clone() {
+        try {
+            Book clone = (Book) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
 
@@ -207,6 +222,8 @@ public final class Book {
 
         return obj;
     }
+
+
 
     @Override
     public String toString() {
