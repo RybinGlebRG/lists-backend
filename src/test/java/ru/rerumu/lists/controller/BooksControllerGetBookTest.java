@@ -2,6 +2,7 @@ package ru.rerumu.lists.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
 
 @WebMvcTest(BooksController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,6 +49,9 @@ class BooksControllerGetBookTest {
     @MockBean
     private AuthorsBooksRelationService authorsBooksRelationService;
 
+    @MockBean
+    private BookSeriesRelationService bookSeriesRelationService;
+
     @BeforeAll
     static void setup() {
         RestAssured.baseURI = "http://localhost";
@@ -65,24 +70,20 @@ class BooksControllerGetBookTest {
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
-                .statusId(1)
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)
-                .seriesId(5L)
-                .authorId(6L)
-                .seriesOrder(7L)
                 .build();
         Author author = new Author(6L,2L,"Author");
         Series series = new Series(5L,2L,"Series");
 
         Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                         .thenReturn(book);
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong()))
-                        .thenReturn(Optional.of(series));
         Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
                         .thenReturn(List.of(new AuthorBookRelation(book,author)));
+        when(bookSeriesRelationService.getByBookId(anyLong()))
+                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
         RestAssuredMockMvc
@@ -94,50 +95,41 @@ class BooksControllerGetBookTest {
                 .and().body("readListId",equalTo(2))
                 .and().body("bookId",equalTo(3))
                 .and().body("title",equalTo("Title"))
-                .and().body("statusId",equalTo(1))
                 .and().body("bookStatus.statusId",equalTo(1))
                 .and().body("bookStatus.statusName",equalTo("In Progress"))
                 .and().body("insertDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastUpdateDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastChapter",equalTo(4))
-                .and().body("seriesId",equalTo(5))
-                .and().body("seriesOrder",equalTo(7))
-                .and().body("series.seriesId",equalTo(5))
-                .and().body("series.seriesListId",equalTo(2))
-                .and().body("series.title",equalTo("Series"))
+//                .and().body("series.seriesId",equalTo(5))
+//                .and().body("series.seriesListId",equalTo(2))
+//                .and().body("series.title",equalTo("Series"))
                 .and().body("authors.findAll{i -> i.authorId == 6 && i.readListId == 2 && i.name == 'Author'}", not(empty()))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
         ;
 
-        Mockito.verify(userService).checkOwnership("Test",2L);
-        Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(bookSeriesService).getSeries(2L,5L);
-        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
+        verify(userService).checkOwnership("Test",2L);
+        verify(readListService).getBook(2L,3L);
+        verify(authorsBooksRelationService).getByBookId(3L);
+        verify(bookSeriesRelationService).getByBookId(3L);
     }
 
 
     @Test
     void shouldGetOneNoAuthor() throws Exception {
         Date dt = new Date();
-        Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
-                .thenReturn(
-                        new Book.Builder()
-                                .readListId(2L)
-                                .bookId(3L)
-                                .title("Title")
-                                .statusId(1)
-                                .bookStatus(BookStatus.IN_PROGRESS)
-                                .insertDate(dt)
-                                .lastUpdateDate(dt)
-                                .lastChapter(4)
-                                .seriesId(5L)
-                                .seriesOrder(7L)
-                                .build()
-                );
-
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(
-                        Optional.of(new Series(5L,2L,"Series"))
-                );
+        Book book = new Book.Builder()
+                .readListId(2L)
+                .bookId(3L)
+                .title("Title")
+                .bookStatus(BookStatus.IN_PROGRESS)
+                .insertDate(dt)
+                .lastUpdateDate(dt)
+                .lastChapter(4)
+                .build();
+        Series series = new Series(5L,2L,"Series");
+        when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong())).thenReturn(book);
+        when(bookSeriesRelationService.getByBookId(anyLong()))
+                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
         RestAssuredMockMvc
@@ -149,23 +141,21 @@ class BooksControllerGetBookTest {
                 .and().body("readListId",equalTo(2))
                 .and().body("bookId",equalTo(3))
                 .and().body("title",equalTo("Title"))
-                .and().body("statusId",equalTo(1))
                 .and().body("bookStatus.statusId",equalTo(1))
                 .and().body("bookStatus.statusName",equalTo("In Progress"))
                 .and().body("insertDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastUpdateDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastChapter",equalTo(4))
-                .and().body("seriesId",equalTo(5))
-                .and().body("seriesOrder",equalTo(7))
-                .and().body("series.seriesId",equalTo(5))
-                .and().body("series.seriesListId",equalTo(2))
-                .and().body("series.title",equalTo("Series"))
+//                .and().body("series.seriesId",equalTo(5))
+//                .and().body("series.seriesListId",equalTo(2))
+//                .and().body("series.title",equalTo("Series"))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
                 .and().body("authors",empty())
         ;
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(bookSeriesService).getSeries(2L,5L);
+        verify(bookSeriesRelationService).getByBookId(3L);
     }
 
     @Test
@@ -175,14 +165,10 @@ class BooksControllerGetBookTest {
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
-                .statusId(1)
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)
-                .seriesId(5L)
-                .authorId(6L)
-                .seriesOrder(7L)
                 .build();
         Author author = new Author(6L,2L,"Author");
 
@@ -201,19 +187,19 @@ class BooksControllerGetBookTest {
                 .and().body("readListId",equalTo(2))
                 .and().body("bookId",equalTo(3))
                 .and().body("title",equalTo("Title"))
-                .and().body("statusId",equalTo(1))
                 .and().body("bookStatus.statusId",equalTo(1))
                 .and().body("bookStatus.statusName",equalTo("In Progress"))
                 .and().body("insertDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastUpdateDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastChapter",equalTo(4))
                 .and().body("authors.findAll{i -> i.authorId == 6 && i.readListId == 2 && i.name == 'Author'}", not(empty()))
-                .and().body("$",not(hasKey("series")))
+                .and().body("series", empty())
         ;
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         Mockito.verify(authorsBooksRelationService).getByBookId(3L);
+        verify(bookSeriesRelationService).getByBookId(3L);
     }
 
     @Test
@@ -223,23 +209,19 @@ class BooksControllerGetBookTest {
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
-                .statusId(1)
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .insertDate(dt)
                 .lastUpdateDate(dt)
-                .seriesId(5L)
-                .authorId(6L)
-                .seriesOrder(7L)
                 .build();
         Author author = new Author(6L,2L,"Author");
         Series series = new Series(5L,2L,"Series");
 
-        Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
+        when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                 .thenReturn(book);
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(Optional.of(series));
-        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
+        when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
+        when(bookSeriesRelationService.getByBookId(anyLong()))
+                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
         RestAssuredMockMvc
@@ -251,26 +233,22 @@ class BooksControllerGetBookTest {
                 .and().body("readListId",equalTo(2))
                 .and().body("bookId",equalTo(3))
                 .and().body("title",equalTo("Title"))
-                .and().body("statusId",equalTo(1))
                 .and().body("bookStatus.statusId",equalTo(1))
                 .and().body("bookStatus.statusName",equalTo("In Progress"))
                 .and().body("insertDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastUpdateDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
-                .and().body("seriesId",equalTo(5))
-                .and().body("authorId",equalTo(6))
-                .and().body("seriesOrder",equalTo(7))
-                .and().body("series.seriesId",equalTo(5))
-                .and().body("series.seriesListId",equalTo(2))
-                .and().body("series.title",equalTo("Series"))
+//                .and().body("series.seriesId",equalTo(5))
+//                .and().body("series.seriesListId",equalTo(2))
+//                .and().body("series.title",equalTo("Series"))
                 .and().body("authors.findAll{i -> i.authorId == 6 && i.readListId == 2 && i.name == 'Author'}", not(empty()))
-//                .and().body("series.findAll{i -> i.seriesId == 5 && i.seriesListId == 2 && i.title == 'Series'}", not(empty()))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
                 .and().body("$",not(hasKey("lastChapter")))
         ;
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(bookSeriesService).getSeries(2L,5L);
         Mockito.verify(authorsBooksRelationService).getByBookId(3L);
+        Mockito.verify(bookSeriesRelationService).getByBookId(3L);
     }
 
     @Test
@@ -285,7 +263,7 @@ class BooksControllerGetBookTest {
                 .when()
                 .get("/api/v0.2/readLists/2/books/3")
                 .then().statusCode(404)
-                .and().body("error",startsWith("ru.rerumu.lists.exception.EntityNotFoundException"))
+                .and().body("error", Matchers.startsWith("ru.rerumu.lists.exception.EntityNotFoundException"))
                 .and().body("errorMessage",equalTo(null));
         ;
     }

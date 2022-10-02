@@ -169,4 +169,29 @@
         />
     </changeSet>
 
+    <changeSet author="gleb" id="f6a70f37-5c0e-43d5-af19-441635cab502">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="statuses">
+            <column name="key_name"
+                    type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="b46c9c44-994c-4821-a872-b4aa22a947b5">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="statuses">
+            <column name="key_name" value="IN_PROGRESS"/>
+            <where>"STATUS_ID"=1</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="statuses">
+            <column name="key_name" value="COMPLETED"/>
+            <where>"STATUS_ID"=2</where>
+        </update>
+        <rollback/>
+    </changeSet>
+
 </databaseChangeLog>

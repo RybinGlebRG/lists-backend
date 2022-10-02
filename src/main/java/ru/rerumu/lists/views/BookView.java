@@ -13,19 +13,22 @@ public class BookView {
     private Author author;
     private Series series;
     private List<AuthorBookRelation> authorBookRelationList;
+    private List<SeriesBookRelation> seriesBookRelationList;
 
     private BookView(
             Book book,
             BookStatus bookStatus,
             Author author,
             Series series,
-            List<AuthorBookRelation> authorBookRelationList
+            List<AuthorBookRelation> authorBookRelationList,
+            List<SeriesBookRelation> seriesBookRelationList
     ) {
         this.book = book;
         this.bookStatus = bookStatus;
         this.author = author;
         this.series = series;
         this.authorBookRelationList = authorBookRelationList;
+        this.seriesBookRelationList = seriesBookRelationList;
     }
 
     public JSONObject toJSONObject() {
@@ -39,8 +42,15 @@ public class BookView {
         }
 //        obj.put("author", author != null ? author.toJSONObject() : null);
         obj.put("authors",authors);
+
+        JSONArray seriesList = new JSONArray();
+        if (seriesBookRelationList != null){
+            for (SeriesBookRelation seriesBookRelation: seriesBookRelationList){
+                seriesList.put(seriesBookRelation.getSeries().toJSONObject());
+            }
+        }
         obj.put("status", bookStatus != null ? bookStatus.getNice() : null);
-        obj.put("series", series != null ? series.toJSONObject() : null);
+        obj.put("series", seriesList);
         return obj;
     }
 
@@ -56,6 +66,8 @@ public class BookView {
         private Author author;
         private Series series;
         private List<AuthorBookRelation> authorBookRelationList;
+
+        private List<SeriesBookRelation> seriesBookRelationList;
 
 
         public Builder book(Book book) {
@@ -83,8 +95,13 @@ public class BookView {
             return this;
         }
 
+        public Builder seriesBookRelation(List<SeriesBookRelation> seriesBookRelationList){
+            this.seriesBookRelationList = seriesBookRelationList;
+            return this;
+        }
+
         public BookView build() {
-            return new BookView(book, bookStatus, author, series,authorBookRelationList);
+            return new BookView(book, bookStatus, author, series,authorBookRelationList, seriesBookRelationList);
         }
     }
 }

@@ -150,13 +150,26 @@ public class ReadListService {
 
         Book currentBook = bookRepository.getOne(bookUpdateView.getReadListId(), bookId);
 
-        Book updatedBook = new Book.Builder(currentBook)
-                .insertDate(Date.from(bookUpdateView.getInsertDateUTC().toInstant(ZoneOffset.UTC)))
+        Book.Builder builder = new Book.Builder(currentBook);
+
+        builder.insertDate(Date.from(bookUpdateView.getInsertDateUTC().toInstant(ZoneOffset.UTC)))
                 .lastChapter(bookUpdateView.getLastChapter())
 //                .lastUpdateDate(new Date())
-                .statusId(bookUpdateView.getStatus())
-                .title(bookUpdateView.getTitle())
-                .build();
+                .title(bookUpdateView.getTitle());
+
+        switch (bookUpdateView.getStatus()) {
+            case 1:
+                builder.bookStatus(BookStatus.IN_PROGRESS);
+                break;
+            case 2:
+                builder.bookStatus(BookStatus.COMPLETED);
+                break;
+            default:
+                builder.bookStatus(null);
+        }
+
+        Book updatedBook = builder.build();
+
 
         bookRepository.update(updatedBook);
 
@@ -220,7 +233,6 @@ public class ReadListService {
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(bookAddView.getTitle())
-                .statusId(bookAddView.getStatus())
                 .bookStatus(bookStatus)
                 .insertDate(dt)
                 .lastUpdateDate(dt)

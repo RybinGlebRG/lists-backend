@@ -42,7 +42,7 @@ public class Series implements Cloneable{
         JSONObject obj = new JSONObject();
 
         obj.put("seriesId", seriesId);
-        obj.put("seriesListId", seriesListId);
+        obj.put("readListId", seriesListId);
         obj.put("title", title);
         obj.put("bookCount", bookCount);
 

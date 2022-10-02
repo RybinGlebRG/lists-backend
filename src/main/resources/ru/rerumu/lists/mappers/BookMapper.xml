@@ -5,19 +5,24 @@
 <mapper namespace="ru.rerumu.lists.mappers.BookMapper">
 
     <resultMap id="BookResultMap" type="ru.rerumu.lists.model.Book">
-        <result column="book_id" property="bookId" />
-        <result column="list_list_id" property="readListId" />
-        <result column="title" property="title"/>
-        <result column="status_status_id" property="statusId"/>
-        <result column="status_name" property="bookStatus" />
-        <result column="insert_date" property="insertDate" />
-        <result column="last_update_date" property="lastUpdateDate" />
-        <result column="last_chapter" property="lastChapter" />
-        <result column="author_author_id" property="authorId" />
-        <result column="series_series_id" property="seriesId" />
-        <result column="series_order" property="seriesOrder" />
+        <id property="bookId" column="book_id"  />
+        <result property="readListId" column="list_list_id"  />
+        <result property="title" column="title" />
+<!--        <result property="statusId" column="status_status_id" />-->
+<!--        <result column="status_name" property="bookStatus" />-->
+        <result property="bookStatus" column="key_name"  javaType="ru.rerumu.lists.model.BookStatus"/>
+        <result property="insertDate" column="insert_date"  />
+        <result property="lastUpdateDate" column="last_update_date"  />
+        <result property="lastChapter" column="last_chapter"  />
+<!--        <result column="author_author_id" property="authorId" />-->
+<!--        <result column="series_series_id" property="seriesId" />-->
+<!--        <result column="series_order" property="seriesOrder" />-->
 
-
+<!--        <association property="bookStatus"-->
+<!--                     javaType="ru.rerumu.lists.model.BookStatus"-->
+<!--                     column="{statusId=status_status_id}"-->
+<!--                     select="getBookStatus"-->
+<!--        />-->
 <!--        <association property="bookStatus" resultMap="BookStatusResultMap" />-->
 <!--        <association property="author" resultMap="ru.rerumu.lists.mappers.AuthorMapper.AuthorResultMap" />-->
     </resultMap>
@@ -27,72 +32,35 @@
         <result column="status_name" property="name" />
     </resultMap>
 
-
-    <select id="getOne" resultMap="BookResultMap">
+    <sql id="selectBooks">
         select  b.book_id,
                 b.list_list_id,
                 b.title,
-                b.status_status_id,
+                s.key_name,
                 b.insert_date AT TIME ZONE 'UTC' as insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
-                b.last_chapter,
-                ba.author_author_id,
-                sb.series_series_id,
-                sb.series_order,
-                s."STATUS_ID" as status_id,
-                upper(s."NAME") as status_name,
-                a.author_id,
-                a.list_list_id as author_list_id,
-                a.name as author_name
+                b.last_chapter
         from lists.books b
-             inner join lists.statuses s
-                        on s."STATUS_ID"= b.status_status_id
-             left outer join lists.books_authors ba
-                                 on ba.book_book_id = b.book_id
-                                 and ba.book_list_id = b.list_list_id
-                                 and ba.author_list_id = b.list_list_id
-             left outer join lists.authors a
-                                on a.author_id = ba.author_author_id
-                                and a.list_list_id = ba.author_list_id
-             left outer join lists.series_books sb
-                                on sb.book_book_id = b.book_id
-                                and sb.book_list_id = b.list_list_id
-                                and sb.series_list_id = b.list_list_id
+                inner join lists.statuses s
+                on s."STATUS_ID"= b.status_status_id
+    </sql>
+
+    <select id="getBookStatus">
+        select s.key_name
+        from lists.statuses
+        where "STATUS_ID"=#{statusId}
+    </select>
+
+
+    <select id="getOne" resultMap="BookResultMap">
+        <include refid="selectBooks"/>
         where b.book_id=#{bookId}
         and b.list_list_id=#{readListId}
     </select>
 
     <select id="getAll" resultMap="BookResultMap">
-        SELECT          b.book_id,
-                        b.list_list_id,
-                        b.title,
-                        b.status_status_id,
-                        b.insert_date at      time zone 'UTC' AS insert_date,
-                        b.last_update_date at time zone 'UTC' AS last_update_date,
-                        b.last_chapter,
-                        ba.author_author_id,
-                        sb.series_series_id,
-                        sb.series_order,
-                        s."STATUS_ID" as status_id,
-                        upper(s."NAME") as status_name,
-                        a.author_id,
-                        a.list_list_id as author_list_id,
-                        a.name as author_name
-        FROM            lists.books b
-        inner join lists.statuses s
-        on s."STATUS_ID"= b.status_status_id
-        LEFT OUTER JOIN lists.books_authors ba
-        ON              ba.book_book_id = b.book_id
-        AND             ba.book_list_id = b.list_list_id
-        AND             ba.author_list_id = b.list_list_id
-        left outer join lists.authors a
-        on a.author_id = ba.author_author_id
-        and a.list_list_id = ba.author_list_id
-        LEFT OUTER JOIN lists.series_books sb
-        ON              sb.book_book_id = b.book_id
-        AND             sb.book_list_id = b.list_list_id
-        AND             sb.series_list_id = b.list_list_id
-        WHERE           b.list_list_id=#{readListId}
+        <include refid="selectBooks"/>
+        WHERE b.list_list_id=#{readListId}
     </select>
 
     <update id="update">

@@ -4,17 +4,30 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.AuthorBookMapper">
 
+    <resultMap id="book" type="ru.rerumu.lists.model.Book">
+
+    </resultMap>
+
+    <resultMap id="author" type="ru.rerumu.lists.model.Author">
+
+    </resultMap>
+
     <resultMap id="AuthorBookResultMap" type="ru.rerumu.lists.model.AuthorBookRelation">
-        <association property="book"
-                     javaType="ru.rerumu.lists.model.Book"
-                     column="{bookId=book_book_id,readListId=readListId}"
-                     select="ru.rerumu.lists.mappers.BookMapper.getOne"
-        />
-        <association property="author"
-                     javaType="ru.rerumu.lists.model.Author"
-                     column="{authorId=author_author_id,readListId=readListId}"
-                     select="ru.rerumu.lists.mappers.AuthorMapper.getOne"
-        />
+        <constructor>
+            <arg resultMap="book" javaType="ru.rerumu.lists.model.Book"/>
+            <arg resultMap="author" javaType="ru.rerumu.lists.model.Author"/>
+
+        </constructor>
+<!--        <association property="book"-->
+<!--                     javaType="ru.rerumu.lists.model.Book"-->
+<!--                     column="{bookId=book_book_id,readListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.mappers.BookMapper.getOne"-->
+<!--        />-->
+<!--        <association property="author"-->
+<!--                     javaType="ru.rerumu.lists.model.Author"-->
+<!--                     column="{authorId=author_author_id,readListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.mappers.AuthorMapper.getOne"-->
+<!--        />-->
     </resultMap>
 
     <delete id="deleteByAuthor">

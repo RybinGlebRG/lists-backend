@@ -37,6 +37,9 @@ class BooksControllerAddBookTest {
     @MockBean
     private AuthorsBooksRelationService authorsBooksRelationService;
 
+    @MockBean
+    private BookSeriesRelationService bookSeriesRelationService;
+
     @BeforeAll
     static void setup() {
         RestAssured.baseURI = "http://localhost";

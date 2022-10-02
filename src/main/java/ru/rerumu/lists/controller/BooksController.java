@@ -12,6 +12,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookListView;
@@ -34,18 +35,22 @@ public class BooksController {
 
     private final AuthorsBooksRelationService authorsBooksRelationService;
 
+    private final BookSeriesRelationService bookSeriesRelationService;
+
     public BooksController(
             ReadListService readListService,
             UserService userService,
             AuthorsService authorsService,
             BookSeriesService bookSeriesService,
-            AuthorsBooksRelationService authorsBooksRelationService
+            AuthorsBooksRelationService authorsBooksRelationService,
+            BookSeriesRelationService bookSeriesRelationService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.authorsService = authorsService;
         this.bookSeriesService = bookSeriesService;
         this.authorsBooksRelationService = authorsBooksRelationService;
+        this.bookSeriesRelationService = bookSeriesRelationService;
     }
 
 //    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
@@ -98,13 +103,14 @@ public class BooksController {
         }
         List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId());
 //        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
-        Optional<Series> series = bookSeriesService.getSeries(readListId, book.getSeriesId());
+        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId());
 
         BookView.Builder builder = new BookView.Builder()
                 .book(book)
-                .authorBookRelation(authorBookRelationList);
+                .authorBookRelation(authorBookRelationList)
+                .seriesBookRelation(seriesBookRelationList);
 //        author.ifPresent(builder::author);
-        series.ifPresent(builder::series);
+//        series.ifPresent(builder::series);
 
         ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
         return resEnt;

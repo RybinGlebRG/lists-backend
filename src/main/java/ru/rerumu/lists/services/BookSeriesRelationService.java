@@ -7,6 +7,7 @@ import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,5 +32,9 @@ public class BookSeriesRelationService {
 
     public void delete(Long bookId, Long seriesId, Long readListId){
         seriesBooksRespository.delete(bookId, seriesId, readListId);
+    }
+
+    public List<SeriesBookRelation> getByBookId(Long bookId){
+        return seriesBooksRespository.getByBookId(bookId);
     }
 }
