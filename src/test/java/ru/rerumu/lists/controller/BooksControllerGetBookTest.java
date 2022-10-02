@@ -80,9 +80,9 @@ class BooksControllerGetBookTest {
 
         Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                         .thenReturn(book);
-        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
+        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong(), Mockito.anyLong()))
                         .thenReturn(List.of(new AuthorBookRelation(book,author)));
-        when(bookSeriesRelationService.getByBookId(anyLong()))
+        when(bookSeriesRelationService.getByBookId(anyLong(), anyLong()))
                 .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
@@ -109,8 +109,8 @@ class BooksControllerGetBookTest {
 
         verify(userService).checkOwnership("Test",2L);
         verify(readListService).getBook(2L,3L);
-        verify(authorsBooksRelationService).getByBookId(3L);
-        verify(bookSeriesRelationService).getByBookId(3L);
+        verify(authorsBooksRelationService).getByBookId(3L, 2L);
+        verify(bookSeriesRelationService).getByBookId(3L,2L);
     }
 
 
@@ -128,7 +128,7 @@ class BooksControllerGetBookTest {
                 .build();
         Series series = new Series(5L,2L,"Series");
         when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong())).thenReturn(book);
-        when(bookSeriesRelationService.getByBookId(anyLong()))
+        when(bookSeriesRelationService.getByBookId(anyLong(), anyLong()))
                 .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
@@ -155,7 +155,7 @@ class BooksControllerGetBookTest {
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        verify(bookSeriesRelationService).getByBookId(3L);
+        verify(bookSeriesRelationService).getByBookId(3L,2L);
     }
 
     @Test
@@ -174,7 +174,7 @@ class BooksControllerGetBookTest {
 
         Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                 .thenReturn(book);
-        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
+        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
 
 
@@ -198,8 +198,8 @@ class BooksControllerGetBookTest {
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
-        verify(bookSeriesRelationService).getByBookId(3L);
+        Mockito.verify(authorsBooksRelationService).getByBookId(3L,2L);
+        verify(bookSeriesRelationService).getByBookId(3L,2L);
     }
 
     @Test
@@ -218,9 +218,9 @@ class BooksControllerGetBookTest {
 
         when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                 .thenReturn(book);
-        when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
+        when(authorsBooksRelationService.getByBookId(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
-        when(bookSeriesRelationService.getByBookId(anyLong()))
+        when(bookSeriesRelationService.getByBookId(anyLong(),anyLong()))
                 .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
 
 
@@ -247,8 +247,8 @@ class BooksControllerGetBookTest {
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
-        Mockito.verify(bookSeriesRelationService).getByBookId(3L);
+        Mockito.verify(authorsBooksRelationService).getByBookId(3L,2L);
+        Mockito.verify(bookSeriesRelationService).getByBookId(3L,2L);
     }
 
     @Test

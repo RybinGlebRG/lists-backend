@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-public class Author {
+public class Author implements Cloneable{
 
     private final Long authorId;
     private final Long readListId;
@@ -45,6 +45,16 @@ public class Author {
     @Override
     public String toString() {
         return this.toJSONObject().toString();
+    }
+
+    @Override
+    public Author clone() {
+        try {
+            Author clone = (Author) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
     @Override

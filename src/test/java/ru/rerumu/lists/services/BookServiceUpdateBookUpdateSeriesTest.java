@@ -72,9 +72,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
+        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                  List.of(new SeriesBookRelation(book,series,1L))
         );
         when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
@@ -128,9 +128,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
+        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of()
         );
         when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
@@ -184,9 +184,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
+        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of(new SeriesBookRelation(book,series,1L))
         );
 //        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
@@ -238,9 +238,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
+        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of(new SeriesBookRelation(book,series,1L))
         );
         when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(series));

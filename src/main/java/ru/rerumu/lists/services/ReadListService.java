@@ -66,7 +66,7 @@ public class ReadListService {
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
-        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId);
+        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId, readListId);
 
         Optional<Author> optionalAuthor = authorId != null ?
                 authorsService.getAuthor(readListId, authorId):
@@ -94,7 +94,7 @@ public class ReadListService {
     }
 
     private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder) {
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId);
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
 
 
         Optional<Series> optionalSeries = seriesId != null ?

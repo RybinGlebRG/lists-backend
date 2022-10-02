@@ -101,9 +101,9 @@ public class BooksController {
         if (book == null) {
             throw new EntityNotFoundException();
         }
-        List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId());
+        List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId(), readListId);
 //        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
-        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId());
+        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId(), readListId);
 
         BookView.Builder builder = new BookView.Builder()
                 .book(book)

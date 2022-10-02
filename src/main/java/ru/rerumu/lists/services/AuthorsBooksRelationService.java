@@ -17,8 +17,8 @@ public class AuthorsBooksRelationService {
         this.authorsBooksRepository = authorsBooksRepository;
     }
 
-    public List<AuthorBookRelation> getByBookId(Long bookId){
-        return authorsBooksRepository.getByBookId(bookId);
+    public List<AuthorBookRelation> getByBookId(Long bookId, Long readListId){
+        return authorsBooksRepository.getByBookId(bookId, readListId);
     }
 
     public void delete(long bookId, long authorId, long readListId){

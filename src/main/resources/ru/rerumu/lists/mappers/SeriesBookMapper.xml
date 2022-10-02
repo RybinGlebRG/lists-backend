@@ -43,6 +43,21 @@
         where sb.book_book_id = #{bookId}
     </select>
 
+    <select id="getSeriesIdsByBookId" resultType="Long">
+        select  sb.series_series_id
+        from lists.series_books sb
+        where sb.book_book_id = #{bookId}
+          and sb.book_list_id = #{readListId}
+    </select>
+
+    <select id="getOrder" resultType="Long">
+        select  sb.series_order
+        from lists.series_books sb
+        where sb.book_book_id = #{bookId}
+          and sb.series_series_id = #{seriesId}
+          and sb.book_list_id = #{readListId}
+    </select>
+
     <update id="update">
         update lists.series_books sb
         set series_order=#{seriesOrder}

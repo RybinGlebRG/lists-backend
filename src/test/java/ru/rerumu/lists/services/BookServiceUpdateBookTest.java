@@ -84,8 +84,8 @@ class BookServiceUpdateBookTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(List.of());
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
+        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
         ReadListService readListService = new ReadListService(
                 bookRepository,

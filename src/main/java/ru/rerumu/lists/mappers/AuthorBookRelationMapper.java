@@ -4,7 +4,7 @@ import ru.rerumu.lists.model.AuthorBookRelation;
 
 import java.util.List;
 
-public interface AuthorBookMapper {
+public interface AuthorBookRelationMapper {
 
     void deleteByAuthor(Long authorId);
 
@@ -13,4 +13,6 @@ public interface AuthorBookMapper {
     List<AuthorBookRelation> getByBookId(Long bookId);
 
     void delete(long bookId, long authorId, long readListId);
+
+    List<Long> getAuthorsByBookId(long bookId);
 }

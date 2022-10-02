@@ -7,14 +7,13 @@ public final class AuthorBookRelation {
     private final Book book;
     private final Author author;
 
-    public AuthorBookRelation(Book book, Author author) throws EmptyMandatoryParameterException {
-        this.book = new Book.Builder(book).build();
-        this.author = author;
+    public AuthorBookRelation(Book book, Author author)  {
+        this.book = book.clone();
+        this.author = author.clone();
     }
 
-    // TODO: Make immutable
     public Author getAuthor() {
-        return author;
+        return author.clone();
     }
 
     public Book getBook() {

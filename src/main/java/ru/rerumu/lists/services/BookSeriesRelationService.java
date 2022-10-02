@@ -34,7 +34,7 @@ public class BookSeriesRelationService {
         seriesBooksRespository.delete(bookId, seriesId, readListId);
     }
 
-    public List<SeriesBookRelation> getByBookId(Long bookId){
-        return seriesBooksRespository.getByBookId(bookId);
+    public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId){
+        return seriesBooksRespository.getByBookId(bookId,readListId);
     }
 }

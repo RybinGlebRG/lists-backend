@@ -15,7 +15,7 @@ public interface SeriesBooksRespository {
 
     void deleteBySeries(Long seriesId);
 
-    List<SeriesBookRelation> getByBookId(Long bookId);
+    List<SeriesBookRelation> getByBookId(Long bookId, Long readListId);
 
     void update(SeriesBookRelation seriesBookRelation);
     void delete(Long bookId, Long seriesId, Long readListId);

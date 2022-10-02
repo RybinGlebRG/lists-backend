@@ -73,7 +73,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
+        when(authorsBooksRepository.getByBookId(anyLong(),anyLong())).thenReturn(
                 List.of(new AuthorBookRelation(book,author))
         );
         when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
@@ -125,7 +125,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of()
         );
         when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
@@ -177,7 +177,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
+        when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of(new AuthorBookRelation(book,author))
         );
 //        when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.empty());

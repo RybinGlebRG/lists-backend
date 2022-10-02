@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.mappers.AuthorBookMapper">
+<mapper namespace="ru.rerumu.lists.mappers.AuthorBookRelationMapper">
 
     <resultMap id="book" type="ru.rerumu.lists.model.Book">
 
@@ -51,6 +51,12 @@
         select  ba.book_book_id,
                 ba.book_list_id as readListId,
                 ba.author_author_id
+        from lists.books_authors ba
+        where ba.book_book_id = #{bookId}
+    </select>
+
+    <select id="getAuthorsByBookId" resultType="Long">
+        select  ba.author_author_id
         from lists.books_authors ba
         where ba.book_book_id = #{bookId}
     </select>
