@@ -44,6 +44,4 @@ class BookServiceTest {
     private BookSeriesRelationService bookSeriesRelationService;
 
 
-    // TODO: Test update
-
 }

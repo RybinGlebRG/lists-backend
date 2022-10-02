@@ -2,7 +2,6 @@ package ru.rerumu.lists.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.views.BookAddView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,7 +45,7 @@ class BooksControllerGetBookTest {
     private BookSeriesService bookSeriesService;
 
     @MockBean
-    private AuthorsBooksService authorsBooksService;
+    private AuthorsBooksRelationService authorsBooksRelationService;
 
     @BeforeAll
     static void setup() {
@@ -84,7 +81,7 @@ class BooksControllerGetBookTest {
                         .thenReturn(book);
         Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong()))
                         .thenReturn(Optional.of(series));
-        Mockito.when(authorsBooksService.getByBookId(Mockito.anyLong()))
+        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
                         .thenReturn(List.of(new AuthorBookRelation(book,author)));
 
 
@@ -114,7 +111,7 @@ class BooksControllerGetBookTest {
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         Mockito.verify(bookSeriesService).getSeries(2L,5L);
-        Mockito.verify(authorsBooksService).getByBookId(3L);
+        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
     }
 
 
@@ -191,7 +188,7 @@ class BooksControllerGetBookTest {
 
         Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                 .thenReturn(book);
-        Mockito.when(authorsBooksService.getByBookId(Mockito.anyLong()))
+        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
 
 
@@ -216,7 +213,7 @@ class BooksControllerGetBookTest {
 
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
-        Mockito.verify(authorsBooksService).getByBookId(3L);
+        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
     }
 
     @Test
@@ -241,7 +238,7 @@ class BooksControllerGetBookTest {
                 .thenReturn(book);
         Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(Optional.of(series));
-        Mockito.when(authorsBooksService.getByBookId(Mockito.anyLong()))
+        Mockito.when(authorsBooksRelationService.getByBookId(Mockito.anyLong()))
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
 
 
@@ -273,7 +270,7 @@ class BooksControllerGetBookTest {
         Mockito.verify(userService).checkOwnership("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         Mockito.verify(bookSeriesService).getSeries(2L,5L);
-        Mockito.verify(authorsBooksService).getByBookId(3L);
+        Mockito.verify(authorsBooksRelationService).getByBookId(3L);
     }
 
     @Test

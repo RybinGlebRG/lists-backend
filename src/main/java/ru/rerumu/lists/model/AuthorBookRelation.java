@@ -17,7 +17,7 @@ public final class AuthorBookRelation {
         return author;
     }
 
-    public Book getBook() throws EmptyMandatoryParameterException {
-        return new Book.Builder(book).build();
+    public Book getBook() {
+        return book.clone();
     }
 }

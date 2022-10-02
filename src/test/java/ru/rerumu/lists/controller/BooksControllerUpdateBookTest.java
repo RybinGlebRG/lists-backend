@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
 import java.time.LocalDateTime;
@@ -38,7 +37,7 @@ class BooksControllerUpdateBookTest {
     private BookSeriesService bookSeriesService;
 
     @MockBean
-    private AuthorsBooksService authorsBooksService;
+    private AuthorsBooksRelationService authorsBooksRelationService;
 
     @BeforeAll
     static void setup() {

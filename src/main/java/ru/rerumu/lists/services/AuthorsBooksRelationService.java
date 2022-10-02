@@ -7,11 +7,11 @@ import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import java.util.List;
 
 @Service
-public class AuthorsBooksService {
+public class AuthorsBooksRelationService {
 
     private final AuthorsBooksRepository authorsBooksRepository;
 
-    public AuthorsBooksService(
+    public AuthorsBooksRelationService(
             AuthorsBooksRepository authorsBooksRepository
     ){
         this.authorsBooksRepository = authorsBooksRepository;
@@ -19,5 +19,17 @@ public class AuthorsBooksService {
 
     public List<AuthorBookRelation> getByBookId(Long bookId){
         return authorsBooksRepository.getByBookId(bookId);
+    }
+
+    public void delete(long bookId, long authorId, long readListId){
+        authorsBooksRepository.delete(bookId, authorId, readListId);
+    }
+
+    public void add(AuthorBookRelation authorBookRelation){
+        authorsBooksRepository.add(
+                authorBookRelation.getBook().getBookId(),
+                authorBookRelation.getAuthor().getAuthorId(),
+                authorBookRelation.getBook().getReadListId()
+        );
     }
 }

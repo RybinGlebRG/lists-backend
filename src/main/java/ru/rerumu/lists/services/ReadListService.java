@@ -39,6 +39,8 @@ public class ReadListService {
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
+    private final AuthorsBooksRelationService authorsBooksRelationService;
+
     public ReadListService(
             BookRepository bookRepository,
             SeriesRepository seriesRepository,
@@ -48,7 +50,8 @@ public class ReadListService {
             SeriesBooksRespository seriesBooksRespository,
             DateFactory dateFactory,
             BookSeriesService bookSeriesService,
-            BookSeriesRelationService bookSeriesRelationService
+            BookSeriesRelationService bookSeriesRelationService,
+            AuthorsBooksRelationService authorsBooksRelationService
     ) {
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
@@ -59,25 +62,34 @@ public class ReadListService {
         this.dateFactory = dateFactory;
         this.bookSeriesService = bookSeriesService;
         this.bookSeriesRelationService = bookSeriesRelationService;
+        this.authorsBooksRelationService = authorsBooksRelationService;
     }
 
-    private void updateAuthor(Long bookId, Long authorId, Long readListId) {
+    private void updateAuthor(long bookId, Long authorId, long readListId) {
         List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId);
 
-        // TODO: Already present?
-        if (authorId != null) {
-            Optional<Author> optionalAuthor = authorsService.getAuthor(readListId, authorId);
-            authorsBooksRepositoryList.stream()
-                    .map(AuthorBookRelation::getAuthor)
-                    .filter(item -> optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item))
-                    // TODO: Do not delete all
-                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
-            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
+        Optional<Author> optionalAuthor = authorId != null ?
+                authorsService.getAuthor(readListId, authorId):
+                Optional.empty();
 
-        } else {
-            authorsBooksRepositoryList.stream()
-                    .map(AuthorBookRelation::getAuthor)
-                    .forEach(author -> authorsBooksRepository.deleteByAuthor(author.getAuthorId()));
+        authorsBooksRepositoryList.stream()
+                .filter(item -> item.getBook().getBookId().equals(bookId) &&
+                        item.getBook().getReadListId().equals(readListId) &&
+                        (optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item.getAuthor()))
+                )
+                .forEach(item -> authorsBooksRelationService.delete(
+                        item.getBook().getBookId(),
+                        item.getAuthor().getAuthorId(),
+                        item.getBook().getReadListId()
+                ));
+
+        if(authorsBooksRepositoryList.stream()
+                .noneMatch(item -> optionalAuthor.isPresent() &&
+                        item.getAuthor().equals(optionalAuthor.get()) &&
+                        item.getBook().getBookId().equals(bookId) &&
+                        item.getBook().getReadListId().equals(readListId))
+        ){
+            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
         }
     }
 

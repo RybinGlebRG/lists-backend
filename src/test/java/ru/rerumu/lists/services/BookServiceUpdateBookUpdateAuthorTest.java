@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceUpdateBookUpdateSeriesTest {
+class BookServiceUpdateBookUpdateAuthorTest {
 
     @Mock
     private BookRepository bookRepository;
@@ -46,21 +46,22 @@ class BookServiceUpdateBookUpdateSeriesTest {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
-
     @Test
-    void shouldUpdateChangeSeries() throws Exception{
+    void shouldChangeAuthor() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
                 3L,
                 "Title",
-                6L,
+                4L,
                 1,
                 6L,
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0)
         );
-        Series series = new Series(5L,3L,"Series");
-        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+//        Series series = new Series(5L,3L,"Series");
+//        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+        Author author = new Author(2L, 3L,"Author");
+        Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -73,12 +74,10 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
-
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
-                 List.of(new SeriesBookRelation(book,series,1L))
+        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
+                List.of(new AuthorBookRelation(book,author))
         );
-        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -95,29 +94,27 @@ class BookServiceUpdateBookUpdateSeriesTest {
 
         readListService.updateBook(8L,bookUpdateView);
 
-        verify(bookRepository).getOne(3L,8L);
-        verify(bookRepository).update(book);
 
-        verify(bookSeriesRelationService).delete(8L,5L,3L);
-        verify(seriesBooksRespository).add(8L,6L,3L,7L);
-
+        verify(authorsBooksRelationService).delete(8L,2L,3L);
+        verify(authorsBooksRepository).add(8L,4L,3L);
     }
 
     @Test
-    void shouldUpdateAddSeries() throws Exception{
+    void shouldAddAuthor() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
                 3L,
                 "Title",
-                6L,
+                4L,
                 1,
                 6L,
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0)
         );
-//        Author author = new Author(5L, 3L, "Author");
 //        Series series = new Series(5L,3L,"Series");
-        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+//        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+//        Author author = new Author(2L, 3L,"Author");
+        Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -130,12 +127,10 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
-
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
+        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
                 List.of()
         );
-        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -152,84 +147,27 @@ class BookServiceUpdateBookUpdateSeriesTest {
 
         readListService.updateBook(8L,bookUpdateView);
 
-        verify(bookRepository).getOne(3L,8L);
-        verify(bookRepository).update(book);
 
-        verify(bookSeriesRelationService, never()).delete(anyLong(),anyLong(),anyLong());
-        verify(seriesBooksRespository).add(8L,6L,3L,7L);
-
+        verify(authorsBooksRelationService, never()).delete(anyLong(),anyLong(),anyLong());
+        verify(authorsBooksRepository).add(8L,4L,3L);
     }
 
     @Test
-    void shouldUpdateRemoveSeries() throws Exception{
+    void shouldRemoveAuthor() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
                 3L,
                 "Title",
-                6L,
-                1,
                 null,
-                null,
-                4,
-                LocalDateTime.of(2000, 10, 1, 0, 0, 0)
-        );
-//        Author author = new Author(5L, 3L, "Author");
-        Series series = new Series(5L,3L,"Series");
-//        Series shouldSeries = new Series(6L,3L,"SeriesNew");
-        Book book = new Book.Builder()
-                .bookId(8L)
-                .title("Title")
-                .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .statusId(1)
-                .bookStatus(BookStatus.IN_PROGRESS)
-                .lastChapter(4)
-                .readListId(3L)
-                .build();
-
-        when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
-
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
-                List.of(new SeriesBookRelation(book,series,1L))
-        );
-//        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
-
-        ReadListService readListService = new ReadListService(
-                bookRepository,
-                seriesRepository,
-                authorsRepository,
-                authorsService,
-                authorsBooksRepository,
-                seriesBooksRespository,
-                dateFactory,
-                bookSeriesService,
-                bookSeriesRelationService,
-                authorsBooksRelationService
-        );
-
-        readListService.updateBook(8L,bookUpdateView);
-
-        verify(bookRepository).getOne(3L,8L);
-        verify(bookRepository).update(book);
-
-        verify(bookSeriesRelationService).delete(8L,5L,3L);
-        verify(seriesBooksRespository, never()).add(anyLong(),anyLong(),anyLong(),anyLong());
-
-    }
-
-    @Test
-    void shouldUpdateChangeOrder() throws Exception{
-        BookUpdateView bookUpdateView = new BookUpdateView(
-                3L,
-                "Title",
-                6L,
                 1,
-                5L,
+                6L,
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0)
         );
-        Series series = new Series(5L,3L,"Series");
+//        Series series = new Series(5L,3L,"Series");
+//        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+        Author author = new Author(2L, 3L,"Author");
+//        Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -242,13 +180,10 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
-        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(List.of());
-
-        when(seriesBooksRespository.getByBookId(anyLong())).thenReturn(
-                List.of(new SeriesBookRelation(book,series,1L))
+        when(authorsBooksRepository.getByBookId(anyLong())).thenReturn(
+                List.of(new AuthorBookRelation(book,author))
         );
-        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(series));
-
+//        when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.empty());
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -262,15 +197,12 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
+
         readListService.updateBook(8L,bookUpdateView);
 
 
-        verify(bookSeriesRelationService,never()).delete(anyLong(),anyLong(),anyLong());
-        verify(seriesBooksRespository, never()).add(anyLong(),anyLong(),anyLong(),anyLong());
-        verify(bookSeriesRelationService).update(
-                new SeriesBookRelation(book,series,7L)
-        );
-
+        verify(authorsBooksRelationService).delete(8L,2L,3L);
+        verify(authorsBooksRepository, never()).add(anyLong(),anyLong(),anyLong());
     }
 
 }

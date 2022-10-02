@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
@@ -33,20 +32,20 @@ public class BooksController {
 
     private final BookSeriesService bookSeriesService;
 
-    private final AuthorsBooksService authorsBooksService;
+    private final AuthorsBooksRelationService authorsBooksRelationService;
 
     public BooksController(
             ReadListService readListService,
             UserService userService,
             AuthorsService authorsService,
             BookSeriesService bookSeriesService,
-            AuthorsBooksService authorsBooksService
+            AuthorsBooksRelationService authorsBooksRelationService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.authorsService = authorsService;
         this.bookSeriesService = bookSeriesService;
-        this.authorsBooksService = authorsBooksService;
+        this.authorsBooksRelationService = authorsBooksRelationService;
     }
 
 //    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
@@ -97,7 +96,7 @@ public class BooksController {
         if (book == null) {
             throw new EntityNotFoundException();
         }
-        List<AuthorBookRelation> authorBookRelationList = authorsBooksService.getByBookId(book.getBookId());
+        List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId());
 //        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
         Optional<Series> series = bookSeriesService.getSeries(readListId, book.getSeriesId());
 

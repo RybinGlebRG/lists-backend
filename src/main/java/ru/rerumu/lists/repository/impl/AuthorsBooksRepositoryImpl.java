@@ -29,4 +29,9 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     public List<AuthorBookRelation> getByBookId(Long bookId) {
         return authorBookMapper.getByBookId(bookId);
     }
+
+    @Override
+    public void delete(long bookId, long authorId, long readListId) {
+        authorBookMapper.delete(bookId, authorId, readListId);
+    }
 }

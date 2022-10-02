@@ -42,6 +42,8 @@ class BookServiceAddBookTest {
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
 
+    @Mock
+    private  AuthorsBooksRelationService authorsBooksRelationService;
 
     @Test
     void shouldAddBook() throws Exception {
@@ -82,7 +84,8 @@ class BookServiceAddBookTest {
                 seriesBooksRespository,
                 dateFactory,
                 bookSeriesService,
-                bookSeriesRelationService
+                bookSeriesRelationService,
+                authorsBooksRelationService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -133,7 +136,8 @@ class BookServiceAddBookTest {
                 seriesBooksRespository,
                 dateFactory,
                 bookSeriesService,
-                bookSeriesRelationService
+                bookSeriesRelationService,
+                authorsBooksRelationService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -183,7 +187,8 @@ class BookServiceAddBookTest {
                 seriesBooksRespository,
                 dateFactory,
                 bookSeriesService,
-                bookSeriesRelationService
+                bookSeriesRelationService,
+                authorsBooksRelationService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -234,7 +239,8 @@ class BookServiceAddBookTest {
                 seriesBooksRespository,
                 dateFactory,
                 bookSeriesService,
-                bookSeriesRelationService
+                bookSeriesRelationService,
+                authorsBooksRelationService
         );
 
         readListService.addBook(5L, bookAddView);

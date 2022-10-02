@@ -11,4 +11,6 @@ public interface AuthorsBooksRepository {
     void add(Long bookId, Long authorId, Long readListId);
 
     List<AuthorBookRelation> getByBookId(Long bookId);
+
+    void delete(long bookId, long authorId, long readListId);
 }

@@ -12,15 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookAddView;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.hamcrest.Matchers.equalTo;
 
 @WebMvcTest(BooksController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -42,7 +35,7 @@ class BooksControllerAddBookTest {
     private BookSeriesService bookSeriesService;
 
     @MockBean
-    private AuthorsBooksService authorsBooksService;
+    private AuthorsBooksRelationService authorsBooksRelationService;
 
     @BeforeAll
     static void setup() {
