@@ -104,7 +104,7 @@ class BooksControllerGetBookTest {
 //                .and().body("series.seriesListId",equalTo(2))
 //                .and().body("series.title",equalTo("Series"))
                 .and().body("authors.findAll{i -> i.authorId == 6 && i.readListId == 2 && i.name == 'Author'}", not(empty()))
-                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series' && i.seriesOrder == 1}", not(empty()))
         ;
 
         verify(userService).checkOwnership("Test",2L);
@@ -149,7 +149,7 @@ class BooksControllerGetBookTest {
 //                .and().body("series.seriesId",equalTo(5))
 //                .and().body("series.seriesListId",equalTo(2))
 //                .and().body("series.title",equalTo("Series"))
-                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series' && i.seriesOrder == 1}", not(empty()))
                 .and().body("authors",empty())
         ;
 
@@ -241,7 +241,7 @@ class BooksControllerGetBookTest {
 //                .and().body("series.seriesListId",equalTo(2))
 //                .and().body("series.title",equalTo("Series"))
                 .and().body("authors.findAll{i -> i.authorId == 6 && i.readListId == 2 && i.name == 'Author'}", not(empty()))
-                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series'}", not(empty()))
+                .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series' && i.seriesOrder == 1}", not(empty()))
                 .and().body("$",not(hasKey("lastChapter")))
         ;
 

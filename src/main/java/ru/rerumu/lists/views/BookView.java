@@ -46,7 +46,9 @@ public class BookView {
         JSONArray seriesList = new JSONArray();
         if (seriesBookRelationList != null){
             for (SeriesBookRelation seriesBookRelation: seriesBookRelationList){
-                seriesList.put(seriesBookRelation.getSeries().toJSONObject());
+                JSONObject seriesEntry = seriesBookRelation.getSeries().toJSONObject();
+                seriesEntry.put("seriesOrder",seriesBookRelation.getOrder());
+                seriesList.put(seriesEntry);
             }
         }
         obj.put("status", bookStatus != null ? bookStatus.getNice() : null);
