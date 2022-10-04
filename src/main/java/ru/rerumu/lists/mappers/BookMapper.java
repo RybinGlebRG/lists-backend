@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface BookMapper {
     Book getOne(Long readListId, Long bookId);
+
     void update(
             Long readListId,
             Long bookId,
@@ -29,4 +30,12 @@ public interface BookMapper {
     List<Book> getAll(Long readListId);
 
     Long getNextId();
+
+    void addOne(Long bookId,
+                Long readListId,
+                String title,
+                Integer statusId,
+                Date insertDate,
+                Date lastUpdateDate,
+                Integer lastChapter);
 }

@@ -10,16 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.exception.UserIsNotOwnerException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<String> handle(Exception e, WebRequest request){
+    private String prepareAnswer(Exception e){
         logger.error(e.getMessage(),e);
 
         StringWriter sw = new StringWriter();
@@ -30,13 +31,45 @@ public class GlobalExceptionHandler {
         obj.put("error",sw.toString().strip());
         obj.put("errorMessage", e.getMessage() != null ? e.getMessage() : JSONObject.NULL);
 
+        return obj.toString();
+    }
+
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<String> handle(Exception e, WebRequest request){
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<String> resEnt = new ResponseEntity<>(
-                obj.toString(),
+                prepareAnswer(e),
                 httpHeaders,
                 HttpStatus.INTERNAL_SERVER_ERROR);
+        return resEnt;
+    }
+
+    @ExceptionHandler(value = {UserIsNotOwnerException.class})
+    public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(
+                prepareAnswer(e),
+                httpHeaders,
+                HttpStatus.FORBIDDEN);
+        return resEnt;
+    }
+
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    public ResponseEntity<String> handleNotFound(Exception e, WebRequest request){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(
+                prepareAnswer(e),
+                httpHeaders,
+                HttpStatus.NOT_FOUND);
         return resEnt;
     }
 }

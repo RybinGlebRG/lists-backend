@@ -2,7 +2,9 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
 
-public class Author {
+import java.util.Objects;
+
+public class Author implements Cloneable{
 
     private final Long authorId;
     private final Long readListId;
@@ -43,5 +45,53 @@ public class Author {
     @Override
     public String toString() {
         return this.toJSONObject().toString();
+    }
+
+    @Override
+    public Author clone() {
+        try {
+            Author clone = (Author) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return authorId.equals(author.authorId) && readListId.equals(author.readListId) && name.equals(author.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authorId, readListId, name);
+    }
+
+    public static class Builder{
+        private  Long authorId;
+        private  Long readListId;
+        private String name;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder authorId(Long authorId){
+            this.authorId = authorId;
+            return this;
+        }
+
+        public Builder readListId(Long readListId) {
+            this.readListId = readListId;
+            return this;
+        }
+
+        public Author build(){
+            return  new Author(authorId,readListId,name);
+        }
     }
 }
