@@ -11,7 +11,6 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookAddView;
@@ -20,7 +19,6 @@ import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.BookView;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -93,7 +91,7 @@ public class BooksController {
                                   @PathVariable Long bookId,
                                   @RequestAttribute("username") String username)
             throws UserIsNotOwnerException, EntityNotFoundException {
-        userService.checkOwnership(username, readListId);
+        userService.checkOwnershipList(username, readListId);
         // TODO: Check book ownership
 
         Book book = readListService.getBook(readListId, bookId);
@@ -138,21 +136,27 @@ public class BooksController {
             @RequestAttribute("username") String username
     ) throws UserIsNotOwnerException, EmptyMandatoryParameterException, EntityNotFoundException {
 
-        userService.checkOwnership(username, readListId);
-        if (bookAddView.getAuthorId() != null) {
-            userService.checkOwnershipAuthor(username, bookAddView.getAuthorId());
-        }
-        if (bookAddView.getSeriesId() != null) {
-            // TODO: Check ownership
-        }
+        userService.checkOwnershipList(username, readListId);
+        userService.checkOwnership(username,bookAddView);
 
         readListService.addBook(readListId, bookAddView);
 
-//        BookView.Builder builder = new BookView.Builder()
-//                .book(book);
-//
-//        ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
-//        return resEnt;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/api/v0.2/books/{bookId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> deleteOne(
+            @PathVariable Long bookId,
+            @RequestAttribute("username") String username
+    )
+            throws UserIsNotOwnerException,
+            EntityNotFoundException {
+
+        userService.checkOwnershipBook(username, bookId);
+
+        readListService.deleteBook(bookId);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

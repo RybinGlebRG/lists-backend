@@ -55,7 +55,6 @@
     <select id="getOne" resultMap="BookResultMap">
         <include refid="selectBooks"/>
         where b.book_id=#{bookId}
-        and b.list_list_id=#{readListId}
     </select>
 
     <select id="getAll" resultMap="BookResultMap">

@@ -2,7 +2,6 @@ package ru.rerumu.lists.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.restassured.path.json.JsonPath;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
@@ -26,7 +23,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(AuthorsController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -105,7 +101,7 @@ class AuthorsControllerTest {
     @Test
     void shouldNotAddNotOwner()throws  Exception{
         Mockito.doThrow(new UserIsNotOwnerException())
-                .when(userService).checkOwnership(Mockito.any(), Mockito.anyLong());
+                .when(userService).checkOwnershipList(Mockito.any(), Mockito.anyLong());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("name","TestAuthor");
@@ -121,7 +117,7 @@ class AuthorsControllerTest {
 
         Mockito.verify(authorsService, Mockito.never())
                 .addAuthor(Mockito.anyLong(),Mockito.any());
-        Mockito.verify(userService).checkOwnership("Test",2L);
+        Mockito.verify(userService).checkOwnershipList("Test",2L);
 
     }
 

@@ -7,6 +7,7 @@ import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BookRepositoryImpl implements BookRepository {
@@ -37,8 +38,13 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Book getOne(Long readListId, Long bookId) {
+        return bookMapper.getOne(bookId);
+    }
 
-        return bookMapper.getOne(readListId, bookId);
+    @Override
+    public Optional<Book> getOne(Long bookId) {
+        Book book = bookMapper.getOne( bookId);
+        return Optional.ofNullable(book);
     }
 
     @Override

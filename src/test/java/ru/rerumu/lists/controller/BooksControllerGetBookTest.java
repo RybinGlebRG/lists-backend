@@ -20,7 +20,6 @@ import ru.rerumu.lists.services.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -107,7 +106,7 @@ class BooksControllerGetBookTest {
                 .and().body("series.findAll{i -> i.seriesId == 5 && i.readListId == 2 && i.title == 'Series' && i.seriesOrder == 1}", not(empty()))
         ;
 
-        verify(userService).checkOwnership("Test",2L);
+        verify(userService).checkOwnershipList("Test",2L);
         verify(readListService).getBook(2L,3L);
         verify(authorsBooksRelationService).getByBookId(3L, 2L);
         verify(bookSeriesRelationService).getByBookId(3L,2L);
@@ -153,7 +152,7 @@ class BooksControllerGetBookTest {
                 .and().body("authors",empty())
         ;
 
-        Mockito.verify(userService).checkOwnership("Test",2L);
+        Mockito.verify(userService).checkOwnershipList("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         verify(bookSeriesRelationService).getByBookId(3L,2L);
     }
@@ -196,7 +195,7 @@ class BooksControllerGetBookTest {
                 .and().body("series", empty())
         ;
 
-        Mockito.verify(userService).checkOwnership("Test",2L);
+        Mockito.verify(userService).checkOwnershipList("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         Mockito.verify(authorsBooksRelationService).getByBookId(3L,2L);
         verify(bookSeriesRelationService).getByBookId(3L,2L);
@@ -245,7 +244,7 @@ class BooksControllerGetBookTest {
                 .and().body("$",not(hasKey("lastChapter")))
         ;
 
-        Mockito.verify(userService).checkOwnership("Test",2L);
+        Mockito.verify(userService).checkOwnershipList("Test",2L);
         Mockito.verify(readListService).getBook(2L,3L);
         Mockito.verify(authorsBooksRelationService).getByBookId(3L,2L);
         Mockito.verify(bookSeriesRelationService).getByBookId(3L,2L);
