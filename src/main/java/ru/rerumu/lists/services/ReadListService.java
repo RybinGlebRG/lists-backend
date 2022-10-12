@@ -274,22 +274,20 @@ public class ReadListService {
             throw new EntityNotFoundException();
         }
 
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(
-                bookOptional.get().getBookId(),
-                bookOptional.get().getReadListId()
-        );
-        seriesBookRelationList
+        seriesBooksRespository.getByBookId(
+                        bookOptional.get().getBookId(),
+                        bookOptional.get().getReadListId()
+                )
                 .forEach(item -> bookSeriesRelationService.delete(
                         item.getBook().getBookId(),
                         item.getSeries().getSeriesId(),
                         item.getBook().getReadListId()
                 ));
 
-        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(
-                bookOptional.get().getBookId(),
-                bookOptional.get().getBookId()
-        );
-        authorsBooksRepositoryList
+        authorsBooksRepository.getByBookId(
+                        bookOptional.get().getBookId(),
+                        bookOptional.get().getBookId()
+                )
                 .forEach(item -> authorsBooksRelationService.delete(
                         item.getBook().getBookId(),
                         item.getAuthor().getAuthorId(),

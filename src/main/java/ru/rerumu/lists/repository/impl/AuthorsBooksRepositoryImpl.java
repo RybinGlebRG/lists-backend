@@ -48,7 +48,9 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
         Book book = bookRepository.getOne(readListId,bookId);
         for (Long authorId: authorIdList){
             Optional<Author>  authorOptional = authorsRepository.getOne(readListId,authorId);
-            // TODO: What if empty?
+            if (authorOptional.isEmpty()){
+                throw new RuntimeException("authorOptional is empty");
+            }
             authorOptional.ifPresent(author -> authorBookRelationList.add(new AuthorBookRelation(book, author)));
         }
         return authorBookRelationList;

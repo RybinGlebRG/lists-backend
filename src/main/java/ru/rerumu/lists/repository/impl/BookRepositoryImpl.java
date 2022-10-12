@@ -69,4 +69,9 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastChapter()
         );
     }
+
+    @Override
+    public void delete(Long bookId) {
+        bookMapper.delete(bookId);
+    }
 }

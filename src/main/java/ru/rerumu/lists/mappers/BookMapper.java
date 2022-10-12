@@ -39,4 +39,6 @@ public interface BookMapper {
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter);
+
+    void delete (long bookId);
 }

@@ -91,4 +91,9 @@
         values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter})
     </insert>
 
+    <delete id="delete">
+        delete from lists.books
+        where book_id=#{bookId}
+    </delete>
+
 </mapper>
