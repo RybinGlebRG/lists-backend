@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface BookMapper {
-    Book getOne(Long readListId, Long bookId);
+
+    Book getOne(Long bookId);
 
     void update(
             Long readListId,
@@ -38,4 +39,6 @@ public interface BookMapper {
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter);
+
+    void delete (long bookId);
 }

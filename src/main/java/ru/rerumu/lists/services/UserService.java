@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.IncorrectPasswordException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.UsersRepository;
@@ -18,10 +15,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -30,6 +25,8 @@ import java.util.*;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.views.BookUpdateView;
 
 @Component
 public class UserService {
@@ -95,16 +92,52 @@ public class UserService {
         return jws;
     }
 
-    public void checkOwnership(String username, Long listId)throws UserIsNotOwnerException {
+    public void checkOwnershipList(String username, Long listId)throws UserIsNotOwnerException {
+        if (username == null || listId == null){
+            throw new IllegalArgumentException();
+        }
         if (!usersRepository.isOwner(username, listId)){
             throw new UserIsNotOwnerException();
         }
     }
 
     public void checkOwnershipAuthor(String username, Long authorId)throws UserIsNotOwnerException {
-        // TODO: check not null
+        if (username == null || authorId == null){
+            throw new IllegalArgumentException();
+        }
         if (!usersRepository.isOwnerAuthor(username, authorId)){
             throw new UserIsNotOwnerException();
+        }
+    }
+
+    public void checkOwnershipBook(String username, Long bookId) throws UserIsNotOwnerException{
+        if (username == null || bookId == null){
+            throw new IllegalArgumentException();
+        }
+        if (!usersRepository.isOwnerBook(username, bookId)){
+            throw new UserIsNotOwnerException();
+        }
+    }
+
+    public void checkOwnershipSeries(String username, Long seriesId) throws UserIsNotOwnerException{
+        if (username == null || seriesId == null){
+            throw new IllegalArgumentException();
+        }
+        if (!usersRepository.isOwnerSeries(username, seriesId)){
+            throw new UserIsNotOwnerException();
+        }
+    }
+
+    public void checkOwnership(String username, BookAddView bookAddView) throws UserIsNotOwnerException{
+        if (username == null || bookAddView == null){
+            throw new IllegalArgumentException();
+        }
+
+        if (bookAddView.getAuthorId() != null) {
+            checkOwnershipAuthor(username, bookAddView.getAuthorId());
+        }
+        if (bookAddView.getSeriesId() != null) {
+            checkOwnershipSeries(username,bookAddView.getSeriesId());
         }
     }
 }

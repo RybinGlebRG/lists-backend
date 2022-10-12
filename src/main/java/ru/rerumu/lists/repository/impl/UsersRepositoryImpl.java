@@ -23,12 +23,22 @@ public class UsersRepositoryImpl implements UsersRepository {
     @Override
     public boolean isOwner(String name, Long listId) {
         int count = userMapper.count(name, listId);
-        return count>0;
+        return count > 0;
     }
 
     @Override
     public boolean isOwnerAuthor(String name, Long authorId) {
         int count = userMapper.countAuthor(name, authorId);
-        return count>0;
+        return count > 0;
+    }
+
+    @Override
+    public boolean isOwnerBook(String name, Long bookId) {
+        return userMapper.countBooks(name, bookId) > 0;
+    }
+
+    @Override
+    public boolean isOwnerSeries(String name, Long seriesId) {
+        return userMapper.countSeries(name, seriesId) > 0;
     }
 }

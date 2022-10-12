@@ -43,5 +43,8 @@ class BookServiceTest {
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
 
+    @Mock
+    private  AuthorsBooksRelationService authorsBooksRelationService;
+
 
 }

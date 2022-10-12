@@ -8,4 +8,8 @@ public interface UserMapper {
 
     int count(String name, Long listId);
     int countAuthor(String name, Long authorId);
+
+    int countSeries(String name, long seriesId);
+
+    int countBooks(String name, long bookId);
 }

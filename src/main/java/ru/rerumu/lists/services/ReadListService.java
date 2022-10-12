@@ -69,7 +69,7 @@ public class ReadListService {
         List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId, readListId);
 
         Optional<Author> optionalAuthor = authorId != null ?
-                authorsService.getAuthor(readListId, authorId):
+                authorsService.getAuthor(readListId, authorId) :
                 Optional.empty();
 
         authorsBooksRepositoryList.stream()
@@ -83,12 +83,12 @@ public class ReadListService {
                         item.getBook().getReadListId()
                 ));
 
-        if(authorsBooksRepositoryList.stream()
+        if (authorsBooksRepositoryList.stream()
                 .noneMatch(item -> optionalAuthor.isPresent() &&
                         item.getAuthor().equals(optionalAuthor.get()) &&
                         item.getBook().getBookId().equals(bookId) &&
                         item.getBook().getReadListId().equals(readListId))
-        ){
+        ) {
             optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
         }
     }
@@ -265,5 +265,35 @@ public class ReadListService {
 
 
         return getBook(readListId, bookId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBook(Long bookId) throws EntityNotFoundException {
+        Optional<Book> bookOptional = bookRepository.getOne(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        seriesBooksRespository.getByBookId(
+                        bookOptional.get().getBookId(),
+                        bookOptional.get().getReadListId()
+                )
+                .forEach(item -> bookSeriesRelationService.delete(
+                        item.getBook().getBookId(),
+                        item.getSeries().getSeriesId(),
+                        item.getBook().getReadListId()
+                ));
+
+        authorsBooksRepository.getByBookId(
+                        bookOptional.get().getBookId(),
+                        bookOptional.get().getBookId()
+                )
+                .forEach(item -> authorsBooksRelationService.delete(
+                        item.getBook().getBookId(),
+                        item.getAuthor().getAuthorId(),
+                        item.getBook().getReadListId()
+                ));
+
+        bookRepository.delete(bookOptional.get().getBookId());
     }
 }

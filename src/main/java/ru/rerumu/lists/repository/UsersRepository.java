@@ -10,4 +10,7 @@ public interface UsersRepository {
 
     boolean isOwner(String name, Long listId);
     boolean isOwnerAuthor(String name, Long authorId);
+
+    boolean isOwnerBook(String name, Long bookId);
+    boolean isOwnerSeries(String name, Long seriesId);
 }

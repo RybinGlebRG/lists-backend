@@ -55,7 +55,6 @@
     <select id="getOne" resultMap="BookResultMap">
         <include refid="selectBooks"/>
         where b.book_id=#{bookId}
-        and b.list_list_id=#{readListId}
     </select>
 
     <select id="getAll" resultMap="BookResultMap">
@@ -91,5 +90,10 @@
         insert into lists.books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter)
         values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter})
     </insert>
+
+    <delete id="delete">
+        delete from lists.books
+        where book_id=#{bookId}
+    </delete>
 
 </mapper>

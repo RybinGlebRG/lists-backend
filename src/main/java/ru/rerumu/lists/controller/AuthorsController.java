@@ -36,7 +36,7 @@ public class AuthorsController {
     ResponseEntity<String> getOne(@PathVariable Long readListId,
                                   @PathVariable Long authorId,
                                   @RequestAttribute("username") String username) throws UserIsNotOwnerException {
-        userService.checkOwnership(username, readListId);
+        userService.checkOwnershipList(username, readListId);
         Optional<Author> author = authorsService.getAuthor(readListId, authorId);
         if (author.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,7 +50,7 @@ public class AuthorsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) throws UserIsNotOwnerException {
-        userService.checkOwnership(username, readListId);
+        userService.checkOwnershipList(username, readListId);
         List<Author> authors = readListService.getAuthors(readListId);
         AuthorsListView authorsListView = new AuthorsListView(authors);
         ResponseEntity<String> resEnt = new ResponseEntity<>(authorsListView.toString(), HttpStatus.OK);
@@ -66,7 +66,7 @@ public class AuthorsController {
                                   @RequestAttribute("username") String username,
                                   @RequestBody AddAuthorView addAuthorView)
             throws UserIsNotOwnerException, EntityNotFoundException {
-        userService.checkOwnership(username, readListId);
+        userService.checkOwnershipList(username, readListId);
         Author author = authorsService.addAuthor(readListId, addAuthorView);
         return new ResponseEntity<>(author.toString(), HttpStatus.CREATED);
     }
