@@ -13,10 +13,13 @@ public interface SeriesBookMapper {
     @Deprecated
     List<SeriesBookRelation> getByBookId(Long bookId);
     List<Long> getSeriesIdsByBookId(Long bookId, Long readListId);
+    List<Long> getBookIdsBySeriesId(Long seriesId);
 
     void update(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
 
     void delete(Long bookId, Long seriesId, Long readListId);
 
+    @Deprecated
     Long getOrder(Long bookId, Long seriesId, Long readListId);
+    Long getOrderByIdOnly(Long bookId, Long seriesId);
 }

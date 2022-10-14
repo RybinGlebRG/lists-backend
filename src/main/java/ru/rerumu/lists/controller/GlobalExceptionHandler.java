@@ -34,18 +34,7 @@ public class GlobalExceptionHandler {
         return obj.toString();
     }
 
-    @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<String> handle(Exception e, WebRequest request){
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        ResponseEntity<String> resEnt = new ResponseEntity<>(
-                prepareAnswer(e),
-                httpHeaders,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-        return resEnt;
-    }
 
     @ExceptionHandler(value = {UserIsNotOwnerException.class})
     public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
@@ -70,6 +59,19 @@ public class GlobalExceptionHandler {
                 prepareAnswer(e),
                 httpHeaders,
                 HttpStatus.NOT_FOUND);
+        return resEnt;
+    }
+
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<String> handle(Exception e, WebRequest request){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<String> resEnt = new ResponseEntity<>(
+                prepareAnswer(e),
+                httpHeaders,
+                HttpStatus.INTERNAL_SERVER_ERROR);
         return resEnt;
     }
 }

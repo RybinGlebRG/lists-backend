@@ -2,14 +2,12 @@ package ru.rerumu.lists.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.SeriesMapper;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SeriesRepositoryImpl implements SeriesRepository {
@@ -21,6 +19,11 @@ public class SeriesRepositoryImpl implements SeriesRepository {
     public Series getOne(Long readListId, Long seriesId) {
 
         return seriesMapper.getOne(readListId, seriesId);
+    }
+
+    @Override
+    public Optional<Series> getOne(Long seriesId) {
+        return Optional.ofNullable(seriesMapper.getOneBySeriesOnly(seriesId));
     }
 
     @Override
