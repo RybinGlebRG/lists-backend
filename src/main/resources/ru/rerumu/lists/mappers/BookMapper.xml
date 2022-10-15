@@ -14,6 +14,7 @@
         <result property="insertDate" column="insert_date"  />
         <result property="lastUpdateDate" column="last_update_date"  />
         <result property="lastChapter" column="last_chapter"  />
+        <result property="bookType" column="type_name"  javaType="ru.rerumu.lists.model.BookType"/>
 <!--        <result column="author_author_id" property="authorId" />-->
 <!--        <result column="series_series_id" property="seriesId" />-->
 <!--        <result column="series_order" property="seriesOrder" />-->
@@ -39,10 +40,13 @@
                 s.key_name,
                 b.insert_date AT TIME ZONE 'UTC' as insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
-                b.last_chapter
+                b.last_chapter,
+                bt.name as type_name
         from lists.books b
                 inner join lists.statuses s
                 on s."STATUS_ID"= b.status_status_id
+                left outer join lists.book_types bt
+                                on bt.type_id = b.type_type_id
     </sql>
 
     <select id="getBookStatus">

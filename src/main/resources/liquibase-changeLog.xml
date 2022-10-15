@@ -194,4 +194,6 @@
         <rollback/>
     </changeSet>
 
+    <includeAll path="ru/rerumu/lists/db/changelog/"/>
+
 </databaseChangeLog>
