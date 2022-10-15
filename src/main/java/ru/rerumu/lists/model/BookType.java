@@ -20,4 +20,26 @@ public enum BookType {
     public String getNice() {
         return nice;
     }
+
+    public static class Builder{
+        private Integer typeId;
+
+        public Builder typeId(Integer typeId){
+            this.typeId = typeId;
+            return this;
+        }
+
+        public BookType build(){
+            switch (typeId){
+                case 1:
+                    return BookType.BOOK;
+                case 2:
+                    return BookType.LIGHT_NOVEL;
+                case 3:
+                    return BookType.WEBTOON;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 }

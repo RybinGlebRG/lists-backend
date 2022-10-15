@@ -71,5 +71,37 @@
         />
     </changeSet>
 
+    <changeSet author="gleb" id="8d6eb7de-c025-4409-99e9-3d017ed3b58a">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="book_types">
+            <column name="key_name"
+                    type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="gleb" id="6d60a396-e23b-44b2-904f-f986781a2023">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="BOOK"/>
+            <where>type_id=1</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="LIGHT_NOVEL"/>
+            <where>type_id=2</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="WEBTOON"/>
+            <where>type_id=3</where>
+        </update>
+        <rollback/>
+    </changeSet>
+
 
 </databaseChangeLog>

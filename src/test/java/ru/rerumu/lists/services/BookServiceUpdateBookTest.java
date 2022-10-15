@@ -58,7 +58,8 @@ class BookServiceUpdateBookTest {
                 null,
                 null,
                 8,
-                LocalDateTime.of(2020, 10, 1, 0, 0, 0)
+                LocalDateTime.of(2020, 10, 1, 0, 0, 0),
+                null
         );
         Author author = new Author(5L, 3L, "Author");
         Author shouldAuthor = new Author(6L, 3L, "AuthorNew");

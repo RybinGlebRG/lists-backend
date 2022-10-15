@@ -17,13 +17,16 @@ public class BookAddView {
     private final Long order;
     private final Integer lastChapter;
 
+    private final Integer bookTypeId;
+
     public BookAddView(
             String title,
             Long authorId,
             int status,
             Long seriesId,
             Long order,
-            Integer lastChapter
+            Integer lastChapter,
+            Integer bookTypeId
     ){
         this.title = title;
         this.status = status;
@@ -31,6 +34,7 @@ public class BookAddView {
         this.seriesId = seriesId;
         this.order = order;
         this.lastChapter = lastChapter;
+        this.bookTypeId = bookTypeId;
     }
 
     public int getStatus() {
@@ -57,48 +61,20 @@ public class BookAddView {
         return lastChapter;
     }
 
+    public Integer getBookTypeId() {
+        return bookTypeId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookAddView that = (BookAddView) o;
-        return status == that.status && Objects.equals(title, that.title) && Objects.equals(authorId, that.authorId) && Objects.equals(seriesId, that.seriesId) && Objects.equals(order, that.order) && Objects.equals(lastChapter, that.lastChapter);
+        return status == that.status && Objects.equals(title, that.title) && Objects.equals(authorId, that.authorId) && Objects.equals(seriesId, that.seriesId) && Objects.equals(order, that.order) && Objects.equals(lastChapter, that.lastChapter) && Objects.equals(bookTypeId, that.bookTypeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, authorId, status, seriesId, order, lastChapter);
+        return Objects.hash(title, authorId, status, seriesId, order, lastChapter, bookTypeId);
     }
-
-    //    public Book getBook() throws EmptyMandatoryParameterException {
-//
-//        return new Book.Builder()
-//                .title(title)
-//                .authorId(authorId)
-//                .statusId(status)
-//                .seriesId(seriesId)
-//                .seriesOrder(order)
-//                .build();
-//    }
-
-//    public Optional<Author> getAuthor(){
-//        if (authorId != null) {
-//            return Optional.of(
-//                    new Author.Builder()
-//                            .build()
-//            );
-//        } else {
-//            return Optional.empty();
-//        }
-//    }
-
-//    public Optional<Series> getSeries(){
-//        if (seriesId != null){
-//            return Optional.of(
-//                new Series(seriesId,null,null)
-//            );
-//        } else {
-//            return Optional.empty();
-//        }
-//    }
 }

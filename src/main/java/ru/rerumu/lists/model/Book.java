@@ -140,11 +140,13 @@ public final class Book implements Cloneable{
         );
         obj.put("lastChapter", lastChapter);
 
-        JSONObject bookTypeJson = new JSONObject();
-        bookTypeJson.put("typeId",bookType.getId());
-        bookTypeJson.put("typeName",bookType.getNice());
+        if (bookType != null) {
+            JSONObject bookTypeJson = new JSONObject();
+            bookTypeJson.put("typeId", bookType.getId());
+            bookTypeJson.put("typeName", bookType.getNice());
 
-        obj.put("bookType", bookTypeJson);
+            obj.put("bookType", bookTypeJson);
+        }
 
         return obj;
     }
@@ -161,12 +163,12 @@ public final class Book implements Cloneable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter);
+        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter) && bookType == book.bookType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter);
+        return Objects.hash(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, bookType);
     }
 
     public final static class Builder {

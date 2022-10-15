@@ -104,7 +104,7 @@ public class BooksController {
         List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId(), readListId);
 
         BookView.Builder builder = new BookView.Builder()
-                .book(book)
+                .bookStatus(book)
                 .authorBookRelation(authorBookRelationList)
                 .seriesBookRelation(seriesBookRelationList);
 //        author.ifPresent(builder::author);
