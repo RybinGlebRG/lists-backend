@@ -16,4 +16,6 @@ public interface TitlesRepository {
     Title addOne(TitleCreateView newTitle);
 
     Long getNextId();
+
+    void delete(Long titleId);
 }

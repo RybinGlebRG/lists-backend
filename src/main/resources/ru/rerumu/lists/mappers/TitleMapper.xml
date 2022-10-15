@@ -61,4 +61,9 @@
         insert into lists.titles(title_id, name, create_date_utc, list_list_id, status_status_id, type_type_id)
         values(#{titleId},#{name},#{createDateUTC},#{watchListId},#{statusId},#{typeId})
     </insert>
+
+    <delete id="delete">
+        delete from lists.titles
+        where title_id=#{titleId}
+    </delete>
 </mapper>

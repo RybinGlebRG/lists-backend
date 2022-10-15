@@ -53,6 +53,11 @@ public class WatchListService {
         return titlesList;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteOne(Long titleId){
+        titlesRepository.delete(titleId);
+    }
+
 //    // TODO: Test
 //    @Transactional(rollbackFor = Exception.class)
 //    public Title createTitle(Long watchListId, Title newTitle)  {
