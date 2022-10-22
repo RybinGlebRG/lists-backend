@@ -27,4 +27,6 @@ public interface TitleMapper {
             Long statusId,
             Long typeId);
     Long getNextId();
+
+    void delete(Long titleId);
 }

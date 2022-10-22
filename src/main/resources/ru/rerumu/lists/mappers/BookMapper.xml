@@ -8,23 +8,12 @@
         <id property="bookId" column="book_id"  />
         <result property="readListId" column="list_list_id"  />
         <result property="title" column="title" />
-<!--        <result property="statusId" column="status_status_id" />-->
-<!--        <result column="status_name" property="bookStatus" />-->
         <result property="bookStatus" column="key_name"  javaType="ru.rerumu.lists.model.BookStatus"/>
         <result property="insertDate" column="insert_date"  />
         <result property="lastUpdateDate" column="last_update_date"  />
         <result property="lastChapter" column="last_chapter"  />
-<!--        <result column="author_author_id" property="authorId" />-->
-<!--        <result column="series_series_id" property="seriesId" />-->
-<!--        <result column="series_order" property="seriesOrder" />-->
+        <result property="bookType" column="type_name"  javaType="ru.rerumu.lists.model.BookType"/>
 
-<!--        <association property="bookStatus"-->
-<!--                     javaType="ru.rerumu.lists.model.BookStatus"-->
-<!--                     column="{statusId=status_status_id}"-->
-<!--                     select="getBookStatus"-->
-<!--        />-->
-<!--        <association property="bookStatus" resultMap="BookStatusResultMap" />-->
-<!--        <association property="author" resultMap="ru.rerumu.lists.mappers.AuthorMapper.AuthorResultMap" />-->
     </resultMap>
 
     <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus_">
@@ -39,10 +28,13 @@
                 s.key_name,
                 b.insert_date AT TIME ZONE 'UTC' as insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
-                b.last_chapter
+                b.last_chapter,
+                bt.key_name as type_name
         from lists.books b
                 inner join lists.statuses s
                 on s."STATUS_ID"= b.status_status_id
+                left outer join lists.book_types bt
+                                on bt.type_id = b.type_type_id
     </sql>
 
     <select id="getBookStatus">
@@ -68,7 +60,8 @@
             status_status_id=#{statusId},
             insert_date=#{insertDate},
             last_update_date=#{lastUpdateDate},
-            last_chapter = #{lastChapter}
+            last_chapter = #{lastChapter},
+            type_type_id = #{bookTypeId}
         where book_id=#{bookId}
         and list_list_id=#{readListId}
     </update>
@@ -87,8 +80,8 @@
     </select>
 
     <insert id="addOne">
-        insert into lists.books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter)
-        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter})
+        insert into lists.books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id)
+        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId})
     </insert>
 
     <delete id="delete">

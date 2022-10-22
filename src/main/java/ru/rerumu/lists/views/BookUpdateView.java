@@ -13,6 +13,8 @@ public class BookUpdateView {
     private final Integer lastChapter;
     private final LocalDateTime insertDateUTC;
 
+    private final Integer bookTypeId;
+
     public BookUpdateView(
             Long readListId,
             String title,
@@ -21,7 +23,8 @@ public class BookUpdateView {
             Long seriesId,
             Long order,
             Integer lastChapter,
-            LocalDateTime insertDateUTC
+            LocalDateTime insertDateUTC,
+            Integer bookTypeId
     ){
         this.readListId = readListId;
         this.title = title;
@@ -31,6 +34,7 @@ public class BookUpdateView {
         this.order = order;
         this.lastChapter = lastChapter;
         this.insertDateUTC = insertDateUTC;
+        this.bookTypeId = bookTypeId;
     }
 
     public Long getReadListId() {
@@ -65,16 +69,20 @@ public class BookUpdateView {
         return insertDateUTC;
     }
 
+    public Integer getBookTypeId() {
+        return bookTypeId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookUpdateView that = (BookUpdateView) o;
-        return status == that.status && Objects.equals(readListId, that.readListId) && Objects.equals(title, that.title) && Objects.equals(authorId, that.authorId) && Objects.equals(seriesId, that.seriesId) && Objects.equals(order, that.order);
+        return status == that.status && Objects.equals(readListId, that.readListId) && Objects.equals(title, that.title) && Objects.equals(authorId, that.authorId) && Objects.equals(seriesId, that.seriesId) && Objects.equals(order, that.order) && Objects.equals(lastChapter, that.lastChapter) && Objects.equals(insertDateUTC, that.insertDateUTC) && Objects.equals(bookTypeId, that.bookTypeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(readListId, title, authorId, status, seriesId, order);
+        return Objects.hash(readListId, title, authorId, status, seriesId, order, lastChapter, insertDateUTC, bookTypeId);
     }
 }

@@ -15,6 +15,7 @@ public final class Book implements Cloneable{
     private final Date insertDate;
     private final Date lastUpdateDate;
     private final Integer lastChapter;
+    private final BookType bookType;
 
     public Book(Long bookId,
                 Long readListId,
@@ -22,7 +23,8 @@ public final class Book implements Cloneable{
                 BookStatus bookStatus,
                 Date insertDate,
                 Date lastUpdateDate,
-                Integer lastChapter) throws EmptyMandatoryParameterException {
+                Integer lastChapter,
+                BookType bookType) throws EmptyMandatoryParameterException {
         this.bookId = bookId;
         this.readListId = readListId;
 
@@ -47,6 +49,7 @@ public final class Book implements Cloneable{
         this.lastUpdateDate = lastUpdateDate;
 
         this.lastChapter = lastChapter;
+        this.bookType = bookType;
     }
 
     public Long getReadListId() {
@@ -102,6 +105,10 @@ public final class Book implements Cloneable{
         return Integer.parseInt(new SimpleDateFormat("ss").format(this.insertDate));
     }
 
+    public BookType getBookType(){
+        return bookType;
+    }
+
 
     @Override
     public Book clone() {
@@ -133,6 +140,14 @@ public final class Book implements Cloneable{
         );
         obj.put("lastChapter", lastChapter);
 
+        if (bookType != null) {
+            JSONObject bookTypeJson = new JSONObject();
+            bookTypeJson.put("typeId", bookType.getId());
+            bookTypeJson.put("typeName", bookType.getNice());
+
+            obj.put("bookType", bookTypeJson);
+        }
+
         return obj;
     }
 
@@ -148,12 +163,12 @@ public final class Book implements Cloneable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter);
+        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter) && bookType == book.bookType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter);
+        return Objects.hash(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, bookType);
     }
 
     public final static class Builder {
@@ -164,6 +179,8 @@ public final class Book implements Cloneable{
         private Date insertDate;
         private Date lastUpdateDate;
         private Integer lastChapter;
+
+        private BookType bookType;
 
         public Builder() {
         }
@@ -213,6 +230,11 @@ public final class Book implements Cloneable{
             return this;
         }
 
+        public Builder bookType(BookType bookType){
+            this.bookType = bookType;
+            return this;
+        }
+
 
         public Book build() throws EmptyMandatoryParameterException {
             return new Book(
@@ -222,7 +244,8 @@ public final class Book implements Cloneable{
                     bookStatus,
                     insertDate,
                     lastUpdateDate,
-                    lastChapter
+                    lastChapter,
+                    bookType
             );
         }
     }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-public class TitlesController{
+public class TitlesController {
 
     @Autowired
     private TitlesRepository repository;
@@ -26,7 +26,7 @@ public class TitlesController{
     private WatchListService watchListService;
 
     @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getAll(@PathVariable long watchListId, @RequestAttribute("username") String username){
+    ResponseEntity<String> getAll(@PathVariable long watchListId, @RequestAttribute("username") String username) {
 //        List<Title> titles = this.repository.getAll(watchListId);
 //        TitlesList titlesList = new TitlesList(titles);
 //        titlesList.sort();
@@ -36,7 +36,7 @@ public class TitlesController{
         try {
             TitlesList titlesList = watchListService.getAll(watchListId);
             resEnt = new ResponseEntity<>(titlesList.toString(), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -50,12 +50,12 @@ public class TitlesController{
     ResponseEntity<String> addOne(
             @PathVariable long watchListId,
             @RequestBody TitleCreateView newTitle,
-            @RequestAttribute("username") String username){
+            @RequestAttribute("username") String username) {
         ResponseEntity<String> resEnt;
         try {
-            Title title = watchListService.addTitle(watchListId,newTitle);
+            Title title = watchListService.addTitle(watchListId, newTitle);
             resEnt = new ResponseEntity<>(title.toString(), HttpStatus.CREATED);
-        } catch (Exception e){
+        } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,12 +66,12 @@ public class TitlesController{
     @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getOne(@PathVariable Long watchListId,
                                   @RequestAttribute("username") String username,
-                                  @PathVariable Long titleId){
+                                  @PathVariable Long titleId) {
         ResponseEntity<String> resEnt;
         try {
             Title title = watchListService.getOne(watchListId, titleId);
             resEnt = new ResponseEntity<>(title.toString(), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,23 +79,32 @@ public class TitlesController{
         return resEnt;
     }
 
-    @PutMapping(value="/api/v0.2/watchLists/{watchListId}/titles/{titleId}",
-                produces = MediaType.APPLICATION_JSON_VALUE,
-                consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> updateOne(@PathVariable Long watchListId,
                                      @PathVariable Long titleId,
                                      @RequestBody Title newTitle,
-                                     @RequestAttribute("username") String username){
+                                     @RequestAttribute("username") String username) {
         ResponseEntity<String> resEnt;
         try {
-            Title updatedTitle = watchListService.updateTitle(watchListId,titleId,newTitle);
+            Title updatedTitle = watchListService.updateTitle(watchListId, titleId, newTitle);
             resEnt = new ResponseEntity<>(updatedTitle.toString(), HttpStatus.OK);
-        }
-        catch (EmptyMandatoryParameterException e){
+        } catch (EmptyMandatoryParameterException e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
                     HttpStatus.BAD_REQUEST);
         }
+        return resEnt;
+    }
+
+    @DeleteMapping(value = "/api/v0.2/titles/{titleId}")
+    ResponseEntity<String> updateOne(@PathVariable Long titleId,
+                                     @RequestAttribute("username") String username) {
+        // TODO: Check ownership
+
+        watchListService.deleteOne(titleId);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return resEnt;
     }
 

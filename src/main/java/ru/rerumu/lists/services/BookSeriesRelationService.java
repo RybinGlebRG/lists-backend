@@ -2,6 +2,7 @@ package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
@@ -36,5 +37,9 @@ public class BookSeriesRelationService {
 
     public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId){
         return seriesBooksRespository.getByBookId(bookId,readListId);
+    }
+
+    public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
+        return seriesBooksRespository.getBySeriesId(seriesId);
     }
 }

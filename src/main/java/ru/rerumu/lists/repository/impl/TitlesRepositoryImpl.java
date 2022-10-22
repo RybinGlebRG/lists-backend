@@ -44,6 +44,11 @@ public class TitlesRepositoryImpl implements TitlesRepository {
     }
 
     @Override
+    public void delete(Long titleId) {
+        titleMapper.delete(titleId);
+    }
+
+    @Override
     public Title addOne(TitleCreateView newTitle) {
         titleMapper.addOne(
                 newTitle.getWatchListId(),

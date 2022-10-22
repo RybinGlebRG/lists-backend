@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface SeriesMapper {
     Series getOne(Long readListId, Long seriesId);
+    Series getOneBySeriesOnly( Long seriesId);
     List<Series> getAll(Long readListId);
     int getBookCount(Long readListId, Long seriesId);
 }

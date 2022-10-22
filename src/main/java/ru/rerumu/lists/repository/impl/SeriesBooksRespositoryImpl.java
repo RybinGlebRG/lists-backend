@@ -1,7 +1,7 @@
 package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
@@ -12,6 +12,7 @@ import ru.rerumu.lists.repository.SeriesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
@@ -59,6 +60,25 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
             Long order = seriesBookMapper.getOrder(bookId,seriesId,readListId);
             seriesBookRelationList.add(new SeriesBookRelation(book,series,order));
         }
+        return seriesBookRelationList;
+    }
+
+    @Override
+    public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
+        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
+        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
+        if (optionalSeries.isEmpty()){
+            throw new EntityNotFoundException();
+        }
+        List<Long> bookIdList = seriesBookMapper.getBookIdsBySeriesId(seriesId);
+        bookIdList.forEach(bookId -> {
+            Optional<Book> optionalBook = bookRepository.getOne(bookId);
+            if (optionalBook.isEmpty()){
+                throw new RuntimeException();
+            }
+            Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
+            seriesBookRelationList.add(new SeriesBookRelation(optionalBook.get(),optionalSeries.get(), order));
+        });
         return seriesBookRelationList;
     }
 

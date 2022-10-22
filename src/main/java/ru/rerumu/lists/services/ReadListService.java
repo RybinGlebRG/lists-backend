@@ -168,8 +168,17 @@ public class ReadListService {
                 builder.bookStatus(null);
         }
 
+        if (bookUpdateView.getBookTypeId() != null){
+            builder.bookType(
+                    new BookType.Builder()
+                            .typeId(bookUpdateView.getBookTypeId())
+                            .build()
+            );
+        }
+
         Book updatedBook = builder.build();
 
+        logger.debug(String.format("Updated book: %s",updatedBook.toString()));
 
         bookRepository.update(updatedBook);
 
@@ -229,6 +238,7 @@ public class ReadListService {
                 bookStatus = null;
         }
 
+
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
@@ -237,6 +247,14 @@ public class ReadListService {
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(bookAddView.getLastChapter());
+
+        if (bookAddView.getBookTypeId() != null){
+            bookBuilder.bookType(
+                    new BookType.Builder()
+                            .typeId(bookAddView.getBookTypeId())
+                            .build()
+            );
+        }
 
         Book newBook = bookBuilder.build();
 

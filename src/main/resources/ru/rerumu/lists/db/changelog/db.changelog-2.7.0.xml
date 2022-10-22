@@ -1,0 +1,107 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet author="gleb" id="cabce3a1-77ef-4ea1-97bc-4c9cce85c232">
+        <createTable catalogName="lists"
+                     schemaName="lists"
+                     tableName="book_types">
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="book_types_pk"/>
+            </column>
+            <column name="name" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb" id="216d0741-c3b3-44fa-9b64-3e1b2f93152f">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="book_types">
+            <column  name="type_id"  value="1"/>
+            <column  name="name"  value="Book"/>
+        </insert>
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="book_types">
+            <column  name="type_id"  value="2"/>
+            <column  name="name"  value="Light Novel"/>
+        </insert>
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="book_types">
+            <column  name="type_id"  value="3"/>
+            <column  name="name"  value="Webtoon"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="176f017d-9545-4a6b-859e-f3e55c7d5a49">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="books">
+            <column name="type_type_id"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="a3057fa5-3e75-4f2c-9a71-1cac52ebc9c3">
+        <addForeignKeyConstraint
+                baseTableCatalogName="lists"
+                baseTableSchemaName="lists"
+                baseColumnNames="type_type_id"
+                baseTableName="books"
+                constraintName="book_types_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+                referencedTableCatalogName="lists"
+                referencedTableSchemaName="lists"
+                referencedColumnNames="type_id"
+                referencedTableName="book_types"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="8d6eb7de-c025-4409-99e9-3d017ed3b58a">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="book_types">
+            <column name="key_name"
+                    type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="gleb" id="6d60a396-e23b-44b2-904f-f986781a2023">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="BOOK"/>
+            <where>type_id=1</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="LIGHT_NOVEL"/>
+            <where>type_id=2</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="book_types">
+            <column name="key_name" value="WEBTOON"/>
+            <where>type_id=3</where>
+        </update>
+        <rollback/>
+    </changeSet>
+
+
+</databaseChangeLog>

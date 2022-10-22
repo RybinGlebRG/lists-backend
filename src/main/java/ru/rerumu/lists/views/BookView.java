@@ -72,12 +72,12 @@ public class BookView {
         private List<SeriesBookRelation> seriesBookRelationList;
 
 
-        public Builder book(Book book) {
+        public Builder bookStatus(Book book) {
             this.book = book;
             return this;
         }
 
-        public Builder book(BookStatus bookStatus) {
+        public Builder bookStatus(BookStatus bookStatus) {
             this.bookStatus = bookStatus;
             return this;
         }

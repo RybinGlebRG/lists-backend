@@ -40,12 +40,18 @@ public class GlobalExceptionHandler {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
+        String answer = prepareAnswer(e);
+
+        logger.error(answer);
+
         ResponseEntity<String> resEnt = new ResponseEntity<>(
-                prepareAnswer(e),
+                answer,
                 httpHeaders,
                 HttpStatus.INTERNAL_SERVER_ERROR);
         return resEnt;
     }
+
+
 
     @ExceptionHandler(value = {UserIsNotOwnerException.class})
     public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
@@ -72,4 +78,6 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND);
         return resEnt;
     }
+
+
 }

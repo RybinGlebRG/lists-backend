@@ -73,6 +73,7 @@ class BooksControllerGetBookTest {
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)
+                .bookType(BookType.WEBTOON)
                 .build();
         Author author = new Author(6L,2L,"Author");
         Series series = new Series(5L,2L,"Series");
@@ -96,6 +97,8 @@ class BooksControllerGetBookTest {
                 .and().body("title",equalTo("Title"))
                 .and().body("bookStatus.statusId",equalTo(1))
                 .and().body("bookStatus.statusName",equalTo("In Progress"))
+                .and().body("bookType.typeId",equalTo(3))
+                .and().body("bookType.typeName",equalTo("Webtoon"))
                 .and().body("insertDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastUpdateDate",equalTo(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt)))
                 .and().body("lastChapter",equalTo(4))

@@ -61,6 +61,7 @@ class BooksControllerAddBookTest {
         requestBody.put("seriesId",5);
         requestBody.put("order",7);
         requestBody.put("lastChapter",4);
+        requestBody.put("bookTypeId",3);
 
         RestAssuredMockMvc
                 .given()
@@ -73,7 +74,27 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,5L,7L, 4));
+                new BookAddView("Title",6L,1,5L,7L, 4,3));
+    }
+
+    @Test
+    void shouldAddSimplest() throws Exception{
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","Title");
+        requestBody.put("status",1);
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/2/books")
+                .then().statusCode(204);
+
+        Mockito.verify(readListService).addBook(
+                2L,
+                new BookAddView("Title",null,1,null,null, null,null));
     }
 
     @Test
@@ -84,6 +105,7 @@ class BooksControllerAddBookTest {
         requestBody.put("seriesId",5);
         requestBody.put("order",7);
         requestBody.put("lastChapter",4);
+        requestBody.put("bookTypeId",3);
 
         RestAssuredMockMvc
                 .given()
@@ -96,7 +118,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",null,1,5L,7L, 4));
+                new BookAddView("Title",null,1,5L,7L, 4,3));
     }
 
     @Test
@@ -105,6 +127,55 @@ class BooksControllerAddBookTest {
         requestBody.put("title","Title");
         requestBody.put("authorId",6);
         requestBody.put("status",1);
+        requestBody.put("lastChapter",4);
+        requestBody.put("bookTypeId",3);
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/2/books")
+                .then().statusCode(204);
+
+        Mockito.verify(readListService).addBook(
+                2L,
+                new BookAddView("Title",6L,1,null,null, 4,3));
+    }
+
+    @Test
+    void shouldAddNoChapter() throws Exception{
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","Title");
+        requestBody.put("authorId",6);
+        requestBody.put("status",1);
+        requestBody.put("seriesId",5);
+        requestBody.put("order",7);
+        requestBody.put("bookTypeId",3);
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .post("/api/v0.2/readLists/2/books")
+                .then().statusCode(204);
+
+        Mockito.verify(readListService).addBook(
+                2L,
+                new BookAddView("Title",6L,1,5L,7L, null,3));
+    }
+
+    @Test
+    void shouldAddNoType() throws Exception{
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","Title");
+        requestBody.put("authorId",6);
+        requestBody.put("status",1);
+        requestBody.put("seriesId",5);
+        requestBody.put("order",7);
         requestBody.put("lastChapter",4);
 
         RestAssuredMockMvc
@@ -118,30 +189,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,null,null, 4));
-    }
-
-    @Test
-    void shouldAddNoChapter() throws Exception{
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("title","Title");
-        requestBody.put("authorId",6);
-        requestBody.put("status",1);
-        requestBody.put("seriesId",5);
-        requestBody.put("order",7);
-
-        RestAssuredMockMvc
-                .given()
-                .attribute("username","Test")
-                .header("Content-Type", "application/json")
-                .body(requestBody.toString())
-                .when()
-                .post("/api/v0.2/readLists/2/books")
-                .then().statusCode(204);
-
-        Mockito.verify(readListService).addBook(
-                2L,
-                new BookAddView("Title",6L,1,5L,7L, null));
+                new BookAddView("Title",6L,1,5L,7L, 4,null));
     }
 
 }

@@ -56,7 +56,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 6L,
                 7L,
                 4,
-                LocalDateTime.of(2000, 10, 1, 0, 0, 0)
+                LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null
         );
 //        Series series = new Series(5L,3L,"Series");
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
@@ -108,7 +109,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 6L,
                 7L,
                 4,
-                LocalDateTime.of(2000, 10, 1, 0, 0, 0)
+                LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null
         );
 //        Series series = new Series(5L,3L,"Series");
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
@@ -160,7 +162,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 6L,
                 7L,
                 4,
-                LocalDateTime.of(2000, 10, 1, 0, 0, 0)
+                LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null
         );
 //        Series series = new Series(5L,3L,"Series");
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
