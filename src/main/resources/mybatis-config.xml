@@ -14,16 +14,4 @@
             </dataSource>
         </environment>
     </environments>
-<!--    <mappers>-->
-<!--        <mapper resource="mappers/TitleMapper.xml"/>-->
-<!--        <mapper resource="mappers/BookMapper.xml"/>-->
-<!--        <mapper resource="mappers/SeriesMapper.xml"/>-->
-<!--        <mapper resource="mappers/AuthorMapper.xml"/>-->
-<!--    </mappers>-->
-<!--    <mappers>-->
-<!--        <mapper class="ru.rerumu.lists.mappers.AuthorMapper"/>-->
-<!--        <mapper class="ru.rerumu.lists.mappers.BookMapper"/>-->
-<!--        <mapper class="ru.rerumu.lists.mappers.SeriesMapper"/>-->
-<!--        <mapper class="ru.rerumu.lists.mappers.TitleMapper"/>-->
-<!--    </mappers>-->
 </configuration>

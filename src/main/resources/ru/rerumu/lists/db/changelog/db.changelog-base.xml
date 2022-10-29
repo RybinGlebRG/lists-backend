@@ -1,0 +1,200 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd"
+        logicalFilePath="liquibase-changeLog.xml">
+
+
+    <changeSet author="gleb" id="12">
+        <createTable catalogName="lists"
+                     schemaName="lists"
+                     tableName="titles_statuses">
+            <column name="status_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="titles_statuses_pk"/>
+            </column>
+            <column name="name" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb" id="13">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="titles_statuses">
+            <column  name="status_id"  value="1"/>
+            <column  name="name"  value="In progress"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="14">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="titles_statuses">
+            <column  name="status_id"  value="2"/>
+            <column  name="name"  value="Completed"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="9">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="titles">
+            <column name="status_status_id"
+                    position="4"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="10">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="titles">
+            <column name="status_status_id" value="1"/>
+        </update>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="11">
+        <addForeignKeyConstraint
+                baseTableCatalogName="lists"
+                baseTableSchemaName="lists"
+                baseColumnNames="status_status_id"
+                baseTableName="titles"
+                constraintName="st_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+                referencedTableCatalogName="lists"
+                referencedTableSchemaName="lists"
+                referencedColumnNames="status_id"
+                referencedTableName="titles_statuses"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="15">
+        <createTable catalogName="lists"
+                     schemaName="lists"
+                     tableName="video_types">
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="video_types_pk"/>
+            </column>
+            <column name="name" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb" id="16">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="video_types">
+            <column  name="type_id"  value="0"/>
+            <column  name="name"  value="TV"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="17">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="video_types">
+            <column  name="type_id"  value="1"/>
+            <column  name="name"  value="Movie"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="18">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="video_types">
+            <column  name="type_id"  value="2"/>
+            <column  name="name"  value="OVA"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="19">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="video_types">
+            <column  name="type_id"  value="3"/>
+            <column  name="name"  value="Special"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="dc7522e3-ffdd-4194-8e3a-663e406ec4fd">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="titles">
+            <column name="type_type_id"
+                    position="5"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="20">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="titles">
+            <column name="type_type_id" value="0"/>
+        </update>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="21">
+        <addForeignKeyConstraint
+                baseTableCatalogName="lists"
+                baseTableSchemaName="lists"
+                baseColumnNames="type_type_id"
+                baseTableName="titles"
+                constraintName="tt_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+                referencedTableCatalogName="lists"
+                referencedTableSchemaName="lists"
+                referencedColumnNames="type_id"
+                referencedTableName="video_types"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="f6a70f37-5c0e-43d5-af19-441635cab502">
+        <addColumn catalogName="lists"
+                   schemaName="lists"
+                   tableName="statuses">
+            <column name="key_name"
+                    type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="b46c9c44-994c-4821-a872-b4aa22a947b5">
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="statuses">
+            <column name="key_name" value="IN_PROGRESS"/>
+            <where>"STATUS_ID"=1</where>
+        </update>
+        <update catalogName="lists"
+                schemaName="lists"
+                tableName="statuses">
+            <column name="key_name" value="COMPLETED"/>
+            <where>"STATUS_ID"=2</where>
+        </update>
+        <rollback/>
+    </changeSet>
+
+
+</databaseChangeLog>
