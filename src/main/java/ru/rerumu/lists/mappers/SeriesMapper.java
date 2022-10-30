@@ -13,4 +13,10 @@ public interface SeriesMapper {
     Series getOneBySeriesOnly( Long seriesId);
     List<Series> getAll(Long readListId);
     int getBookCount(Long readListId, Long seriesId);
+
+    long getNextId();
+
+    void add(long readListId, long seriesId, String title);
+
+    void delete(long seriesId);
 }

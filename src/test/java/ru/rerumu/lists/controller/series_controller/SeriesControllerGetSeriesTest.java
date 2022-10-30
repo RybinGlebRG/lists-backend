@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.series_controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.Series;
@@ -33,16 +34,10 @@ class SeriesControllerGetSeriesTest {
     private ReadListService readListService;
 
     @MockBean
-    private UserService userService;
-
-    @MockBean
-    private AuthorsService authorsService;
-
-    @MockBean
     private BookSeriesService bookSeriesService;
 
     @MockBean
-    private AuthorsBooksRelationService authorsBooksRelationService;
+    private UserService userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

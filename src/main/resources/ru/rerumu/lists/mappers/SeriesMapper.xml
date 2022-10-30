@@ -41,4 +41,18 @@
         and series_list_id = #{readListId}
     </select>
 
+    <select id="getNextId" resultType="long">
+        select nextval('lists.series_id_seq')
+    </select>
+
+    <insert id="add">
+        insert into lists.series(series_id, list_list_id, title)
+        values(#{seriesId}, #{readListId}, #{title})
+    </insert>
+
+    <delete id="delete">
+        delete from lists.series
+        where series_id=#{seriesId}
+    </delete>
+
 </mapper>
