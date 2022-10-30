@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet author="gleb" id="1d79550a-0ca3-4592-945f-8bd01e1fa301">
+        <createSequence  catalogName="lists"
+                         incrementBy="1"
+                         schemaName="lists"
+                         sequenceName="series_id_seq"
+                         startValue="1"/>
+    </changeSet>
+    <changeSet author="gleb" id="87b641fa-520f-480b-b29e-db4ff0b1aa29">
+        <sql dbms="postgresql">select setval('lists.series_id_seq', (select max(series_id)+1 from lists.series))</sql>
+    </changeSet>
+
+    <changeSet author="gleb" id="484da57e-67af-4ab0-8a5a-8113cd12a5dd">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="book_types">
+            <column  name="type_id"  value="4"/>
+            <column  name="name"  value="Manhwa"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -35,4 +35,23 @@ public class SeriesRepositoryImpl implements SeriesRepository {
     public int getBookCount(Long readListId, Long seriesId) {
         return seriesMapper.getBookCount(readListId, seriesId);
     }
+
+    @Override
+    public long getNextId() {
+        return seriesMapper.getNextId();
+    }
+
+    @Override
+    public void add(Series series) {
+        seriesMapper.add(
+                series.getSeriesListId(),
+                series.getSeriesId(),
+                series.getTitle()
+        );
+    }
+
+    @Override
+    public void delete(long seriesId) {
+        seriesMapper.delete(seriesId);
+    }
 }

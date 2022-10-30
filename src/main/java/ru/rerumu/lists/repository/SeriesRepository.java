@@ -11,4 +11,9 @@ public interface SeriesRepository {
     Optional<Series> getOne(Long seriesId);
     List<Series> getAll(Long seriesListId);
     int getBookCount(Long readListId, Long seriesId);
+
+    long getNextId();
+    void add(Series series);
+
+    void delete(long seriesId);
 }

@@ -1,19 +1,19 @@
 package ru.rerumu.lists.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.BookSeriesRelationService;
+import ru.rerumu.lists.services.BookSeriesService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.BookSeriesView;
 import ru.rerumu.lists.views.SeriesListView;
 
@@ -30,15 +30,19 @@ public class SeriesController {
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
+    private final BookSeriesService bookSeriesService;
+
 
     public SeriesController(
             ReadListService readListService,
             UserService userService,
-            BookSeriesRelationService bookSeriesRelationService
+            BookSeriesRelationService bookSeriesRelationService,
+            BookSeriesService bookSeriesService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.bookSeriesRelationService = bookSeriesRelationService;
+        this.bookSeriesService = bookSeriesService;
     }
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series/{seriesId}",
@@ -73,5 +77,39 @@ public class SeriesController {
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
         return resEnt;
     }
+
+
+    @PostMapping(
+            value = "/api/v0.2/readLists/{readListId}/series",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<String> add(
+            @PathVariable Long readListId,
+            @RequestBody BookSeriesAddView bookSeriesAddView,
+            @RequestAttribute("username") String username
+    ) throws UserIsNotOwnerException {
+        userService.checkOwnershipList(username, readListId);
+
+        bookSeriesService.add(readListId, bookSeriesAddView);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @DeleteMapping(value = "/api/v0.2/bookSeries/{seriesId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> delete(
+            @PathVariable long seriesId,
+            @RequestAttribute("username") String username
+    )
+            throws UserIsNotOwnerException, EntityHasChildrenException, EntityNotFoundException {
+
+        userService.checkOwnershipSeries(username, seriesId);
+
+        bookSeriesService.delete(seriesId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
 

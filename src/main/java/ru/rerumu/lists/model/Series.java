@@ -5,11 +5,11 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 
-public class Series implements Cloneable{
+public final class Series implements Cloneable{
 
     private final Long seriesId;
     private final Long seriesListId;
-    private String title;
+    private final String title;
     private Integer bookCount;
 
     public Series(Long seriesId, Long seriesListId, String title){
@@ -26,9 +26,9 @@ public class Series implements Cloneable{
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
 
     public Long getSeriesListId() {
         return seriesListId;
@@ -75,5 +75,30 @@ public class Series implements Cloneable{
     @Override
     public int hashCode() {
         return Objects.hash(seriesId, seriesListId, title, bookCount);
+    }
+
+    public final static class Builder{
+        private long seriesId;
+        private String title;
+        private long readListId;
+
+        public Builder seriesId(long seriesId){
+            this.seriesId = seriesId;
+            return this;
+        }
+
+        public Builder title(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder readListId(long readListId){
+            this.readListId = readListId;
+            return this;
+        }
+
+        public Series build(){
+            return new Series(seriesId,readListId,title);
+        }
     }
 }
