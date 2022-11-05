@@ -12,11 +12,9 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookListView;
-import ru.rerumu.lists.views.BookUpdateView;
-import ru.rerumu.lists.views.BookView;
+import ru.rerumu.lists.views.*;
 
 import java.util.List;
 
@@ -50,26 +48,6 @@ public class BooksController {
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookSeriesRelationService = bookSeriesRelationService;
     }
-
-//    @PutMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
-//            produces = MediaType.APPLICATION_JSON_VALUE,
-//            consumes = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<String> updateOne(@PathVariable Long readListId,
-//                                     @PathVariable Long bookId,
-//                                     @RequestBody Book newBook,
-//                                     @RequestAttribute("username") String username) {
-//        ResponseEntity<String> resEnt;
-//        try {
-//            Book updatedBook = readListService.updateBook(readListId, bookId, newBook);
-//            resEnt = new ResponseEntity<>(updatedBook.toString(), HttpStatus.OK);
-//        } catch (EmptyMandatoryParameterException e) {
-//            resEnt = new ResponseEntity<>(
-//                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-//                    HttpStatus.BAD_REQUEST);
-//        }
-//        return resEnt;
-//    }
-
 
     @PutMapping(value = "/api/v0.2/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -158,6 +136,25 @@ public class BooksController {
         readListService.deleteBook(bookId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PostMapping(value = "/api/v0.2/readLists/{readListId}/books/search",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> searchBooks(
+            @PathVariable Long readListId,
+            @RequestBody Search search,
+            @RequestAttribute("username") String username
+    ) throws UserIsNotOwnerException {
+
+        userService.checkOwnershipList(username, readListId);
+
+        List<Book> books = readListService.getAllBooks(readListId);
+        BookListView bookListView = new BookListView(books);
+        bookListView.sort(search.getSortItemList());
+
+        return new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
     }
 
 }
