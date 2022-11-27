@@ -1,5 +1,7 @@
 package ru.rerumu.lists.services;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +92,14 @@ public class UserService {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         return jws;
+    }
+
+    public String checkTokenAndGetIdentity(String token){
+        Jws<Claims> claims = Jwts.parserBuilder()
+                .setSigningKey(Base64.getDecoder().decode(jwtSecret))
+                .build()
+                .parseClaimsJws(token);
+        return claims.getBody().get("identity", String.class);
     }
 
     public void checkOwnershipList(String username, Long listId)throws UserIsNotOwnerException {
