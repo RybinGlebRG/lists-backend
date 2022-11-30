@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.rerumu</groupId>
-	<artifactId>lists</artifactId>
-	<version>0.29.0</version>
-	<name>lists</name>
-	<description>Lists</description>
+	<artifactId>lists-backend</artifactId>
+	<version>0.33.1</version>
+	<name>lists-backend</name>
+	<description>lists-backend</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

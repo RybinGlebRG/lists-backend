@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +21,11 @@ public class BookSeriesView {
     ){
         this.series = series;
         this.seriesBookRelationList = seriesBookRelationList;
+    }
+
+    private void sort(){
+        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::getOrder);
+        this.seriesBookRelationList.sort(comparator);
     }
 
     @Override
@@ -68,7 +74,9 @@ public class BookSeriesView {
         }
 
         public BookSeriesView build(){
-            return new BookSeriesView(series, seriesBookRelationList);
+            BookSeriesView bookSeriesView = new BookSeriesView(series, seriesBookRelationList);
+            bookSeriesView.sort();
+            return bookSeriesView;
         }
 
     }
