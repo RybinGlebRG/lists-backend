@@ -5,9 +5,7 @@ import org.json.JSONObject;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class BookSeriesView {
 
@@ -20,7 +18,7 @@ public class BookSeriesView {
             List<SeriesBookRelation> seriesBookRelationList
     ){
         this.series = series;
-        this.seriesBookRelationList = seriesBookRelationList;
+        this.seriesBookRelationList = new ArrayList<>(seriesBookRelationList);
     }
 
     private void sort(){
