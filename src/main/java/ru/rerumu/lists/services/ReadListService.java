@@ -2,7 +2,6 @@ package ru.rerumu.lists.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
@@ -14,10 +13,10 @@ import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ReadListService {
@@ -35,7 +34,7 @@ public class ReadListService {
     private final SeriesBooksRespository seriesBooksRespository;
 
     private final DateFactory dateFactory;
-    private final BookSeriesService bookSeriesService;
+    private final SeriesService seriesService;
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
@@ -49,7 +48,7 @@ public class ReadListService {
             AuthorsBooksRepository authorsBooksRepository,
             SeriesBooksRespository seriesBooksRespository,
             DateFactory dateFactory,
-            BookSeriesService bookSeriesService,
+            SeriesService seriesService,
             BookSeriesRelationService bookSeriesRelationService,
             AuthorsBooksRelationService authorsBooksRelationService
     ) {
@@ -60,7 +59,7 @@ public class ReadListService {
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.dateFactory = dateFactory;
-        this.bookSeriesService = bookSeriesService;
+        this.seriesService = seriesService;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.authorsBooksRelationService = authorsBooksRelationService;
     }
@@ -98,7 +97,7 @@ public class ReadListService {
 
 
         Optional<Series> optionalSeries = seriesId != null ?
-                bookSeriesService.getSeries(readListId, seriesId) :
+                seriesService.getSeries(readListId, seriesId) :
                 Optional.empty();
 
         seriesBookRelationList.stream()
@@ -203,15 +202,6 @@ public class ReadListService {
         return seriesRepository.getOne(readListId, seriesId);
     }
 
-    public List<Series> getAllSeries(Long readListId) {
-        List<Series> seriesList = seriesRepository.getAll(readListId);
-        for (Series item : seriesList) {
-            int bookCount = seriesRepository.getBookCount(readListId, item.getSeriesId());
-            item.setBookCount(bookCount);
-        }
-        return seriesList;
-    }
-
     @Deprecated
     public List<Author> getAuthors(Long readListId) {
         return authorsService.getAuthors(readListId);
@@ -269,7 +259,7 @@ public class ReadListService {
         }
 
         if (bookAddView.getSeriesId() != null) {
-            Optional<Series> series = bookSeriesService.getSeries(readListId, bookAddView.getSeriesId());
+            Optional<Series> series = seriesService.getSeries(readListId, bookAddView.getSeriesId());
             if (series.isEmpty()) {
                 throw new EntityNotFoundException();
             }

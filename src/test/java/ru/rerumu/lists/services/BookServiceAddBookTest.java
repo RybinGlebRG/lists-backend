@@ -36,7 +36,7 @@ class BookServiceAddBookTest {
     private DateFactory dateFactory;
 
     @Mock
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
@@ -70,7 +70,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -81,7 +81,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -128,7 +128,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -163,7 +163,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -174,7 +174,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -213,7 +213,7 @@ class BookServiceAddBookTest {
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-        Mockito.when(bookSeriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -224,7 +224,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -275,7 +275,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -325,7 +325,7 @@ class BookServiceAddBookTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );

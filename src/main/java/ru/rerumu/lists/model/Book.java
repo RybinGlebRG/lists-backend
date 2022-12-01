@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -75,6 +77,9 @@ public final class Book implements Cloneable{
 
     public Date getLastUpdateDate() {
         return lastUpdateDate;
+    }
+    public LocalDateTime getLastUpdateDate_V2() {
+        return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneId.of("UTC"));
     }
 
     public Integer getLastChapter() {

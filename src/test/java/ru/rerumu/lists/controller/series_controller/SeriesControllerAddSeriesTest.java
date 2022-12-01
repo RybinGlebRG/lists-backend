@@ -28,7 +28,7 @@ class SeriesControllerAddSeriesTest {
     private ReadListService readListService;
 
     @MockBean
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @MockBean
     private UserService userService;
@@ -64,7 +64,7 @@ class SeriesControllerAddSeriesTest {
                 .post("/api/v0.2/readLists/2/series")
                 .then().statusCode(204);
 
-        verify(bookSeriesService).add(2,bookSeriesAddView);
+        verify(seriesService).add(2,bookSeriesAddView);
 
     }
 

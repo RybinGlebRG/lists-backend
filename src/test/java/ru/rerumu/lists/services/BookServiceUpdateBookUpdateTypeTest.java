@@ -38,7 +38,7 @@ class BookServiceUpdateBookUpdateTypeTest {
     private DateFactory dateFactory;
 
     @Mock
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
@@ -94,7 +94,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -151,7 +151,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -208,7 +208,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );

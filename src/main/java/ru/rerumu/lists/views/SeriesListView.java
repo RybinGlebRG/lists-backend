@@ -15,17 +15,10 @@ public class SeriesListView {
     }
 
     public void sort(){
-        Comparator<Series> comparator = new Comparator<Series>() {
-            @Override
-            public int compare(Series o1, Series o2) {
-                int res = o1.getTitle().compareTo(o2.getTitle());
-                if (res != 0) {
-                    return res;
-                }
-                res = Long.compare(o1.getSeriesId(),o2.getSeriesId());
-                return res;
-            }
-        };
+        Comparator<Series> comparator = Comparator
+                .comparing(Series::getLastUpdateDate).reversed()
+                .thenComparing(Series::getTitle)
+                .thenComparing(Series::getSeriesId);
 
         this.seriesList.sort(comparator);
     }

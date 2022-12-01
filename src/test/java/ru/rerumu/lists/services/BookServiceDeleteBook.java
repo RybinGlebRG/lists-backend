@@ -10,8 +10,6 @@ import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.repository.*;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +38,7 @@ class BookServiceDeleteBook {
     private DateFactory dateFactory;
 
     @Mock
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
@@ -83,7 +81,7 @@ class BookServiceDeleteBook {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
@@ -110,7 +108,7 @@ class BookServiceDeleteBook {
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                bookSeriesService,
+                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService
         );
