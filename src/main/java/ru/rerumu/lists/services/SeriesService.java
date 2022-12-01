@@ -94,7 +94,11 @@ public class SeriesService {
         return Optional.empty();
     }
 
-    // TODO: Test
+    /* TODO: Test
+        1. no book
+        2. ordering
+
+     */
     public List<Series> getAll(Long readListId) {
         List<Series> res = new ArrayList<>();
         List<Series> seriesList = seriesRepository.getAll(readListId);
@@ -106,6 +110,12 @@ public class SeriesService {
             Series.Builder seriesBuilder = new Series.Builder(item).bookCount(bookCount);
 
             bookLastUpdate.ifPresent(seriesBuilder::lastUpdateDate);
+
+            if (bookLastUpdate.isPresent()){
+                seriesBuilder.lastUpdateDate(bookLastUpdate.get());
+            } else {
+                seriesBuilder.lastUpdateDate(LocalDateTime.MIN);
+            }
 
             res.add(seriesBuilder.build());
 
