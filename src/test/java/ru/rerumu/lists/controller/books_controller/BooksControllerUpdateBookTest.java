@@ -35,7 +35,7 @@ class BooksControllerUpdateBookTest {
     private AuthorsService authorsService;
 
     @MockBean
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @MockBean
     private AuthorsBooksRelationService authorsBooksRelationService;

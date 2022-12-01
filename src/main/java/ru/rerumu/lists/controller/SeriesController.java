@@ -10,7 +10,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.BookSeriesService;
+import ru.rerumu.lists.services.SeriesService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -30,19 +30,19 @@ public class SeriesController {
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
-    private final BookSeriesService bookSeriesService;
+    private final SeriesService seriesService;
 
 
     public SeriesController(
             ReadListService readListService,
             UserService userService,
             BookSeriesRelationService bookSeriesRelationService,
-            BookSeriesService bookSeriesService
+            SeriesService seriesService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.bookSeriesRelationService = bookSeriesRelationService;
-        this.bookSeriesService = bookSeriesService;
+        this.seriesService = seriesService;
     }
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series/{seriesId}",
@@ -69,9 +69,11 @@ public class SeriesController {
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
-                                  @RequestAttribute("username") String username) {
+                                  @RequestAttribute("username") String username) throws UserIsNotOwnerException {
+        userService.checkOwnershipList(username, readListId);
+
         ResponseEntity<String> resEnt;
-        List<Series> series = readListService.getAllSeries(readListId);
+        List<Series> series = seriesService.getAll(readListId);
         SeriesListView seriesListView = new SeriesListView(series);
         seriesListView.sort();
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
@@ -90,7 +92,7 @@ public class SeriesController {
     ) throws UserIsNotOwnerException {
         userService.checkOwnershipList(username, readListId);
 
-        bookSeriesService.add(readListId, bookSeriesAddView);
+        seriesService.add(readListId, bookSeriesAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -106,7 +108,7 @@ public class SeriesController {
 
         userService.checkOwnershipSeries(username, seriesId);
 
-        bookSeriesService.delete(seriesId);
+        seriesService.delete(seriesId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

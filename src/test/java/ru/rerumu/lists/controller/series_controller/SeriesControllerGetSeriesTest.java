@@ -34,7 +34,7 @@ class SeriesControllerGetSeriesTest {
     private ReadListService readListService;
 
     @MockBean
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @MockBean
     private UserService userService;

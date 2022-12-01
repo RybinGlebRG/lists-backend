@@ -12,10 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.BookSeriesService;
+import ru.rerumu.lists.services.SeriesService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.views.BookSeriesAddView;
 
 import static org.mockito.Mockito.verify;
 
@@ -30,7 +29,7 @@ class SeriesControllerDeleteSeriesTest {
     private ReadListService readListService;
 
     @MockBean
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @MockBean
     private UserService userService;
@@ -59,7 +58,7 @@ class SeriesControllerDeleteSeriesTest {
                 .delete("/api/v0.2/bookSeries/5")
                 .then().statusCode(204);
 
-        verify(bookSeriesService).delete(5);
+        verify(seriesService).delete(5);
 
     }
 

@@ -27,7 +27,7 @@ public class BooksController {
 
     private final AuthorsService authorsService;
 
-    private final BookSeriesService bookSeriesService;
+    private final SeriesService seriesService;
 
     private final AuthorsBooksRelationService authorsBooksRelationService;
 
@@ -37,14 +37,14 @@ public class BooksController {
             ReadListService readListService,
             UserService userService,
             AuthorsService authorsService,
-            BookSeriesService bookSeriesService,
+            SeriesService seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,
             BookSeriesRelationService bookSeriesRelationService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.authorsService = authorsService;
-        this.bookSeriesService = bookSeriesService;
+        this.seriesService = seriesService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookSeriesRelationService = bookSeriesRelationService;
     }

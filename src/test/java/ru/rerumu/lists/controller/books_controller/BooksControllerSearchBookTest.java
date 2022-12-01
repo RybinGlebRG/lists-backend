@@ -16,7 +16,6 @@ import ru.rerumu.lists.controller.BooksController;
 import ru.rerumu.lists.services.*;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 
 @WebMvcTest(BooksController.class)
@@ -36,7 +35,7 @@ class BooksControllerSearchBookTest {
     private AuthorsService authorsService;
 
     @MockBean
-    private BookSeriesService bookSeriesService;
+    private SeriesService seriesService;
 
     @MockBean
     private AuthorsBooksRelationService authorsBooksRelationService;
