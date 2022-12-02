@@ -2,6 +2,7 @@ package ru.rerumu.lists.views;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BookUpdateView {
     private final Long readListId;
@@ -61,8 +62,8 @@ public class BookUpdateView {
         return title;
     }
 
-    public Integer getLastChapter() {
-        return lastChapter;
+    public Optional<Integer> getLastChapter() {
+        return Optional.ofNullable(lastChapter);
     }
 
     public LocalDateTime getInsertDateUTC() {

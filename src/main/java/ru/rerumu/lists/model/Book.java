@@ -6,8 +6,10 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class Book implements Cloneable{
     private final Long bookId;
@@ -79,11 +81,11 @@ public final class Book implements Cloneable{
         return lastUpdateDate;
     }
     public LocalDateTime getLastUpdateDate_V2() {
-        return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneId.of("UTC"));
+        return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
     }
 
-    public Integer getLastChapter() {
-        return lastChapter;
+    public Optional<Integer> getLastChapter() {
+        return Optional.ofNullable(lastChapter);
     }
 
     public int getdd() {
@@ -227,6 +229,11 @@ public final class Book implements Cloneable{
 
         public Builder lastUpdateDate(Date lastUpdateDate) {
             this.lastUpdateDate = lastUpdateDate;
+            return this;
+        }
+
+        public Builder lastUpdateDate(LocalDateTime lastUpdateDate) {
+            this.lastUpdateDate = Date.from(lastUpdateDate.toInstant(ZoneOffset.UTC));
             return this;
         }
 
