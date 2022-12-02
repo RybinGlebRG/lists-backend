@@ -57,15 +57,4 @@ public class WatchListService {
     public void deleteOne(Long titleId){
         titlesRepository.delete(titleId);
     }
-
-//    // TODO: Test
-//    @Transactional(rollbackFor = Exception.class)
-//    public Title createTitle(Long watchListId, Title newTitle)  {
-//        currentTitle.setName(newTitle.getName());
-//        currentTitle.setCreateDateUTC(newTitle.getCreateDateUTC());
-//
-//        Title updatedTitle = this.repository.update(currentTitle);
-//        return updatedTitle;
-//
-//    }
 }

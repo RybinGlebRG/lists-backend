@@ -25,7 +25,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookStatus().getId(),
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
-                book.getLastChapter(),
+                book.getLastChapter().isPresent() ? book.getLastChapter().get() : null ,
                 book.getBookType() != null ? book.getBookType().getId() : null
         );
 //        bookMapper.updateAuthor(
@@ -67,7 +67,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookStatus().getId(),
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
-                book.getLastChapter(),
+                book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null
         );
     }

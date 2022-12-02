@@ -12,6 +12,7 @@ import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -152,9 +153,15 @@ public class ReadListService {
         Book.Builder builder = new Book.Builder(currentBook);
 
         builder.insertDate(Date.from(bookUpdateView.getInsertDateUTC().toInstant(ZoneOffset.UTC)))
-                .lastChapter(bookUpdateView.getLastChapter())
-//                .lastUpdateDate(new Date())
                 .title(bookUpdateView.getTitle());
+
+        bookUpdateView.getLastChapter().ifPresent(builder::lastChapter);
+
+        // TODO: Test
+        if (!bookUpdateView.getLastChapter().equals(currentBook.getLastChapter()) ||
+                bookUpdateView.getStatus() != currentBook.getBookStatus().getId()) {
+            builder.lastUpdateDate(dateFactory.getLocalDateTime());
+        }
 
         switch (bookUpdateView.getStatus()) {
             case 1:
@@ -167,7 +174,7 @@ public class ReadListService {
                 builder.bookStatus(null);
         }
 
-        if (bookUpdateView.getBookTypeId() != null){
+        if (bookUpdateView.getBookTypeId() != null) {
             builder.bookType(
                     new BookType.Builder()
                             .typeId(bookUpdateView.getBookTypeId())
@@ -177,7 +184,7 @@ public class ReadListService {
 
         Book updatedBook = builder.build();
 
-        logger.debug(String.format("Updated book: %s",updatedBook.toString()));
+        logger.debug(String.format("Updated book: %s", updatedBook.toString()));
 
         bookRepository.update(updatedBook);
 
@@ -238,7 +245,7 @@ public class ReadListService {
                 .lastUpdateDate(dt)
                 .lastChapter(bookAddView.getLastChapter());
 
-        if (bookAddView.getBookTypeId() != null){
+        if (bookAddView.getBookTypeId() != null) {
             bookBuilder.bookType(
                     new BookType.Builder()
                             .typeId(bookAddView.getBookTypeId())

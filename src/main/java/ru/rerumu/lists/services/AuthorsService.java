@@ -42,8 +42,6 @@ public class AuthorsService {
         return authorsRepository.getAll(readListId);
     }
 
-
-    // TODO: Test transactions
     @Transactional(rollbackFor = Exception.class)
     public Author addAuthor(Long readListId, AddAuthorView addAuthorView) throws EntityNotFoundException {
         Long nextId = authorsRepository.getNextId();

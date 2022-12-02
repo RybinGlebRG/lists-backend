@@ -52,7 +52,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 3L,
                 "TitleNew",
                 null,
-                2,
+                1,
                 null,
                 null,
                 null,
@@ -77,7 +77,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
                 .bookType(BookType.LIGHT_NOVEL)
                 .build();
@@ -110,7 +110,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 3L,
                 "TitleNew",
                 null,
-                2,
+                1,
                 null,
                 null,
                 null,
@@ -134,7 +134,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
                 .bookType(BookType.LIGHT_NOVEL)
                 .build();
@@ -167,7 +167,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 3L,
                 "TitleNew",
                 null,
-                2,
+                1,
                 null,
                 null,
                 null,
@@ -192,7 +192,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
                 .build();
 
