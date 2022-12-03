@@ -3,7 +3,6 @@ package ru.rerumu.lists.views;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 
@@ -19,109 +18,29 @@ public class BookListView {
     }
 
     public void sort() {
-        Comparator<Book> comparator = new Comparator<Book>() {
-            @Override
-            public int compare(Book o1, Book o2) {
-                int res = Integer.compare(o1.getyyyy(), o2.getyyyy());
-                if (res != 0) {
-                    return res;
-                }
-                res = Integer.compare(o1.getMonth(), o2.getMonth());
-                if (res != 0) {
-                    return res;
-                }
-
-                res = Integer.compare(o1.getdd(), o2.getdd());
-                if (res != 0) {
-                    return res;
-                }
-
-                res = Integer.compare(o1.getHH(), o2.getHH());
-                if (res != 0) {
-                    return res;
-                }
-
-                res = Integer.compare(o1.getmm(), o2.getmm());
-                if (res != 0) {
-                    return res;
-                }
-
-                res = Integer.compare(o1.getss(), o2.getss());
-                if (res != 0) {
-                    return res;
-                }
-
-                res = o1.getTitle().compareTo(o2.getTitle());
-                if (res != 0) {
-                    return res;
-                }
-                res = Long.compare(o1.getBookId(), o2.getBookId());
-                return res;
-            }
-        };
+        Comparator<Book> comparator = Comparator
+                .comparing(Book::getInsertDate)
+                .thenComparing(Book::getTitle)
+                .thenComparing(Book::getBookId);
 
         this.bookList.sort(comparator);
     }
 
     public void sort(List<SortItem> sortItemList) {
-        Comparator<Book> comparator = (o1, o2) -> {
+        Comparator<Book> comparator=Comparator.comparing(book -> 0);
 
-            for (SortItem sortItem : sortItemList) {
+        for (SortItem sortItem: sortItemList){
+            if (sortItem.getSortField().equals("createDate")){
 
-                if (sortItem.getSortField().equals("createDate")){
-                    int res = Integer.compare(o1.getyyyy(), o2.getyyyy());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
-                    res = Integer.compare(o1.getMonth(), o2.getMonth());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
+                comparator.thenComparing(Book::getInsertDate);
 
-                    res = Integer.compare(o1.getdd(), o2.getdd());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
-
-                    res = Integer.compare(o1.getHH(), o2.getHH());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
-
-                    res = Integer.compare(o1.getmm(), o2.getmm());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
-
-                    res = Integer.compare(o1.getss(), o2.getss());
-                    if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                        res*=-1;
-                    }
-                    if (res != 0) {
-                        return res;
-                    }
-
-                    return 0;
+                if (sortItem.getSearchOrder()== SearchOrder.DESC){
+                    comparator.reversed();
                 }
             }
+        }
 
-            return 0;
-        };
+        comparator.thenComparing(Book::getBookId);
 
         this.bookList.sort(comparator);
     }
