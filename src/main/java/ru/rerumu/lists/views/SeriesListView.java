@@ -33,15 +33,11 @@ public class SeriesListView {
     }
 
     public void sort() {
-        logger.debug(seriesList.toString());
-        logger.debug(seriesRelations.toString());
         Comparator<Series> comparator = Comparator
                 .comparing((Series series) -> {
-                    logger.debug(series.toString());
                     Optional<LocalDateTime> maxDate = seriesRelations.get(series).stream()
                             .map(seriesBookRelation -> seriesBookRelation.getBook().getLastUpdateDate_V2())
                             .max(LocalDateTime::compareTo);
-                    logger.debug(maxDate.orElse(LocalDateTime.MIN).toString());
                     return maxDate.orElse(LocalDateTime.MIN);
                 })
                 .reversed()
@@ -49,7 +45,6 @@ public class SeriesListView {
                 .thenComparing(Series::getSeriesId);
 
         this.seriesList.sort(comparator);
-        logger.debug(seriesList.toString());
     }
 
     public JSONObject toJSONObject() {
