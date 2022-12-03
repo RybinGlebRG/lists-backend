@@ -69,7 +69,7 @@ class SeriesControllerGetSeriesTest {
         SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
 
         when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);
-        when(bookSeriesRelationService.getBySeriesId(anyLong())).thenReturn(List.of(seriesBookRelation));
+        when(bookSeriesRelationService.getBySeries(anyLong())).thenReturn(List.of(seriesBookRelation));
 
         RestAssuredMockMvc
                 .given()

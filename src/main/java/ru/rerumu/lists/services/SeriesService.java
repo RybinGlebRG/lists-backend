@@ -3,7 +3,6 @@ package ru.rerumu.lists.services;
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesRepository;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 public class SeriesService {
@@ -65,7 +63,7 @@ public class SeriesService {
             throw new EntityNotFoundException();
         }
 
-        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeriesId(seriesId);
+        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
         if (seriesBookRelationList.size() > 0) {
             throw new EntityHasChildrenException();
         }
@@ -73,26 +71,26 @@ public class SeriesService {
         seriesRepository.delete(seriesId);
     }
 
-    private Optional<LocalDateTime> getBookLastUpdate(Series series){
-        try {
-            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeriesId(series.getSeriesId());
-
-            Comparator<SeriesBookRelation> lastUpdateDateComparator = Comparator
-                    .comparing((SeriesBookRelation seriesBookRelation) -> seriesBookRelation.getBook().getLastUpdateDate_V2())
-                    .reversed()
-                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getTitle())
-                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getBookId());
-
-            Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBookRelationList.stream().min(lastUpdateDateComparator);
-
-            if (optionalSeriesBookRelation.isPresent()){
-                return Optional.of(optionalSeriesBookRelation.get().getBook().getLastUpdateDate_V2());
-            }
-
-        } catch (EntityNotFoundException ignored) {
-        }
-        return Optional.empty();
-    }
+//    private Optional<LocalDateTime> getBookLastUpdate(Series series){
+//        try {
+//            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(series.getSeriesId());
+//
+//            Comparator<SeriesBookRelation> lastUpdateDateComparator = Comparator
+//                    .comparing((SeriesBookRelation seriesBookRelation) -> seriesBookRelation.getBook().getLastUpdateDate_V2())
+//                    .reversed()
+//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getTitle())
+//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getBookId());
+//
+//            Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBookRelationList.stream().min(lastUpdateDateComparator);
+//
+//            if (optionalSeriesBookRelation.isPresent()){
+//                return Optional.of(optionalSeriesBookRelation.get().getBook().getLastUpdateDate_V2());
+//            }
+//
+//        } catch (EntityNotFoundException ignored) {
+//        }
+//        return Optional.empty();
+//    }
 
     /* TODO: Test
         1. no book
@@ -105,17 +103,17 @@ public class SeriesService {
 
         for (Series item : seriesList) {
             int bookCount = seriesRepository.getBookCount(item.getSeriesListId(), item.getSeriesId());
-            Optional<LocalDateTime> bookLastUpdate = getBookLastUpdate(item);
+//            Optional<LocalDateTime> bookLastUpdate = getBookLastUpdate(item);
 
             Series.Builder seriesBuilder = new Series.Builder(item).bookCount(bookCount);
 
-            bookLastUpdate.ifPresent(seriesBuilder::lastUpdateDate);
+//            bookLastUpdate.ifPresent(seriesBuilder::lastUpdateDate);
 
-            if (bookLastUpdate.isPresent()){
-                seriesBuilder.lastUpdateDate(bookLastUpdate.get());
-            } else {
-                seriesBuilder.lastUpdateDate(LocalDateTime.MIN);
-            }
+//            if (bookLastUpdate.isPresent()){
+//                seriesBuilder.lastUpdateDate(bookLastUpdate.get());
+//            } else {
+//                seriesBuilder.lastUpdateDate(LocalDateTime.MIN);
+//            }
 
             res.add(seriesBuilder.build());
 
