@@ -27,20 +27,20 @@ public class BookListView {
     }
 
     public void sort(List<SortItem> sortItemList) {
-        Comparator<Book> comparator=Comparator.comparing(book -> 0);
+        Comparator<Book> comparator = Comparator.comparing(book -> 0);
 
-        for (SortItem sortItem: sortItemList){
-            if (sortItem.getSortField().equals("createDate")){
+        for (SortItem sortItem : sortItemList) {
+            if (sortItem.getSortField().equals("createDate")) {
 
-                comparator.thenComparing(Book::getInsertDate);
+                comparator = comparator.thenComparing(Book::getInsertDate);
 
-                if (sortItem.getSearchOrder()== SearchOrder.DESC){
-                    comparator.reversed();
+                if (sortItem.getSearchOrder() == SearchOrder.DESC) {
+                    comparator = comparator.reversed();
                 }
             }
         }
 
-        comparator.thenComparing(Book::getBookId);
+        comparator = comparator.thenComparing(Book::getBookId);
 
         this.bookList.sort(comparator);
     }
