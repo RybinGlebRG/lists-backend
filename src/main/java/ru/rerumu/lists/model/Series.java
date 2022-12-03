@@ -13,7 +13,7 @@ public final class Series implements Cloneable{
     private final String title;
     private Integer bookCount;
 
-    private LocalDateTime lastUpdateDate;
+//    private LocalDateTime lastUpdateDate;
 
     public Series(Long seriesId, Long seriesListId, String title){
         this.seriesId = seriesId;
@@ -21,12 +21,12 @@ public final class Series implements Cloneable{
         this.title = title;
     }
 
-    public Series(Long seriesId, Long seriesListId, String title, int bookCount, LocalDateTime lastUpdateDate){
+    public Series(Long seriesId, Long seriesListId, String title, int bookCount){
         this.seriesId = seriesId;
         this.seriesListId = seriesListId;
         this.title = title;
         this.bookCount = bookCount;
-        this.lastUpdateDate = lastUpdateDate;
+//        this.lastUpdateDate = lastUpdateDate;
     }
 
     public Long getSeriesId() {
@@ -45,9 +45,9 @@ public final class Series implements Cloneable{
         return seriesListId;
     }
 
-    public LocalDateTime getLastUpdateDate() {
-        return lastUpdateDate;
-    }
+//    public LocalDateTime getLastUpdateDate() {
+//        return lastUpdateDate;
+//    }
 
     public Integer getBookCount() {
         return bookCount;
@@ -112,7 +112,7 @@ public final class Series implements Cloneable{
             this.title = series.getTitle();
             this.readListId = series.getSeriesListId();
             this.bookCount = series.getBookCount() != null ? series.getBookCount()  : 0;
-            this.lastUpdateDate = series.getLastUpdateDate();
+//            this.lastUpdateDate = series.getLastUpdateDate();
         }
 
         public Builder seriesId(long seriesId){
@@ -135,13 +135,13 @@ public final class Series implements Cloneable{
             return this;
         }
 
-        public Builder lastUpdateDate(LocalDateTime lastUpdateDate){
-            this.lastUpdateDate = lastUpdateDate;
-            return this;
-        }
+//        public Builder lastUpdateDate(LocalDateTime lastUpdateDate){
+//            this.lastUpdateDate = lastUpdateDate;
+//            return this;
+//        }
 
         public Series build(){
-            return new Series(seriesId,readListId,title, bookCount,lastUpdateDate);
+            return new Series(seriesId,readListId,title, bookCount);
         }
     }
 }

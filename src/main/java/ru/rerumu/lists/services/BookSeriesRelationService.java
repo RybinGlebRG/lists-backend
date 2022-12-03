@@ -1,15 +1,14 @@
 package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
-import ru.rerumu.lists.repository.SeriesRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookSeriesRelationService {
@@ -27,19 +26,35 @@ public class BookSeriesRelationService {
         seriesBooksRespository.update(seriesBookRelation);
     }
 
-    public void add(SeriesBookRelation seriesBookRelation){
+    public void add(SeriesBookRelation seriesBookRelation) {
         seriesBooksRespository.add(seriesBookRelation);
     }
 
-    public void delete(Long bookId, Long seriesId, Long readListId){
+    public void delete(Long bookId, Long seriesId, Long readListId) {
         seriesBooksRespository.delete(bookId, seriesId, readListId);
     }
 
-    public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId){
-        return seriesBooksRespository.getByBookId(bookId,readListId);
+    public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId) {
+        return seriesBooksRespository.getByBookId(bookId, readListId);
     }
 
-    public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
+    public List<SeriesBookRelation> getBySeries(Long seriesId) throws EntityNotFoundException {
         return seriesBooksRespository.getBySeriesId(seriesId);
+    }
+
+    public List<SeriesBookRelation> getBySeries(Series series) throws EntityNotFoundException {
+        return seriesBooksRespository.getBySeriesId(series.getSeriesId());
+    }
+
+    public HashMap<Series, List<SeriesBookRelation>> get(List<Series> seriesList) {
+        HashMap<Series, List<SeriesBookRelation>> seriesListHashMap = new HashMap<>();
+        for (Series series : seriesList) {
+            try {
+                seriesListHashMap.put(series, getBySeries(series));
+            } catch (EntityNotFoundException e) {
+                seriesListHashMap.put(series, new ArrayList<>());
+            }
+        }
+        return seriesListHashMap;
     }
 }

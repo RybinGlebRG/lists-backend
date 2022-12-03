@@ -57,7 +57,7 @@ public class SeriesController {
 
         ResponseEntity<String> resEnt;
         Series series = readListService.getSeries(readListId, seriesId);
-        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeriesId(seriesId);
+        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
 
         BookSeriesView.Builder builder = new BookSeriesView.Builder(series)
                 .seriesBookRelationList(seriesBookRelationList);
@@ -74,7 +74,11 @@ public class SeriesController {
 
         ResponseEntity<String> resEnt;
         List<Series> series = seriesService.getAll(readListId);
-        SeriesListView seriesListView = new SeriesListView(series);
+        var seriesRelations = bookSeriesRelationService.get(series);
+        SeriesListView.Builder builder = new SeriesListView.Builder()
+                .seriesList(series)
+                .seriesRelations(seriesRelations);
+        SeriesListView seriesListView = builder.build();
         seriesListView.sort();
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
         return resEnt;
