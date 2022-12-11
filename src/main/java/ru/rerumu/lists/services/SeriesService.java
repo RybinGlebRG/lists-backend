@@ -92,32 +92,9 @@ public class SeriesService {
 //        return Optional.empty();
 //    }
 
-    /* TODO: Test
-        1. no book
-        2. ordering
 
-     */
     public List<Series> getAll(Long readListId) {
-        List<Series> res = new ArrayList<>();
-        List<Series> seriesList = seriesRepository.getAll(readListId);
 
-        for (Series item : seriesList) {
-            int bookCount = seriesRepository.getBookCount(item.getSeriesListId(), item.getSeriesId());
-//            Optional<LocalDateTime> bookLastUpdate = getBookLastUpdate(item);
-
-            Series.Builder seriesBuilder = new Series.Builder(item).bookCount(bookCount);
-
-//            bookLastUpdate.ifPresent(seriesBuilder::lastUpdateDate);
-
-//            if (bookLastUpdate.isPresent()){
-//                seriesBuilder.lastUpdateDate(bookLastUpdate.get());
-//            } else {
-//                seriesBuilder.lastUpdateDate(LocalDateTime.MIN);
-//            }
-
-            res.add(seriesBuilder.build());
-
-        }
-        return res;
+        return seriesRepository.getAll(readListId);
     }
 }

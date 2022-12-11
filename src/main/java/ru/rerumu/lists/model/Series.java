@@ -63,7 +63,7 @@ public final class Series implements Cloneable{
         obj.put("seriesId", seriesId);
         obj.put("readListId", seriesListId);
         obj.put("title", title);
-        obj.put("bookCount", bookCount);
+//        obj.put("bookCount", bookCount);
 
         return obj;
     }

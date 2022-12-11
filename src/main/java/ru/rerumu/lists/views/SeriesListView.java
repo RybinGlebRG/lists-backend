@@ -47,11 +47,20 @@ public class SeriesListView {
         this.seriesList.sort(comparator);
     }
 
+    /* TODO: Test
+    1. no book
+ */
+    private int getBookCount(Series series){
+        return seriesRelations.get(series).size();
+    }
+
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray seriesArray = new JSONArray();
         for (Series item : this.seriesList) {
-            seriesArray.put(item.toJSONObject());
+            JSONObject tmp = item.toJSONObject();
+            tmp.put("bookCount",getBookCount(item));
+            seriesArray.put(tmp);
         }
         obj.put("items", seriesArray);
         return obj;
