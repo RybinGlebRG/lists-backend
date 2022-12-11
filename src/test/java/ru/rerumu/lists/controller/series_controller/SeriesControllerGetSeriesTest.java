@@ -1,6 +1,7 @@
 package ru.rerumu.lists.controller.series_controller;
 
 import io.restassured.RestAssured;
+import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.*;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +84,34 @@ class SeriesControllerGetSeriesTest {
                 .and().body("title",equalTo("Test"))
                 .and().body("books.findAll{i -> i.bookId == 88}", not(empty()))
                 .and().body("$",not(hasKey("bookCount")));
+
+    }
+
+    @Test
+    void shouldGetAll() throws Exception{
+        Date dt = new Date();
+        Book book = new Book.Builder()
+                .readListId(2L)
+                .bookId(88L)
+                .title("Title")
+                .bookStatus(BookStatus.IN_PROGRESS)
+                .insertDate(dt)
+                .lastUpdateDate(dt)
+                .lastChapter(4)
+                .build();
+        Series series = new Series(3L,2L,"Test");
+        SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
+
+        when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);
+        when(bookSeriesRelationService.getBySeries(anyLong())).thenReturn(List.of(seriesBookRelation));
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .when()
+                .get("/api/v0.2/readLists/2/series")
+                .then().statusCode(200)
+                .and().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("SeriesListJsonSchema.json"));
 
     }
 

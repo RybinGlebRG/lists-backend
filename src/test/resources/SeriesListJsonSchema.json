@@ -1,0 +1,69 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1670759274.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "$id": "#root/items",
+      "title": "Items",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/items/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "bookCount",
+          "readListId",
+          "seriesId",
+          "title"
+        ],
+        "properties": {
+          "bookCount": {
+            "$id": "#root/items/items/bookCount",
+            "title": "Bookcount",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "readListId": {
+            "$id": "#root/items/items/readListId",
+            "title": "Readlistid",
+            "type": "integer",
+            "examples": [
+              2
+            ],
+            "default": 0
+          },
+          "seriesId": {
+            "$id": "#root/items/items/seriesId",
+            "title": "Seriesid",
+            "type": "integer",
+            "examples": [
+              1048
+            ],
+            "default": 0
+          },
+          "title": {
+            "$id": "#root/items/items/title",
+            "title": "Title",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "asdasd"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      }
+
+    }
+  }
+}
