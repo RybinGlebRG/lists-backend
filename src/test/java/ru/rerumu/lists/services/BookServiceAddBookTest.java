@@ -308,7 +308,7 @@ class BookServiceAddBookTest {
                 .lastUpdateDate(dt)
                 .bookStatus(BookStatus.COMPLETED)
                 .readListId(5L)
-                .bookType(BookType.WEBTOON)
+                .bookType(BookTypeOld.WEBTOON)
                 .build()
                 ;
 

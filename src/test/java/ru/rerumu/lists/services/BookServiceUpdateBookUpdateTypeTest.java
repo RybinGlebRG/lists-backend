@@ -70,7 +70,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
-                .bookType(BookType.BOOK)
+                .bookType(BookTypeOld.BOOK)
                 .build();
         Book shouldBook = new Book.Builder()
                 .bookId(8L)
@@ -79,7 +79,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
-                .bookType(BookType.LIGHT_NOVEL)
+                .bookType(BookTypeOld.LIGHT_NOVEL)
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
@@ -136,7 +136,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
-                .bookType(BookType.LIGHT_NOVEL)
+                .bookType(BookTypeOld.LIGHT_NOVEL)
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
@@ -185,7 +185,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .bookStatus(BookStatus.IN_PROGRESS)
                 .readListId(3L)
-                .bookType(BookType.BOOK)
+                .bookType(BookTypeOld.BOOK)
                 .build();
         Book shouldBook = new Book.Builder()
                 .bookId(8L)

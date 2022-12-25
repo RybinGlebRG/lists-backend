@@ -1,0 +1,26 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.BookTypeMapper">
+
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">
+        <id property="id" column="type_id"  />
+        <result property="name" column="name"  />
+    </resultMap>
+
+
+    <select id="findById" resultMap="BookTypeResultMap">
+        select bt.type_id,
+                bt.name
+        from lists.book_types bt
+        where bt.type_id=#{id}
+    </select>
+
+    <select id="findAll" resultMap="BookTypeResultMap">
+        select bt.type_id,
+        bt.name
+        from lists.book_types bt
+    </select>
+
+</mapper>

@@ -12,7 +12,7 @@
         <result property="insertDate" column="insert_date"  />
         <result property="lastUpdateDate" column="last_update_date"  />
         <result property="lastChapter" column="last_chapter"  />
-        <result property="bookType" column="type_name"  javaType="ru.rerumu.lists.model.BookType"/>
+        <result property="bookType" column="type_name"  javaType="ru.rerumu.lists.model.BookTypeOld"/>
 
     </resultMap>
 

@@ -5,7 +5,6 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Objects;
@@ -19,7 +18,7 @@ public final class Book implements Cloneable{
     private final Date insertDate;
     private final Date lastUpdateDate;
     private final Integer lastChapter;
-    private final BookType bookType;
+    private final BookTypeOld bookType;
 
     public Book(Long bookId,
                 Long readListId,
@@ -28,7 +27,7 @@ public final class Book implements Cloneable{
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter,
-                BookType bookType) throws EmptyMandatoryParameterException {
+                BookTypeOld bookType) throws EmptyMandatoryParameterException {
         this.bookId = bookId;
         this.readListId = readListId;
 
@@ -112,7 +111,7 @@ public final class Book implements Cloneable{
         return Integer.parseInt(new SimpleDateFormat("ss").format(this.insertDate));
     }
 
-    public BookType getBookType(){
+    public BookTypeOld getBookType(){
         return bookType;
     }
 
@@ -187,7 +186,7 @@ public final class Book implements Cloneable{
         private Date lastUpdateDate;
         private Integer lastChapter;
 
-        private BookType bookType;
+        private BookTypeOld bookType;
 
         public Builder() {
         }
@@ -242,7 +241,7 @@ public final class Book implements Cloneable{
             return this;
         }
 
-        public Builder bookType(BookType bookType){
+        public Builder bookType(BookTypeOld bookType){
             this.bookType = bookType;
             return this;
         }

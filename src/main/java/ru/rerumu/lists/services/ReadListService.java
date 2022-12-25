@@ -12,9 +12,7 @@ import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -176,7 +174,7 @@ public class ReadListService {
 
         if (bookUpdateView.getBookTypeId() != null) {
             builder.bookType(
-                    new BookType.Builder()
+                    new BookTypeOld.Builder()
                             .typeId(bookUpdateView.getBookTypeId())
                             .build()
             );
@@ -247,7 +245,7 @@ public class ReadListService {
 
         if (bookAddView.getBookTypeId() != null) {
             bookBuilder.bookType(
-                    new BookType.Builder()
+                    new BookTypeOld.Builder()
                             .typeId(bookAddView.getBookTypeId())
                             .build()
             );
