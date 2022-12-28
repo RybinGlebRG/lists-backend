@@ -44,6 +44,9 @@ class BookServiceAddBookTest {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
+    @Mock
+    private BookTypesService bookTypesService;
+
     @Test
     void shouldAddBook() throws Exception {
         BookAddView bookAddView = new BookAddView(
@@ -83,7 +86,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -130,7 +134,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -176,7 +181,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -226,7 +232,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -277,7 +284,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -308,7 +316,7 @@ class BookServiceAddBookTest {
                 .lastUpdateDate(dt)
                 .bookStatus(BookStatus.COMPLETED)
                 .readListId(5L)
-                .bookType(BookTypeOld.WEBTOON)
+                .bookType(new BookType(3,"Webtoon"))
                 .build()
                 ;
 
@@ -316,6 +324,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
+        Mockito.when(bookTypesService.findById(Mockito.anyInt())).thenReturn(Optional.of(new BookType(3,"Webtoon")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -327,7 +336,8 @@ class BookServiceAddBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.addBook(5L, bookAddView);

@@ -20,4 +20,8 @@ public class BookTypesService {
     public List<BookType> findAll(){
         return bookTypeRepository.findAll();
     }
+
+    public Optional<BookType> findById(int bookTypeId){
+        return bookTypeRepository.findById(bookTypeId);
+    }
 }

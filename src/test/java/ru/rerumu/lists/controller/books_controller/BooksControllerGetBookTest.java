@@ -74,7 +74,7 @@ class BooksControllerGetBookTest {
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)
-                .bookType(BookTypeOld.WEBTOON)
+                .bookType(new BookType(3,"Webtoon"))
                 .build();
         Author author = new Author(6L,2L,"Author");
         Series series = new Series(5L,2L,"Series");

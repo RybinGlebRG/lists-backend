@@ -3,13 +3,14 @@ package ru.rerumu.lists.mappers;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.util.Date;
 import java.util.List;
 
 public interface BookMapper {
 
-    Book getOne(Long bookId);
+    BookDTO getOne(Long bookId);
 
     void update(
             Long readListId,
@@ -29,7 +30,7 @@ public interface BookMapper {
             Long authorId
     );
 
-    List<Book> getAll(Long readListId);
+    List<BookDTO> getAll(Long readListId);
 
     Long getNextId();
 

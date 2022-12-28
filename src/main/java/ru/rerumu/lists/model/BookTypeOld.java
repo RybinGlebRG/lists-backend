@@ -1,6 +1,6 @@
 package ru.rerumu.lists.model;
 
-
+@Deprecated
 public enum BookTypeOld {
     BOOK(1,"Book"),
     LIGHT_NOVEL(2,"Light Novel"),
@@ -22,6 +22,7 @@ public enum BookTypeOld {
         return nice;
     }
 
+    @Deprecated
     public static class Builder{
         private Integer typeId;
 

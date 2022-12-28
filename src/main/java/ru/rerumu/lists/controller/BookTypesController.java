@@ -26,9 +26,7 @@ public class BookTypesController {
 
     private final BookTypesService bookTypesService;
 
-    public BookTypesController(
-            BookTypesService bookTypesService
-    ) {
+    public BookTypesController(BookTypesService bookTypesService) {
         this.bookTypesService = bookTypesService;
     }
 

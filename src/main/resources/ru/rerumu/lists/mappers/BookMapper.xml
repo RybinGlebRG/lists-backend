@@ -4,16 +4,15 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.BookMapper">
 
-    <resultMap id="BookResultMap" type="ru.rerumu.lists.model.Book">
-        <id property="bookId" column="book_id"  />
-        <result property="readListId" column="list_list_id"  />
-        <result property="title" column="title" />
-        <result property="bookStatus" column="key_name"  javaType="ru.rerumu.lists.model.BookStatus"/>
-        <result property="insertDate" column="insert_date"  />
-        <result property="lastUpdateDate" column="last_update_date"  />
-        <result property="lastChapter" column="last_chapter"  />
-        <result property="bookType" column="type_name"  javaType="ru.rerumu.lists.model.BookTypeOld"/>
-
+    <resultMap id="BookResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
+        <result column="book_id" property="bookId" />
+        <result column="list_list_id" property="readListId" />
+        <result column="title" property="title" />
+        <result column="status_id" property="bookStatus" />
+        <result column="insert_date" property="insertDate" />
+        <result column="last_update_date" property="lastUpdateDate" />
+        <result column="last_chapter" property="lastChapter" />
+        <result column="type_id" property="bookType" />
     </resultMap>
 
     <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus_">
@@ -25,11 +24,13 @@
         select  b.book_id,
                 b.list_list_id,
                 b.title,
-                s.key_name,
+                s."STATUS_ID" as status_id,
                 b.insert_date AT TIME ZONE 'UTC' as insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
                 b.last_chapter,
-                bt.key_name as type_name
+                bt.type_id as type_id,
+                bt.name as type_name
+
         from lists.books b
                 inner join lists.statuses s
                 on s."STATUS_ID"= b.status_status_id

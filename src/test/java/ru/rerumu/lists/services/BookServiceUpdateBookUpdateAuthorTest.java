@@ -46,6 +46,9 @@ class BookServiceUpdateBookUpdateAuthorTest {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
+    @Mock
+    private BookTypesService bookTypesService;
+
     @Test
     void shouldChangeAuthor() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
@@ -89,7 +92,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -142,7 +146,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -195,7 +200,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
