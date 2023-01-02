@@ -47,6 +47,9 @@ class BookServiceUpdateBookTest {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
+    @Mock
+    private BookTypesService bookTypesService;
+
     @Test
     void shouldUpdate() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
@@ -100,7 +103,8 @@ class BookServiceUpdateBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -156,7 +160,8 @@ class BookServiceUpdateBookTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);

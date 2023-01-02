@@ -2,10 +2,10 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Objects;
@@ -20,6 +20,16 @@ public final class Book implements Cloneable{
     private final Date lastUpdateDate;
     private final Integer lastChapter;
     private final BookType bookType;
+
+    public Book(Long bookId,
+                Long readListId,
+                String title,
+                BookStatus bookStatus,
+                Date insertDate,
+                Date lastUpdateDate,
+                Integer lastChapter) throws EmptyMandatoryParameterException{
+        this(bookId,readListId,title,bookStatus,insertDate,lastUpdateDate,lastChapter,null);
+    }
 
     public Book(Long bookId,
                 Long readListId,
@@ -88,34 +98,33 @@ public final class Book implements Cloneable{
         return Optional.ofNullable(lastChapter);
     }
 
-    public int getdd() {
-        return Integer.parseInt(new SimpleDateFormat("dd").format(this.insertDate));
-    }
+//    public int getdd() {
+//        return Integer.parseInt(new SimpleDateFormat("dd").format(this.insertDate));
+//    }
+//
+//    public int getMonth() {
+//        return Integer.parseInt(new SimpleDateFormat("MM").format(this.insertDate));
+//    }
+//
+//    public int getyyyy() {
+//        return Integer.parseInt(new SimpleDateFormat("yyyy").format(this.insertDate));
+//    }
+//
+//    public int getHH() {
+//        return Integer.parseInt(new SimpleDateFormat("HH").format(this.insertDate));
+//    }
+//
+//    public int getmm() {
+//        return Integer.parseInt(new SimpleDateFormat("mm").format(this.insertDate));
+//    }
+//
+//    public int getss() {
+//        return Integer.parseInt(new SimpleDateFormat("ss").format(this.insertDate));
+//    }
 
-    public int getMonth() {
-        return Integer.parseInt(new SimpleDateFormat("MM").format(this.insertDate));
-    }
-
-    public int getyyyy() {
-        return Integer.parseInt(new SimpleDateFormat("yyyy").format(this.insertDate));
-    }
-
-    public int getHH() {
-        return Integer.parseInt(new SimpleDateFormat("HH").format(this.insertDate));
-    }
-
-    public int getmm() {
-        return Integer.parseInt(new SimpleDateFormat("mm").format(this.insertDate));
-    }
-
-    public int getss() {
-        return Integer.parseInt(new SimpleDateFormat("ss").format(this.insertDate));
-    }
-
-    public BookType getBookType(){
+    public BookType getBookType() {
         return bookType;
     }
-
 
     @Override
     public Book clone() {
@@ -150,7 +159,7 @@ public final class Book implements Cloneable{
         if (bookType != null) {
             JSONObject bookTypeJson = new JSONObject();
             bookTypeJson.put("typeId", bookType.getId());
-            bookTypeJson.put("typeName", bookType.getNice());
+            bookTypeJson.put("typeName", bookType.getName());
 
             obj.put("bookType", bookTypeJson);
         }
@@ -170,7 +179,7 @@ public final class Book implements Cloneable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter) && bookType == book.bookType;
+        return Objects.equals(bookId, book.bookId) && Objects.equals(readListId, book.readListId) && Objects.equals(title, book.title) && bookStatus == book.bookStatus && Objects.equals(insertDate, book.insertDate) && Objects.equals(lastUpdateDate, book.lastUpdateDate) && Objects.equals(lastChapter, book.lastChapter) && Objects.equals(bookType, book.bookType);
     }
 
     @Override
@@ -200,6 +209,16 @@ public final class Book implements Cloneable{
             this.insertDate = book.insertDate;
             this.lastUpdateDate = book.lastUpdateDate;
             this.lastChapter = book.lastChapter;
+        }
+
+        public Builder(BookDTO bookDTO) {
+            this.bookId = bookDTO.getBookId();
+            this.readListId = bookDTO.getReadListId();
+            this.title = bookDTO.getTitle();
+            this.insertDate = bookDTO.getInsertDate();
+            this.lastUpdateDate = bookDTO.getLastUpdateDate();
+            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
+            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
         }
 
         public Builder bookId(Long bookId) {

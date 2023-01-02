@@ -46,6 +46,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
+    @Mock
+    private BookTypesService bookTypesService;
+
 
     @Test
     void shouldUpdateChangeSeries() throws Exception{
@@ -90,7 +93,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -147,7 +151,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -204,7 +209,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -260,7 +266,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
         readListService.updateBook(8L,bookUpdateView);
 

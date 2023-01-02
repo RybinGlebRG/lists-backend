@@ -12,9 +12,7 @@ import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +39,8 @@ public class ReadListService {
 
     private final AuthorsBooksRelationService authorsBooksRelationService;
 
+    private final BookTypesService bookTypesService;
+
     public ReadListService(
             BookRepository bookRepository,
             SeriesRepository seriesRepository,
@@ -51,7 +51,8 @@ public class ReadListService {
             DateFactory dateFactory,
             SeriesService seriesService,
             BookSeriesRelationService bookSeriesRelationService,
-            AuthorsBooksRelationService authorsBooksRelationService
+            AuthorsBooksRelationService authorsBooksRelationService,
+            BookTypesService bookTypesService
     ) {
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
@@ -63,6 +64,7 @@ public class ReadListService {
         this.seriesService = seriesService;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.authorsBooksRelationService = authorsBooksRelationService;
+        this.bookTypesService = bookTypesService;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
@@ -175,11 +177,17 @@ public class ReadListService {
         }
 
         if (bookUpdateView.getBookTypeId() != null) {
-            builder.bookType(
-                    new BookType.Builder()
-                            .typeId(bookUpdateView.getBookTypeId())
-                            .build()
-            );
+            Optional<BookType> optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId());
+            if (optionalBookType.isEmpty()){
+                throw new IllegalArgumentException();
+            }
+
+            optionalBookType.ifPresent(builder::bookType);
+//            builder.bookType(
+//                    new BookTypeOld.Builder()
+//                            .typeId(bookUpdateView.getBookTypeId())
+//                            .build()
+//            );
         }
 
         Book updatedBook = builder.build();
@@ -246,11 +254,18 @@ public class ReadListService {
                 .lastChapter(bookAddView.getLastChapter());
 
         if (bookAddView.getBookTypeId() != null) {
-            bookBuilder.bookType(
-                    new BookType.Builder()
-                            .typeId(bookAddView.getBookTypeId())
-                            .build()
-            );
+            Optional<BookType> optionalBookType = bookTypesService.findById(bookAddView.getBookTypeId());
+            if (optionalBookType.isEmpty()){
+                throw new IllegalArgumentException();
+            }
+
+            optionalBookType.ifPresent(bookBuilder::bookType);
+
+//            bookBuilder.bookType(
+//                    new BookTypeOld.Builder()
+//                            .typeId(bookAddView.getBookTypeId())
+//                            .build()
+//            );
         }
 
         Book newBook = bookBuilder.build();

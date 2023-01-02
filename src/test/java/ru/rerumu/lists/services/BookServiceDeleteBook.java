@@ -46,6 +46,9 @@ class BookServiceDeleteBook {
     @Mock
     private  AuthorsBooksRelationService authorsBooksRelationService;
 
+    @Mock
+    private BookTypesService bookTypesService;
+
 
     @Test
     void shouldDeleteBook() throws Exception{
@@ -83,7 +86,8 @@ class BookServiceDeleteBook {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
         readListService.deleteBook(bookId);
 
@@ -110,7 +114,8 @@ class BookServiceDeleteBook {
                 dateFactory,
                 seriesService,
                 bookSeriesRelationService,
-                authorsBooksRelationService
+                authorsBooksRelationService,
+                bookTypesService
         );
 
         Assertions.assertThrows(EntityNotFoundException.class,() -> readListService.deleteBook(bookId));
