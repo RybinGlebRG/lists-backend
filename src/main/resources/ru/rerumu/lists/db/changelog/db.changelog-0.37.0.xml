@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet author="gleb" id="53e1770a-c4f4-4947-918f-1cf21bb35b8a">
+        <insert  catalogName="lists"
+                 dbms="postgresql"
+                 schemaName="lists"
+                 tableName="book_types">
+            <column  name="type_id"  value="5"/>
+            <column  name="name"  value="Manga"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+</databaseChangeLog>
