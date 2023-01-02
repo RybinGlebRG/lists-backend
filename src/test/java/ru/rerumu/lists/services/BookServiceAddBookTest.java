@@ -73,7 +73,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -168,7 +168,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -219,7 +219,7 @@ class BookServiceAddBookTest {
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries( Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(

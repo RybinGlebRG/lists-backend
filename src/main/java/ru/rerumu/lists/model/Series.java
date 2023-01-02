@@ -15,7 +15,7 @@ public final class Series implements Cloneable{
     private final Long seriesListId;
     private final String title;
     private Integer bookCount;
-    private List<?> itemsList;
+    private final List<?> itemsList;
 
 //    private LocalDateTime lastUpdateDate;
 
@@ -77,6 +77,7 @@ public final class Series implements Cloneable{
                 throw new IllegalArgumentException();
             }
         }
+        obj.put("items",jsonArray);
 
 //        obj.put("bookCount", bookCount);
 

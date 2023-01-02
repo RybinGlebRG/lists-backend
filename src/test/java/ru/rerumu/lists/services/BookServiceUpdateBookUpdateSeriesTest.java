@@ -81,7 +81,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                  List.of(new SeriesBookRelation(book,series,1L))
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -139,7 +139,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of()
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -253,7 +253,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of(new SeriesBookRelation(book,series,1L))
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(series));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(series));
 
 
         ReadListService readListService = new ReadListService(

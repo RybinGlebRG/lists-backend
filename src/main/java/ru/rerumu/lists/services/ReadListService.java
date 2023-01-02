@@ -26,8 +26,6 @@ public class ReadListService {
 
     private final SeriesRepository seriesRepository;
 
-//    private final AuthorsRepository authorsRepository;
-
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
@@ -95,12 +93,14 @@ public class ReadListService {
         }
     }
 
-    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder) {
+    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder, Book book) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
+
+//        List<Series> seriesList = seriesService.findByBook(book);
 
 
         Optional<Series> optionalSeries = seriesId != null ?
-                seriesService.getSeries(readListId, seriesId) :
+                seriesService.getSeries( seriesId) :
                 Optional.empty();
 
         seriesBookRelationList.stream()
@@ -198,7 +198,7 @@ public class ReadListService {
 
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
 
-        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder());
+        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder(),updatedBook);
 
     }
 
@@ -210,11 +210,6 @@ public class ReadListService {
 
     public List<Book> getAllBooks(Long readListId) {
         return this.bookRepository.getAll(readListId);
-    }
-
-    @Deprecated
-    public Series getSeries(Long readListId, Long seriesId) {
-        return seriesRepository.getOne(readListId, seriesId);
     }
 
     @Deprecated
@@ -281,7 +276,7 @@ public class ReadListService {
         }
 
         if (bookAddView.getSeriesId() != null) {
-            Optional<Series> series = seriesService.getSeries(readListId, bookAddView.getSeriesId());
+            Optional<Series> series = seriesService.getSeries( bookAddView.getSeriesId());
             if (series.isEmpty()) {
                 throw new EntityNotFoundException();
             }

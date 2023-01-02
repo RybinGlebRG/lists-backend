@@ -19,8 +19,7 @@ import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.*;
 
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -67,10 +66,10 @@ class SeriesControllerGetSeriesTest {
                 .lastUpdateDate(dt)
                 .lastChapter(4)
                 .build();
-        Series series = new Series.Builder().seriesId(3L).readListId(2L).title("Test").build() ;
+        Series series = new Series.Builder().seriesId(3L).readListId(2L).title("Test").itemList(List.of(book)).build() ;
         SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
 
-        when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(series));
         when(bookSeriesRelationService.getBySeries(anyLong())).thenReturn(List.of(seriesBookRelation));
 
         RestAssuredMockMvc
@@ -82,7 +81,7 @@ class SeriesControllerGetSeriesTest {
                 .and().body("seriesId",equalTo(3))
                 .and().body("readListId",equalTo(2))
                 .and().body("title",equalTo("Test"))
-                .and().body("books.findAll{i -> i.bookId == 88}", not(empty()))
+                .and().body("items.findAll{i -> i.bookId == 88}", not(empty()))
                 .and().body("$",not(hasKey("bookCount")));
 
     }
@@ -101,9 +100,13 @@ class SeriesControllerGetSeriesTest {
                 .build();
         Series series = new Series.Builder().seriesId(3L).readListId(2L).title("Test").build();
         SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
+        List<Series> seriesList = new ArrayList<>();
+        seriesList.add(series);
+        HashMap<Series,List<SeriesBookRelation>> hashMap = new HashMap<>();
+        hashMap.put(series,List.of(seriesBookRelation));
 
-        when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);
-        when(bookSeriesRelationService.getBySeries(anyLong())).thenReturn(List.of(seriesBookRelation));
+        when(seriesService.getAll(anyLong())).thenReturn(seriesList);
+        when(bookSeriesRelationService.get(any())).thenReturn(hashMap);
 
         RestAssuredMockMvc
                 .given()
@@ -111,7 +114,10 @@ class SeriesControllerGetSeriesTest {
                 .when()
                 .get("/api/v0.2/readLists/2/series")
                 .then().statusCode(200)
-                .and().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("SeriesListJsonSchema.json"));
+                .and().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("SeriesListJsonSchema.json"))
+                .body("items.size()",is(1))
+//                .and().body("books.findAll{i -> i.bookId == 88}", not(empty()))
+        ;
 
     }
 

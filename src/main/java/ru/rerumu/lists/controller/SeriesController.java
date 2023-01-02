@@ -18,6 +18,7 @@ import ru.rerumu.lists.views.BookSeriesView;
 import ru.rerumu.lists.views.SeriesListView;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -56,14 +57,16 @@ public class SeriesController {
         userService.checkOwnershipList(username, readListId);
 
         ResponseEntity<String> resEnt;
-        Series series = readListService.getSeries(readListId, seriesId);
-        List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
+        Optional<Series> optionalSeries = seriesService.getSeries(seriesId);
+        if (optionalSeries.isEmpty()){
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        } else {
+//            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
 
-        BookSeriesView.Builder builder = new BookSeriesView.Builder(series)
-                .seriesBookRelationList(seriesBookRelationList);
+            BookSeriesView.Builder builder = new BookSeriesView.Builder(optionalSeries.get());
 
-        resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
-        return resEnt;
+            return new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
+        }
     }
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series",
