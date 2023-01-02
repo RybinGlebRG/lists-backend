@@ -77,7 +77,7 @@ class BooksControllerGetBookTest {
                 .bookType(new BookType(3,"Webtoon"))
                 .build();
         Author author = new Author(6L,2L,"Author");
-        Series series = new Series(5L,2L,"Series");
+        Series series = new Series.Builder().seriesId(5L).readListId(2L).title("Series").build();
 
         Mockito.when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                         .thenReturn(book);
@@ -129,7 +129,7 @@ class BooksControllerGetBookTest {
                 .lastUpdateDate(dt)
                 .lastChapter(4)
                 .build();
-        Series series = new Series(5L,2L,"Series");
+        Series series = new Series.Builder().seriesId(5L).readListId(2L).title("Series").build();
         when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong())).thenReturn(book);
         when(bookSeriesRelationService.getByBookId(anyLong(), anyLong()))
                 .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
@@ -217,7 +217,7 @@ class BooksControllerGetBookTest {
                 .lastUpdateDate(dt)
                 .build();
         Author author = new Author(6L,2L,"Author");
-        Series series = new Series(5L,2L,"Series");
+        Series series = new Series.Builder().seriesId(5L).readListId(2L).title("Series").build();
 
         when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong()))
                 .thenReturn(book);

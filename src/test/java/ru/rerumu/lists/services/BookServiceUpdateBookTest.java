@@ -63,10 +63,6 @@ class BookServiceUpdateBookTest {
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
                 null
         );
-        Author author = new Author(5L, 3L, "Author");
-        Author shouldAuthor = new Author(6L, 3L, "AuthorNew");
-        Series series = new Series(5L,3L,"Series");
-        Series shouldSeries = new Series(6L,3L,"SeriesNew");
         LocalDateTime dt = LocalDateTime.now();
 
         Book book = new Book.Builder()

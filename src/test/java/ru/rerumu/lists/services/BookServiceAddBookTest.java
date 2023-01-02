@@ -54,7 +54,7 @@ class BookServiceAddBookTest {
         );
 
         Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
         Date dt = new Date();
 
@@ -150,7 +150,7 @@ class BookServiceAddBookTest {
         );
 
         Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
         Date dt = new Date();
 
@@ -201,7 +201,7 @@ class BookServiceAddBookTest {
                 "Test", null, 2, 3L, 4L, 7, null
         );
 
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(25L).title("Series").build();
 
         Date dt = new Date();
 

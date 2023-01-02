@@ -1,20 +1,35 @@
 package ru.rerumu.lists.repository.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesMapper;
+import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl implements SeriesRepository {
+public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implements SeriesRepository{
 
-    @Autowired
-    private SeriesMapper seriesMapper;
+    private final SeriesMapper seriesMapper;
+    private final SeriesBooksRespository seriesBooksRespository;
 
+    public SeriesRepositoryImpl(
+            SeriesMapper seriesMapper,
+            SeriesBooksRespository seriesBooksRespository) {
+        super(seriesMapper);
+        this.seriesMapper = seriesMapper;
+        this.seriesBooksRespository = seriesBooksRespository;
+    }
+
+    @Deprecated
     @Override
     public Series getOne(Long readListId, Long seriesId) {
 
@@ -23,7 +38,27 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 
     @Override
     public Optional<Series> getOne(Long seriesId) {
-        return Optional.ofNullable(seriesMapper.getOneBySeriesOnly(seriesId));
+        Series series = seriesMapper.findById(seriesId);
+        if (series==null){
+            return Optional.empty();
+        }
+        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
+        try {
+            seriesBookRelationList = seriesBooksRespository.getBySeriesId(series.getSeriesId());
+        } catch (EntityNotFoundException e){
+            throw new IllegalArgumentException();
+        }
+
+        List<Book> bookList = seriesBookRelationList.stream()
+                .sorted(Comparator.comparingLong(SeriesBookRelation::getOrder))
+                .map(SeriesBookRelation::getBook)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        Series.Builder seriesBuilder = new Series.Builder(series);
+        seriesBuilder.itemList(bookList);
+
+
+        return Optional.of(seriesBuilder.build());
     }
 
     @Override

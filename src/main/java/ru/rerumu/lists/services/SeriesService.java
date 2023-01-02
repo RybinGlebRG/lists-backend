@@ -34,13 +34,8 @@ public class SeriesService {
         if (seriesId == null || readListId == null) {
             throw new IllegalArgumentException();
         }
-        Series series = seriesRepository.getOne(readListId, seriesId);
-        if (series != null) {
-            return Optional.of(series);
-        } else {
-            return Optional.empty();
-        }
-
+        Optional<Series> series = seriesRepository.getOne(seriesId);
+        return series;
     }
 
     public void add(long readListId, BookSeriesAddView bookSeriesAddView) {

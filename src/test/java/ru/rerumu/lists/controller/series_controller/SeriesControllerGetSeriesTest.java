@@ -67,7 +67,7 @@ class SeriesControllerGetSeriesTest {
                 .lastUpdateDate(dt)
                 .lastChapter(4)
                 .build();
-        Series series = new Series(3L,2L,"Test");
+        Series series = new Series.Builder().seriesId(3L).readListId(2L).title("Test").build() ;
         SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
 
         when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);
@@ -99,7 +99,7 @@ class SeriesControllerGetSeriesTest {
                 .lastUpdateDate(dt)
                 .lastChapter(4)
                 .build();
-        Series series = new Series(3L,2L,"Test");
+        Series series = new Series.Builder().seriesId(3L).readListId(2L).title("Test").build();
         SeriesBookRelation seriesBookRelation = new SeriesBookRelation(book,series,100L);
 
         when(readListService.getSeries(anyLong(),anyLong())).thenReturn(series);

@@ -29,6 +29,11 @@
         where s.series_id=#{seriesId}
     </select>
 
+    <select id="findById" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        where s.series_id=#{seriesId}
+    </select>
+
     <select id="getAll" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
         where s.list_list_id=#{readListId}
