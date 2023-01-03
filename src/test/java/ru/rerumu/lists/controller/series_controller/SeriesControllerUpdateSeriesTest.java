@@ -1,0 +1,92 @@
+package ru.rerumu.lists.controller.series_controller;
+
+import io.restassured.RestAssured;
+import io.restassured.module.jsv.JsonSchemaValidator;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.SeriesController;
+import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.BookStatus;
+import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.services.BookSeriesRelationService;
+import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.services.SeriesService;
+import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.views.SeriesListView;
+import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
+import ru.rerumu.lists.views.series_update.SeriesUpdateView;
+
+import java.util.*;
+
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.*;
+
+@WebMvcTest(SeriesController.class)
+@AutoConfigureMockMvc(addFilters = false)
+class SeriesControllerUpdateSeriesTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ReadListService readListService;
+
+    @MockBean
+    private SeriesService seriesService;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private BookSeriesRelationService bookSeriesRelationService;
+
+    @BeforeAll
+    static void setup() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = 8080;
+    }
+
+    @BeforeEach
+    void setUp() {
+        RestAssuredMockMvc.mockMvc(mockMvc);
+    }
+
+    @Test
+    void shouldUpdateSeries() throws Exception{
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","Series");
+        JSONArray array = new JSONArray();
+        var tmp = new JSONObject();
+        tmp.put("itemType","book");
+        tmp.put("itemId",5);
+        tmp.put("itemOrder",3);
+        array.put(tmp);
+        requestBody.put("items",array);
+
+        List<SeriesUpdateItem> seriesUpdateItemList = new ArrayList<>();
+        seriesUpdateItemList.add(new SeriesUpdateItem("book",5L,3L));
+        SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
+
+        RestAssuredMockMvc
+                .given()
+                .attribute("username","Test")
+                .header("Content-Type", "application/json")
+                .body(requestBody.toString())
+                .when()
+                .put("/api/v0.2/series/3")
+                .then().statusCode(204);
+
+        verify(seriesService).updateSeries(3L,seriesUpdateView);
+    }
+}

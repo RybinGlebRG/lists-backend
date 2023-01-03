@@ -9,10 +9,10 @@ import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
+import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +46,7 @@ public class SeriesService {
                         .map(SeriesBookRelation::getBook)
                         .collect(Collectors.toCollection(ArrayList::new));
                 seriesBuilder.itemList(bookList);
-            } catch (EntityNotFoundException e){
+            } catch (EntityNotFoundException e) {
                 throw new IllegalArgumentException();
             }
 
@@ -84,36 +84,36 @@ public class SeriesService {
         seriesRepository.delete(seriesId);
     }
 
-//    private Optional<LocalDateTime> getBookLastUpdate(Series series){
-//        try {
-//            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(series.getSeriesId());
-//
-//            Comparator<SeriesBookRelation> lastUpdateDateComparator = Comparator
-//                    .comparing((SeriesBookRelation seriesBookRelation) -> seriesBookRelation.getBook().getLastUpdateDate_V2())
-//                    .reversed()
-//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getTitle())
-//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getBookId());
-//
-//            Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBookRelationList.stream().min(lastUpdateDateComparator);
-//
-//            if (optionalSeriesBookRelation.isPresent()){
-//                return Optional.of(optionalSeriesBookRelation.get().getBook().getLastUpdateDate_V2());
-//            }
-//
-//        } catch (EntityNotFoundException ignored) {
-//        }
-//        return Optional.empty();
-//    }
-
-
     public List<Series> getAll(Long readListId) {
 
         return seriesRepository.getAll(readListId);
     }
 
-    public List<Series> findByBook(Book book){
-        return seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId()).stream()
-                .map(SeriesBookRelation::getSeries)
-                .collect(Collectors.toCollection(ArrayList::new));
+    private void updateBookOrder(Long bookId, Long seriesId, Long order) throws EntityNotFoundException {
+        Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBooksRespository
+                .getByIds(seriesId, bookId);
+        // TODO: Check absent in update view
+        // TODO: Check ordering is not sparse
+        if (optionalSeriesBookRelation.isEmpty()) {
+            // TODO: Add relation
+            throw new EntityNotFoundException();
+        } else if (!optionalSeriesBookRelation.get().getOrder().equals(order)) {
+            SeriesBookRelation seriesBookRelation = new SeriesBookRelation(
+                    optionalSeriesBookRelation.get().getBook(),
+                    optionalSeriesBookRelation.get().getSeries(),
+                    order
+            );
+            seriesBooksRespository.update(seriesBookRelation);
+        }
     }
+
+    public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
+        for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
+            if (seriesUpdateItem.itemType().equals("book")) {
+                updateBookOrder(seriesUpdateItem.itemId(), seriesId, seriesUpdateItem.itemOrder());
+            }
+        }
+    }
+
+
 }

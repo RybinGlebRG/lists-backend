@@ -8,7 +8,6 @@ import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.SeriesService;
 import ru.rerumu.lists.services.ReadListService;
@@ -16,6 +15,7 @@ import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.BookSeriesView;
 import ru.rerumu.lists.views.SeriesListView;
+import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
 import java.util.List;
 import java.util.Optional;
@@ -116,6 +116,23 @@ public class SeriesController {
         userService.checkOwnershipSeries(username, seriesId);
 
         seriesService.delete(seriesId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(
+            value = "/api/v0.2/series/{seriesId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )   ResponseEntity<String> update(
+            @PathVariable long seriesId,
+            @RequestBody SeriesUpdateView seriesUpdateView,
+            @RequestAttribute("username") String username
+    )
+            throws UserIsNotOwnerException, EntityNotFoundException {
+
+        userService.checkOwnershipSeries(username, seriesId);
+
+        seriesService.updateSeries(seriesId,seriesUpdateView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
