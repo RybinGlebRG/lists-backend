@@ -14,10 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.SeriesService;
@@ -68,14 +65,14 @@ class SeriesControllerUpdateSeriesTest {
         requestBody.put("title","Series");
         JSONArray array = new JSONArray();
         var tmp = new JSONObject();
-        tmp.put("itemType","book");
+        tmp.put("itemType","BOOK");
         tmp.put("itemId",5);
         tmp.put("itemOrder",3);
         array.put(tmp);
         requestBody.put("items",array);
 
         List<SeriesUpdateItem> seriesUpdateItemList = new ArrayList<>();
-        seriesUpdateItemList.add(new SeriesUpdateItem("book",5L,3L));
+        seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,5L,3L));
         SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
 
         RestAssuredMockMvc

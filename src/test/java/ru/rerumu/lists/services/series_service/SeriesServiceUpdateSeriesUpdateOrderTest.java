@@ -35,7 +35,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
     @Test
     void shouldUpdateOrder()throws Exception{
         List<SeriesUpdateItem> seriesUpdateItemList = new ArrayList<>();
-        seriesUpdateItemList.add(new SeriesUpdateItem("book",5L,3L));
+        seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,5L,0L));
         SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
         Book book = new Book.Builder()
                 .bookId(5L)
@@ -51,7 +51,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .title("Series")
                 .build();
         Optional<SeriesBookRelation> optionalSeriesBookRelation = Optional.of(new SeriesBookRelation(book,series,2L));
-        SeriesBookRelation shouldSeriesBookRelation = new SeriesBookRelation(book,series,3L);
+        SeriesBookRelation shouldSeriesBookRelation = new SeriesBookRelation(book,series,0L);
 
         when(seriesBooksRespository.getByIds(anyLong(),anyLong())).thenReturn(optionalSeriesBookRelation);
 
@@ -64,7 +64,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
     @Test
     void shouldNotUpdateOrder()throws Exception{
         List<SeriesUpdateItem> seriesUpdateItemList = new ArrayList<>();
-        seriesUpdateItemList.add(new SeriesUpdateItem("book",5L,3L));
+        seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,5L,0L));
         SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
         Book book = new Book.Builder()
                 .bookId(5L)
@@ -79,7 +79,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .readListId(3L)
                 .title("Series")
                 .build();
-        Optional<SeriesBookRelation> optionalSeriesBookRelation = Optional.of(new SeriesBookRelation(book,series,3L));
+        Optional<SeriesBookRelation> optionalSeriesBookRelation = Optional.of(new SeriesBookRelation(book,series,0L));
 
         when(seriesBooksRespository.getByIds(anyLong(),anyLong())).thenReturn(optionalSeriesBookRelation);
 
