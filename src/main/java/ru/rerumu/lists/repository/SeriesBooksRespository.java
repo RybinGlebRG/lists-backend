@@ -21,6 +21,8 @@ public interface SeriesBooksRespository {
     List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException;
 
     void update(SeriesBookRelation seriesBookRelation);
+
+    void save(List<SeriesBookRelation> seriesBookRelationList);
     void delete(Long bookId, Long seriesId, Long readListId);
 
     Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException;

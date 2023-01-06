@@ -6,11 +6,9 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.SeriesItemType;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
-import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
 import java.util.*;
@@ -43,7 +41,7 @@ public class SeriesService {
             Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
             try {
                 List<Book> bookList = seriesBooksRespository.getBySeriesId(optionalSeries.get().getSeriesId()).stream()
-                        .map(SeriesBookRelation::getBook)
+                        .map(SeriesBookRelation::book)
                         .collect(Collectors.toCollection(ArrayList::new));
                 seriesBuilder.itemList(bookList);
             } catch (EntityNotFoundException e) {
@@ -89,30 +87,6 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
-//    private SeriesBookRelation updateBookOrder(Long bookId, Long seriesId, Long order) throws EntityNotFoundException {
-//        Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBooksRespository
-//                .getByIds(seriesId, bookId);
-//        // TODO: Check absent in update view
-//        // TODO: Check ordering is not sparse
-//        if (optionalSeriesBookRelation.isEmpty()) {
-//            // TODO: Add relation
-//            throw new EntityNotFoundException();
-//        } else if (!optionalSeriesBookRelation.get().getOrder().equals(order)) {
-//            SeriesBookRelation seriesBookRelation = new SeriesBookRelation(
-//                    optionalSeriesBookRelation.get().getBook(),
-//                    optionalSeriesBookRelation.get().getSeries(),
-//                    order
-//            );
-//            return new SeriesBookRelation(
-//                    optionalSeriesBookRelation.get().getBook(),
-//                    optionalSeriesBookRelation.get().getSeries(),
-//                    order
-//            );
-////            seriesBooksRespository.update(seriesBookRelation);
-//        }
-//        return null;
-//    }
-
     public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getBySeriesId(seriesId);
         // TODO: Remove this limitation
@@ -122,7 +96,7 @@ public class SeriesService {
 
         Map<Long, SeriesBookRelation> relationMap = seriesBookRelationList.stream()
                 .collect(Collectors.toMap(
-                        seriesBookRelation -> seriesBookRelation.getBook().getBookId(),
+                        seriesBookRelation -> seriesBookRelation.book().getBookId(),
                         Function.identity(),
                         (o1, o2) -> {
                             throw new AssertionError();
@@ -143,11 +117,11 @@ public class SeriesService {
                     // TODO: Remove this limitation
                     optionalRelation.orElseThrow(AssertionError::new);
 
-                    if (optionalRelation.get().getOrder() != i) {
+                    if (optionalRelation.get().order() != i) {
                         updatedSeriesBookRelations.add(
                                 new SeriesBookRelation(
-                                        optionalRelation.get().getBook(),
-                                        optionalRelation.get().getSeries(),
+                                        optionalRelation.get().book(),
+                                        optionalRelation.get().series(),
                                         (long) i
                                 )
                         );
@@ -157,19 +131,7 @@ public class SeriesService {
                 default -> throw new IllegalArgumentException();
             }
         }
-
-//        for (int i = 0; i < seriesUpdateView.itemList().size(); i++) {
-//
-//            switch (seriesUpdateView.itemList().get(i).itemType()) {
-//                case BOOK -> updateBookOrder(
-//                        seriesUpdateView.itemList().get(i).itemId(),
-//                        seriesId,
-//                        (long) i
-//                );
-//                default -> throw new IllegalArgumentException();
-//            }
-//        }
-        // TODO: Perform update
+        seriesBooksRespository.save(updatedSeriesBookRelations);
     }
 
 

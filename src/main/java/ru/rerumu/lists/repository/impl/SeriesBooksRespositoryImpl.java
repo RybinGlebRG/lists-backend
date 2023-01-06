@@ -11,7 +11,6 @@ import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,10 +39,10 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     @Override
     public void add(SeriesBookRelation seriesBookRelation) {
         seriesBookMapper.add(
-                seriesBookRelation.getBook().getBookId(),
-                seriesBookRelation.getSeries().getSeriesId(),
-                seriesBookRelation.getBook().getReadListId(),
-                seriesBookRelation.getOrder()
+                seriesBookRelation.book().getBookId(),
+                seriesBookRelation.series().getSeriesId(),
+                seriesBookRelation.book().getReadListId(),
+                seriesBookRelation.order()
         );
     }
 
@@ -87,11 +86,24 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     @Override
     public void update(SeriesBookRelation seriesBookRelation) {
         seriesBookMapper.update(
-                seriesBookRelation.getBook().getBookId(),
-                seriesBookRelation.getSeries().getSeriesId(),
-                seriesBookRelation.getSeries().getSeriesListId(),
-                seriesBookRelation.getOrder()
+                seriesBookRelation.book().getBookId(),
+                seriesBookRelation.series().getSeriesId(),
+                seriesBookRelation.series().getSeriesListId(),
+                seriesBookRelation.order()
         );
+    }
+
+    @Override
+    public void save(List<SeriesBookRelation> seriesBookRelationList) {
+        for (var seriesBookRelation: seriesBookRelationList){
+            SeriesBookRelation tmp = new SeriesBookRelation(
+                    seriesBookRelation.book(),
+                    seriesBookRelation.series(),
+                    -seriesBookRelation.order()
+            );
+            seriesBookMapper.save(tmp);
+            seriesBookMapper.save(seriesBookRelation);
+        }
     }
 
     @Override

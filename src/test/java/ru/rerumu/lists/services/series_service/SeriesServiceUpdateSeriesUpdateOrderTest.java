@@ -50,15 +50,13 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .readListId(3L)
                 .title("Series")
                 .build();
-        Optional<SeriesBookRelation> optionalSeriesBookRelation = Optional.of(new SeriesBookRelation(book,series,2L));
-        SeriesBookRelation shouldSeriesBookRelation = new SeriesBookRelation(book,series,0L);
 
-        when(seriesBooksRespository.getByIds(anyLong(),anyLong())).thenReturn(optionalSeriesBookRelation);
+        when(seriesBooksRespository.getBySeriesId(anyLong())).thenReturn(List.of(new SeriesBookRelation(book,series,2L)));
 
         SeriesService seriesService = new SeriesService(seriesRepository,bookSeriesRelationService,seriesBooksRespository);
         seriesService.updateSeries(3L,seriesUpdateView);
 
-        verify(seriesBooksRespository).update(shouldSeriesBookRelation);
+        verify(seriesBooksRespository).save(List.of(new SeriesBookRelation(book,series,0L)));
     }
 
     @Test
@@ -79,13 +77,12 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .readListId(3L)
                 .title("Series")
                 .build();
-        Optional<SeriesBookRelation> optionalSeriesBookRelation = Optional.of(new SeriesBookRelation(book,series,0L));
 
-        when(seriesBooksRespository.getByIds(anyLong(),anyLong())).thenReturn(optionalSeriesBookRelation);
+        when(seriesBooksRespository.getBySeriesId(anyLong())).thenReturn(List.of(new SeriesBookRelation(book,series,0L)));
 
         SeriesService seriesService = new SeriesService(seriesRepository,bookSeriesRelationService,seriesBooksRespository);
         seriesService.updateSeries(3L,seriesUpdateView);
 
-        verify(seriesBooksRespository, never()).update(any());
+        verify(seriesBooksRespository).save(List.of());
     }
 }
