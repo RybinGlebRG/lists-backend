@@ -104,32 +104,32 @@ public class ReadListService {
                 Optional.empty();
 
         seriesBookRelationList.stream()
-                .filter(item -> item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId) &&
-                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.getSeries()))
+                .filter(item -> item.book().getBookId().equals(bookId) &&
+                        item.book().getReadListId().equals(readListId) &&
+                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.series()))
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
-                        item.getBook().getBookId(),
-                        item.getSeries().getSeriesId(),
-                        item.getBook().getReadListId()
+                        item.book().getBookId(),
+                        item.series().getSeriesId(),
+                        item.book().getReadListId()
                 ));
 
         seriesBookRelationList.stream()
                 .filter(item -> optionalSeries.isPresent() &&
-                        item.getSeries().equals(optionalSeries.get()) &&
-                        item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId)
+                        item.series().equals(optionalSeries.get()) &&
+                        item.book().getBookId().equals(bookId) &&
+                        item.book().getReadListId().equals(readListId)
                 )
                 .forEach(item -> bookSeriesRelationService.update(new SeriesBookRelation(
-                        item.getBook(),
-                        item.getSeries(),
+                        item.book(),
+                        item.series(),
                         seriesOrder
                 )));
 
         if (seriesBookRelationList.stream().noneMatch(item -> optionalSeries.isPresent() &&
-                optionalSeries.get().equals(item.getSeries()) &&
-                item.getBook().getBookId().equals(bookId) &&
-                item.getBook().getReadListId().equals(readListId))
+                optionalSeries.get().equals(item.series()) &&
+                item.book().getBookId().equals(bookId) &&
+                item.book().getReadListId().equals(readListId))
         ) {
             optionalSeries.ifPresent(series -> seriesBooksRespository.add(
                     bookId,
@@ -304,9 +304,9 @@ public class ReadListService {
                         bookOptional.get().getReadListId()
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
-                        item.getBook().getBookId(),
-                        item.getSeries().getSeriesId(),
-                        item.getBook().getReadListId()
+                        item.book().getBookId(),
+                        item.series().getSeriesId(),
+                        item.book().getReadListId()
                 ));
 
         authorsBooksRepository.getByBookId(

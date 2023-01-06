@@ -1,44 +1,19 @@
 package ru.rerumu.lists.model;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+public record SeriesBookRelation(Book book, Series series, Long order) {
 
-import java.util.Objects;
-
-public final class SeriesBookRelation {
-
-    private final Book book;
-    private final Series series;
-
-    private final Long order;
-
-    public SeriesBookRelation(Book book, Series series, Long order)  {
-        this.book = book.clone();
-        this.series = series.clone();
-        this.order = order;
+    public SeriesBookRelation {
+        book = book.clone();
+        series = series.clone();
     }
 
-    public Series getSeries() {
+    @Override
+    public Series series() {
         return series.clone();
     }
 
-    public Book getBook() {
+    @Override
+    public Book book() {
         return book.clone();
-    }
-
-    public Long getOrder() {
-        return order;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SeriesBookRelation that = (SeriesBookRelation) o;
-        return Objects.equals(book, that.book) && Objects.equals(series, that.series) && Objects.equals(order, that.order);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(book, series, order);
     }
 }

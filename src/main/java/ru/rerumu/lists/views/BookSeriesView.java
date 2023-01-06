@@ -1,6 +1,5 @@
 package ru.rerumu.lists.views;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
@@ -22,7 +21,7 @@ public class BookSeriesView {
     }
 
     private void sort(){
-        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::getOrder);
+        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::order);
         this.seriesBookRelationList.sort(comparator);
     }
 
