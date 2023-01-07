@@ -26,8 +26,6 @@ public class ReadListService {
 
     private final SeriesRepository seriesRepository;
 
-//    private final AuthorsRepository authorsRepository;
-
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
@@ -95,41 +93,43 @@ public class ReadListService {
         }
     }
 
-    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder) {
+    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder, Book book) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
+
+//        List<Series> seriesList = seriesService.findByBook(book);
 
 
         Optional<Series> optionalSeries = seriesId != null ?
-                seriesService.getSeries(readListId, seriesId) :
+                seriesService.getSeries( seriesId) :
                 Optional.empty();
 
         seriesBookRelationList.stream()
-                .filter(item -> item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId) &&
-                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.getSeries()))
+                .filter(item -> item.book().getBookId().equals(bookId) &&
+                        item.book().getReadListId().equals(readListId) &&
+                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.series()))
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
-                        item.getBook().getBookId(),
-                        item.getSeries().getSeriesId(),
-                        item.getBook().getReadListId()
+                        item.book().getBookId(),
+                        item.series().getSeriesId(),
+                        item.book().getReadListId()
                 ));
 
         seriesBookRelationList.stream()
                 .filter(item -> optionalSeries.isPresent() &&
-                        item.getSeries().equals(optionalSeries.get()) &&
-                        item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId)
+                        item.series().equals(optionalSeries.get()) &&
+                        item.book().getBookId().equals(bookId) &&
+                        item.book().getReadListId().equals(readListId)
                 )
                 .forEach(item -> bookSeriesRelationService.update(new SeriesBookRelation(
-                        item.getBook(),
-                        item.getSeries(),
+                        item.book(),
+                        item.series(),
                         seriesOrder
                 )));
 
         if (seriesBookRelationList.stream().noneMatch(item -> optionalSeries.isPresent() &&
-                optionalSeries.get().equals(item.getSeries()) &&
-                item.getBook().getBookId().equals(bookId) &&
-                item.getBook().getReadListId().equals(readListId))
+                optionalSeries.get().equals(item.series()) &&
+                item.book().getBookId().equals(bookId) &&
+                item.book().getReadListId().equals(readListId))
         ) {
             optionalSeries.ifPresent(series -> seriesBooksRespository.add(
                     bookId,
@@ -198,7 +198,7 @@ public class ReadListService {
 
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
 
-        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder());
+        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder(),updatedBook);
 
     }
 
@@ -210,11 +210,6 @@ public class ReadListService {
 
     public List<Book> getAllBooks(Long readListId) {
         return this.bookRepository.getAll(readListId);
-    }
-
-    @Deprecated
-    public Series getSeries(Long readListId, Long seriesId) {
-        return seriesRepository.getOne(readListId, seriesId);
     }
 
     @Deprecated
@@ -281,7 +276,7 @@ public class ReadListService {
         }
 
         if (bookAddView.getSeriesId() != null) {
-            Optional<Series> series = seriesService.getSeries(readListId, bookAddView.getSeriesId());
+            Optional<Series> series = seriesService.getSeries( bookAddView.getSeriesId());
             if (series.isEmpty()) {
                 throw new EntityNotFoundException();
             }
@@ -309,9 +304,9 @@ public class ReadListService {
                         bookOptional.get().getReadListId()
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
-                        item.getBook().getBookId(),
-                        item.getSeries().getSeriesId(),
-                        item.getBook().getReadListId()
+                        item.book().getBookId(),
+                        item.series().getSeriesId(),
+                        item.book().getReadListId()
                 ));
 
         authorsBooksRepository.getByBookId(

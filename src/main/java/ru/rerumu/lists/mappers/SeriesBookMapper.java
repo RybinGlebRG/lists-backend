@@ -22,4 +22,6 @@ public interface SeriesBookMapper {
     @Deprecated
     Long getOrder(Long bookId, Long seriesId, Long readListId);
     Long getOrderByIdOnly(Long bookId, Long seriesId);
+
+    void save(SeriesBookRelation seriesBookRelation);
 }

@@ -1,9 +1,12 @@
 package ru.rerumu.lists.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class Series implements Cloneable{
@@ -12,6 +15,7 @@ public final class Series implements Cloneable{
     private final Long seriesListId;
     private final String title;
     private Integer bookCount;
+    private final List<?> itemsList;
 
 //    private LocalDateTime lastUpdateDate;
 
@@ -19,13 +23,15 @@ public final class Series implements Cloneable{
         this.seriesId = seriesId;
         this.seriesListId = seriesListId;
         this.title = title;
+        this.itemsList = new ArrayList<>();
     }
 
-    public Series(Long seriesId, Long seriesListId, String title, int bookCount){
+    private Series(Long seriesId, Long seriesListId, String title, int bookCount, List<?> itemsList){
         this.seriesId = seriesId;
         this.seriesListId = seriesListId;
         this.title = title;
         this.bookCount = bookCount;
+        this.itemsList = new ArrayList<>(itemsList);
 //        this.lastUpdateDate = lastUpdateDate;
     }
 
@@ -63,6 +69,16 @@ public final class Series implements Cloneable{
         obj.put("seriesId", seriesId);
         obj.put("readListId", seriesListId);
         obj.put("title", title);
+        JSONArray jsonArray = new JSONArray();
+        for (Object item: itemsList){
+            if (item instanceof Book){
+                jsonArray.put(((Book) item).toJSONObject());
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        obj.put("items",jsonArray);
+
 //        obj.put("bookCount", bookCount);
 
         return obj;
@@ -105,6 +121,8 @@ public final class Series implements Cloneable{
 
         private LocalDateTime lastUpdateDate;
 
+        private List<?> itemList = new ArrayList<>();
+
         public Builder(){};
 
         public Builder(Series series){
@@ -135,13 +153,13 @@ public final class Series implements Cloneable{
             return this;
         }
 
-//        public Builder lastUpdateDate(LocalDateTime lastUpdateDate){
-//            this.lastUpdateDate = lastUpdateDate;
-//            return this;
-//        }
+        public Builder itemList(List<?> itemList){
+            this.itemList = itemList;
+            return this;
+        }
 
         public Series build(){
-            return new Series(seriesId,readListId,title, bookCount);
+            return new Series(seriesId,readListId,title, bookCount, itemList);
         }
     }
 }

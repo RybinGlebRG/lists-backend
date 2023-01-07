@@ -79,4 +79,11 @@
           and sb.book_list_id = #{readListId}
     </update>
 
+    <update id="save">
+        update lists.series_books sb
+        set series_order=#{order}
+        where sb.book_book_id = #{book.bookId}
+        and sb.series_series_id = #{series.seriesId}
+    </update>
+
 </mapper>

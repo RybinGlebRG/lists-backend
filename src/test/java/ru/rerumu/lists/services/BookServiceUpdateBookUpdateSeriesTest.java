@@ -63,8 +63,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
                 null
         );
-        Series series = new Series(5L,3L,"Series");
-        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+        Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
+        Series shouldSeries = new Series.Builder().seriesId(6L).readListId(3L).title("SeriesNew").build();
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -81,7 +81,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                  List.of(new SeriesBookRelation(book,series,1L))
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -122,7 +122,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         );
 //        Author author = new Author(5L, 3L, "Author");
 //        Series series = new Series(5L,3L,"Series");
-        Series shouldSeries = new Series(6L,3L,"SeriesNew");
+        Series shouldSeries = new Series.Builder().seriesId(6L).readListId(3L).title("SeriesNew").build();
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -139,7 +139,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of()
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -179,7 +179,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 null
         );
 //        Author author = new Author(5L, 3L, "Author");
-        Series series = new Series(5L,3L,"Series");
+        Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
         Book book = new Book.Builder()
                 .bookId(8L)
@@ -236,7 +236,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
                 null
         );
-        Series series = new Series(5L,3L,"Series");
+        Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
         Book book = new Book.Builder()
                 .bookId(8L)
                 .title("Title")
@@ -253,7 +253,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(
                 List.of(new SeriesBookRelation(book,series,1L))
         );
-        when(seriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(series));
+        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(series));
 
 
         ReadListService readListService = new ReadListService(

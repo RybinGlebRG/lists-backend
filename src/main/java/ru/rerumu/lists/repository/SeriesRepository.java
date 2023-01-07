@@ -5,7 +5,7 @@ import ru.rerumu.lists.model.Series;
 import java.util.List;
 import java.util.Optional;
 
-public interface SeriesRepository {
+public interface SeriesRepository extends CrudRepository<Series,Long>{
 
     Series getOne(Long seriesListId, Long seriesId);
     Optional<Series> getOne(Long seriesId);

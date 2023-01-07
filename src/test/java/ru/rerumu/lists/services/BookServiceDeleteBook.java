@@ -65,7 +65,7 @@ class BookServiceDeleteBook {
                 .build()
                 ;
         Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
         when(bookRepository.getOne(anyLong())).thenReturn(Optional.of(book));
         when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(

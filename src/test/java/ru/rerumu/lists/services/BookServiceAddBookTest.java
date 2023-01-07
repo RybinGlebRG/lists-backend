@@ -54,7 +54,7 @@ class BookServiceAddBookTest {
         );
 
         Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
         Date dt = new Date();
 
@@ -73,7 +73,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -150,7 +150,7 @@ class BookServiceAddBookTest {
         );
 
         Author author = new Author(1L, 5L, "Author");
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
         Date dt = new Date();
 
@@ -168,7 +168,7 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
@@ -201,7 +201,7 @@ class BookServiceAddBookTest {
                 "Test", null, 2, 3L, 4L, 7, null
         );
 
-        Series series = new Series(3L,5L,"Series");
+        Series series = new Series.Builder().seriesId(3L).readListId(25L).title("Series").build();
 
         Date dt = new Date();
 
@@ -219,7 +219,7 @@ class BookServiceAddBookTest {
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-        Mockito.when(seriesService.getSeries(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(series));
+        Mockito.when(seriesService.getSeries( Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(

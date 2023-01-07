@@ -1,6 +1,5 @@
 package ru.rerumu.lists.views;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
@@ -22,7 +21,7 @@ public class BookSeriesView {
     }
 
     private void sort(){
-        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::getOrder);
+        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::order);
         this.seriesBookRelationList.sort(comparator);
     }
 
@@ -41,13 +40,13 @@ public class BookSeriesView {
 
     public JSONObject toJSONObject(){
         JSONObject obj = series.toJSONObject();
-        JSONArray books = new JSONArray();
-        seriesBookRelationList.forEach(item -> {
-            JSONObject book = new JSONObject();
-            book.put("bookId",item.getBook().getBookId());
-            books.put(book);
-        });
-        obj.put("books",books);
+//        JSONArray books = new JSONArray();
+//        seriesBookRelationList.forEach(item -> {
+//            JSONObject book = new JSONObject();
+//            book.put("bookId",item.getBook().getBookId());
+//            books.put(book);
+//        });
+//        obj.put("books",books);
         return obj;
     }
 
@@ -60,7 +59,7 @@ public class BookSeriesView {
 
         private Series series;
 
-        private List<SeriesBookRelation> seriesBookRelationList;
+        private List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
 
         public Builder(Series series){
             this.series = series;

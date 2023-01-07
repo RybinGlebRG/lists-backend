@@ -3,16 +3,17 @@ package ru.rerumu.lists.services;
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class SeriesService {
@@ -21,26 +22,36 @@ public class SeriesService {
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
+    private final SeriesBooksRespository seriesBooksRespository;
+
     public SeriesService(
             SeriesRepository seriesRepository,
-            BookSeriesRelationService bookSeriesRelationService
+            BookSeriesRelationService bookSeriesRelationService,
+            SeriesBooksRespository seriesBooksRespository
     ) {
         this.seriesRepository = seriesRepository;
         this.bookSeriesRelationService = bookSeriesRelationService;
+        this.seriesBooksRespository = seriesBooksRespository;
     }
 
 
-    public Optional<Series> getSeries(Long readListId, Long seriesId) {
-        if (seriesId == null || readListId == null) {
-            throw new IllegalArgumentException();
-        }
-        Series series = seriesRepository.getOne(readListId, seriesId);
-        if (series != null) {
-            return Optional.of(series);
+    public Optional<Series> getSeries(Long seriesId) {
+        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
+        if (optionalSeries.isPresent()) {
+            Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
+            try {
+                List<Book> bookList = seriesBooksRespository.getBySeriesId(optionalSeries.get().getSeriesId()).stream()
+                        .map(SeriesBookRelation::book)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                seriesBuilder.itemList(bookList);
+            } catch (EntityNotFoundException e) {
+                throw new IllegalArgumentException();
+            }
+
+            return Optional.of(seriesBuilder.build());
         } else {
             return Optional.empty();
         }
-
     }
 
     public void add(long readListId, BookSeriesAddView bookSeriesAddView) {
@@ -71,30 +82,57 @@ public class SeriesService {
         seriesRepository.delete(seriesId);
     }
 
-//    private Optional<LocalDateTime> getBookLastUpdate(Series series){
-//        try {
-//            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(series.getSeriesId());
-//
-//            Comparator<SeriesBookRelation> lastUpdateDateComparator = Comparator
-//                    .comparing((SeriesBookRelation seriesBookRelation) -> seriesBookRelation.getBook().getLastUpdateDate_V2())
-//                    .reversed()
-//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getTitle())
-//                    .thenComparing(seriesBookRelation -> seriesBookRelation.getBook().getBookId());
-//
-//            Optional<SeriesBookRelation> optionalSeriesBookRelation = seriesBookRelationList.stream().min(lastUpdateDateComparator);
-//
-//            if (optionalSeriesBookRelation.isPresent()){
-//                return Optional.of(optionalSeriesBookRelation.get().getBook().getLastUpdateDate_V2());
-//            }
-//
-//        } catch (EntityNotFoundException ignored) {
-//        }
-//        return Optional.empty();
-//    }
-
-
     public List<Series> getAll(Long readListId) {
 
         return seriesRepository.getAll(readListId);
     }
+
+    public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getBySeriesId(seriesId);
+        // TODO: Remove this limitation
+        if (seriesBookRelationList.size() != seriesUpdateView.itemList().size()) {
+            throw new IllegalArgumentException();
+        }
+
+        Map<Long, SeriesBookRelation> relationMap = seriesBookRelationList.stream()
+                .collect(Collectors.toMap(
+                        seriesBookRelation -> seriesBookRelation.book().getBookId(),
+                        Function.identity(),
+                        (o1, o2) -> {
+                            throw new AssertionError();
+                        },
+                        HashMap::new
+                ));
+
+        List<SeriesBookRelation> updatedSeriesBookRelations = new ArrayList<>();
+
+        for (int i = 0; i < seriesUpdateView.itemList().size(); i++) {
+
+            switch (seriesUpdateView.itemList().get(i).itemType()) {
+                case BOOK -> {
+                    Optional<SeriesBookRelation> optionalRelation = Optional.ofNullable(relationMap.get(
+                            seriesUpdateView.itemList().get(i).itemId()
+                    ));
+
+                    // TODO: Remove this limitation
+                    optionalRelation.orElseThrow(AssertionError::new);
+
+                    if (optionalRelation.get().order() != i) {
+                        updatedSeriesBookRelations.add(
+                                new SeriesBookRelation(
+                                        optionalRelation.get().book(),
+                                        optionalRelation.get().series(),
+                                        (long) i
+                                )
+                        );
+                    }
+
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+        seriesBooksRespository.save(updatedSeriesBookRelations);
+    }
+
+
 }

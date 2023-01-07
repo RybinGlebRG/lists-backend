@@ -4,10 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.Title;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -36,7 +34,7 @@ public class SeriesListView {
         Comparator<Series> comparator = Comparator
                 .comparing((Series series) -> {
                     Optional<LocalDateTime> maxDate = seriesRelations.get(series).stream()
-                            .map(seriesBookRelation -> seriesBookRelation.getBook().getLastUpdateDate_V2())
+                            .map(seriesBookRelation -> seriesBookRelation.book().getLastUpdateDate_V2())
                             .max(LocalDateTime::compareTo);
                     return maxDate.orElse(LocalDateTime.MIN);
                 })

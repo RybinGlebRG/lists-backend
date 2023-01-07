@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public interface SeriesMapper {
+public interface SeriesMapper extends CrudMapper<Series,Long> {
     Series getOne(Long readListId, Long seriesId);
     Series getOneBySeriesOnly( Long seriesId);
     List<Series> getAll(Long readListId);

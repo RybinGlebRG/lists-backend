@@ -6,6 +6,7 @@ import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SeriesBooksRespository {
 
@@ -20,5 +21,9 @@ public interface SeriesBooksRespository {
     List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException;
 
     void update(SeriesBookRelation seriesBookRelation);
+
+    void save(List<SeriesBookRelation> seriesBookRelationList);
     void delete(Long bookId, Long seriesId, Long readListId);
+
+    Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException;
 }
