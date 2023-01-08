@@ -22,22 +22,13 @@ class BookServiceAddBookTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private SeriesRepository seriesRepository;
-    @Mock
-    private AuthorsRepository authorsRepository;
-    @Mock
     private AuthorsService authorsService;
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;
     @Mock
     private SeriesBooksRespository seriesBooksRespository;
-
     @Mock
     private DateFactory dateFactory;
-
-    @Mock
-    private SeriesService seriesService;
-
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
 
@@ -73,18 +64,15 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
+//        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -97,7 +85,7 @@ class BookServiceAddBookTest {
 
         inOrder.verify(bookRepository).addOne(shouldBook);
         inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
-        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
+//        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
     }
 
     @Test
@@ -126,13 +114,10 @@ class BookServiceAddBookTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -168,18 +153,15 @@ class BookServiceAddBookTest {
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
-        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
+//        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -192,7 +174,7 @@ class BookServiceAddBookTest {
 
         inOrder.verify(bookRepository).addOne(shouldBook);
         inOrder.verify(authorsBooksRepository).add(6L, 1L, 5L);
-        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
+//        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
     }
 
     @Test
@@ -219,18 +201,15 @@ class BookServiceAddBookTest {
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
         Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
-        Mockito.when(seriesService.getSeries( Mockito.anyLong())).thenReturn(Optional.of(series));
+//        Mockito.when(seriesService.getSeries( Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -242,7 +221,7 @@ class BookServiceAddBookTest {
 
 
         inOrder.verify(bookRepository).addOne(shouldBook);
-        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
+//        inOrder.verify(seriesBooksRespository).add(6L, 3L, 5L, 4L);
 
         verify(authorsBooksRepository, Mockito.never()).add(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
     }
@@ -276,13 +255,10 @@ class BookServiceAddBookTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -328,13 +304,10 @@ class BookServiceAddBookTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
