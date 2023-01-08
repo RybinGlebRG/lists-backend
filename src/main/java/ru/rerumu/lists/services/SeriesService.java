@@ -26,14 +26,18 @@ public class SeriesService {
 
     private final SeriesBooksRespository seriesBooksRespository;
 
+    private final ReadListService readListService;
+
     public SeriesService(
             SeriesRepository seriesRepository,
             BookSeriesRelationService bookSeriesRelationService,
-            SeriesBooksRespository seriesBooksRespository
+            SeriesBooksRespository seriesBooksRespository,
+            ReadListService readListService
     ) {
         this.seriesRepository = seriesRepository;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.seriesBooksRespository = seriesBooksRespository;
+        this.readListService = readListService;
     }
 
 
@@ -97,15 +101,51 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
+    private void removeBookRelations(Series source, Series target){
+        List<SeriesBookRelation> relationsToRemove = source.getItemsList().stream()
+                .filter(o1 ->o1 instanceof Book)
+                .map(o1 -> (Book)o1)
+                .filter(b1 -> {
+                    for (Object o2: target.getItemsList()){
+                        if (o2 instanceof Book b2 && b1.equals(b2)){
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .map(b1->{
+                    try {
+                        return  seriesBooksRespository.getByIds(source.getSeriesId(), b1.getBookId());
+                    } catch (EntityNotFoundException e) {
+                        // Supposed to be present
+                        throw new AssertionError(e);
+                    }
+                })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for(SeriesBookRelation seriesBookRelation: relationsToRemove){
+            seriesBooksRespository.delete(
+                    seriesBookRelation.book().getBookId(),
+                    seriesBookRelation.series().getSeriesId(),
+                    seriesBookRelation.series().getSeriesListId()
+            );
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getBySeriesId(seriesId);
 
-//        Optional<Series> series = getSeries(seriesId);
-//        series.orElseThrow(EntityNotFoundException::new);
+        Optional<Series> series = getSeries(seriesId);
+        series.orElseThrow(EntityNotFoundException::new);
 
         // TODO: Remove this limitation
         if (seriesBookRelationList.size() != seriesUpdateView.itemList().size()) {
+            throw new IllegalArgumentException();
+        }
+        if (series.get().getItemsList().size() != seriesUpdateView.itemList().size()){
             throw new IllegalArgumentException();
         }
 
@@ -147,6 +187,24 @@ public class SeriesService {
             }
         }
         seriesBooksRespository.save(updatedSeriesBookRelations);
+
+        List<Object> updatedItems = new ArrayList<>();
+        for (SeriesUpdateItem seriesUpdateItem: seriesUpdateView.itemList()){
+            switch (seriesUpdateItem.itemType()){
+                case BOOK -> {
+                    Optional<Book> optionalBook = readListService.getBook(seriesUpdateItem.itemId());
+                    optionalBook.orElseThrow(EntityNotFoundException::new);
+                    optionalBook.ifPresent(updatedItems::add);
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+
+        Series updatedSeries = new Series.Builder(series.get())
+                .itemList(updatedItems)
+                .build();
+
+        removeBookRelations(series.get(), updatedSeries);
     }
 
 

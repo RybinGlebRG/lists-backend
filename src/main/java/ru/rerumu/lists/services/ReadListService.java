@@ -24,14 +24,14 @@ public class ReadListService {
 
     private final BookRepository bookRepository;
 
-    private final SeriesRepository seriesRepository;
+//    private final SeriesRepository seriesRepository;
 
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
 
     private final DateFactory dateFactory;
-    private final SeriesService seriesService;
+//    private final SeriesService seriesService;
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
@@ -41,25 +41,25 @@ public class ReadListService {
 
     public ReadListService(
             BookRepository bookRepository,
-            SeriesRepository seriesRepository,
-            AuthorsRepository authorsRepository,
+//            SeriesRepository seriesRepository,
+//            AuthorsRepository authorsRepository,
             AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesBooksRespository seriesBooksRespository,
             DateFactory dateFactory,
-            SeriesService seriesService,
+//            SeriesService seriesService,
             BookSeriesRelationService bookSeriesRelationService,
             AuthorsBooksRelationService authorsBooksRelationService,
             BookTypesService bookTypesService
     ) {
         this.bookRepository = bookRepository;
-        this.seriesRepository = seriesRepository;
+//        this.seriesRepository = seriesRepository;
 //        this.authorsRepository = authorsRepository;
         this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.dateFactory = dateFactory;
-        this.seriesService = seriesService;
+//        this.seriesService = seriesService;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookTypesService = bookTypesService;
@@ -93,52 +93,52 @@ public class ReadListService {
         }
     }
 
-    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder, Book book) {
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
-
-//        List<Series> seriesList = seriesService.findByBook(book);
-
-
-        Optional<Series> optionalSeries = seriesId != null ?
-                seriesService.getSeries( seriesId) :
-                Optional.empty();
-
-        seriesBookRelationList.stream()
-                .filter(item -> item.book().getBookId().equals(bookId) &&
-                        item.book().getReadListId().equals(readListId) &&
-                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.series()))
-                )
-                .forEach(item -> bookSeriesRelationService.delete(
-                        item.book().getBookId(),
-                        item.series().getSeriesId(),
-                        item.book().getReadListId()
-                ));
-
-        seriesBookRelationList.stream()
-                .filter(item -> optionalSeries.isPresent() &&
-                        item.series().equals(optionalSeries.get()) &&
-                        item.book().getBookId().equals(bookId) &&
-                        item.book().getReadListId().equals(readListId)
-                )
-                .forEach(item -> bookSeriesRelationService.update(new SeriesBookRelation(
-                        item.book(),
-                        item.series(),
-                        seriesOrder
-                )));
-
-        if (seriesBookRelationList.stream().noneMatch(item -> optionalSeries.isPresent() &&
-                optionalSeries.get().equals(item.series()) &&
-                item.book().getBookId().equals(bookId) &&
-                item.book().getReadListId().equals(readListId))
-        ) {
-            optionalSeries.ifPresent(series -> seriesBooksRespository.add(
-                    bookId,
-                    series.getSeriesId(),
-                    series.getSeriesListId(),
-                    seriesOrder)
-            );
-        }
-    }
+//    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder, Book book) {
+//        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
+//
+////        List<Series> seriesList = seriesService.findByBook(book);
+//
+//
+//        Optional<Series> optionalSeries = seriesId != null ?
+//                seriesService.getSeries( seriesId) :
+//                Optional.empty();
+//
+//        seriesBookRelationList.stream()
+//                .filter(item -> item.book().getBookId().equals(bookId) &&
+//                        item.book().getReadListId().equals(readListId) &&
+//                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.series()))
+//                )
+//                .forEach(item -> bookSeriesRelationService.delete(
+//                        item.book().getBookId(),
+//                        item.series().getSeriesId(),
+//                        item.book().getReadListId()
+//                ));
+//
+//        seriesBookRelationList.stream()
+//                .filter(item -> optionalSeries.isPresent() &&
+//                        item.series().equals(optionalSeries.get()) &&
+//                        item.book().getBookId().equals(bookId) &&
+//                        item.book().getReadListId().equals(readListId)
+//                )
+//                .forEach(item -> bookSeriesRelationService.update(new SeriesBookRelation(
+//                        item.book(),
+//                        item.series(),
+//                        seriesOrder
+//                )));
+//
+//        if (seriesBookRelationList.stream().noneMatch(item -> optionalSeries.isPresent() &&
+//                optionalSeries.get().equals(item.series()) &&
+//                item.book().getBookId().equals(bookId) &&
+//                item.book().getReadListId().equals(readListId))
+//        ) {
+//            optionalSeries.ifPresent(series -> seriesBooksRespository.add(
+//                    bookId,
+//                    series.getSeriesId(),
+//                    series.getSeriesListId(),
+//                    seriesOrder)
+//            );
+//        }
+//    }
 
     @Transactional(rollbackFor = Exception.class)
     public void updateBook(Long bookId, BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException, CloneNotSupportedException {
@@ -198,7 +198,7 @@ public class ReadListService {
 
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
 
-        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder(),updatedBook);
+//        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder(),updatedBook);
 
     }
 
@@ -206,6 +206,10 @@ public class ReadListService {
         Book book = this.bookRepository.getOne(readListId, bookId);
         logger.info(String.format("Got book '%s'", book.toString()));
         return book;
+    }
+
+    public  Optional<Book> getBook(Long bookId) {
+        return this.bookRepository.getOne(bookId);
     }
 
     public List<Book> getAllBooks(Long readListId) {
@@ -275,18 +279,18 @@ public class ReadListService {
             author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
         }
 
-        if (bookAddView.getSeriesId() != null) {
-            Optional<Series> series = seriesService.getSeries( bookAddView.getSeriesId());
-            if (series.isEmpty()) {
-                throw new EntityNotFoundException();
-            }
-            series.ifPresent(value -> seriesBooksRespository.add(
-                    newBook.getBookId(),
-                    value.getSeriesId(),
-                    readListId,
-                    bookAddView.getOrder())
-            );
-        }
+//        if (bookAddView.getSeriesId() != null) {
+//            Optional<Series> series = seriesService.getSeries( bookAddView.getSeriesId());
+//            if (series.isEmpty()) {
+//                throw new EntityNotFoundException();
+//            }
+//            series.ifPresent(value -> seriesBooksRespository.add(
+//                    newBook.getBookId(),
+//                    value.getSeriesId(),
+//                    readListId,
+//                    bookAddView.getOrder())
+//            );
+//        }
 
 
         return getBook(readListId, bookId);

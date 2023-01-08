@@ -86,4 +86,23 @@
         and sb.series_series_id = #{series.seriesId}
     </update>
 
+    <update id="merge">
+        MERGE INTO lists.series_books sb
+        USING
+        (
+            select  series_series_id,
+                    book_book_id
+            from lists.series_books
+            where book_book_id = #{book.bookId}
+            and series_series_id = #{series.seriesId}
+        ) sb2
+            on sb2.series_series_id = sb.series_series_id
+            and sb2.book_book_id = sb.book_book_id
+        when matched then
+            update set series_order=#{order}
+        when not matched then
+            insert into lists.series_books(series_series_id, series_list_id, book_book_id, book_list_id, series_order)
+            values(#{series.seriesId}, #{series.seriesListId}, #{book.bookId},#{book.readListId}, #{order})
+    </update>
+
 </mapper>

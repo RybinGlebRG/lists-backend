@@ -102,7 +102,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
                     -seriesBookRelation.order()
             );
             seriesBookMapper.save(tmp);
-            seriesBookMapper.save(seriesBookRelation);
+            seriesBookMapper.merge(seriesBookRelation);
         }
     }
 
