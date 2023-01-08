@@ -61,11 +61,9 @@ public class SeriesController {
         if (optionalSeries.isEmpty()){
             return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         } else {
-//            List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
-
             BookSeriesView.Builder builder = new BookSeriesView.Builder(optionalSeries.get());
-
-            return new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
+            BookSeriesView bookSeriesView = builder.build();
+            return new ResponseEntity<>(bookSeriesView.toString(), HttpStatus.OK);
         }
     }
 

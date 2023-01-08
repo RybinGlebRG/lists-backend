@@ -1,6 +1,7 @@
 package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Book;
@@ -9,6 +10,7 @@ import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
 import java.util.*;
@@ -40,7 +42,13 @@ public class SeriesService {
         if (optionalSeries.isPresent()) {
             Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
             try {
-                List<Book> bookList = seriesBooksRespository.getBySeriesId(optionalSeries.get().getSeriesId()).stream()
+
+                List<SeriesBookRelation> relationList = seriesBooksRespository.getBySeriesId(
+                        optionalSeries.get().getSeriesId()
+                );
+                relationList.sort(Comparator.comparingLong(SeriesBookRelation::order));
+
+                List<Book> bookList = relationList.stream()
                         .map(SeriesBookRelation::book)
                         .collect(Collectors.toCollection(ArrayList::new));
                 seriesBuilder.itemList(bookList);
@@ -54,6 +62,7 @@ public class SeriesService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void add(long readListId, BookSeriesAddView bookSeriesAddView) {
         long nextId = seriesRepository.getNextId();
 
@@ -66,6 +75,7 @@ public class SeriesService {
         seriesRepository.add(series);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long seriesId) throws EntityNotFoundException, EntityHasChildrenException {
 
         Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
@@ -87,8 +97,13 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getBySeriesId(seriesId);
+
+//        Optional<Series> series = getSeries(seriesId);
+//        series.orElseThrow(EntityNotFoundException::new);
+
         // TODO: Remove this limitation
         if (seriesBookRelationList.size() != seriesUpdateView.itemList().size()) {
             throw new IllegalArgumentException();
