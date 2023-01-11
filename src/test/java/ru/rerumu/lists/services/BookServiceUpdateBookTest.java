@@ -25,22 +25,13 @@ class BookServiceUpdateBookTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private SeriesRepository seriesRepository;
-    @Mock
-    private AuthorsRepository authorsRepository;
-    @Mock
     private AuthorsService authorsService;
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;
     @Mock
     private SeriesBooksRespository seriesBooksRespository;
-
     @Mock
     private DateFactory dateFactory;
-
-    @Mock
-    private SeriesService seriesService;
-
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
 
@@ -86,18 +77,15 @@ class BookServiceUpdateBookTest {
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
         when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
-        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
+//        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
         Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dt);
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -144,17 +132,14 @@ class BookServiceUpdateBookTest {
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
         when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
-        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
+//        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService

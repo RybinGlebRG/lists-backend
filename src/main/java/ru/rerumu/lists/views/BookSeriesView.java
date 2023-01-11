@@ -1,13 +1,16 @@
 package ru.rerumu.lists.views;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.rerumu.lists.controller.BooksController;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
 import java.util.*;
 
 public class BookSeriesView {
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Series series;
     private final List<SeriesBookRelation> seriesBookRelationList;
 
@@ -20,10 +23,12 @@ public class BookSeriesView {
         this.seriesBookRelationList = new ArrayList<>(seriesBookRelationList);
     }
 
-    private void sort(){
-        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::order);
-        this.seriesBookRelationList.sort(comparator);
-    }
+//    public void sort(){
+//        logger.debug("Unsorted: " + seriesBookRelationList);
+//        Comparator<SeriesBookRelation> comparator = Comparator.comparingLong(SeriesBookRelation::order);
+//        this.seriesBookRelationList.sort(comparator);
+//        logger.debug("Sorted: " + seriesBookRelationList);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -72,7 +77,7 @@ public class BookSeriesView {
 
         public BookSeriesView build(){
             BookSeriesView bookSeriesView = new BookSeriesView(series, seriesBookRelationList);
-            bookSeriesView.sort();
+//            bookSeriesView.sort();
             return bookSeriesView;
         }
 

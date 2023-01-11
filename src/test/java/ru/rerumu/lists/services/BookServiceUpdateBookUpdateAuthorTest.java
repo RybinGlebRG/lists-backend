@@ -24,22 +24,13 @@ class BookServiceUpdateBookUpdateAuthorTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private SeriesRepository seriesRepository;
-    @Mock
-    private AuthorsRepository authorsRepository;
-    @Mock
     private AuthorsService authorsService;
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;
     @Mock
     private SeriesBooksRespository seriesBooksRespository;
-
     @Mock
     private DateFactory dateFactory;
-
-    @Mock
-    private SeriesService seriesService;
-
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
 
@@ -84,13 +75,10 @@ class BookServiceUpdateBookUpdateAuthorTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -138,13 +126,10 @@ class BookServiceUpdateBookUpdateAuthorTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -192,13 +177,10 @@ class BookServiceUpdateBookUpdateAuthorTest {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService

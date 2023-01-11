@@ -24,4 +24,5 @@ public interface SeriesBookMapper {
     Long getOrderByIdOnly(Long bookId, Long seriesId);
 
     void save(SeriesBookRelation seriesBookRelation);
+    void merge(SeriesBookRelation seriesBookRelation);
 }

@@ -19,14 +19,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceDeleteBook {
+class BookServiceDeleteBookTest {
 
     @Mock
     private BookRepository bookRepository;
-    @Mock
-    private SeriesRepository seriesRepository;
-    @Mock
-    private AuthorsRepository authorsRepository;
     @Mock
     private AuthorsService authorsService;
     @Mock
@@ -36,9 +32,6 @@ class BookServiceDeleteBook {
 
     @Mock
     private DateFactory dateFactory;
-
-    @Mock
-    private SeriesService seriesService;
 
     @Mock
     private BookSeriesRelationService bookSeriesRelationService;
@@ -78,13 +71,10 @@ class BookServiceDeleteBook {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService
@@ -106,13 +96,10 @@ class BookServiceDeleteBook {
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
-                seriesRepository,
-                authorsRepository,
                 authorsService,
                 authorsBooksRepository,
                 seriesBooksRespository,
                 dateFactory,
-                seriesService,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService

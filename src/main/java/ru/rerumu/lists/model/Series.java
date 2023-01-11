@@ -63,6 +63,10 @@ public final class Series implements Cloneable{
         this.bookCount = bookCount;
     }
 
+    public List<?> getItemsList() {
+        return new ArrayList<>(itemsList);
+    }
+
     public JSONObject toJSONObject(){
         JSONObject obj = new JSONObject();
 
