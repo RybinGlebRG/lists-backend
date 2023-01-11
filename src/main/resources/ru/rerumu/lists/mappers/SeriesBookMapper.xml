@@ -90,11 +90,8 @@
         MERGE INTO lists.series_books sb
         USING
         (
-            select  series_series_id,
-                    book_book_id
-            from lists.series_books
-            where book_book_id = #{book.bookId}
-            and series_series_id = #{series.seriesId}
+            select #{series.seriesId} as series_series_id,
+                   #{book.bookId} as  book_book_id
         ) sb2
             on sb2.series_series_id = sb.series_series_id
             and sb2.book_book_id = sb.book_book_id

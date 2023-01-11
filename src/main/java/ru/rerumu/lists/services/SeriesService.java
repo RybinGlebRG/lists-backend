@@ -1,5 +1,7 @@
 package ru.rerumu.lists.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
@@ -16,10 +18,11 @@ import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class SeriesService {
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SeriesRepository seriesRepository;
 
     private final BookSeriesRelationService bookSeriesRelationService;
@@ -125,6 +128,8 @@ public class SeriesService {
                 .map(Optional::get)
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        logger.debug("Relations to remove: "+relationsToRemove);
+
         for(SeriesBookRelation seriesBookRelation: relationsToRemove){
             seriesBooksRespository.delete(
                     seriesBookRelation.book().getBookId(),
@@ -134,59 +139,24 @@ public class SeriesService {
         }
     }
 
+    private void saveBookRelations(Series series){
+        List<Book> booksList = series.getItemsList().stream()
+                .filter(item->item instanceof Book)
+                .map(item-> (Book) item)
+                .collect(Collectors.toCollection(ArrayList::new));
+        List<SeriesBookRelation> bookRelations = IntStream.range(0,booksList.size())
+                .mapToObj(i-> new SeriesBookRelation(booksList.get(i),series,(long)i+1))
+                .collect(Collectors.toCollection(ArrayList::new));
+        logger.debug("saveBookRelations: "+bookRelations);
+        seriesBooksRespository.save(bookRelations);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getBySeriesId(seriesId);
+        logger.debug(seriesUpdateView.toString());
 
         Optional<Series> series = getSeries(seriesId);
         series.orElseThrow(EntityNotFoundException::new);
-
-        // TODO: Remove this limitation
-        if (seriesBookRelationList.size() != seriesUpdateView.itemList().size()) {
-            throw new IllegalArgumentException();
-        }
-        if (series.get().getItemsList().size() != seriesUpdateView.itemList().size()){
-            throw new IllegalArgumentException();
-        }
-
-        Map<Long, SeriesBookRelation> relationMap = seriesBookRelationList.stream()
-                .collect(Collectors.toMap(
-                        seriesBookRelation -> seriesBookRelation.book().getBookId(),
-                        Function.identity(),
-                        (o1, o2) -> {
-                            throw new AssertionError();
-                        },
-                        HashMap::new
-                ));
-
-        List<SeriesBookRelation> updatedSeriesBookRelations = new ArrayList<>();
-
-        for (int i = 0; i < seriesUpdateView.itemList().size(); i++) {
-
-            switch (seriesUpdateView.itemList().get(i).itemType()) {
-                case BOOK -> {
-                    Optional<SeriesBookRelation> optionalRelation = Optional.ofNullable(relationMap.get(
-                            seriesUpdateView.itemList().get(i).itemId()
-                    ));
-
-                    // TODO: Remove this limitation
-                    optionalRelation.orElseThrow(AssertionError::new);
-
-                    if (optionalRelation.get().order() != i) {
-                        updatedSeriesBookRelations.add(
-                                new SeriesBookRelation(
-                                        optionalRelation.get().book(),
-                                        optionalRelation.get().series(),
-                                        (long) i
-                                )
-                        );
-                    }
-
-                }
-                default -> throw new IllegalArgumentException();
-            }
-        }
-        seriesBooksRespository.save(updatedSeriesBookRelations);
 
         List<Object> updatedItems = new ArrayList<>();
         for (SeriesUpdateItem seriesUpdateItem: seriesUpdateView.itemList()){
@@ -199,12 +169,16 @@ public class SeriesService {
                 default -> throw new IllegalArgumentException();
             }
         }
+        logger.debug("updatedItems: "+updatedItems);
 
         Series updatedSeries = new Series.Builder(series.get())
                 .itemList(updatedItems)
                 .build();
 
         removeBookRelations(series.get(), updatedSeries);
+        saveBookRelations(updatedSeries);
+
+
     }
 
 
