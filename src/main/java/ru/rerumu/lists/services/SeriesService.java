@@ -104,6 +104,26 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
+    public Map<Book,List<Series>> findByBook(List<Book> bookList){
+        Map<Book,List<Series>> bookSeriesMap = new HashMap<>();
+        for (Book book: bookList){
+            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
+            List<Series> seriesList = seriesBookRelationList.stream()
+                    .map(SeriesBookRelation::series)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            bookSeriesMap.put(book,seriesList);
+        }
+        return bookSeriesMap;
+    }
+
+    public List<Series> findByBook(Book book){
+            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
+            List<Series> seriesList = seriesBookRelationList.stream()
+                    .map(SeriesBookRelation::series)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return seriesList;
+    }
+
     private void removeBookRelations(Series source, Series target){
         List<SeriesBookRelation> relationsToRemove = source.getItemsList().stream()
                 .filter(o1 ->o1 instanceof Book)
