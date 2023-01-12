@@ -11,12 +11,14 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -80,11 +82,13 @@ public class BooksController {
         List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId(), readListId);
 //        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
         List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId(), readListId);
+        List<Series> seriesList = seriesService.findByBook(book);
 
         BookView.Builder builder = new BookView.Builder()
                 .bookStatus(book)
                 .authorBookRelation(authorBookRelationList)
-                .seriesBookRelation(seriesBookRelationList);
+                .seriesBookRelation(seriesBookRelationList)
+                .seriesList(seriesList);
 //        author.ifPresent(builder::author);
 //        series.ifPresent(builder::series);
 
@@ -98,7 +102,11 @@ public class BooksController {
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) {
         List<Book> books = readListService.getAllBooks(readListId);
-        BookListView bookListView = new BookListView(books);
+        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+        BookListView bookListView = new BookListView.Builder()
+                .bookList(books)
+                .bookSeriesMap(bookSeriesMap)
+                .build();
         bookListView.sort();
 
         ResponseEntity<String> resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
@@ -151,7 +159,11 @@ public class BooksController {
         userService.checkOwnershipList(username, readListId);
 
         List<Book> books = readListService.getAllBooks(readListId);
-        BookListView bookListView = new BookListView(books);
+        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+        BookListView bookListView = new BookListView.Builder()
+                .bookList(books)
+                .bookSeriesMap(bookSeriesMap)
+                .build();
         bookListView.sort(search.getSortItemList());
 
         return new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);

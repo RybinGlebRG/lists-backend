@@ -14,6 +14,7 @@ public class BookView {
     private Series series;
     private List<AuthorBookRelation> authorBookRelationList;
     private List<SeriesBookRelation> seriesBookRelationList;
+    private List<Series> seriesList;
 
     private BookView(
             Book book,
@@ -21,7 +22,8 @@ public class BookView {
             Author author,
             Series series,
             List<AuthorBookRelation> authorBookRelationList,
-            List<SeriesBookRelation> seriesBookRelationList
+            List<SeriesBookRelation> seriesBookRelationList,
+            List<Series> seriesList
     ) {
         this.book = book;
         this.bookStatus = bookStatus;
@@ -29,6 +31,15 @@ public class BookView {
         this.series = series;
         this.authorBookRelationList = authorBookRelationList;
         this.seriesBookRelationList = seriesBookRelationList;
+        this.seriesList = seriesList;
+    }
+
+    private JSONArray formatSeriesList(){
+        JSONArray arr = new JSONArray();
+        for(Series series: seriesList){
+            arr.put(series.toJSONObject("seriesId","title"));
+        }
+        return arr;
     }
 
     public JSONObject toJSONObject() {
@@ -43,16 +54,16 @@ public class BookView {
 //        obj.put("author", author != null ? author.toJSONObject() : null);
         obj.put("authors",authors);
 
-        JSONArray seriesList = new JSONArray();
-        if (seriesBookRelationList != null){
-            for (SeriesBookRelation seriesBookRelation: seriesBookRelationList){
-                JSONObject seriesEntry = seriesBookRelation.series().toJSONObject();
-                seriesEntry.put("seriesOrder",seriesBookRelation.order());
-                seriesList.put(seriesEntry);
-            }
-        }
+//        JSONArray seriesList = new JSONArray();
+//        if (seriesBookRelationList != null){
+//            for (SeriesBookRelation seriesBookRelation: seriesBookRelationList){
+//                JSONObject seriesEntry = seriesBookRelation.series().toJSONObject();
+//                seriesEntry.put("seriesOrder",seriesBookRelation.order());
+//                seriesList.put(seriesEntry);
+//            }
+//        }
         obj.put("status", bookStatus != null ? bookStatus.getNice() : null);
-        obj.put("series", seriesList);
+        obj.put("seriesList", formatSeriesList());
         return obj;
     }
 
@@ -70,6 +81,7 @@ public class BookView {
         private List<AuthorBookRelation> authorBookRelationList;
 
         private List<SeriesBookRelation> seriesBookRelationList;
+        private List<Series> seriesList;
 
 
         public Builder bookStatus(Book book) {
@@ -102,8 +114,21 @@ public class BookView {
             return this;
         }
 
+        public Builder seriesList(List<Series> seriesList){
+            this.seriesList = seriesList;
+            return this;
+        }
+
         public BookView build() {
-            return new BookView(book, bookStatus, author, series,authorBookRelationList, seriesBookRelationList);
+            return new BookView(
+                    book,
+                    bookStatus,
+                    author,
+                    series,
+                    authorBookRelationList,
+                    seriesBookRelationList,
+                    seriesList
+            );
         }
     }
 }

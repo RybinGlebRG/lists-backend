@@ -88,6 +88,30 @@ public final class Series implements Cloneable{
         return obj;
     }
 
+    public JSONObject toJSONObject(String... fields){
+        JSONObject obj = new JSONObject();
+        for(String field: fields){
+            switch (field){
+                case "seriesId"-> obj.put("seriesId", seriesId);
+                case "readListId" -> obj.put("readListId", seriesListId);
+                case "title" -> obj.put("title", title);
+                case "items" ->{
+                    JSONArray jsonArray = new JSONArray();
+                    for (Object item: itemsList){
+                        if (item instanceof Book){
+                            jsonArray.put(((Book) item).toJSONObject());
+                        } else {
+                            throw new IllegalArgumentException();
+                        }
+                    }
+                    obj.put("items",jsonArray);
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+        return obj;
+    }
+
     @Override
     public String toString() {
         return this.toJSONObject().toString();
