@@ -100,8 +100,25 @@ public class SeriesService {
     }
 
     public List<Series> getAll(Long readListId) {
+        List<Series> seriesList = seriesRepository.getAll(readListId);
+        List<Series> result = new ArrayList<>();
+        for(Series series: seriesList){
+            try {
+                List<Book> bookList = seriesBooksRespository.getBySeriesId(series.seriesId()).stream()
+                        .sorted(Comparator.comparing(SeriesBookRelation::order))
+                        .map(SeriesBookRelation::book)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                Series fullSeries = new Series.Builder(series)
+                        .itemList(bookList)
+                        .build();
+                result.add(fullSeries);
 
-        return seriesRepository.getAll(readListId);
+            } catch (EntityNotFoundException e){
+                throw new AssertionError();
+            }
+        }
+
+        return result;
     }
 
     public Map<Book,List<Series>> findByBook(List<Book> bookList){
