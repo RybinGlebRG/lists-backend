@@ -9,36 +9,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Series implements Cloneable{
+public record Series(
+        Long seriesId,
+        Long seriesListId,
+        String title,
+        Integer bookCount,
+        List<?> itemsList
+) implements Cloneable{
 
-    private final Long seriesId;
-    private final Long seriesListId;
-    private final String title;
-    private Integer bookCount;
-    private final List<?> itemsList;
+//    private final Long seriesId;
+//    private final Long seriesListId;
+//    private final String title;
+//    private Integer bookCount;
+//    private final List<?> itemsList;
 
 //    private LocalDateTime lastUpdateDate;
 
+    public Series{
+        if (itemsList==null){
+            throw new IllegalArgumentException();
+        } else {
+            itemsList = new ArrayList<>(itemsList);
+        }
+    }
+
     public Series(Long seriesId, Long seriesListId, String title){
-        this.seriesId = seriesId;
-        this.seriesListId = seriesListId;
-        this.title = title;
-        this.itemsList = new ArrayList<>();
+        this(seriesId,seriesListId,title,0,new ArrayList<>());
     }
 
-    private Series(Long seriesId, Long seriesListId, String title, int bookCount, List<?> itemsList){
-        this.seriesId = seriesId;
-        this.seriesListId = seriesListId;
-        this.title = title;
-        this.bookCount = bookCount;
-        this.itemsList = new ArrayList<>(itemsList);
-//        this.lastUpdateDate = lastUpdateDate;
-    }
+//    private Series(Long seriesId, Long seriesListId, String title, int bookCount, List<?> itemsList){
+//        this.seriesId = seriesId;
+//        this.seriesListId = seriesListId;
+//        this.title = title;
+//        this.bookCount = bookCount;
+//        this.itemsList = new ArrayList<>(itemsList);
+////        this.lastUpdateDate = lastUpdateDate;
+//    }
 
+    @Deprecated
     public Long getSeriesId() {
         return seriesId;
     }
 
+    @Deprecated
     public String getTitle() {
         return title;
     }
@@ -47,6 +60,7 @@ public final class Series implements Cloneable{
 //        this.title = title;
 //    }
 
+    @Deprecated
     public Long getSeriesListId() {
         return seriesListId;
     }
@@ -55,15 +69,22 @@ public final class Series implements Cloneable{
 //        return lastUpdateDate;
 //    }
 
+    @Deprecated
     public Integer getBookCount() {
         return bookCount;
     }
 
-    public void setBookCount(Integer bookCount) {
-        this.bookCount = bookCount;
+//    public void setBookCount(Integer bookCount) {
+//        this.bookCount = bookCount;
+//    }
+
+    @Deprecated
+    public List<?> getItemsList() {
+        return new ArrayList<>(itemsList);
     }
 
-    public List<?> getItemsList() {
+    @Override
+    public List<?> itemsList() {
         return new ArrayList<>(itemsList);
     }
 
@@ -127,18 +148,18 @@ public final class Series implements Cloneable{
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Series series = (Series) o;
-        return Objects.equals(seriesId, series.seriesId) && Objects.equals(seriesListId, series.seriesListId) && Objects.equals(title, series.title) && Objects.equals(bookCount, series.bookCount);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(seriesId, seriesListId, title, bookCount);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Series series = (Series) o;
+//        return Objects.equals(seriesId, series.seriesId) && Objects.equals(seriesListId, series.seriesListId) && Objects.equals(title, series.title) && Objects.equals(bookCount, series.bookCount);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(seriesId, seriesListId, title, bookCount);
+//    }
 
     public final static class Builder{
         private long seriesId;

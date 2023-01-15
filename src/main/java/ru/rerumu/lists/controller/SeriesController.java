@@ -79,10 +79,11 @@ public class SeriesController {
 
         ResponseEntity<String> resEnt;
         List<Series> series = seriesService.getAll(readListId);
-        var seriesRelations = bookSeriesRelationService.get(series);
+//        var seriesRelations = bookSeriesRelationService.get(series);
         SeriesListView.Builder builder = new SeriesListView.Builder()
                 .seriesList(series)
-                .seriesRelations(seriesRelations);
+//                .seriesRelations(seriesRelations)
+                ;
         SeriesListView seriesListView = builder.build();
         seriesListView.sort();
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
