@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.40.0</version>
+	<version>0.41.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -107,6 +107,19 @@
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.69</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jolokia/jolokia-core -->
+		<dependency>
+			<groupId>org.jolokia</groupId>
+			<artifactId>jolokia-core</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
 
 	</dependencies>
 
