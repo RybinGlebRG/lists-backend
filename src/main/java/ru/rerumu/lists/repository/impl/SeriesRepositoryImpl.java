@@ -4,9 +4,15 @@ import org.springframework.stereotype.Component;
 
 import ru.rerumu.lists.mappers.SeriesMapper;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.Metric;
+import ru.rerumu.lists.model.MetricType;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.repository.SeriesRepository;
+import ru.rerumu.lists.services.MonitoringService;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +23,7 @@ import java.util.stream.Collectors;
 public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
+    private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
 
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper) {
@@ -60,7 +67,15 @@ public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implem
 
     @Override
     public List<Series> getAll(Long seriesListId) {
-        return seriesMapper.getAll(seriesListId);
+        LocalDateTime start = LocalDateTime.now();
+        List<Series> res = seriesMapper.getAll(seriesListId);
+        LocalDateTime end = LocalDateTime.now();
+        monitoringService.addMetricValue(new Metric<>(
+                MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME,
+                LocalDateTime.now(),
+                Duration.between(start,end)
+        ));
+        return res;
     }
 
     @Override

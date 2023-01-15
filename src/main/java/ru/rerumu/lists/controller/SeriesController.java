@@ -7,16 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.model.Metric;
+import ru.rerumu.lists.model.MetricType;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.SeriesService;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.BookSeriesView;
 import ru.rerumu.lists.views.SeriesListView;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ public class SeriesController {
     private final BookSeriesRelationService bookSeriesRelationService;
 
     private final SeriesService seriesService;
+
+    private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
 
 
     public SeriesController(
@@ -71,6 +74,7 @@ public class SeriesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) throws UserIsNotOwnerException {
+        LocalDateTime start = LocalDateTime.now();
         userService.checkOwnershipList(username, readListId);
 
         ResponseEntity<String> resEnt;
@@ -82,6 +86,12 @@ public class SeriesController {
         SeriesListView seriesListView = builder.build();
         seriesListView.sort();
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
+        LocalDateTime end = LocalDateTime.now();
+        monitoringService.addMetricValue(new Metric<>(
+                MetricType.SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME,
+                LocalDateTime.now(),
+                Duration.between(start,end)
+        ));
         return resEnt;
     }
 
