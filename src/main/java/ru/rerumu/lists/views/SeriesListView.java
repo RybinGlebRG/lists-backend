@@ -67,9 +67,7 @@ public class SeriesListView {
         this.seriesList.sort(comparator);
     }
 
-    /* TODO: Test
-    1. no book
- */
+    // TODO: Rename field
     private int getBookCount(Series series){
         return series.itemsList().size();
     }
