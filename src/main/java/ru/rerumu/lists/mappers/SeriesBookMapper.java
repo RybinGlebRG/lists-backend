@@ -1,6 +1,8 @@
 package ru.rerumu.lists.mappers;
 
+import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
 
 import java.util.List;
 
@@ -25,4 +27,6 @@ public interface SeriesBookMapper {
 
     void save(SeriesBookRelation seriesBookRelation);
     void merge(SeriesBookRelation seriesBookRelation);
+
+    List<SeriesBookRelationDTO> findBySeries(Series series);
 }

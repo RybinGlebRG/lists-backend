@@ -1,14 +1,18 @@
 package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.MetricType;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
+import ru.rerumu.lists.services.MonitoringService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +88,40 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     }
 
     @Override
+    public List<SeriesBookRelation> getBySeries(Series series) throws EntityNotFoundException, EmptyMandatoryParameterException {
+        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
+        List<SeriesBookRelationDTO> seriesBookRelationDTOList;
+        try {
+            seriesBookRelationDTOList = MonitoringService.gatherExecutionTime(
+                    () -> seriesBookMapper.findBySeries(series),
+                    MetricType.SERIES_BOOK_MAPPER__FIND_BY_SERIES__EXECUTION_TIME
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        for (var item: seriesBookRelationDTOList){
+            Book.Builder builder = new Book.Builder()
+                    .bookId(item.bookId())
+                    .readListId(item.bookListId())
+                    .title(item.title())
+                    .bookStatus(item.bookStatus())
+                    .insertDate(item.insertDate())
+                    .lastUpdateDate(item.lastUpdateDate())
+                    .lastChapter(item.lastChapter())
+                    .bookType(item.bookType());
+            seriesBookRelationList.add(new SeriesBookRelation(
+                    builder.build(),
+                    series,
+                    item.order())
+            );
+        }
+
+        return seriesBookRelationList;
+
+    }
+
+    @Override
     public void update(SeriesBookRelation seriesBookRelation) {
         seriesBookMapper.update(
                 seriesBookRelation.book().getBookId(),
@@ -95,7 +133,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public void save(List<SeriesBookRelation> seriesBookRelationList) {
-        for (var seriesBookRelation: seriesBookRelationList){
+        for (var seriesBookRelation : seriesBookRelationList) {
             SeriesBookRelation tmp = new SeriesBookRelation(
                     seriesBookRelation.book(),
                     seriesBookRelation.series(),
@@ -123,7 +161,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
                 .filter(item -> item.equals(bookId))
                 .findFirst();
 
-        if (foundBookId.isEmpty()){
+        if (foundBookId.isEmpty()) {
             throw new EntityNotFoundException();
         } else {
             Optional<Book> optionalBook = bookRepository.getOne(bookId);
@@ -132,7 +170,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
             }
             Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
 
-            return Optional.of( new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
+            return Optional.of(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
         }
     }
 }

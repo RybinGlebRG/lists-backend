@@ -21,11 +21,8 @@ public final class MonitoringServiceMBean {
 
     private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
 
-    @ManagedAttribute
-    public Double getDbQuerySeriesMapperGetAllExecutionTimeAvg() {
-        OptionalDouble avg = monitoringService.getMetricQueue(
-                        MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME
-                ).parallelStream()
+    private Double getAvg(Queue<Metric<?>> queue){
+        OptionalDouble avg = queue.parallelStream()
                 .map(item -> {
                     if (item.value() instanceof Duration duration) {
                         return duration;
@@ -39,19 +36,52 @@ public final class MonitoringServiceMBean {
     }
 
     @ManagedAttribute
+    public Double getSeriesMapperGetAllExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME
+        ));
+
+    }
+
+    @ManagedAttribute
     public Double getSeriesControllerGetAllExecutionTimeAvg() {
-        OptionalDouble avg = monitoringService.getMetricQueue(
-                        MetricType.SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME
-                ).parallelStream()
-                .map(item -> {
-                    if (item.value() instanceof Duration duration) {
-                        return duration;
-                    } else {
-                        throw new IllegalArgumentException();
-                    }
-                })
-                .mapToLong(Duration::toMillis)
-                .average();
-        return avg.orElse(0.0);
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME
+        ));
+    }
+
+    @ManagedAttribute
+    public Double getSeriesServiceGetAllExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_SERVICE__GET_ALL__EXECUTION_TIME
+        ));
+    }
+
+    @ManagedAttribute
+    public Double getSeriesBookMapperFindBySeriesExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_BOOK_MAPPER__FIND_BY_SERIES__EXECUTION_TIME
+        ));
+    }
+
+    @ManagedAttribute
+    public Double getSeriesBookRepositoryGetBySeriesExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_BOOK_REPOSITORY__GET_BY_SERIES__EXECUTION_TIME
+        ));
+    }
+
+    @ManagedAttribute
+    public Double getSeriesEnrichmentExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_ENRICHMENT__EXECUTION_TIME
+        ));
+    }
+
+    @ManagedAttribute
+    public Double getSeriesEnrichmentOneLoopExecutionTimeAvg() {
+        return getAvg(monitoringService.getMetricQueue(
+                MetricType.SERIES_ENRICHMENT__ONE_LOOP__EXECUTION_TIME
+        ));
     }
 }

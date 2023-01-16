@@ -3,6 +3,7 @@ package ru.rerumu.lists.repository;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.AuthorBookRelation;
+import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public interface SeriesBooksRespository {
 
     List<SeriesBookRelation> getByBookId(Long bookId, Long readListId);
     List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException;
+
+    List<SeriesBookRelation> getBySeries(Series series) throws EntityNotFoundException, EmptyMandatoryParameterException;
 
     void update(SeriesBookRelation seriesBookRelation);
 

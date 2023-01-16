@@ -4,15 +4,26 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.SeriesMapper">
 
+<!--    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.Series">-->
+<!--        <constructor>-->
+<!--            <arg column="series_id" javaType="Long"/>-->
+<!--            <arg column="list_list_id" javaType="Long"/>-->
+<!--            <arg column="title" javaType="String"/>-->
+<!--        </constructor>-->
+<!--&lt;!&ndash;        <result column="series_id" property="seriesId" />&ndash;&gt;-->
+<!--&lt;!&ndash;        <result column="list_list_id" property="seriesListId" />&ndash;&gt;-->
+<!--&lt;!&ndash;        <result column="title" property="title"/>&ndash;&gt;-->
+<!--    </resultMap>-->
+
     <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.Series">
         <constructor>
             <arg column="series_id" javaType="Long"/>
             <arg column="list_list_id" javaType="Long"/>
             <arg column="title" javaType="String"/>
         </constructor>
-<!--        <result column="series_id" property="seriesId" />-->
-<!--        <result column="list_list_id" property="seriesListId" />-->
-<!--        <result column="title" property="title"/>-->
+        <!--        <result column="series_id" property="seriesId" />-->
+        <!--        <result column="list_list_id" property="seriesListId" />-->
+        <!--        <result column="title" property="title"/>-->
     </resultMap>
 
     <sql id="selectAll">
@@ -39,8 +50,16 @@
         where s.series_id=#{seriesId}
     </select>
 
+<!--    <select id="getAll" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        where s.list_list_id=#{readListId}-->
+<!--    </select>-->
+
     <select id="getAll" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
+        select  s.series_id,
+                s.list_list_id,
+                s.title
+        from lists.series s
         where s.list_list_id=#{readListId}
     </select>
 

@@ -57,12 +57,7 @@ public final class MonitoringService {
     }
 
     public void addMetricValue(Metric<?> metric) {
-        switch (metric.metricType()) {
-            case DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME ->
-                    metricMap.get(MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME).add(metric);
-            case SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME ->
-                    metricMap.get(MetricType.SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME).add(metric);
-        }
+        metricMap.get(metric.metricType()).add(metric);
     }
 
     public Queue<Metric<?>> getMetricQueue(MetricType metricType){
