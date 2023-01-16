@@ -73,12 +73,15 @@ public class SeriesController {
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
-                                  @RequestAttribute("username") String username) throws UserIsNotOwnerException {
+                                  @RequestAttribute("username") String username) throws Exception {
         LocalDateTime start = LocalDateTime.now();
         userService.checkOwnershipList(username, readListId);
 
         ResponseEntity<String> resEnt;
-        List<Series> series = seriesService.getAll(readListId);
+        List<Series> series = MonitoringService.gatherExecutionTime(
+                ()-> seriesService.getAll(readListId),
+                MetricType.SERIES_SERVICE__GET_ALL__EXECUTION_TIME
+                );
 //        var seriesRelations = bookSeriesRelationService.get(series);
         SeriesListView.Builder builder = new SeriesListView.Builder()
                 .seriesList(series)
