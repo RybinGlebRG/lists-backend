@@ -7,6 +7,7 @@ import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Metric;
 import ru.rerumu.lists.model.MetricType;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.dto.SeriesDTO;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.services.MonitoringService;
 
@@ -20,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long,SeriesDTO> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
@@ -35,47 +36,34 @@ public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implem
     @Override
     public Series getOne(Long readListId, Long seriesId) {
 
-        return seriesMapper.getOne(readListId, seriesId);
+        return seriesMapper.getOne(readListId, seriesId).toSeries();
     }
 
     @Override
     public Optional<Series> getOne(Long seriesId) {
-        Series series = seriesMapper.findById(seriesId);
-        if (series==null){
+        SeriesDTO seriesDTO = seriesMapper.findById(seriesId);
+        if (seriesDTO==null){
             return Optional.empty();
         } else {
-            return Optional.of(series);
+            return Optional.of(seriesDTO.toSeries());
         }
-//        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
-//        try {
-//            seriesBookRelationList = seriesBooksRespository.getBySeriesId(series.getSeriesId());
-//        } catch (EntityNotFoundException e){
-//            throw new IllegalArgumentException();
-//        }
-//
-//        List<Book> bookList = seriesBookRelationList.stream()
-//                .sorted(Comparator.comparingLong(SeriesBookRelation::getOrder))
-//                .map(SeriesBookRelation::getBook)
-//                .collect(Collectors.toCollection(ArrayList::new));
-//
-//        Series.Builder seriesBuilder = new Series.Builder(series);
-//        seriesBuilder.itemList(bookList);
-//
-//
-//        return Optional.of(seriesBuilder.build());
     }
 
     @Override
     public List<Series> getAll(Long seriesListId) {
-        LocalDateTime start = LocalDateTime.now();
-        List<Series> res = seriesMapper.getAll(seriesListId);
-        LocalDateTime end = LocalDateTime.now();
-        monitoringService.addMetricValue(new Metric<>(
-                MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME,
-                LocalDateTime.now(),
-                Duration.between(start,end)
-        ));
-        return res;
+
+        try {
+            List<SeriesDTO> res = MonitoringService.gatherExecutionTime(
+                    () -> seriesMapper.getAll(seriesListId),
+                    MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME
+            );
+            return res.stream()
+                    .map(SeriesDTO::toSeries)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -91,14 +79,29 @@ public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long> implem
     @Override
     public void add(Series series) {
         seriesMapper.add(
-                series.getSeriesListId(),
-                series.getSeriesId(),
-                series.getTitle()
+                series.seriesListId(),
+                series.seriesId(),
+                series.title()
         );
     }
 
     @Override
     public void delete(long seriesId) {
         seriesMapper.delete(seriesId);
+    }
+
+    @Override
+    public Optional<Series> findById(Long seriesId) {
+        SeriesDTO seriesDTO = seriesMapper.findById(seriesId);
+        if (seriesDTO==null){
+            return Optional.empty();
+        } else {
+            return Optional.of(seriesDTO.toSeries());
+        }
+    }
+
+    @Override
+    public List<Series> findAll() {
+        throw new RuntimeException("Not Ready");
     }
 }

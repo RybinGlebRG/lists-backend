@@ -9,22 +9,27 @@ import ru.rerumu.lists.mappers.CrudMapper;
 import ru.rerumu.lists.repository.CrudRepository;
 
 @Component
-public class CrudRepositoryImpl<T,ID> implements CrudRepository<T,ID> {
+public abstract class CrudRepositoryImpl<T,ID,R> implements CrudRepository<T,ID> {
 
 
-    private final CrudMapper<T,ID> mapper;
+    private final CrudMapper<T,ID, R> mapper;
 
-    public CrudRepositoryImpl(@Qualifier("CrudMapper") CrudMapper<T,ID> mapper) {
+    public CrudRepositoryImpl(@Qualifier("CrudMapper") CrudMapper<T,ID, R> mapper) {
         this.mapper = mapper;
     }
 
-    @Override
-    public Optional<T> findById(ID id) {
-        return Optional.ofNullable(mapper.findById(id));
-    }
+//    @Override
+//    public Optional<T> findById(ID id) {
+//        return Optional.ofNullable(mapper.findById(id));
+//    }
+
+//    @Override
+//    public List<T> findAll() {
+//        return mapper.findAll();
+//    }
 
     @Override
-    public List<T> findAll() {
-        return mapper.findAll();
+    public void save(T entity) {
+        throw new RuntimeException("Not Ready");
     }
 }

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component("CrudMapper")
-public interface CrudMapper<T,ID> {
+public interface CrudMapper<T,ID, R> {
 
-    T findById(ID id);
+    R findById(ID id);
 
-    List<T> findAll();
+    List<R> findAll();
+
+    void save(T entity);
 }

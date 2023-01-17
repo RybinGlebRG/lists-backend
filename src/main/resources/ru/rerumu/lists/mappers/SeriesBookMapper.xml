@@ -17,6 +17,52 @@
         />
     </resultMap>
 
+    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesBookRelationDTO">
+        <constructor>
+            <arg column="series_series_id" javaType="Long"/>
+            <arg column="series_list_id" javaType="Long"/>
+            <arg column="series_order" javaType="Long"/>
+            <arg column="book_id" javaType="Long"/>
+            <arg column="list_list_id" javaType="Long"/>
+            <arg column="title" javaType="String"/>
+            <arg column="status_key_name" javaType="ru.rerumu.lists.model.BookStatus"/>
+            <arg column="insert_date" javaType="Date"/>
+            <arg column="last_update_date" javaType="Date"/>
+            <arg column="last_chapter" javaType="Integer"/>
+            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.model.BookType"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">
+        <constructor>
+            <idArg column="type_id" javaType="Integer"/>
+            <arg column="type_name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findBySeries" resultMap="SeriesBookRelationDTOResultMap">
+        select  sb.series_series_id,
+                sb.series_list_id,
+                sb.series_order,
+                b.book_id,
+                b.list_list_id,
+                b.title,
+                s.key_name as status_key_name,
+                b.insert_date AT TIME ZONE 'UTC' as insert_date,
+                b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                b.last_chapter,
+                bt.type_id as type_id,
+                bt.name as type_name
+        from lists.series_books sb
+            inner join lists.books b
+                    on b.book_id = sb.book_book_id
+            inner join lists.statuses s
+                    on s."STATUS_ID"= b.status_status_id
+            left outer join lists.book_types bt
+                    on bt.type_id = b.type_type_id
+        where sb.series_series_id=#{seriesId}
+    </select>
+
     <insert id="add">
         insert into lists.series_books(series_series_id, series_list_id, book_book_id, book_list_id, series_order)
         values(#{seriesId}, #{readListId}, #{bookId},#{readListId}, #{seriesOrder})
@@ -101,5 +147,7 @@
             insert (series_series_id, series_list_id, book_book_id, book_list_id, series_order)
             values(#{series.seriesId}, #{series.seriesListId}, #{book.bookId},#{book.readListId}, #{order})
     </update>
+
+
 
 </mapper>

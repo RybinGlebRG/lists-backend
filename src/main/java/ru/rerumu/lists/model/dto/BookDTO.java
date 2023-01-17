@@ -1,5 +1,8 @@
 package ru.rerumu.lists.model.dto;
 
+import org.json.JSONObject;
+import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
 
@@ -9,14 +12,17 @@ import java.util.Date;
 import java.util.Optional;
 
 public class BookDTO {
-    private final Long bookId;
-    private final Long readListId;
-    private final String title;
-    private final Integer bookStatus;
-    private final Date insertDate;
-    private final Date lastUpdateDate;
-    private final Integer lastChapter;
-    private final Integer bookType;
+    public   Long bookId;
+    public  Long readListId;
+    public  String title;
+    public  Integer bookStatus;
+    public  Date insertDate;
+    public  Date lastUpdateDate;
+    public  Integer lastChapter;
+    public  Integer bookType;
+    public BookType bookTypeObj;
+
+    public BookDTO(){}
 
     public BookDTO(Long bookId,
                 Long readListId,
@@ -71,4 +77,30 @@ public class BookDTO {
     public Integer getBookType() {
         return bookType;
     }
+
+    public Book toBook() throws EmptyMandatoryParameterException {
+        Book.Builder builder = new Book.Builder(this);
+        builder.bookType(bookTypeObj);
+
+        switch (bookStatus) {
+            case 1:
+                builder.bookStatus(BookStatus.IN_PROGRESS);
+                break;
+            case 2:
+                builder.bookStatus(BookStatus.COMPLETED);
+                break;
+            default:
+                builder.bookStatus(null);
+        }
+            return builder.build();
+    }
+
+//    @Override
+//    public String toString() {
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("bookId",bookId);
+//        jsonObject.put("readListId",readListId);
+//        jsonObject.put("title",title);
+//        jsonObject.put("bookStatus",bookStatus);
+//    }
 }
