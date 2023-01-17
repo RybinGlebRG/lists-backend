@@ -45,28 +45,29 @@ public class SeriesService {
 
 
     public Optional<Series> getSeries(Long seriesId) {
-        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
-        if (optionalSeries.isPresent()) {
-            Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
-            try {
-
-                List<SeriesBookRelation> relationList = seriesBooksRespository.getBySeriesId(
-                        optionalSeries.get().getSeriesId()
-                );
-                relationList.sort(Comparator.comparingLong(SeriesBookRelation::order));
-
-                List<Book> bookList = relationList.stream()
-                        .map(SeriesBookRelation::book)
-                        .collect(Collectors.toCollection(ArrayList::new));
-                seriesBuilder.itemList(bookList);
-            } catch (EntityNotFoundException e) {
-                throw new IllegalArgumentException();
-            }
-
-            return Optional.of(seriesBuilder.build());
-        } else {
-            return Optional.empty();
-        }
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        return optionalSeries;
+//        if (optionalSeries.isPresent()) {
+//            Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
+//            try {
+//
+//                List<SeriesBookRelation> relationList = seriesBooksRespository.getBySeriesId(
+//                        optionalSeries.get().getSeriesId()
+//                );
+//                relationList.sort(Comparator.comparingLong(SeriesBookRelation::order));
+//
+//                List<Book> bookList = relationList.stream()
+//                        .map(SeriesBookRelation::book)
+//                        .collect(Collectors.toCollection(ArrayList::new));
+//                seriesBuilder.itemList(bookList);
+//            } catch (EntityNotFoundException e) {
+//                throw new IllegalArgumentException();
+//            }
+//
+//            return Optional.of(seriesBuilder.build());
+//        } else {
+//            return Optional.empty();
+//        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -100,47 +101,7 @@ public class SeriesService {
     }
 
     public List<Series> getAll(Long readListId) {
-        List<Series> seriesList = seriesRepository.getAll(readListId);
-        List<Series> result = new ArrayList<>();
-        LocalDateTime start = LocalDateTime.now();
-        for (Series series : seriesList) {
-            LocalDateTime start2 = LocalDateTime.now();
-            try {
-                List<Book> bookList = MonitoringService.gatherExecutionTime(
-                                () -> seriesBooksRespository.getBySeries(series),
-                                MetricType.SERIES_BOOK_REPOSITORY__GET_BY_SERIES__EXECUTION_TIME
-                        ).stream()
-                        .sorted(Comparator.comparing(SeriesBookRelation::order))
-                        .map(SeriesBookRelation::book)
-                        .collect(Collectors.toCollection(ArrayList::new));
-                Series fullSeries = new Series.Builder(series)
-                        .itemList(bookList)
-                        .build();
-                result.add(fullSeries);
-
-            } catch (Exception e) {
-                if (e instanceof EntityNotFoundException){
-                    throw new AssertionError();
-                } else {
-                    throw new RuntimeException(e);
-                }
-
-            }
-            LocalDateTime end2 = LocalDateTime.now();
-            MonitoringService.getServiceInstance().addMetricValue(new Metric<>(
-                    MetricType.SERIES_ENRICHMENT__ONE_LOOP__EXECUTION_TIME,
-                    LocalDateTime.now(),
-                    Duration.between(start2, end2)
-            ));
-        }
-        LocalDateTime end = LocalDateTime.now();
-        MonitoringService.getServiceInstance().addMetricValue(new Metric<>(
-                MetricType.SERIES_ENRICHMENT__EXECUTION_TIME,
-                LocalDateTime.now(),
-                Duration.between(start, end)
-        ));
-
-        return result;
+        return seriesRepository.getAll(readListId);
     }
 
     public Map<Book, List<Series>> findByBook(List<Book> bookList) {
@@ -157,10 +118,9 @@ public class SeriesService {
 
     public List<Series> findByBook(Book book) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
-        List<Series> seriesList = seriesBookRelationList.stream()
+        return seriesBookRelationList.stream()
                 .map(SeriesBookRelation::series)
                 .collect(Collectors.toCollection(ArrayList::new));
-        return seriesList;
     }
 
     private void removeBookRelations(Series source, Series target) {

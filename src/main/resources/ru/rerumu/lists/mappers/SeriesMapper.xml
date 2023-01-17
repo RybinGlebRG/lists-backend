@@ -4,33 +4,73 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.SeriesMapper">
 
-<!--    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.Series">-->
-<!--        <constructor>-->
-<!--            <arg column="series_id" javaType="Long"/>-->
-<!--            <arg column="list_list_id" javaType="Long"/>-->
-<!--            <arg column="title" javaType="String"/>-->
-<!--        </constructor>-->
-<!--&lt;!&ndash;        <result column="series_id" property="seriesId" />&ndash;&gt;-->
-<!--&lt;!&ndash;        <result column="list_list_id" property="seriesListId" />&ndash;&gt;-->
-<!--&lt;!&ndash;        <result column="title" property="title"/>&ndash;&gt;-->
-<!--    </resultMap>-->
-
-    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.Series">
-        <constructor>
-            <arg column="series_id" javaType="Long"/>
-            <arg column="list_list_id" javaType="Long"/>
-            <arg column="title" javaType="String"/>
-        </constructor>
-        <!--        <result column="series_id" property="seriesId" />-->
-        <!--        <result column="list_list_id" property="seriesListId" />-->
-        <!--        <result column="title" property="title"/>-->
+    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.dto.SeriesDTO">
+        <id column="series_id" property="seriesId" javaType="Long"/>
+        <result column="list_list_id" property="seriesListId" javaType="Long"/>
+        <result column="title" property="title" javaType="String"/>
+        <result column="book_count" property="bookCount" javaType="Integer"/>
+        <collection
+                property="seriesBookDTOList"
+                ofType="ru.rerumu.lists.model.dto.SeriesBookDTO"
+                resultMap="SeriesBookDtoResultMap"
+        />
     </resultMap>
+
+    <resultMap id="SeriesBookDtoResultMap" type="ru.rerumu.lists.model.dto.SeriesBookDTO">
+        <result property="order" column="series_order" javaType="Long"/>
+        <association property="bookDTO" resultMap="BookDTOResultMap"/>
+    </resultMap>
+
+    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
+        <id property="bookId" column="book_id" javaType="Long"/>
+        <result  property="readListId" column="list_list_id" javaType="Long"/>
+        <result  property="title" column="title" javaType="String"/>
+        <result  property="bookStatus" column="status_status_id" javaType="Integer"/>
+        <result  property="insertDate" column="insert_date" javaType="Date"/>
+        <result  property="lastUpdateDate" column="last_update_date" javaType="Date"/>
+        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
+        <result  property="bookType" column="type_id" javaType="Integer"/>
+<!--        <result  property="bookTypeObj" column="type_name" javaType="ru.rerumu.lists.model.BookType"/>-->
+        <association property="bookTypeObj" resultMap="BookTypeResultMap"/>
+    </resultMap>
+
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">
+        <constructor>
+            <idArg column="type_id2" javaType="Integer"/>
+            <arg column="type_name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="getAll" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        where s.list_list_id=#{readListId}
+    </select>
 
     <sql id="selectAll">
         select  s.series_id,
                 s.list_list_id,
-                s.title
-        from lists.series s
+                s.title,
+                0 as book_count,
+                sb.series_order,
+                b.book_id,
+                b.list_list_id,
+                b.title,
+                b.status_status_id,
+                b.insert_date AT TIME ZONE 'UTC' as insert_date,
+                b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                b.last_chapter,
+                bt.type_id as type_id,
+                bt.type_id as type_id2,
+                bt.name as type_name
+        from    lists.series s
+                left outer join lists.series_books sb
+                    on sb.series_series_id = s.series_id
+                left outer join lists.books b
+                    on b.book_id = sb.book_book_id
+                left outer join lists.statuses st
+                    on st."STATUS_ID"= b.status_status_id
+                left outer join lists.book_types bt
+                    on bt.type_id = b.type_type_id
     </sql>
 
 
@@ -55,13 +95,7 @@
 <!--        where s.list_list_id=#{readListId}-->
 <!--    </select>-->
 
-    <select id="getAll" resultMap="SeriesResultMap">
-        select  s.series_id,
-                s.list_list_id,
-                s.title
-        from lists.series s
-        where s.list_list_id=#{readListId}
-    </select>
+
 
     <select id="getBookCount" resultType="int">
         select count(*)

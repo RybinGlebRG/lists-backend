@@ -2,10 +2,14 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.model.dto.SeriesBookDTO;
+import ru.rerumu.lists.model.dto.SeriesDTO;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 

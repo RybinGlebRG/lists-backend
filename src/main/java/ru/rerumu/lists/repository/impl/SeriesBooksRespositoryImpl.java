@@ -17,6 +17,8 @@ import ru.rerumu.lists.services.MonitoringService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
@@ -70,21 +72,27 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
-        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
-        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
-        if (optionalSeries.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        List<Long> bookIdList = seriesBookMapper.getBookIdsBySeriesId(seriesId);
-        bookIdList.forEach(bookId -> {
-            Optional<Book> optionalBook = bookRepository.getOne(bookId);
-            if (optionalBook.isEmpty()) {
-                throw new RuntimeException();
-            }
-            Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
-            seriesBookRelationList.add(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
-        });
-        return seriesBookRelationList;
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        optionalSeries.orElseThrow(EntityNotFoundException::new);
+
+
+//        List<Long> bookIdList = seriesBookMapper.getBookIdsBySeriesId(seriesId);
+//        bookIdList.forEach(bookId -> {
+//            Optional<Book> optionalBook = bookRepository.getOne(bookId);
+//            if (optionalBook.isEmpty()) {
+//                throw new RuntimeException();
+//            }
+//            Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
+//            seriesBookRelationList.add(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
+//        });
+        return IntStream.range(0, optionalSeries.get().itemsList().size())
+                .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof Book)
+                .mapToObj(ind -> new SeriesBookRelation(
+                        (Book) optionalSeries.get().itemsList().get(ind),
+                        optionalSeries.get(),
+                        (long) ind
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -100,7 +108,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
             throw new RuntimeException(e);
         }
 
-        for (var item: seriesBookRelationDTOList){
+        for (var item : seriesBookRelationDTOList) {
             Book.Builder builder = new Book.Builder()
                     .bookId(item.bookId())
                     .readListId(item.bookListId())
@@ -151,26 +159,39 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException {
-        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
-        if (optionalSeries.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        List<Long> bookIdList = seriesBookMapper.getBookIdsBySeriesId(seriesId);
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        optionalSeries.orElseThrow(EntityNotFoundException::new);
 
-        Optional<Long> foundBookId = bookIdList.stream()
-                .filter(item -> item.equals(bookId))
-                .findFirst();
+        //
+//        List<Long> bookIdList = seriesBookMapper.getBookIdsBySeriesId(seriesId);
+//
+//        Optional<Long> foundBookId = bookIdList.stream()
+//                .filter(item -> item.equals(bookId))
+//                .findFirst();
 
-        if (foundBookId.isEmpty()) {
-            throw new EntityNotFoundException();
-        } else {
-            Optional<Book> optionalBook = bookRepository.getOne(bookId);
-            if (optionalBook.isEmpty()) {
-                throw new AssertionError();
-            }
-            Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
+         return IntStream.range(
+                         0,
+                         optionalSeries.get().itemsList().size()
+                 )
+                 .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof Book book &&
+                         book.getBookId().equals(bookId))
+                 .mapToObj(ind -> new SeriesBookRelation(
+                         (Book) optionalSeries.get().itemsList().get(ind),
+                         optionalSeries.get(),
+                         (long) ind
+                 ))
+                 .findFirst();
 
-            return Optional.of(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
-        }
+//        if (foundBookId.isEmpty()) {
+//            throw new EntityNotFoundException();
+//        } else {
+//            Optional<Book> optionalBook = bookRepository.getOne(bookId);
+//            if (optionalBook.isEmpty()) {
+//                throw new AssertionError();
+//            }
+//            Long order = seriesBookMapper.getOrderByIdOnly(optionalBook.get().getBookId(), optionalSeries.get().getSeriesId());
+//
+//            return Optional.of(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
+//        }
     }
 }

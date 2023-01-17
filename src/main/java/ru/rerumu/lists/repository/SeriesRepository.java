@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface SeriesRepository extends CrudRepository<Series,Long>{
 
     Series getOne(Long seriesListId, Long seriesId);
+
+    @Deprecated
     Optional<Series> getOne(Long seriesId);
     List<Series> getAll(Long seriesListId);
     int getBookCount(Long readListId, Long seriesId);
