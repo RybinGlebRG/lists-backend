@@ -2,8 +2,6 @@ package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.BookTypeMapper;
-import ru.rerumu.lists.mappers.CrudMapper;
-import ru.rerumu.lists.mappers.SeriesMapper;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.repository.BookTypeRepository;
 
@@ -11,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class BookTypeRepositoryImpl extends CrudRepositoryImpl<BookType,Integer,BookType> implements BookTypeRepository {
+public class BookTypeRepositoryImpl extends CrudRepositoryImplEntity<BookType,Integer> implements BookTypeRepository {
 
     private final BookTypeMapper bookTypeMapper;
     public BookTypeRepositoryImpl(BookTypeMapper bookTypeMapper) {

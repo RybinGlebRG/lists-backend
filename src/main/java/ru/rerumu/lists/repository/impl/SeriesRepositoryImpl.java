@@ -3,28 +3,19 @@ package ru.rerumu.lists.repository.impl;
 import org.springframework.stereotype.Component;
 
 import ru.rerumu.lists.mappers.SeriesMapper;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.Metric;
-import ru.rerumu.lists.model.MetricType;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.dto.SeriesDTO;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.services.MonitoringService;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long,SeriesDTO> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryImplDto<Series,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
-    private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
 
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper) {
@@ -37,16 +28,6 @@ public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long,SeriesD
     public Series getOne(Long readListId, Long seriesId) {
 
         return seriesMapper.getOne(readListId, seriesId).toSeries();
-    }
-
-    @Override
-    public Optional<Series> getOne(Long seriesId) {
-        SeriesDTO seriesDTO = seriesMapper.findById(seriesId);
-        if (seriesDTO==null){
-            return Optional.empty();
-        } else {
-            return Optional.of(seriesDTO.toSeries());
-        }
     }
 
     @Override
@@ -88,20 +69,5 @@ public class SeriesRepositoryImpl extends CrudRepositoryImpl<Series,Long,SeriesD
     @Override
     public void delete(long seriesId) {
         seriesMapper.delete(seriesId);
-    }
-
-    @Override
-    public Optional<Series> findById(Long seriesId) {
-        SeriesDTO seriesDTO = seriesMapper.findById(seriesId);
-        if (seriesDTO==null){
-            return Optional.empty();
-        } else {
-            return Optional.of(seriesDTO.toSeries());
-        }
-    }
-
-    @Override
-    public List<Series> findAll() {
-        throw new RuntimeException("Not Ready");
     }
 }

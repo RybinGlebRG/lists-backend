@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.EntityDTO;
 import ru.rerumu.lists.model.Series;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SeriesDTO {
+public class SeriesDTO implements EntityDTO<Series> {
 
     public  Long seriesId;
     public  Long seriesListId;
@@ -57,4 +58,8 @@ public class SeriesDTO {
                 .build();
     }
 
+    @Override
+    public Series toDomain() {
+        return toSeries();
+    }
 }

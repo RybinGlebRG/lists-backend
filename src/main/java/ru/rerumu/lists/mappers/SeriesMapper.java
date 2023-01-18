@@ -2,6 +2,7 @@ package ru.rerumu.lists.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.EntityDTO;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.dto.SeriesDTO;
 
@@ -9,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public interface SeriesMapper extends CrudMapper<Series,Long,SeriesDTO> {
+public interface SeriesMapper extends CrudMapper<Series,Long, EntityDTO<Series>> {
     SeriesDTO getOne(Long readListId, Long seriesId);
     @Deprecated
     SeriesDTO getOneBySeriesOnly( Long seriesId);
