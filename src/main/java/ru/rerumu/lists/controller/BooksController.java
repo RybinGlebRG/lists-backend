@@ -102,10 +102,10 @@ public class BooksController {
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) {
         List<Book> books = readListService.getAllBooks(readListId);
-        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
-                .bookSeriesMap(bookSeriesMap)
+//                .bookSeriesMap(bookSeriesMap)
                 .build();
         bookListView.sort();
 
@@ -159,10 +159,10 @@ public class BooksController {
         userService.checkOwnershipList(username, readListId);
 
         List<Book> books = readListService.getAllBooks(readListId);
-        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
-                .bookSeriesMap(bookSeriesMap)
+//                .bookSeriesMap(bookSeriesMap)
                 .build();
         bookListView.sort(search.getSortItemList());
 

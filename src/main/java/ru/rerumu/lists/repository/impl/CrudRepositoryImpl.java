@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.CrudMapper;
+import ru.rerumu.lists.model.EntityDTO;
 import ru.rerumu.lists.repository.CrudRepository;
 
 @Component
@@ -18,7 +19,8 @@ public abstract class CrudRepositoryImpl<T,ID,R> implements CrudRepository<T,ID>
         this.mapper = mapper;
     }
 
-//    @Override
+
+    //    @Override
 //    public Optional<T> findById(ID id) {
 //        return Optional.ofNullable(mapper.findById(id));
 //    }

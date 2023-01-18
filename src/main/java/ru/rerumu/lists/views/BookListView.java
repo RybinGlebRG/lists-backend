@@ -52,20 +52,21 @@ public class BookListView {
         this.bookList.sort(comparator);
     }
 
-    private JSONArray formatSeriesList(Book book){
-        JSONArray arr = new JSONArray();
-        for(Series series: bookSeriesMap.get(book)){
-            arr.put(series.toJSONObject("seriesId","title"));
-        }
-        return arr;
-    }
+//    private JSONArray formatSeriesList(Book book){
+//        JSONArray arr = new JSONArray();
+//        for(Series series: bookSeriesMap.get(book)){
+//            arr.put(series.toJSONObject("seriesId","title"));
+//        }
+//        return arr;
+//    }
 
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray bookArray = new JSONArray();
         for (Book item : this.bookList) {
             JSONObject bookObj = item.toJSONObject()
-                    .put("seriesList",formatSeriesList(item));
+//                    .put("seriesList",formatSeriesList(item))
+                    ;
 
             bookArray.put(bookObj);
         }
@@ -80,13 +81,13 @@ public class BookListView {
     }
 
     public static class Builder{
-        private Map<Book,List<Series>> bookSeriesMap;
+//        private Map<Book,List<Series>> bookSeriesMap;
         private List<Book> bookList;
 
-        public Builder bookSeriesMap(Map<Book,List<Series>> bookSeriesMap){
-            this.bookSeriesMap = bookSeriesMap;
-            return this;
-        }
+//        public Builder bookSeriesMap(Map<Book,List<Series>> bookSeriesMap){
+//            this.bookSeriesMap = bookSeriesMap;
+//            return this;
+//        }
 
         public Builder bookList(List<Book> bookList){
             this.bookList = bookList;
@@ -94,7 +95,7 @@ public class BookListView {
         }
 
         public BookListView build(){
-            return new BookListView(bookList, bookSeriesMap);
+            return new BookListView(bookList, null);
         }
     }
 

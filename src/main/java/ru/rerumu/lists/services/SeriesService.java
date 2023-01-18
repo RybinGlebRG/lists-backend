@@ -86,7 +86,7 @@ public class SeriesService {
     @Transactional(rollbackFor = Exception.class)
     public void delete(long seriesId) throws EntityNotFoundException, EntityHasChildrenException {
 
-        Optional<Series> optionalSeries = seriesRepository.getOne(seriesId);
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
 
         if (optionalSeries.isEmpty()) {
             throw new EntityNotFoundException();
