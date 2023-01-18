@@ -24,7 +24,7 @@
     <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="list_list_id" javaType="Long"/>
-        <result  property="title" column="title" javaType="String"/>
+        <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="status_status_id" javaType="Integer"/>
         <result  property="insertDate" column="insert_date" javaType="Date"/>
         <result  property="lastUpdateDate" column="last_update_date" javaType="Date"/>
@@ -54,7 +54,7 @@
                 sb.series_order,
                 b.book_id,
                 b.list_list_id,
-                b.title,
+                b.title as book_title,
                 b.status_status_id,
                 b.insert_date AT TIME ZONE 'UTC' as insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as last_update_date,

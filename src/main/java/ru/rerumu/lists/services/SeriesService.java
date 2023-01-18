@@ -45,29 +45,7 @@ public class SeriesService {
 
 
     public Optional<Series> getSeries(Long seriesId) {
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
-        return optionalSeries;
-//        if (optionalSeries.isPresent()) {
-//            Series.Builder seriesBuilder = new Series.Builder(optionalSeries.get());
-//            try {
-//
-//                List<SeriesBookRelation> relationList = seriesBooksRespository.getBySeriesId(
-//                        optionalSeries.get().getSeriesId()
-//                );
-//                relationList.sort(Comparator.comparingLong(SeriesBookRelation::order));
-//
-//                List<Book> bookList = relationList.stream()
-//                        .map(SeriesBookRelation::book)
-//                        .collect(Collectors.toCollection(ArrayList::new));
-//                seriesBuilder.itemList(bookList);
-//            } catch (EntityNotFoundException e) {
-//                throw new IllegalArgumentException();
-//            }
-//
-//            return Optional.of(seriesBuilder.build());
-//        } else {
-//            return Optional.empty();
-//        }
+        return seriesRepository.findById(seriesId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -104,17 +82,17 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
-    public Map<Book, List<Series>> findByBook(List<Book> bookList) {
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
-        for (Book book : bookList) {
-            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
-            List<Series> seriesList = seriesBookRelationList.stream()
-                    .map(SeriesBookRelation::series)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            bookSeriesMap.put(book, seriesList);
-        }
-        return bookSeriesMap;
-    }
+//    public Map<Book, List<Series>> findByBook(List<Book> bookList) {
+//        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+//        for (Book book : bookList) {
+//            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
+//            List<Series> seriesList = seriesBookRelationList.stream()
+//                    .map(SeriesBookRelation::series)
+//                    .collect(Collectors.toCollection(ArrayList::new));
+//            bookSeriesMap.put(book, seriesList);
+//        }
+//        return bookSeriesMap;
+//    }
 
     public List<Series> findByBook(Book book) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());

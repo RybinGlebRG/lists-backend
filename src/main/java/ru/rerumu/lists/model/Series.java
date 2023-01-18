@@ -100,8 +100,8 @@ public record Series(
         obj.put("title", title);
         JSONArray jsonArray = new JSONArray();
         for (Object item: itemsList){
-            if (item instanceof Book){
-                jsonArray.put(((Book) item).toJSONObject());
+            if (item instanceof Book book){
+                jsonArray.put(book.toJSONObject());
             } else {
                 throw new IllegalArgumentException();
             }
