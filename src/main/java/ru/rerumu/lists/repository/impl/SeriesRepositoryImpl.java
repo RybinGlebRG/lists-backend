@@ -2,24 +2,18 @@ package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
 
-import ru.rerumu.lists.mappers.CrudMapper;
 import ru.rerumu.lists.mappers.SeriesMapper;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.dto.SeriesDTO;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.services.MonitoringService;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryImplDto<Series,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
 
