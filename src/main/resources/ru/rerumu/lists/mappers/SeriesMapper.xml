@@ -21,6 +21,11 @@
         <association property="bookDTO" resultMap="BookDTOResultMap"/>
     </resultMap>
 
+    <resultMap id="SeriesTitleDtoResultMap" type="ru.rerumu.lists.model.dto.SeriesTitleDTO">
+        <result property="order" column="series_order"/>
+        <association property="titleDTO" resultMap="TitleDtoResultMap"/>
+    </resultMap>
+
     <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="list_list_id" javaType="Long"/>
@@ -41,12 +46,46 @@
         </constructor>
     </resultMap>
 
-    <select id="getAll" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        where s.list_list_id=#{readListId}
-    </select>
+    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.dto.TitleDTO">
+        <id property="titleId" column="title_id"/>
+        <result property="name" column="title_name"/>
+        <result property="createDateUTC" column="title_create_date_utc"/>
+        <result property="listId" column="title_list_id"/>
+        <association property="titleStatus" resultMap="TitleStatusResultMap"/>
+        <association property="videoType" resultMap="VideoTypeResultMap"/>
+    </resultMap>
+
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
+        <constructor>
+            <idArg column="video_type_id" javaType="Long"/>
+            <arg column="video_type_name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.TitleStatus">
+        <constructor>
+            <idArg column="title_status_id" javaType="_int"/>
+            <arg column="title_status_name" javaType="String"/>
+        </constructor>
+    </resultMap>
 
     <sql id="selectAll">
+        with s_titles as (
+            select  t.title_id,
+                    t.list_list_id as title_list_id,
+                    t.name as title_name,
+                    t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
+                    t.status_status_id as title_status,
+                    vt.type_id as title_type_id,
+                    vt.name as title_type_name,
+                    ts.status_id as title_status_id,
+                    ts.name as title_status_name
+            from    lists.titles t
+                    inner join lists.video_types vt
+                        on vt.type_id = t.type_type_id
+                    inner join lists.titles_statuses ts
+                        on ts.status_id = t.status_status_id
+        )
         select  s.series_id,
                 s.list_list_id,
                 s.title,
@@ -61,7 +100,10 @@
                 b.last_chapter,
                 bt.type_id as type_id,
                 bt.type_id as type_id2,
-                bt.name as type_name
+                bt.name as type_name,
+
+                s_t.*
+
         from    lists.series s
                 left outer join lists.series_books sb
                     on sb.series_series_id = s.series_id
@@ -71,8 +113,16 @@
                     on st."STATUS_ID"= b.status_status_id
                 left outer join lists.book_types bt
                     on bt.type_id = b.type_type_id
+                left outer join lists.series_titles stt
+                    on stt.series_series_id = s.series_id
+                left outer join s_titles s_t
+                    on s_t.title_id = stt.title_title_id
     </sql>
 
+    <select id="getAll" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        where s.list_list_id=#{readListId}
+    </select>
 
     <select id="getOne" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
