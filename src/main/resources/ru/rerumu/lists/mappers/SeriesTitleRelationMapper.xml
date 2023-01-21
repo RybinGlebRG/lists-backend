@@ -1,0 +1,27 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.SeriesTitlesRelationDtoMapper">
+
+    <resultMap id="SeriesTitlesRelationDto" type="ru.rerumu.lists.model.dto.SeriesTitlesRelationDTO">
+        <id property="seriesTitleId" column="series_title_id"/>
+        <result property="seriesSeriesId" column="series_series_id"/>
+        <result property="seriesListId" column="series_list_id"/>
+        <result property="titleTitleId" column="title_title_id"/>
+        <result property="titleListId" column="title_list_id"/>
+        <result property="seriesOrder" column="series_order"/>
+    </resultMap>
+
+    <sql id="selectAll">
+        select  st.series_title_id,
+                st.series_series_id,
+                st.series_list_id,
+                st.title_title_id,
+                st.title_list_id,
+                st.series_order
+        from    lists.series_titles st
+    </sql>
+
+
+</mapper>

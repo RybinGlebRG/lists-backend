@@ -2,9 +2,10 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
 
+// TODO: To record
 public class VideoType {
     private final Long typeId;
-    private String name;
+    private final String name;
 
     public VideoType(Long typeId, String name){
         this.typeId = typeId;
