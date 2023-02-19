@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryImplDto<Series,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
 

@@ -8,13 +8,13 @@ import ru.rerumu.lists.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-public abstract class CrudRepositoryImplEntity<T,ID> implements CrudRepository<T,ID> {
+@Component("CrudRepositoryEntityImpl")
+public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
 
 
-    private final CrudMapper<T,ID, T> mapper;
+    protected final CrudMapper<T,ID, T> mapper;
 
-    public CrudRepositoryImplEntity(@Qualifier("CrudMapper") CrudMapper<T,ID, T> mapper) {
+    public CrudRepositoryEntityImpl(@Qualifier("CrudMapper") CrudMapper<T,ID, T> mapper) {
         this.mapper = mapper;
     }
 

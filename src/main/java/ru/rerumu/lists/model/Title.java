@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
-public class Title {
+public class Title implements SeriesItem{
     private final Long titleId;
     private String name;
     private Date createDateUTC;

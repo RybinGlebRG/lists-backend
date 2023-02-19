@@ -18,7 +18,7 @@ public record Series(
         Long seriesListId,
         String title,
         Integer bookCount,
-        List<?> itemsList
+        List<SeriesItem> itemsList
 ) implements Cloneable{
 
 //    private final Long seriesId;
@@ -88,7 +88,7 @@ public record Series(
     }
 
     @Override
-    public List<?> itemsList() {
+    public List<SeriesItem> itemsList() {
         return new ArrayList<>(itemsList);
     }
 
@@ -174,7 +174,7 @@ public record Series(
 
         private LocalDateTime lastUpdateDate;
 
-        private List<?> itemList = new ArrayList<>();
+        private List<SeriesItem> itemList = new ArrayList<>();
 
         public Builder(){};
 
@@ -206,7 +206,7 @@ public record Series(
             return this;
         }
 
-        public Builder itemList(List<?> itemList){
+        public Builder itemList(List<SeriesItem> itemList){
             this.itemList = itemList;
             return this;
         }

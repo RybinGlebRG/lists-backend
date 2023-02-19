@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class CrudRepositoryImplDto<T,ID> implements CrudRepository<T,ID> {
+public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID> {
 
     private final CrudMapper<T,ID, EntityDTO<T>> mapper;
 
-    public CrudRepositoryImplDto(@Qualifier("CrudMapper") CrudMapper<T,ID, EntityDTO<T>> mapper) {
+    public CrudRepositoryDtoImpl(@Qualifier("CrudMapper") CrudMapper<T,ID, EntityDTO<T>> mapper) {
         this.mapper = mapper;
     }
 

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class Book implements Cloneable{
+public final class Book implements Cloneable, SeriesItem{
     private final Long bookId;
     private final Long readListId;
     private final String title;
@@ -211,6 +211,7 @@ public final class Book implements Cloneable{
             this.lastChapter = book.lastChapter;
         }
 
+        // TODO: Move to DTO
         public Builder(BookDTO bookDTO) {
             this.bookId = bookDTO.getBookId();
             this.readListId = bookDTO.getReadListId();

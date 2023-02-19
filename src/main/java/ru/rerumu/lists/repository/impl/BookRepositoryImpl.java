@@ -1,7 +1,5 @@
 package ru.rerumu.lists.repository.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.model.Book;
@@ -9,24 +7,24 @@ import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.model.dto.BookDTO;
 import ru.rerumu.lists.repository.BookRepository;
-import ru.rerumu.lists.repository.BookTypeRepository;
+import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
-    private final BookTypeRepository bookTypeRepository;
+    private final CrudRepository<BookType,Integer> crudRepository;
 
     public BookRepositoryImpl(
             BookMapper bookMapper,
-            BookTypeRepository bookTypeRepository
+            CrudRepository<BookType,Integer> crudRepository
     ){
         this.bookMapper = bookMapper;
-        this.bookTypeRepository = bookTypeRepository;
+        this.crudRepository = crudRepository;
     }
 
 
@@ -42,29 +40,6 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null ,
                 book.getBookType() != null ? book.getBookType().getId() : null
         );
-    }
-
-    private Book populate(BookDTO bookDTO){
-        Book.Builder builder = new Book.Builder(bookDTO);
-        Optional<BookType> optionalBookType = bookTypeRepository.findById(bookDTO.getBookType());
-        optionalBookType.ifPresent(builder::bookType);
-
-        switch (bookDTO.getBookStatus()) {
-            case 1:
-                builder.bookStatus(BookStatus.IN_PROGRESS);
-                break;
-            case 2:
-                builder.bookStatus(BookStatus.COMPLETED);
-                break;
-            default:
-                builder.bookStatus(null);
-        }
-        try {
-            return builder.build();
-        } catch (EmptyMandatoryParameterException e){
-            // Database is supposed to provide everything needed
-            throw new AssertionError();
-        }
     }
 
     @Deprecated
@@ -83,7 +58,14 @@ public class BookRepositoryImpl implements BookRepository {
         if (bookDTO == null){
             return Optional.empty();
         } else {
-            return Optional.of(populate(bookDTO));
+            Optional<BookType> optionalBookType = crudRepository.findById(bookDTO.getBookType());
+            optionalBookType.ifPresent(bookType -> bookDTO.bookTypeObj = bookType);
+            try {
+                return Optional.of(bookDTO.toBook());
+            } catch (EmptyMandatoryParameterException e) {
+                // Database is supposed to provide everything needed
+                throw new AssertionError(e);
+            }
         }
     }
 
@@ -93,7 +75,14 @@ public class BookRepositoryImpl implements BookRepository {
         List<Book> bookList = new ArrayList<>();
         for (BookDTO bookDTO: bookDTOList){
             if (bookDTO != null){
-                bookList.add(populate(bookDTO));
+                Optional<BookType> optionalBookType = crudRepository.findById(bookDTO.getBookType());
+                optionalBookType.ifPresent(bookType -> bookDTO.bookTypeObj = bookType);
+                try {
+                    bookList.add(bookDTO.toBook());
+                } catch (EmptyMandatoryParameterException e) {
+                    // Database is supposed to provide everything needed
+                    throw new AssertionError(e);
+                }
             }
         }
 

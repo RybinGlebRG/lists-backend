@@ -3,6 +3,7 @@ package ru.rerumu.lists.model.dto;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.EntityDTO;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.SeriesItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,7 +33,7 @@ public class SeriesDTO implements EntityDTO<Series> {
                     .filter(item -> item.titleDTO != null && item.titleDTO.titleId != null)
                     .forEach(allItems::add);
         }
-        List<Object> tmp = allItems.stream()
+        List<SeriesItem> tmp = allItems.stream()
                 .sorted(Comparator.comparing(item->{
                     if (item instanceof SeriesBookDTO seriesBookDTO){
                         return seriesBookDTO.order;
