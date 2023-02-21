@@ -14,14 +14,14 @@ import ru.rerumu.lists.services.BookTypesService;
 import ru.rerumu.lists.services.GameService;
 
 @Configuration
-public class BeanConfig {
+public final class BeanConfig {
 
     @Bean
     public BookRepository getBookRepository(
             BookMapper bookMapper,
             BookTypeMapper bookTypeMapper
-            ){
-        CrudRepositoryEntityImpl<BookType,Integer> bookTypeRepository1 = new CrudRepositoryEntityImpl<>(bookTypeMapper);
+            ) {
+        CrudRepositoryEntityImpl<BookType, Integer> bookTypeRepository1 = new CrudRepositoryEntityImpl<>(bookTypeMapper);
         return new BookRepositoryImpl(
                 bookMapper,
                 bookTypeRepository1
@@ -31,16 +31,16 @@ public class BeanConfig {
     @Bean
     public BookTypesService getBookTypesService(
             BookTypeMapper bookTypeMapper
-    ){
-        CrudRepositoryEntityImpl<BookType,Integer> bookTypeRepository = new CrudRepositoryEntityImpl<>(bookTypeMapper);
+    ) {
+        CrudRepositoryEntityImpl<BookType, Integer> bookTypeRepository = new CrudRepositoryEntityImpl<>(bookTypeMapper);
         return new BookTypesService(bookTypeRepository);
     }
 
     @Bean
     public GameService getGameService(
             GameMapper gameMapper
-    ){
-        CrudRepositoryEntityImpl<Game,Integer> gameRepository = new CrudRepositoryEntityImpl<>(gameMapper);
+    ) {
+        CrudRepositoryEntityImpl<Game, Integer> gameRepository = new CrudRepositoryEntityImpl<>(gameMapper);
         return new GameService(gameRepository);
     }
 }
