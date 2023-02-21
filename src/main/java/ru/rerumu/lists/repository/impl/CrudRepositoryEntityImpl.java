@@ -3,6 +3,7 @@ package ru.rerumu.lists.repository.impl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.CrudMapper;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.List;
@@ -27,6 +28,11 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     @Override
     public List<T> findAll() {
         return mapper.findAll();
+    }
+
+    @Override
+    public List<T> findAll(User user) {
+        return mapper.findAll(user);
     }
 
     @Override

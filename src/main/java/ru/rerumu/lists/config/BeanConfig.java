@@ -4,11 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.BookTypeMapper;
+import ru.rerumu.lists.mappers.GameMapper;
 import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.Game;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.impl.BookRepositoryImpl;
 import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
 import ru.rerumu.lists.services.BookTypesService;
+import ru.rerumu.lists.services.GameService;
 
 @Configuration
 public class BeanConfig {
@@ -31,5 +34,13 @@ public class BeanConfig {
     ){
         CrudRepositoryEntityImpl<BookType,Integer> bookTypeRepository = new CrudRepositoryEntityImpl<>(bookTypeMapper);
         return new BookTypesService(bookTypeRepository);
+    }
+
+    @Bean
+    public GameService getGameService(
+            GameMapper gameMapper
+    ){
+        CrudRepositoryEntityImpl<Game,Integer> gameRepository = new CrudRepositoryEntityImpl<>(gameMapper);
+        return new GameService(gameRepository);
     }
 }

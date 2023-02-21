@@ -1,6 +1,7 @@
 package ru.rerumu.lists.mappers;
 
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.model.User;
 
 import java.util.List;
 
@@ -9,7 +10,10 @@ public interface CrudMapper<T,ID, R> {
 
     R findById(ID id);
 
+    @Deprecated
     List<R> findAll();
+
+    List<R> findAll(User user);
 
     void save(T entity);
 }
