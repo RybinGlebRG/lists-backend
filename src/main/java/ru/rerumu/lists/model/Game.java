@@ -1,6 +1,61 @@
 package ru.rerumu.lists.model;
 
-import java.time.LocalDateTime;
+import org.json.JSONObject;
 
-public record Game(String title, User user, LocalDateTime createDateUTC) implements SeriesItem {
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
+public record Game(Integer gameId, String title, User user, LocalDateTime createDateUTC) implements SeriesItem {
+
+    public Game{
+        if (title == null || user == null || createDateUTC == null){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject obj = new JSONObject();
+        obj.put("gameId", gameId);
+        obj.put("title", title);
+        obj.put("createDateUTC", createDateUTC.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        return obj;
+    }
+
+    public final static class Builder{
+        private Integer gameId;
+        private String title;
+        private User user;
+        private LocalDateTime createDateUTC;
+
+        public Builder gameId(Integer gameId){
+            this.gameId = gameId;
+            return this;
+        }
+
+        public Builder title(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder user(User user){
+            this.user = user;
+            return this;
+        }
+
+        public Builder createDateUTC(LocalDateTime createDateUTC){
+            this.createDateUTC = createDateUTC;
+            return this;
+        }
+
+        public Game build(){
+            return new Game(
+                    gameId,
+                    title,
+                    user,
+                    createDateUTC != null ? createDateUTC : LocalDateTime.now(ZoneOffset.UTC)
+            );
+        }
+    }
 }

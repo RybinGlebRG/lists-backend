@@ -3,7 +3,6 @@ package ru.rerumu.lists.services;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +10,7 @@ import ru.rerumu.lists.exception.IncorrectPasswordException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.repository.CrudRepository;
 import ru.rerumu.lists.repository.UsersRepository;
 
 import javax.crypto.SecretKey;
@@ -28,16 +28,20 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookUpdateView;
 
 @Component
 public class UserService {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    @Deprecated
+    private final UsersRepository usersRepository;
+    private final CrudRepository<User,Long> crudRepository;
+    private final byte[] jwtSecret;
 
-    @Value("${jwt.secret}")
-    private byte[] jwtSecret;
+    public UserService(UsersRepository usersRepository, CrudRepository<User, Long> crudRepository, byte[] jwtSecret) {
+        this.usersRepository = usersRepository;
+        this.crudRepository = crudRepository;
+        this.jwtSecret = jwtSecret;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException {
@@ -73,6 +77,10 @@ public class UserService {
 
         return false;
 
+    }
+
+    public Optional<User> getOne(Long userId){
+        return crudRepository.findById(userId);
     }
 
     private String createJWT(String username){

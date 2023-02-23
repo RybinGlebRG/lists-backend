@@ -37,6 +37,6 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
 
     @Override
     public void save(T entity) {
-        throw new RuntimeException("Not Ready");
+        mapper.save(entity);
     }
 }

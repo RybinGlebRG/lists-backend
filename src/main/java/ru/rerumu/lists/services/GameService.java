@@ -1,9 +1,10 @@
 package ru.rerumu.lists.services;
 
-import ru.rerumu.lists.model.BookType;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.model.Game;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
+import ru.rerumu.lists.views.GameAddView;
 
 import java.util.List;
 
@@ -15,8 +16,14 @@ public class GameService {
         this.crudRepository = crudRepository;
     }
 
-    public void addGame(){
-
+    @Transactional(rollbackFor = Exception.class)
+    public void addGame(User user, GameAddView gameAddView){
+        Game newGame = new Game.Builder()
+                .title(gameAddView.title())
+                .user(user)
+                .createDateUTC(gameAddView.createDateUTC())
+                .build();
+        crudRepository.save(newGame);
     }
 
     public List<Game> getAll(User user){
