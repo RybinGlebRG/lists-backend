@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(value = {UserIsNotOwnerException.class})
+    @ExceptionHandler(value = {UserIsNotOwnerException.class, IllegalCallerException.class})
     public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
 
         HttpHeaders httpHeaders = new HttpHeaders();

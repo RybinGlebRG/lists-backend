@@ -16,7 +16,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.UserServiceImpl;
 import ru.rerumu.lists.views.AddAuthorView;
 
 import java.util.List;
@@ -38,7 +38,7 @@ class AuthorsControllerTest {
     private AuthorsService authorsService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @BeforeAll
     static void setup() {

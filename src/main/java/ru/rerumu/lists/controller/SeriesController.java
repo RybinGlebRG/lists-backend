@@ -28,7 +28,7 @@ public class SeriesController {
 
     private final ReadListService readListService;
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
@@ -39,7 +39,7 @@ public class SeriesController {
 
     public SeriesController(
             ReadListService readListService,
-            UserService userService,
+            UserServiceImpl userService,
             BookSeriesRelationService bookSeriesRelationService,
             SeriesService seriesService
     ) {

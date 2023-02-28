@@ -1,7 +1,6 @@
 package ru.rerumu.lists.controller.series_controller;
 
 import io.restassured.RestAssured;
-import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,14 +17,12 @@ import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.SeriesService;
-import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.views.SeriesListView;
+import ru.rerumu.lists.services.UserServiceImpl;
 import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +40,7 @@ class SeriesControllerUpdateSeriesTest {
     private SeriesService seriesService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

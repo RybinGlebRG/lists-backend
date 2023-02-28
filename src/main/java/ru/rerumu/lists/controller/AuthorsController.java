@@ -10,7 +10,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.UserServiceImpl;
 import ru.rerumu.lists.views.AddAuthorView;
 import ru.rerumu.lists.views.AuthorsListView;
 
@@ -28,7 +28,7 @@ public class AuthorsController {
     private AuthorsService authorsService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/authors/{authorId}",

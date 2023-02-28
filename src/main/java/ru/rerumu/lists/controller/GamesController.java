@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.factories.UserServiceProxyFactory;
 import ru.rerumu.lists.model.Game;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.services.GameService;
 import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.views.BookTypesListView;
+import ru.rerumu.lists.services.UserServiceImpl;
 import ru.rerumu.lists.views.GameListView;
 
 import java.util.List;
@@ -26,11 +26,15 @@ public class GamesController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GameService gameService;
-    private final UserService userService;
+    @Deprecated
+    private final UserServiceImpl userServiceOld;
 
-    public GamesController(GameService gameService, UserService userService) {
+    private final UserServiceProxyFactory userServiceProxyFactory;
+
+    public GamesController(GameService gameService, UserServiceImpl userService, UserServiceProxyFactory userServiceProxyFactory) {
         this.gameService = gameService;
-        this.userService = userService;
+        this.userServiceOld = userService;
+        this.userServiceProxyFactory = userServiceProxyFactory;
     }
 
     @GetMapping(
@@ -39,12 +43,13 @@ public class GamesController {
     )
     ResponseEntity<String> getAll(
             @PathVariable Long userId,
-            @RequestAttribute("username") String username
+            @RequestAttribute("username") String username,
+            @RequestAttribute("authUserId") Long authUserId
     ) throws EntityNotFoundException {
-        Optional<User> user = userService.getOne(userId);
-        user.orElseThrow(EntityNotFoundException::new);
+        UserService userService = userServiceProxyFactory.getUserServiceProtectionProxy(authUserId);
 
-        List<Game> gamesList = gameService.getAll(user.get());
+        Optional<User> user = userService.getOne(userId);
+        List<Game> gamesList = gameService.getAll(user.orElseThrow(EntityNotFoundException::new));
         GameListView gameListView = new GameListView.Builder()
                 .gamesList(gamesList)
                 .build();

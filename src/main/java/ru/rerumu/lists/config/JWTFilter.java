@@ -1,9 +1,6 @@
 package ru.rerumu.lists.config;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.rerumu.lists.exception.NoJWTException;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.services.UserServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
@@ -29,7 +26,7 @@ public class JWTFilter extends OncePerRequestFilter {
     private byte[] secret;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
@@ -44,7 +41,9 @@ public class JWTFilter extends OncePerRequestFilter {
             }
             final String token = header.split(" ")[1].trim();
             String identity = userService.checkTokenAndGetIdentity(token);
-            httpServletRequest.setAttribute("username",identity);
+            User user = userService.checkTokenAndGetUser(token);
+            httpServletRequest.setAttribute("username",user.name());
+            httpServletRequest.setAttribute("authUserId",user.userId());
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(identity,null, new ArrayList<>()));
         }
         catch (ExpiredJwtException e){
