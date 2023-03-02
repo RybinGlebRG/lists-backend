@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
-public class BookDTO  implements SeriesItemDTO{
+public class BookDTO  implements EntityDTO<Book>, SeriesItemDTO{
     public   Long bookId;
     public  Long readListId;
     public  String title;
@@ -97,8 +97,12 @@ public class BookDTO  implements SeriesItemDTO{
     }
 
     @Override
-    public Book toDomain() throws EmptyMandatoryParameterException {
-        return toBook();
+    public Book toDomain()  {
+        try {
+            return toBook();
+        } catch (EmptyMandatoryParameterException e){
+            throw new AssertionError(e);
+        }
     }
 
 //    @Override

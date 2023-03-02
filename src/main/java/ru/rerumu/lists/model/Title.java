@@ -18,6 +18,15 @@ public class Title implements SeriesItem{
     private Long statusId;
     private VideoType videoType;
 
+
+    public Title(Long titleId, Long watchListId, String name, Date createDateUTC, Long statusId){
+        this.titleId = titleId;
+        this.watchListId = watchListId;
+        this.name = name;
+        this.createDateUTC = createDateUTC;
+        this.statusId = statusId;
+    }
+
     public String getName(){
         return this.name;
     }
@@ -88,13 +97,7 @@ public class Title implements SeriesItem{
         this.videoType = videoType;
     }
 
-    public Title(Long titleId, Long watchListId, String name, Date createDateUTC, Long statusId){
-        this.titleId = titleId;
-        this.watchListId = watchListId;
-        this.name = name;
-        this.createDateUTC = createDateUTC;
-        this.statusId = statusId;
-    }
+
 
     public JSONObject toJSONObject(){
         JSONObject obj = new JSONObject();
@@ -111,5 +114,53 @@ public class Title implements SeriesItem{
     @Override
     public String toString() {
         return this.toJSONObject().toString();
+    }
+
+    public static class Builder{
+        private Long titleId;
+        private String name;
+        private Date createDateUTC;
+        private Long watchListId;
+        private Long statusId;
+        private VideoType videoType;
+
+        public Builder titleId(Long titleId){
+            this.titleId = titleId;
+            return this;
+        }
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        public Builder createDateUTC(Date createDateUTC){
+            this.createDateUTC = createDateUTC;
+            return this;
+        }
+        public Builder watchListId(Long watchListId){
+            this.watchListId = watchListId;
+            return this;
+        }
+        public Builder statusId(Long statusId){
+            this.statusId = statusId;
+            return this;
+        }
+
+        public Builder videoType(VideoType videoType){
+            this.videoType = videoType;
+            return this;
+        }
+
+        public Title build(){
+            Title title = new Title(
+                    titleId,
+                    watchListId,
+                    name,
+                    createDateUTC,
+                    statusId
+            );
+            title.videoType = videoType;
+            return title;
+        }
+
     }
 }

@@ -59,15 +59,15 @@
 
     <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
         <constructor>
-            <idArg column="video_type_id" javaType="Long"/>
-            <arg column="video_type_name" javaType="String"/>
+            <idArg column="title_type_id" name="typeId" javaType="Long"/>
+            <arg column="title_type_name" name="name" javaType="String"/>
         </constructor>
     </resultMap>
 
     <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.TitleStatus">
         <constructor>
-            <idArg column="title_status_id" javaType="_int"/>
-            <arg column="title_status_name" javaType="String"/>
+            <idArg column="title_status_id" name="statusId" javaType="_int"/>
+            <arg column="title_status_name" name="statusName" javaType="String"/>
         </constructor>
     </resultMap>
 

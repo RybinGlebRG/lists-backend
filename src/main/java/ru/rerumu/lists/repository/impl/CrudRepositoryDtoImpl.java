@@ -2,7 +2,7 @@ package ru.rerumu.lists.repository.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import ru.rerumu.lists.mappers.CrudMapper;
-import ru.rerumu.lists.model.EntityDTO;
+import ru.rerumu.lists.model.dto.EntityDTO;
 import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.ArrayList;

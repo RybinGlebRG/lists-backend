@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="c2ea02b4-9833-4b01-9d39-e5fdf9ec9cf1">
+        <sql dbms="postgresql">
+            alter table lists.series_titles
+            drop constraint series_titles_check;
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>
