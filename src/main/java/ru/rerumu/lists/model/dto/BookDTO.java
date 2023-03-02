@@ -5,13 +5,14 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
-public class BookDTO {
+public class BookDTO  implements SeriesItemDTO{
     public   Long bookId;
     public  Long readListId;
     public  String title;
@@ -93,6 +94,11 @@ public class BookDTO {
                 builder.bookStatus(null);
         }
             return builder.build();
+    }
+
+    @Override
+    public Book toDomain() throws EmptyMandatoryParameterException {
+        return toBook();
     }
 
 //    @Override

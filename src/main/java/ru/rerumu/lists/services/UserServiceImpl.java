@@ -28,7 +28,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import ru.rerumu.lists.views.BookAddView;
 
-@Component
+
 public class UserServiceImpl implements UserService{
 
     @Deprecated

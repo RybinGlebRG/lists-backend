@@ -34,10 +34,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
     public List<Series> getAll(Long seriesListId) {
 
         try {
-            List<SeriesDTO> res = MonitoringService.gatherExecutionTime(
-                    () -> seriesMapper.getAll(seriesListId),
-                    MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME
-            );
+            List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
             return res.stream()
                     .map(SeriesDTO::toSeries)
                     .collect(Collectors.toCollection(ArrayList::new));

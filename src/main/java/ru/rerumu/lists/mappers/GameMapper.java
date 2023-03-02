@@ -12,5 +12,20 @@ public interface GameMapper extends CrudMapper<Game,Integer,Game> {
         return null;
     }
 
+    @Override
+    default List<Game> findAll() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    default List<Game> findAll(User user){
+        return new ArrayList<>();
+    };
+
+    @Override
+    default void save(Game entity){
+
+    };
+
 
 }

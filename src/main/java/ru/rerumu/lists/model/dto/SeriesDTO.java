@@ -16,44 +16,18 @@ public class SeriesDTO implements EntityDTO<Series> {
     public  Long seriesListId;
     public  String title;
     public Integer bookCount;
-    public  List<SeriesBookDTO> seriesBookDTOList;
-    public List<SeriesTitleDTO> seriesTitleDTOList;
+    public List<SeriesItemOrderDTO> seriesItemOrderDTOList;
 
     public SeriesDTO(){}
 
     public Series toSeries(){
-        List<Object> allItems = new ArrayList<>();
-        if (seriesBookDTOList != null) {
-            seriesBookDTOList.stream()
-                    .filter(item -> item.bookDTO != null && item.bookDTO.bookId != null)
-                    .forEach(allItems::add);
-        }
-        if (seriesTitleDTOList != null) {
-            seriesTitleDTOList.stream()
-                    .filter(item -> item.titleDTO != null && item.titleDTO.titleId != null)
-                    .forEach(allItems::add);
-        }
-        List<SeriesItem> tmp = allItems.stream()
-                .sorted(Comparator.comparing(item->{
-                    if (item instanceof SeriesBookDTO seriesBookDTO){
-                        return seriesBookDTO.order;
-                    } else if (item instanceof SeriesTitleDTO seriesTitleDTO){
-                        return seriesTitleDTO.order;
-                    } else {
-                        throw new IllegalArgumentException();
-                    }
-                }))
-                .map(item->{
-                    if (item instanceof SeriesBookDTO seriesBookDTO){
-                        try {
-                            return seriesBookDTO.bookDTO.toBook();
-                        } catch (EmptyMandatoryParameterException e) {
-                            throw new AssertionError(e);
-                        }
-                    } else if (item instanceof SeriesTitleDTO seriesTitleDTO){
-                        return seriesTitleDTO.titleDTO.toDomain();
-                    } else {
-                        throw new IllegalArgumentException();
+        List<SeriesItem> tmp = seriesItemOrderDTOList.stream()
+                .sorted(Comparator.comparing(item ->item.order))
+                .map(item -> {
+                    try {
+                        return item.itemDTO.toDomain();
+                    } catch (EmptyMandatoryParameterException e) {
+                        throw new AssertionError(e);
                     }
                 })
                 .collect(Collectors.toCollection(ArrayList::new));

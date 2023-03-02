@@ -21,7 +21,7 @@ import ru.rerumu.lists.services.GameService;
 import ru.rerumu.lists.services.UserServiceImpl;
 
 @Configuration
-public final class BeanConfig {
+public class BeanConfig {
 
     @Bean
     public BookRepository getBookRepository(

@@ -6,7 +6,7 @@ import ru.rerumu.lists.model.VideoType;
 
 import java.util.Date;
 
-public class TitleDTO {
+public class TitleDTO implements SeriesItemDTO {
     public Integer titleId;
     public String name;
     public Date createDateUTC;
