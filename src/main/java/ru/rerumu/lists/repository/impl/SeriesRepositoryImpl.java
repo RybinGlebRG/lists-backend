@@ -35,9 +35,10 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
 
         try {
             List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
-            return res.stream()
+            List<Series> resList = res.stream()
                     .map(SeriesDTO::toSeries)
                     .collect(Collectors.toCollection(ArrayList::new));
+            return resList;
         } catch (Exception e){
             throw new RuntimeException(e);
         }

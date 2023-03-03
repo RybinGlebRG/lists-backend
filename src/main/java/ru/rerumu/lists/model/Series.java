@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public record Series(
@@ -14,7 +15,7 @@ public record Series(
         String title,
         Integer bookCount,
         List<SeriesItem> itemsList
-) implements Cloneable{
+) implements Cloneable {
 
 //    private final Long seriesId;
 //    private final Long seriesListId;
@@ -24,16 +25,16 @@ public record Series(
 
 //    private LocalDateTime lastUpdateDate;
 
-    public Series{
-        if (itemsList==null){
+    public Series {
+        if (itemsList == null) {
             throw new IllegalArgumentException();
         } else {
             itemsList = new ArrayList<>(itemsList);
         }
     }
 
-    public Series(Long seriesId, Long seriesListId, String title){
-        this(seriesId,seriesListId,title,0,new ArrayList<>());
+    public Series(Long seriesId, Long seriesListId, String title) {
+        this(seriesId, seriesListId, title, 0, new ArrayList<>());
     }
 
 //    private Series(Long seriesId, Long seriesListId, String title, int bookCount, List<?> itemsList){
@@ -87,44 +88,36 @@ public record Series(
         return new ArrayList<>(itemsList);
     }
 
-    public JSONObject toJSONObject(){
+    public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
 
         obj.put("seriesId", seriesId);
         obj.put("readListId", seriesListId);
         obj.put("title", title);
         JSONArray jsonArray = new JSONArray();
-        for (Object item: itemsList){
-            if (item instanceof Book book){
-                jsonArray.put(book.toJSONObject());
-            } else {
-                throw new IllegalArgumentException();
-            }
-        }
-        obj.put("items",jsonArray);
 
-//        obj.put("bookCount", bookCount);
+        itemsList.stream()
+                .map(SeriesItem::toJSONObject)
+                .forEach(jsonArray::put);
+
+        obj.put("items", jsonArray);
 
         return obj;
     }
 
-    public JSONObject toJSONObject(String... fields){
+    public JSONObject toJSONObject(String... fields) {
         JSONObject obj = new JSONObject();
-        for(String field: fields){
-            switch (field){
-                case "seriesId"-> obj.put("seriesId", seriesId);
+        for (String field : fields) {
+            switch (field) {
+                case "seriesId" -> obj.put("seriesId", seriesId);
                 case "readListId" -> obj.put("readListId", seriesListId);
                 case "title" -> obj.put("title", title);
-                case "items" ->{
+                case "items" -> {
                     JSONArray jsonArray = new JSONArray();
-                    for (Object item: itemsList){
-                        if (item instanceof Book){
-                            jsonArray.put(((Book) item).toJSONObject());
-                        } else {
-                            throw new IllegalArgumentException();
-                        }
-                    }
-                    obj.put("items",jsonArray);
+                    itemsList.stream()
+                            .map(SeriesItem::toJSONObject)
+                            .forEach(jsonArray::put);
+                    obj.put("items", jsonArray);
                 }
                 default -> throw new IllegalArgumentException();
             }
@@ -160,7 +153,7 @@ public record Series(
 //        return Objects.hash(seriesId, seriesListId, title, bookCount);
 //    }
 
-    public final static class Builder{
+    public final static class Builder {
         private long seriesId;
         private String title;
         private long readListId;
@@ -171,43 +164,46 @@ public record Series(
 
         private List<SeriesItem> itemList = new ArrayList<>();
 
-        public Builder(){};
+        public Builder() {
+        }
 
-        public Builder(Series series){
+        ;
+
+        public Builder(Series series) {
             this.seriesId = series.getSeriesId();
             this.title = series.getTitle();
             this.readListId = series.getSeriesListId();
-            this.bookCount = series.getBookCount() != null ? series.getBookCount()  : 0;
+            this.bookCount = series.getBookCount() != null ? series.getBookCount() : 0;
 //            this.lastUpdateDate = series.getLastUpdateDate();
         }
 
-        public Builder seriesId(long seriesId){
+        public Builder seriesId(long seriesId) {
             this.seriesId = seriesId;
             return this;
         }
 
-        public Builder title(String title){
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public Builder readListId(long readListId){
+        public Builder readListId(long readListId) {
             this.readListId = readListId;
             return this;
         }
 
-        public Builder bookCount(int bookCount){
+        public Builder bookCount(int bookCount) {
             this.bookCount = bookCount;
             return this;
         }
 
-        public Builder itemList(List<SeriesItem> itemList){
+        public Builder itemList(List<SeriesItem> itemList) {
             this.itemList = itemList;
             return this;
         }
 
-        public Series build(){
-            return new Series(seriesId,readListId,title, bookCount, itemList);
+        public Series build() {
+            return new Series(seriesId, readListId, title, bookCount, itemList);
         }
     }
 }

@@ -1,5 +1,6 @@
 package ru.rerumu.lists.services;
 
+import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
@@ -18,7 +19,13 @@ public class UserServiceProtectionProxyImpl implements UserService {
     private final CrudRepository<User,Long> crudRepository;
     private final byte[] jwtSecret;
 
-    public UserServiceProtectionProxyImpl(UserServiceImpl userService, User authUser, UsersRepository usersRepository, CrudRepository<User, Long> crudRepository, byte[] jwtSecret) {
+    public UserServiceProtectionProxyImpl(
+            UserServiceImpl userService,
+            User authUser,
+            UsersRepository usersRepository,
+            CrudRepository<User, Long> crudRepository,
+            byte[] jwtSecret
+    ) {
         this.userService = userService;
         this.authUser = authUser;
         this.usersRepository = usersRepository;

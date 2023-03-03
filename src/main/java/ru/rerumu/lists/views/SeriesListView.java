@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -50,13 +51,7 @@ public class SeriesListView {
         Comparator<Series> comparator = Comparator
                 .comparing((Series series) -> {
                     Optional<LocalDateTime> maxDate = series.itemsList().stream()
-                            .map(item->{
-                                if (item instanceof Book book){
-                                    return book.getLastUpdateDate_V2();
-                                } else {
-                                    throw new IllegalArgumentException();
-                                }
-                            })
+                            .map(SeriesItem::getUpdateDate)
                             .max(LocalDateTime::compareTo);
                     return maxDate.orElse(LocalDateTime.MIN);
                 })

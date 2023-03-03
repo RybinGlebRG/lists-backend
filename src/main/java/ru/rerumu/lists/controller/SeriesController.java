@@ -74,28 +74,16 @@ public class SeriesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long readListId,
                                   @RequestAttribute("username") String username) throws Exception {
-        LocalDateTime start = LocalDateTime.now();
         userService.checkOwnershipList(username, readListId);
 
         ResponseEntity<String> resEnt;
-        List<Series> series = MonitoringService.gatherExecutionTime(
-                ()-> seriesService.getAll(readListId),
-                MetricType.SERIES_SERVICE__GET_ALL__EXECUTION_TIME
-                );
-//        var seriesRelations = bookSeriesRelationService.get(series);
+        List<Series> series = seriesService.getAll(readListId);
         SeriesListView.Builder builder = new SeriesListView.Builder()
                 .seriesList(series)
-//                .seriesRelations(seriesRelations)
                 ;
         SeriesListView seriesListView = builder.build();
         seriesListView.sort();
         resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
-        LocalDateTime end = LocalDateTime.now();
-        monitoringService.addMetricValue(new Metric<>(
-                MetricType.SERIES_CONTROLLER__GET_ALL__EXECUTION_TIME,
-                LocalDateTime.now(),
-                Duration.between(start,end)
-        ));
         return resEnt;
     }
 

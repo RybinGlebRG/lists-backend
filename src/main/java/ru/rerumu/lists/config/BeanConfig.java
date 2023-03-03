@@ -66,18 +66,18 @@ public class BeanConfig {
         );
     }
 
-    @Bean
-    public UserServiceProxyFactory getFactory(
-            UserServiceImpl userServiceImpl,
-            UsersRepository usersRepository,
-            UserMapper userMapper,
-            @Value("${jwt.secret}") byte[] jwtSecret
-    ){
-        UserServiceProxyFactoryImpl proxyFactory = new UserServiceProxyFactoryImpl(
-                usersRepository,
-                userMapper,
-               jwtSecret
-        );
-        return proxyFactory;
-    }
+//    @Bean
+//    public UserServiceProxyFactory getFactory(
+//            UserServiceImpl userServiceImpl,
+//            UsersRepository usersRepository,
+//            UserMapper userMapper,
+//            @Value("${jwt.secret}") byte[] jwtSecret
+//    ){
+//        UserServiceProxyFactoryImpl proxyFactory = new UserServiceProxyFactoryImpl(
+//                usersRepository,
+//                userMapper,
+//               jwtSecret
+//        );
+//        return proxyFactory;
+//    }
 }

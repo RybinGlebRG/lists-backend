@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class Book implements Cloneable, SeriesItem{
+    private final static String SERIES_ITEM_TYPE = "BOOK";
     private final Long bookId;
     private final Long readListId;
     private final String title;
@@ -163,10 +164,15 @@ public final class Book implements Cloneable, SeriesItem{
 
             obj.put("bookType", bookTypeJson);
         }
+        obj.put("itemType",SERIES_ITEM_TYPE);
 
         return obj;
     }
 
+    @Override
+    public LocalDateTime getUpdateDate() {
+        return getLastUpdateDate_V2();
+    }
 
 
     @Override

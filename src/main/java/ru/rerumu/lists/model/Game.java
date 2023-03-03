@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public record Game(Integer gameId, String title, User user, LocalDateTime createDateUTC) implements SeriesItem {
+    private final static String SERIES_ITEM_TYPE = "GAME";
 
     public Game{
         if (title == null || user == null || createDateUTC == null){
@@ -20,7 +21,13 @@ public record Game(Integer gameId, String title, User user, LocalDateTime create
         obj.put("gameId", gameId);
         obj.put("title", title);
         obj.put("createDateUTC", createDateUTC.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        obj.put("itemType",SERIES_ITEM_TYPE);
         return obj;
+    }
+
+    @Override
+    public LocalDateTime getUpdateDate() {
+        return createDateUTC;
     }
 
     public final static class Builder{
