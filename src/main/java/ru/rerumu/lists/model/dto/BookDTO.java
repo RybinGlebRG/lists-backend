@@ -5,13 +5,14 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
-public class BookDTO {
+public class BookDTO  implements EntityDTO<Book>, SeriesItemDTO{
     public   Long bookId;
     public  Long readListId;
     public  String title;
@@ -24,23 +25,23 @@ public class BookDTO {
 
     public BookDTO(){}
 
-    public BookDTO(Long bookId,
-                Long readListId,
-                String title,
-                Integer bookStatus,
-                Date insertDate,
-                Date lastUpdateDate,
-                Integer lastChapter,
-                Integer bookType)  {
-        this.bookId = bookId;
-        this.readListId = readListId;
-        this.title = title;
-        this.bookStatus = bookStatus;
-        this.insertDate = insertDate;
-        this.lastUpdateDate = lastUpdateDate;
-        this.lastChapter = lastChapter;
-        this.bookType = bookType;
-    }
+//    public BookDTO(Long bookId,
+//                Long readListId,
+//                String title,
+//                Integer bookStatus,
+//                Date insertDate,
+//                Date lastUpdateDate,
+//                Integer lastChapter,
+//                Integer bookType)  {
+//        this.bookId = bookId;
+//        this.readListId = readListId;
+//        this.title = title;
+//        this.bookStatus = bookStatus;
+//        this.insertDate = insertDate;
+//        this.lastUpdateDate = lastUpdateDate;
+//        this.lastChapter = lastChapter;
+//        this.bookType = bookType;
+//    }
 
     public Long getReadListId() {
         return readListId;
@@ -93,6 +94,15 @@ public class BookDTO {
                 builder.bookStatus(null);
         }
             return builder.build();
+    }
+
+    @Override
+    public Book toDomain()  {
+        try {
+            return toBook();
+        } catch (EmptyMandatoryParameterException e){
+            throw new AssertionError(e);
+        }
     }
 
 //    @Override

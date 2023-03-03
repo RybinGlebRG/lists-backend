@@ -3,6 +3,7 @@ package ru.rerumu.lists.repository;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
 
 public interface UsersRepository {
 

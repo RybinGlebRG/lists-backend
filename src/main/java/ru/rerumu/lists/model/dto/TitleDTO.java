@@ -6,7 +6,7 @@ import ru.rerumu.lists.model.VideoType;
 
 import java.util.Date;
 
-public class TitleDTO {
+public class TitleDTO implements EntityDTO<Title>, SeriesItemDTO {
     public Integer titleId;
     public String name;
     public Date createDateUTC;
@@ -17,6 +17,13 @@ public class TitleDTO {
     public TitleDTO() {}
 
     public Title toDomain(){
-        throw new RuntimeException("Not implemented");
+        return new Title.Builder()
+                .titleId(Long.valueOf(titleId))
+                .name(name)
+                .createDateUTC(createDateUTC)
+                .watchListId(listId)
+                .statusId((long) titleStatus.statusId())
+                .videoType(videoType)
+                .build();
     }
 }

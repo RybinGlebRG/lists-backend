@@ -8,11 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Title;
 import ru.rerumu.lists.model.TokenRequest;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.UserServiceImpl;
 
 @CrossOrigin
 @RestController
@@ -20,7 +17,7 @@ public class UsersController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
 
     @PostMapping(

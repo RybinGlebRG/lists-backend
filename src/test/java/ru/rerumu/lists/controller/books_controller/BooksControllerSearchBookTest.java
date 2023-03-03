@@ -29,7 +29,7 @@ class BooksControllerSearchBookTest {
     private ReadListService readListService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private AuthorsService authorsService;

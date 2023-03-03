@@ -155,7 +155,7 @@ public class SeriesService {
         Optional<Series> series = getSeries(seriesId);
         series.orElseThrow(EntityNotFoundException::new);
 
-        List<Object> updatedItems = new ArrayList<>();
+        List<SeriesItem> updatedItems = new ArrayList<>();
         for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
             switch (seriesUpdateItem.itemType()) {
                 case BOOK -> {

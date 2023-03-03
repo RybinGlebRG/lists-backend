@@ -1,8 +1,8 @@
 package ru.rerumu.lists.model.dto;
 
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.EntityDTO;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.SeriesItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,47 +14,18 @@ public class SeriesDTO implements EntityDTO<Series> {
     public  Long seriesId;
     public  Long seriesListId;
     public  String title;
-    public Integer bookCount;
-    public  List<SeriesBookDTO> seriesBookDTOList;
-    public List<SeriesTitleDTO> seriesTitleDTOList;
+
+    // TODO: remove
+    public Integer bookCount=0;
+    public List<SeriesItemOrderDTO> seriesItemOrderDTOList;
 
     public SeriesDTO(){}
 
     public Series toSeries(){
-        List<Object> allItems = new ArrayList<>();
-        if (seriesBookDTOList != null) {
-            seriesBookDTOList.stream()
-                    .filter(item -> item.bookDTO != null && item.bookDTO.bookId != null)
-                    .forEach(allItems::add);
-        }
-        if (seriesTitleDTOList != null) {
-            seriesTitleDTOList.stream()
-                    .filter(item -> item.titleDTO != null && item.titleDTO.titleId != null)
-                    .forEach(allItems::add);
-        }
-        List<Object> tmp = allItems.stream()
-                .sorted(Comparator.comparing(item->{
-                    if (item instanceof SeriesBookDTO seriesBookDTO){
-                        return seriesBookDTO.order;
-                    } else if (item instanceof SeriesTitleDTO seriesTitleDTO){
-                        return seriesTitleDTO.order;
-                    } else {
-                        throw new IllegalArgumentException();
-                    }
-                }))
-                .map(item->{
-                    if (item instanceof SeriesBookDTO seriesBookDTO){
-                        try {
-                            return seriesBookDTO.bookDTO.toBook();
-                        } catch (EmptyMandatoryParameterException e) {
-                            throw new AssertionError(e);
-                        }
-                    } else if (item instanceof SeriesTitleDTO seriesTitleDTO){
-                        return seriesTitleDTO.titleDTO.toDomain();
-                    } else {
-                        throw new IllegalArgumentException();
-                    }
-                })
+        List<SeriesItem> tmp = seriesItemOrderDTOList.stream()
+                .sorted(Comparator.comparing(SeriesItemOrderDTO::getOrder))
+                .map(SeriesItemOrderDTO::getItemDTO)
+                .map(SeriesItemDTO::toDomain)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return new Series.Builder()
@@ -70,4 +41,5 @@ public class SeriesDTO implements EntityDTO<Series> {
     public Series toDomain() {
         return toSeries();
     }
+
 }

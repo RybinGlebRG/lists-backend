@@ -18,14 +18,13 @@ import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin
 @RestController
 public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(BooksController.class);
     private final ReadListService readListService;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     private final AuthorsService authorsService;
 
@@ -37,7 +36,7 @@ public class BooksController {
 
     public BooksController(
             ReadListService readListService,
-            UserService userService,
+            UserServiceImpl userService,
             AuthorsService authorsService,
             SeriesService seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,

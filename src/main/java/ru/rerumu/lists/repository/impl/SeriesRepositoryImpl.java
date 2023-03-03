@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryImplDto<Series,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
 
@@ -34,13 +34,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryImplDto<Series,Long> imp
     public List<Series> getAll(Long seriesListId) {
 
         try {
-            List<SeriesDTO> res = MonitoringService.gatherExecutionTime(
-                    () -> seriesMapper.getAll(seriesListId),
-                    MetricType.DB_QUERY__SERIES_MAPPER__GET_ALL__EXECUTION_TIME
-            );
-            return res.stream()
+            List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
+            List<Series> resList = res.stream()
                     .map(SeriesDTO::toSeries)
                     .collect(Collectors.toCollection(ArrayList::new));
+            return resList;
         } catch (Exception e){
             throw new RuntimeException(e);
         }

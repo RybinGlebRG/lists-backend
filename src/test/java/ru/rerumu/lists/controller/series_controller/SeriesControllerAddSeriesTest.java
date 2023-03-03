@@ -31,7 +31,7 @@ class SeriesControllerAddSeriesTest {
     private SeriesService seriesService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

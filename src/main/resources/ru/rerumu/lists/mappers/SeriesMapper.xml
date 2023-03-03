@@ -10,25 +10,27 @@
         <result column="title" property="title" javaType="String"/>
         <result column="book_count" property="bookCount" javaType="Integer"/>
         <collection
-                property="seriesBookDTOList"
-                ofType="ru.rerumu.lists.model.dto.SeriesBookDTO"
-                resultMap="SeriesBookDtoResultMap"
+                property="seriesItemOrderDTOList"
+                ofType="ru.rerumu.lists.model.dto.SeriesItemOrderDTO"
+                resultMap="SeriesItemOrderDTOResultMap"
         />
     </resultMap>
 
-    <resultMap id="SeriesBookDtoResultMap" type="ru.rerumu.lists.model.dto.SeriesBookDTO">
+    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesItemOrderDTO">
         <result property="order" column="series_order" javaType="Long"/>
-        <association property="bookDTO" resultMap="BookDTOResultMap"/>
+        <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
     </resultMap>
 
-    <resultMap id="SeriesTitleDtoResultMap" type="ru.rerumu.lists.model.dto.SeriesTitleDTO">
-        <result property="order" column="series_order"/>
-        <association property="titleDTO" resultMap="TitleDtoResultMap"/>
+    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesItemDTO">
+        <discriminator javaType="int" column="item_type">
+            <case value="1" resultMap="BookDTOResultMap"/>
+            <case value="2" resultMap="TitleDtoResultMap"/>
+        </discriminator>
     </resultMap>
 
     <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
         <id property="bookId" column="book_id" javaType="Long"/>
-        <result  property="readListId" column="list_list_id" javaType="Long"/>
+        <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="status_status_id" javaType="Integer"/>
         <result  property="insertDate" column="insert_date" javaType="Date"/>
@@ -57,87 +59,161 @@
 
     <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
         <constructor>
-            <idArg column="video_type_id" javaType="Long"/>
-            <arg column="video_type_name" javaType="String"/>
+            <idArg column="title_type_id" name="typeId" javaType="Long"/>
+            <arg column="title_type_name" name="name" javaType="String"/>
         </constructor>
     </resultMap>
 
     <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.TitleStatus">
         <constructor>
-            <idArg column="title_status_id" javaType="_int"/>
-            <arg column="title_status_name" javaType="String"/>
+            <idArg column="title_status_id" name="statusId" javaType="_int"/>
+            <arg column="title_status_name" name="statusName" javaType="String"/>
         </constructor>
     </resultMap>
 
+    <sql id="titles">
+        <![CDATA[
+        select  t.title_id,
+                t.list_list_id as title_list_id,
+                t.name as title_name,
+                t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
+                t.status_status_id as title_status,
+                vt.type_id as title_type_id,
+                vt.name as title_type_name,
+                ts.status_id as title_status_id,
+                ts.name as title_status_name
+        from    lists.titles t
+                inner join lists.video_types vt
+                            on vt.type_id = t.type_type_id
+                inner join lists.titles_statuses ts
+                            on ts.status_id = t.status_status_id
+        ]]>
+    </sql>
+
+    <sql id="books">
+        <![CDATA[
+        select      b.book_id,
+                    b.list_list_id as book_list_id,
+                    b.title as book_title,
+                    b.status_status_id,
+                    b.insert_date AT TIME ZONE 'UTC' as insert_date,
+                    b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                    b.last_chapter,
+                    bt.type_id as type_id,
+                    bt.type_id as type_id2,
+                    bt.name as type_name
+        from        lists.books b
+                    inner join  lists.statuses st
+                                on st."STATUS_ID"= b.status_status_id
+                    left outer join     lists.book_types bt
+                                        on bt.type_id = b.type_type_id
+        ]]>
+    </sql>
+
+
     <sql id="selectAll">
-        with s_titles as (
-            select  t.title_id,
-                    t.list_list_id as title_list_id,
-                    t.name as title_name,
-                    t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
-                    t.status_status_id as title_status,
-                    vt.type_id as title_type_id,
-                    vt.name as title_type_name,
-                    ts.status_id as title_status_id,
-                    ts.name as title_status_name
-            from    lists.titles t
-                    inner join lists.video_types vt
-                        on vt.type_id = t.type_type_id
-                    inner join lists.titles_statuses ts
-                        on ts.status_id = t.status_status_id
-        )
-        select  s.series_id,
-                s.list_list_id,
-                s.title,
-                0 as book_count,
-                sb.series_order,
-                b.book_id,
-                b.list_list_id,
-                b.title as book_title,
-                b.status_status_id,
-                b.insert_date AT TIME ZONE 'UTC' as insert_date,
-                b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
-                b.last_chapter,
-                bt.type_id as type_id,
-                bt.type_id as type_id2,
-                bt.name as type_name,
 
-                s_t.*
+            with s_series as (
+                select  s.series_id,
+                        s.list_list_id,
+                        s.title
+                from lists.series s
+            ), s_titles as (
+                <include refid="titles"/>
+            ), s_books as
+            (
+                <include refid="books"/>
+            ), s_data as (
 
-        from    lists.series s
-                left outer join lists.series_books sb
-                    on sb.series_series_id = s.series_id
-                left outer join lists.books b
-                    on b.book_id = sb.book_book_id
-                left outer join lists.statuses st
-                    on st."STATUS_ID"= b.status_status_id
-                left outer join lists.book_types bt
-                    on bt.type_id = b.type_type_id
-                left outer join lists.series_titles stt
-                    on stt.series_series_id = s.series_id
-                left outer join s_titles s_t
-                    on s_t.title_id = stt.title_title_id
+            select  s_series.*,
+                    0 as book_count,
+                    1 as item_type,
+                    sb.series_order,
+                    s_books.book_id,
+                    s_books.book_list_id,
+                    s_books.book_title,
+                    s_books.status_status_id,
+                    s_books.insert_date,
+                    s_books.last_update_date,
+                    s_books.last_chapter,
+                    s_books.type_id,
+                    s_books.type_id2,
+                    s_books.type_name,
+                    null as title_id,
+                    null as title_list_id,
+                    null as title_name,
+                    null as title_create_date_utc,
+                    null as title_status,
+                    null as title_type_id,
+                    null as title_type_name,
+                    null as title_status_id,
+                    null as title_status_name
+            from    s_series
+                    left outer join lists.series_books sb
+                        on sb.series_series_id = s_series.series_id
+                    left outer join s_books
+                        on s_books.book_id = sb.book_book_id
+            union all
+
+            select  s_series.*,
+                    null,
+                    2 as item_type,
+                    stt.series_order,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    s_titles.title_id,
+                    s_titles.title_list_id,
+                    s_titles.title_name,
+                    s_titles.title_create_date_utc,
+                    s_titles.title_status,
+                    s_titles.title_type_id,
+                    s_titles.title_type_name,
+                    s_titles.title_status_id,
+                    s_titles.title_status_name
+            from    s_series
+                    left outer join lists.series_titles stt
+                        on stt.series_series_id = s_series.series_id
+                    left outer join s_titles
+                        on s_titles.title_id = stt.title_title_id
+            order by series_id, series_order
+            )
+            select *
+            from s_data
+            where    1=1
+              and (
+                (item_type=1 and book_id is not null)
+                or (item_type=2 and title_id is not null)
+              )
+
     </sql>
 
     <select id="getAll" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
-        where s.list_list_id=#{readListId}
+        and s_data.list_list_id=#{readListId}
     </select>
 
     <select id="getOne" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
-        where s.series_id=#{seriesId}
-        and s.list_list_id=#{readListId}
+        and s_data.series_id=#{seriesId}
+        and s_data.list_list_id=#{readListId}
     </select>
 
     <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
-        where s.series_id=#{seriesId}
+        and s_data.series_id=#{seriesId}
     </select>
 
     <select id="findById" resultMap="SeriesResultMap">
         <include refid="selectAll"/>
-        where s.series_id=#{seriesId}
+        and s_data.series_id=#{seriesId}
     </select>
 
 <!--    <select id="getAll" resultMap="SeriesResultMap">-->

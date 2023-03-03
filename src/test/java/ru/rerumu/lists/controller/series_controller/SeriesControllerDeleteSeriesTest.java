@@ -14,7 +14,7 @@ import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.SeriesService;
 import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.UserServiceImpl;
 
 import static org.mockito.Mockito.verify;
 
@@ -32,7 +32,7 @@ class SeriesControllerDeleteSeriesTest {
     private SeriesService seriesService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

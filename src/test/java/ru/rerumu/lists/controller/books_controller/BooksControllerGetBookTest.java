@@ -19,7 +19,6 @@ import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.services.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,7 @@ class BooksControllerGetBookTest {
     private ReadListService readListService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private AuthorsService authorsService;

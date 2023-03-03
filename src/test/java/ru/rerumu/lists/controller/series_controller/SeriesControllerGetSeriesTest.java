@@ -18,7 +18,6 @@ import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.services.*;
 
-import java.io.InputStream;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
@@ -38,7 +37,7 @@ class SeriesControllerGetSeriesTest {
     private SeriesService seriesService;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;
