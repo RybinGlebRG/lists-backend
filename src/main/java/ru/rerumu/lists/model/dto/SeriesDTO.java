@@ -7,6 +7,7 @@ import ru.rerumu.lists.model.SeriesItem;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SeriesDTO implements EntityDTO<Series> {
@@ -26,6 +27,7 @@ public class SeriesDTO implements EntityDTO<Series> {
                 .sorted(Comparator.comparing(SeriesItemOrderDTO::getOrder))
                 .map(SeriesItemOrderDTO::getItemDTO)
                 .map(SeriesItemDTO::toDomain)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return new Series.Builder()

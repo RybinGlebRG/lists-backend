@@ -25,6 +25,7 @@
         <discriminator javaType="int" column="item_type">
             <case value="1" resultMap="BookDTOResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>
+            <case value="3" resultType="ru.rerumu.lists.model.dto.NullDTO"/>
         </discriminator>
     </resultMap>
 
@@ -74,19 +75,26 @@
     <sql id="titles">
         <![CDATA[
         select  t.title_id,
-                t.list_list_id as title_list_id,
-                t.name as title_name,
-                t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
-                t.status_status_id as title_status,
-                vt.type_id as title_type_id,
-                vt.name as title_type_name,
-                ts.status_id as title_status_id,
-                ts.name as title_status_name
-        from    lists.titles t
-                inner join lists.video_types vt
-                            on vt.type_id = t.type_type_id
-                inner join lists.titles_statuses ts
-                            on ts.status_id = t.status_status_id
+				t.list_list_id as title_list_id,
+				t.name as title_name,
+				t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
+				t.status_status_id as title_status,
+				vt.type_id as title_type_id,
+				vt.name as title_type_name,
+				ts.status_id as title_status_id,
+				ts.name as title_status_name,
+				s_series.series_id,
+				st.series_order,
+				2 as item_type
+		from    s_series
+				inner join lists.series_titles st
+							on st.series_series_id = s_series.series_id
+				inner join lists.titles t
+							on t.title_id = st.title_title_id
+				inner join lists.video_types vt
+							on vt.type_id = t.type_type_id
+				inner join lists.titles_statuses ts
+							on ts.status_id = t.status_status_id
         ]]>
     </sql>
 
@@ -101,8 +109,15 @@
                     b.last_chapter,
                     bt.type_id as type_id,
                     bt.type_id as type_id2,
-                    bt.name as type_name
-        from        lists.books b
+                    bt.name as type_name,
+                    s_series.series_id,
+                    sb.series_order,
+                    1 as item_type
+        from        s_series
+                    inner join lists.series_books sb
+                                on sb.series_series_id = s_series.series_id
+                    inner join  lists.books b
+                                on b.book_id = sb.book_book_id
                     inner join  lists.statuses st
                                 on st."STATUS_ID"= b.status_status_id
                     left outer join     lists.book_types bt
@@ -123,75 +138,114 @@
             ), s_books as
             (
                 <include refid="books"/>
-            ), s_data as (
+            ), s_empty as
+        (
+        select series_id
+        from s_series
 
-            select  s_series.*,
-                    0 as book_count,
-                    1 as item_type,
-                    sb.series_order,
-                    s_books.book_id,
-                    s_books.book_list_id,
-                    s_books.book_title,
-                    s_books.status_status_id,
-                    s_books.insert_date,
-                    s_books.last_update_date,
-                    s_books.last_chapter,
-                    s_books.type_id,
-                    s_books.type_id2,
-                    s_books.type_name,
-                    null as title_id,
-                    null as title_list_id,
-                    null as title_name,
-                    null as title_create_date_utc,
-                    null as title_status,
-                    null as title_type_id,
-                    null as title_type_name,
-                    null as title_status_id,
-                    null as title_status_name
-            from    s_series
-                    left outer join lists.series_books sb
-                        on sb.series_series_id = s_series.series_id
-                    left outer join s_books
-                        on s_books.book_id = sb.book_book_id
-            union all
+        EXCEPT
 
-            select  s_series.*,
-                    null,
-                    2 as item_type,
-                    stt.series_order,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    s_titles.title_id,
-                    s_titles.title_list_id,
-                    s_titles.title_name,
-                    s_titles.title_create_date_utc,
-                    s_titles.title_status,
-                    s_titles.title_type_id,
-                    s_titles.title_type_name,
-                    s_titles.title_status_id,
-                    s_titles.title_status_name
-            from    s_series
-                    left outer join lists.series_titles stt
-                        on stt.series_series_id = s_series.series_id
-                    left outer join s_titles
-                        on s_titles.title_id = stt.title_title_id
-            order by series_id, series_order
-            )
-            select *
-            from s_data
-            where    1=1
-              and (
-                (item_type=1 and book_id is not null)
-                or (item_type=2 and title_id is not null)
-              )
+        select distinct series_id
+        from s_titles
+
+        EXCEPT
+
+        select distinct series_id
+        from s_books
+
+        ), s_data as (
+
+
+        select s_series.*,
+        null,
+        s_titles.item_type,
+        s_titles.series_order,
+        null as book_id,
+        null as book_list_id,
+        null as book_title,
+        null as status_status_id,
+        null as insert_date,
+        null as last_update_date,
+        null as last_chapter,
+        null as type_id,
+        null as type_id2,
+        null as type_name,
+        s_titles.title_id,
+        s_titles.title_list_id,
+        s_titles.title_name,
+        s_titles.title_create_date_utc,
+        s_titles.title_status,
+        s_titles.title_type_id,
+        s_titles.title_type_name,
+        s_titles.title_status_id,
+        s_titles.title_status_name
+        from s_series
+        inner join s_titles
+        on s_titles.series_id = s_series.series_id
+        union
+
+        select s_series.*,
+        0 as book_count,
+        s_books.item_type,
+        s_books.series_order,
+        s_books.book_id,
+        s_books.book_list_id,
+        s_books.book_title,
+        s_books.status_status_id,
+        s_books.insert_date,
+        s_books.last_update_date,
+        s_books.last_chapter,
+        s_books.type_id,
+        s_books.type_id2,
+        s_books.type_name,
+        null as title_id,
+        null as title_list_id,
+        null as title_name,
+        null as title_create_date_utc,
+        null as title_status,
+        null as title_type_id,
+        null as title_type_name,
+        null as title_status_id,
+        null as title_status_name
+        from s_series
+        inner join s_books
+        on s_books.series_id = s_series.series_id
+
+
+        union
+
+        select s_series.*,
+                null as book_count,
+                3 as item_type,
+                null as series_order,
+                null as book_id,
+                null as book_list_id,
+                null as book_title,
+                null as status_status_id,
+                null as insert_date,
+                null as last_update_date,
+                null as last_chapter,
+                null as type_id,
+                null as type_id2,
+                null as type_name,
+                null as title_id,
+                null as title_list_id,
+                null as title_name,
+                null as title_create_date_utc,
+                null as title_status,
+                null as title_type_id,
+                null as title_type_name,
+                null as title_status_id,
+                null as title_status_name
+        from s_series
+        inner join s_empty
+        on s_empty.series_id = s_series.series_id
+        )
+
+
+        select *
+        from s_data
+        where    1=1
 
     </sql>
 
