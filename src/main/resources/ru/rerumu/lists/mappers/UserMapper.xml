@@ -21,6 +21,14 @@
         where name=#{name}
     </select>
 
+    <select id="findById" resultMap="UserResultMap">
+        select "USER_ID" as user_id,
+        name,
+        password
+        from lists.users
+        where "USER_ID"=#{id}
+    </select>
+
     <select id="count" resultType="int">
         select count(*) as cnt
         from lists.lists l

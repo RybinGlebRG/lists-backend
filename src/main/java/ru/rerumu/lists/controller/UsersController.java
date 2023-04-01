@@ -4,11 +4,14 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rerumu.lists.factories.UserServiceImplFactory;
 import ru.rerumu.lists.model.TokenRequest;
+import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.services.UserServiceImpl;
 
 @CrossOrigin
@@ -16,9 +19,11 @@ import ru.rerumu.lists.services.UserServiceImpl;
 public class UsersController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private UserServiceImpl userService;
+    private final UserService userService;
 
+    public UsersController(@Qualifier("UserService")  UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(
             value = "/api/v0.2/users/tokens",

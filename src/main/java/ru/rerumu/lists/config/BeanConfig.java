@@ -1,10 +1,15 @@
 package ru.rerumu.lists.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.rerumu.lists.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.factories.impl.UserServiceProxyFactoryImpl;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.BookTypeMapper;
 import ru.rerumu.lists.mappers.GameMapper;
@@ -16,12 +21,13 @@ import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.UsersRepository;
 import ru.rerumu.lists.repository.impl.BookRepositoryImpl;
 import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
-import ru.rerumu.lists.services.BookTypesService;
-import ru.rerumu.lists.services.GameService;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.services.*;
+
+import java.util.Optional;
 
 @Configuration
 public class BeanConfig {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean
     public BookRepository getBookRepository(
@@ -51,19 +57,62 @@ public class BeanConfig {
         return new GameService(gameRepository);
     }
 
-    @Bean
-    @Deprecated
-    public UserServiceImpl getUserService(
+//    @Bean
+//    @Deprecated
+//    public UserServiceImpl getUserServiceOld(
+//            UsersRepository usersRepository,
+//            UserMapper userMapper,
+//            @Value("${jwt.secret}") byte[] jwtSecret
+//    ){
+//        CrudRepositoryEntityImpl<User,Long> usersRepositoryImpl = new CrudRepositoryEntityImpl<>(userMapper);
+//        return new UserServiceImpl(
+//                usersRepository,
+//                usersRepositoryImpl,
+//                jwtSecret
+//        );
+//    }
+
+    @Bean("UserService")
+    public UserService getUserService(
             UsersRepository usersRepository,
             UserMapper userMapper,
             @Value("${jwt.secret}") byte[] jwtSecret
     ){
+//
         CrudRepositoryEntityImpl<User,Long> usersRepositoryImpl = new CrudRepositoryEntityImpl<>(userMapper);
-        return new UserServiceImpl(
+        UserServiceImpl userServiceImpl = new UserServiceImpl(
                 usersRepository,
                 usersRepositoryImpl,
                 jwtSecret
         );
+        return userServiceImpl;
+//        Optional<User> authUser = userServiceImpl.getOne(authUserId);
+//        UserServiceProtectionProxyImpl protectionProxy = new UserServiceProtectionProxyImpl(
+//                userServiceImpl,
+//                authUser.orElseThrow(),
+//                usersRepository,
+//                usersRepositoryImpl,
+//                jwtSecret
+//        );
+//        logger.info(String.format("GOT USER %d",authUserId));
+//        return protectionProxy;
+    }
+
+    @Bean("UserServiceProtectionProxy")
+    @RequestScope
+    public UserService getProtectionProxy(
+            @Qualifier("UserService") UserService userService
+    ) throws EntityNotFoundException {
+        Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
+        Optional<User> authUser = userService.getOne(authUserId);
+        logger.info(String.format("GOT USER %d",authUserId));
+        UserServiceProtectionProxyImpl protectionProxy = new UserServiceProtectionProxyImpl(
+                userService,
+                authUser.orElseThrow()
+        );
+        logger.info(String.format("GOT USER %d",authUserId));
+        return protectionProxy;
+
     }
 
 //    @Bean

@@ -2,6 +2,7 @@ package ru.rerumu.lists.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import java.util.List;
 public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(BooksController.class);
     private final ReadListService readListService;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     private final AuthorsService authorsService;
 
@@ -36,7 +37,7 @@ public class BooksController {
 
     public BooksController(
             ReadListService readListService,
-            UserServiceImpl userService,
+            @Qualifier("UserServiceProtectionProxy") UserService userService,
             AuthorsService authorsService,
             SeriesService seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,
