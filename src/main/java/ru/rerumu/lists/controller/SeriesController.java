@@ -1,5 +1,6 @@
 package ru.rerumu.lists.controller;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class SeriesController {
 
     private final ReadListService readListService;
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
@@ -39,7 +40,7 @@ public class SeriesController {
 
     public SeriesController(
             ReadListService readListService,
-            UserServiceImpl userService,
+            @Qualifier("UserServiceProtectionProxy")  UserService userService,
             BookSeriesRelationService bookSeriesRelationService,
             SeriesService seriesService
     ) {

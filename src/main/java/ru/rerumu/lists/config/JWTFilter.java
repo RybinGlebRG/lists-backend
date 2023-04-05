@@ -10,7 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.rerumu.lists.exception.NoJWTException;
+import ru.rerumu.lists.factories.UserServiceImplFactory;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.repository.UsersRepository;
+import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.services.UserServiceImpl;
 
 import javax.servlet.FilterChain;
@@ -22,12 +25,11 @@ import java.util.ArrayList;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
+    private final UserService userService;
 
-    @Value("${jwt.secret}")
-    private byte[] secret;
-
-    @Autowired
-    private UserServiceImpl userService;
+    public JWTFilter(@Qualifier("UserService") UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,

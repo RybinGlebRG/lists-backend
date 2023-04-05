@@ -2,6 +2,7 @@ package ru.rerumu.lists.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,13 @@ public class GamesController {
 
     private final GameService gameService;
     @Deprecated
-    private final UserServiceImpl userServiceOld;
+    private final UserService userService;
 
     private final UserServiceProxyFactory userServiceProxyFactory;
 
-    public GamesController(GameService gameService, UserServiceImpl userService, UserServiceProxyFactory userServiceProxyFactory) {
+    public GamesController(GameService gameService, @Qualifier("UserServiceProtectionProxy") UserService userService, UserServiceProxyFactory userServiceProxyFactory) {
         this.gameService = gameService;
-        this.userServiceOld = userService;
+        this.userService = userService;
         this.userServiceProxyFactory = userServiceProxyFactory;
     }
 
@@ -46,7 +47,6 @@ public class GamesController {
             @RequestAttribute("username") String username,
             @RequestAttribute("authUserId") Long authUserId
     ) throws EntityNotFoundException {
-        UserService userService = userServiceProxyFactory.getUserServiceProtectionProxy(authUserId);
 
         Optional<User> user = userService.getOne(userId);
         List<Game> gamesList = gameService.getAll(user.orElseThrow(EntityNotFoundException::new));
