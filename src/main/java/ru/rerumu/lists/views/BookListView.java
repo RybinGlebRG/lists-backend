@@ -7,21 +7,23 @@ import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookListView {
 
     private final List<Book> bookList;
     private final Map<Book,List<Series>> bookSeriesMap;
 
-    public BookListView(
-            List<Book> bookList,
-            Map<Book,List<Series>> bookSeriesMap
-    ) {
+    private final Boolean isChainBySeries;
+
+    private final List<SortItem> sortItemList;
+
+    public BookListView(List<Book> bookList, Map<Book, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList) {
         this.bookList = bookList;
         this.bookSeriesMap = bookSeriesMap;
+        this.isChainBySeries = isChainBySeries;
+        this.sortItemList = sortItemList;
     }
 
     public void sort() {
@@ -60,16 +62,40 @@ public class BookListView {
 //        return arr;
 //    }
 
+    private JSONArray toChainBySeries(List<Book> bookList){
+        Set<List<Series>> processedSeries = new HashSet<>();
+
+        JSONArray res = new JSONArray();
+
+        for(Book book: bookList){
+            List<Series> bookSeries = bookSeriesMap.get(book);
+            if (processedSeries.contains(bookSeries)){
+                continue;
+            }
+            JSONArray booksChain = bookList.stream()
+                    .filter(item -> !item.equals(book))
+                    .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
+                    .map(Book::toJSONObject)
+                    .collect(JSONArray::new,JSONArray::put,JSONArray::putAll);
+            JSONObject bookObj = book.toJSONObject()
+                    .put("chain",booksChain);
+            res.put(bookObj);
+            processedSeries.add(bookSeries);
+        }
+        return res;
+    }
+
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
-        JSONArray bookArray = new JSONArray();
-        for (Book item : this.bookList) {
-            JSONObject bookObj = item.toJSONObject()
-//                    .put("seriesList",formatSeriesList(item))
-                    ;
-
-            bookArray.put(bookObj);
+        JSONArray bookArray;
+        if (isChainBySeries){
+            bookArray = toChainBySeries(bookList);
+        } else {
+            bookArray = bookList.stream()
+                    .map(Book::toJSONObject)
+                    .collect(JSONArray::new,JSONArray::put,JSONArray::putAll);
         }
+
         obj.put("items", bookArray);
         return obj;
     }
@@ -81,21 +107,39 @@ public class BookListView {
     }
 
     public static class Builder{
-//        private Map<Book,List<Series>> bookSeriesMap;
+        private Map<Book,List<Series>> bookSeriesMap;
         private List<Book> bookList;
 
-//        public Builder bookSeriesMap(Map<Book,List<Series>> bookSeriesMap){
-//            this.bookSeriesMap = bookSeriesMap;
-//            return this;
-//        }
+        private Boolean isChainBySeries;
+
+        private List<SortItem> sortItemList;
+
+        public Builder bookSeriesMap(Map<Book,List<Series>> bookSeriesMap){
+            this.bookSeriesMap = bookSeriesMap;
+            return this;
+        }
 
         public Builder bookList(List<Book> bookList){
             this.bookList = bookList;
             return this;
         }
 
+        public Builder isChainBySeries(Boolean isChainBySeries){
+            this.isChainBySeries = isChainBySeries;
+            return this;
+        }
+
+        public Builder sort(List<SortItem> sortItemList)
+        {
+            this.sortItemList = sortItemList;
+            return this;
+        }
+
         public BookListView build(){
-            return new BookListView(bookList, null);
+            if (isChainBySeries == null){
+                isChainBySeries=false;
+            }
+            return new BookListView(bookList, bookSeriesMap, isChainBySeries, sortItemList);
         }
     }
 
