@@ -11,10 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.SeriesService;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.services.*;
 
 import static org.mockito.Mockito.verify;
 
@@ -31,8 +28,11 @@ class SeriesControllerDeleteSeriesTest {
     @MockBean
     private SeriesService seriesService;
 
-    @MockBean
-    private UserServiceImpl userService;
+    @MockBean(name="UserService")
+    private UserService userService1;
+
+    @MockBean(name="UserServiceProtectionProxy")
+    private UserService userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

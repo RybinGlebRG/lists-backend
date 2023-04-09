@@ -69,18 +69,18 @@ public class BookListView {
 
         for(Book book: bookList){
             List<Series> bookSeries = bookSeriesMap.get(book);
-            if (processedSeries.contains(bookSeries)){
-                continue;
+
+            if (!processedSeries.contains(bookSeries)) {
+                JSONArray booksChain = bookList.stream()
+                        .filter(item -> !item.equals(book))
+                        .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains) || bookSeriesMap.get(item).size() == 0)
+                        .map(Book::toJSONObject)
+                        .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
+                JSONObject bookObj = book.toJSONObject()
+                        .put("chain", booksChain);
+                res.put(bookObj);
+                processedSeries.add(bookSeries);
             }
-            JSONArray booksChain = bookList.stream()
-                    .filter(item -> !item.equals(book))
-                    .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
-                    .map(Book::toJSONObject)
-                    .collect(JSONArray::new,JSONArray::put,JSONArray::putAll);
-            JSONObject bookObj = book.toJSONObject()
-                    .put("chain",booksChain);
-            res.put(bookObj);
-            processedSeries.add(bookSeries);
         }
         return res;
     }

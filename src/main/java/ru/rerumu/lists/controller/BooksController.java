@@ -98,21 +98,21 @@ public class BooksController {
     }
 
 
-    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getAll(@PathVariable Long readListId,
-                                  @RequestAttribute("username") String username) {
-        List<Book> books = readListService.getAllBooks(readListId);
-//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
-        BookListView bookListView = new BookListView.Builder()
-                .bookList(books)
-//                .bookSeriesMap(bookSeriesMap)
-                .build();
-        bookListView.sort();
-
-        ResponseEntity<String> resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
-        return resEnt;
-    }
+//    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books",
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    ResponseEntity<String> getAll(@PathVariable Long readListId,
+//                                  @RequestAttribute("username") String username) {
+//        List<Book> books = readListService.getAllBooks(readListId);
+////        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+//        BookListView bookListView = new BookListView.Builder()
+//                .bookList(books)
+////                .bookSeriesMap(bookSeriesMap)
+//                .build();
+//        bookListView.sort();
+//
+//        ResponseEntity<String> resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
+//        return resEnt;
+//    }
 
     @PostMapping(value = "/api/v0.2/readLists/{readListId}/books",
             produces = MediaType.APPLICATION_JSON_VALUE,

@@ -10,7 +10,7 @@ public class SortItem {
     private final SearchOrder searchOrder;
 
     @JsonCreator
-    private SortItem(@JsonProperty("field") String sortField, @JsonProperty("ordering")  SearchOrder searchOrder){
+    public SortItem(@JsonProperty("field") String sortField, @JsonProperty("ordering")  SearchOrder searchOrder){
         this.sortField = sortField;
         this.searchOrder = searchOrder;
     }
