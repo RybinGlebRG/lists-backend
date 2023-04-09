@@ -19,6 +19,7 @@ import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -155,14 +156,16 @@ public class BooksController {
             @RequestBody Search search,
             @RequestAttribute("username") String username
     ) throws UserIsNotOwnerException {
-
-        userService.checkOwnershipList(username, readListId);
+        // TODO: rewrite
+//        userService.checkOwnershipList(username, readListId);
 
         List<Book> books = readListService.getAllBooks(readListId);
-//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
-//                .bookSeriesMap(bookSeriesMap)
+                .bookSeriesMap(bookSeriesMap)
+                .isChainBySeries(search.getChainBySeries())
+                .sort(search.getSortItemList())
                 .build();
         bookListView.sort(search.getSortItemList());
 
