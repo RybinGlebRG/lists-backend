@@ -105,7 +105,6 @@ public class BookListViewTest {
         bookList.add(book1);
         bookList.add(book2);
 
-        List<Series> seriesList = new ArrayList<>();
         Series series1 = new Series.Builder()
                 .seriesId(5L)
                 .title("Series1")
@@ -120,11 +119,8 @@ public class BookListViewTest {
                 .itemList(List.of(book1,book2))
                 .build();
 
-        seriesList.add(series1);
-        seriesList.add(series2);
-
-        bookSeriesMap.put(book1, seriesList);
-        bookSeriesMap.put(book2, seriesList);
+        bookSeriesMap.put(book1, List.of(series1));
+        bookSeriesMap.put(book2, List.of(series2));
 
         BookListView bookListView = new BookListView.Builder()
                 .bookList(bookList)
@@ -135,8 +131,137 @@ public class BookListViewTest {
         bookListView.sort(sortItemList);
         JSONObject res = bookListView.toJSONObject();
 
-        JSONArray array = new JSONArray();
+        Assertions.assertEquals(2,((JSONArray)res.get("items")).length());
+    }
 
+    @Test
+    void shouldNotChainNoSeriesOne() throws Exception {
+        List<SortItem> sortItemList = new ArrayList<>();
+        sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
+        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+
+        List<Book> bookList = new ArrayList<>();
+
+        Book book1 = new Book.Builder()
+                .bookId(1L)
+                .title("Test1")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+        Book book2 = new Book.Builder()
+                .bookId(2L)
+                .title("Test2")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+
+        bookList.add(book1);
+        bookList.add(book2);
+
+        Series series1 = new Series.Builder()
+                .seriesId(5L)
+                .title("Series1")
+                .readListId(2L)
+                .itemList(List.of(book1,book2))
+                .build();
+
+        bookSeriesMap.put(book1, List.of(series1));
+
+        BookListView bookListView = new BookListView.Builder()
+                .bookList(bookList)
+                .bookSeriesMap(bookSeriesMap)
+                .isChainBySeries(true)
+                .sort(sortItemList)
+                .build();
+        bookListView.sort(sortItemList);
+        JSONObject res = bookListView.toJSONObject();
+
+        Assertions.assertEquals(2,((JSONArray)res.get("items")).length());
+    }
+
+    @Test
+    void shouldNotChainNoSeriesOne2() throws Exception {
+        List<SortItem> sortItemList = new ArrayList<>();
+        sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
+        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+
+        List<Book> bookList = new ArrayList<>();
+
+        Book book1 = new Book.Builder()
+                .bookId(1L)
+                .title("Test1")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+        Book book2 = new Book.Builder()
+                .bookId(2L)
+                .title("Test2")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+
+        bookList.add(book1);
+        bookList.add(book2);
+
+        Series series1 = new Series.Builder()
+                .seriesId(5L)
+                .title("Series1")
+                .readListId(2L)
+                .itemList(List.of(book1,book2))
+                .build();
+
+        bookSeriesMap.put(book2, List.of(series1));
+
+        BookListView bookListView = new BookListView.Builder()
+                .bookList(bookList)
+                .bookSeriesMap(bookSeriesMap)
+                .isChainBySeries(true)
+                .sort(sortItemList)
+                .build();
+        bookListView.sort(sortItemList);
+        JSONObject res = bookListView.toJSONObject();
+
+        Assertions.assertEquals(2,((JSONArray)res.get("items")).length());
+    }
+
+    @Test
+    void shouldNotChainNoSeriesBoth() throws Exception {
+        List<SortItem> sortItemList = new ArrayList<>();
+        sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
+        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+
+        List<Book> bookList = new ArrayList<>();
+
+        Book book1 = new Book.Builder()
+                .bookId(1L)
+                .title("Test1")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+        Book book2 = new Book.Builder()
+                .bookId(2L)
+                .title("Test2")
+                .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
+                .bookStatus(BookStatus.COMPLETED)
+                .build();
+
+        bookList.add(book1);
+        bookList.add(book2);
+
+        BookListView bookListView = new BookListView.Builder()
+                .bookList(bookList)
+                .bookSeriesMap(bookSeriesMap)
+                .isChainBySeries(true)
+                .sort(sortItemList)
+                .build();
+        bookListView.sort(sortItemList);
+        JSONObject res = bookListView.toJSONObject();
 
         Assertions.assertEquals(2,((JSONArray)res.get("items")).length());
     }
