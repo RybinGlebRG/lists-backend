@@ -253,6 +253,11 @@ public final class Book implements Cloneable, SeriesItem{
             return this;
         }
 
+        public Builder insertDate(LocalDateTime insertDate) {
+            this.insertDate = Date.from(insertDate.toInstant(ZoneOffset.UTC));
+            return this;
+        }
+
         public Builder lastUpdateDate(Date lastUpdateDate) {
             this.lastUpdateDate = lastUpdateDate;
             return this;

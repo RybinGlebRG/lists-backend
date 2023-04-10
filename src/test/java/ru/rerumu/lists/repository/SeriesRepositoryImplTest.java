@@ -20,7 +20,7 @@ public class SeriesRepositoryImplTest {
     @Test
     void shouldGetAll(){
         ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.TRACE);
+                .setLevel(Level.INFO);
         List<Series> seriesList = seriesRepository.getAll(2L);
         System.out.println(seriesList);
     }

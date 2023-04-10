@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class BookListView {
 
     private final List<Book> bookList;
-    private final Map<Book,List<Series>> bookSeriesMap;
+    private final Map<Book, List<Series>> bookSeriesMap;
 
     private final Boolean isChainBySeries;
 
@@ -62,25 +62,44 @@ public class BookListView {
 //        return arr;
 //    }
 
-    private JSONArray toChainBySeries(List<Book> bookList){
-        Set<List<Series>> processedSeries = new HashSet<>();
+    private JSONArray getBookChain(Book book){
+        List<Series> bookSeries = bookSeriesMap.getOrDefault(book, new ArrayList<>());
+
+        JSONArray booksChain = bookList.stream()
+                .filter(item -> !item.equals(book))
+                .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
+                .map(Book::toJSONObject)
+                .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
+
+        return booksChain;
+
+    }
+
+    private JSONArray toChainBySeries(List<Book> bookList) {
+        Set<Set<Series>> processedSeries = new HashSet<>();
 
         JSONArray res = new JSONArray();
 
-        for(Book book: bookList){
-            List<Series> bookSeries = bookSeriesMap.get(book);
+        for (Book book : bookList) {
+            Set<Series> bookSeries = new HashSet<>(bookSeriesMap.getOrDefault(book, new ArrayList<>()));
+
             if (processedSeries.contains(bookSeries)){
                 continue;
             }
+
             JSONArray booksChain = bookList.stream()
                     .filter(item -> !item.equals(book))
-                    .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
+                    .filter(item -> bookSeriesMap.getOrDefault(item, new ArrayList<>()).stream().anyMatch(bookSeries::contains))
                     .map(Book::toJSONObject)
-                    .collect(JSONArray::new,JSONArray::put,JSONArray::putAll);
-            JSONObject bookObj = book.toJSONObject()
-                    .put("chain",booksChain);
+                    .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
+            JSONObject bookObj = book.toJSONObject();
+            bookObj.put("chain", booksChain);
             res.put(bookObj);
-            processedSeries.add(bookSeries);
+
+            if (bookSeries.size() != 0){
+                processedSeries.add(bookSeries);
+            }
+
         }
         return res;
     }
@@ -88,12 +107,12 @@ public class BookListView {
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray bookArray;
-        if (isChainBySeries){
+        if (isChainBySeries) {
             bookArray = toChainBySeries(bookList);
         } else {
             bookArray = bookList.stream()
                     .map(Book::toJSONObject)
-                    .collect(JSONArray::new,JSONArray::put,JSONArray::putAll);
+                    .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
         }
 
         obj.put("items", bookArray);
@@ -106,38 +125,37 @@ public class BookListView {
         return this.toJSONObject().toString();
     }
 
-    public static class Builder{
-        private Map<Book,List<Series>> bookSeriesMap;
+    public static class Builder {
+        private Map<Book, List<Series>> bookSeriesMap;
         private List<Book> bookList;
 
         private Boolean isChainBySeries;
 
         private List<SortItem> sortItemList;
 
-        public Builder bookSeriesMap(Map<Book,List<Series>> bookSeriesMap){
+        public Builder bookSeriesMap(Map<Book, List<Series>> bookSeriesMap) {
             this.bookSeriesMap = bookSeriesMap;
             return this;
         }
 
-        public Builder bookList(List<Book> bookList){
+        public Builder bookList(List<Book> bookList) {
             this.bookList = bookList;
             return this;
         }
 
-        public Builder isChainBySeries(Boolean isChainBySeries){
+        public Builder isChainBySeries(Boolean isChainBySeries) {
             this.isChainBySeries = isChainBySeries;
             return this;
         }
 
-        public Builder sort(List<SortItem> sortItemList)
-        {
+        public Builder sort(List<SortItem> sortItemList) {
             this.sortItemList = sortItemList;
             return this;
         }
 
-        public BookListView build(){
-            if (isChainBySeries == null){
-                isChainBySeries=false;
+        public BookListView build() {
+            if (isChainBySeries == null) {
+                isChainBySeries = false;
             }
             return new BookListView(bookList, bookSeriesMap, isChainBySeries, sortItemList);
         }

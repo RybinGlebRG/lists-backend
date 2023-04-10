@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.46.0</version>
+	<version>0.46.1</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -50,6 +50,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>3.0.2</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.skyscreamer</groupId>
+					<artifactId>jsonassert</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 

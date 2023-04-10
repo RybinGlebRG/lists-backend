@@ -213,7 +213,9 @@ public class ReadListService {
     }
 
     public List<Book> getAllBooks(Long readListId) {
-        return this.bookRepository.getAll(readListId);
+        List<Book> bookList = this.bookRepository.getAll(readListId);
+        logger.debug(bookList.toString());
+        return bookList;
     }
 
     @Deprecated

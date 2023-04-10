@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +17,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.services.AuthorsService;
 import ru.rerumu.lists.services.ReadListService;
+import ru.rerumu.lists.services.UserService;
 import ru.rerumu.lists.services.UserServiceImpl;
 import ru.rerumu.lists.views.AddAuthorView;
 
@@ -37,8 +39,11 @@ class AuthorsControllerTest {
     @MockBean
     private AuthorsService authorsService;
 
-    @MockBean
-    private UserServiceImpl userService;
+    @MockBean(name="UserServiceProtectionProxy")
+    private UserService userService;
+
+    @MockBean(name="UserService")
+    private UserService userService1;
 
     @BeforeAll
     static void setup() {

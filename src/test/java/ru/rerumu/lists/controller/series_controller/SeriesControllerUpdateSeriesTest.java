@@ -14,10 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.model.*;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.SeriesService;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
@@ -39,8 +36,11 @@ class SeriesControllerUpdateSeriesTest {
     @MockBean
     private SeriesService seriesService;
 
-    @MockBean
-    private UserServiceImpl userService;
+    @MockBean(name="UserService")
+    private UserService userService1;
+
+    @MockBean(name="UserServiceProtectionProxy")
+    private UserService userService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

@@ -82,6 +82,7 @@ public class SeriesService {
         return seriesRepository.getAll(readListId);
     }
 
+    @Deprecated
     public Map<Book, List<Series>> findByBook(List<Book> bookList) {
         Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
         for (Book book : bookList) {

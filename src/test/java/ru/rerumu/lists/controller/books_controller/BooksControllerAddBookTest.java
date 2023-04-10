@@ -26,8 +26,11 @@ class BooksControllerAddBookTest {
     @MockBean
     private ReadListService readListService;
 
-    @MockBean
-    private UserServiceImpl userService;
+    @MockBean(name="UserService")
+    private UserService userService1;
+
+    @MockBean(name="UserServiceProtectionProxy")
+    private UserService userService;
 
     @MockBean
     private AuthorsService authorsService;
