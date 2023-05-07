@@ -29,26 +29,6 @@
         </discriminator>
     </resultMap>
 
-<!--    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">-->
-<!--        <id property="bookId" column="book_id" javaType="Long"/>-->
-<!--        <result  property="readListId" column="book_list_id" javaType="Long"/>-->
-<!--        <result  property="title" column="book_title" javaType="String"/>-->
-<!--        <result  property="bookStatus" column="status_status_id" javaType="Integer"/>-->
-<!--        <result  property="insertDate" column="insert_date" javaType="Date"/>-->
-<!--        <result  property="lastUpdateDate" column="last_update_date" javaType="Date"/>-->
-<!--        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>-->
-<!--        <result  property="bookType" column="type_id" javaType="Integer"/>-->
-<!--&lt;!&ndash;        <result  property="bookTypeObj" column="type_name" javaType="ru.rerumu.lists.model.BookType"/>&ndash;&gt;-->
-<!--        <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeResultMap"/>-->
-<!--    </resultMap>-->
-
-<!--    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">-->
-<!--        <constructor>-->
-<!--            <idArg column="type_id2" javaType="Integer"/>-->
-<!--            <arg column="type_name" javaType="String"/>-->
-<!--        </constructor>-->
-<!--    </resultMap>-->
-
     <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.dto.TitleDTO">
         <id property="titleId" column="title_id"/>
         <result property="name" column="title_name"/>
