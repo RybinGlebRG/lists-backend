@@ -1,5 +1,6 @@
 package ru.rerumu.lists.repository.impl;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import ru.rerumu.lists.mappers.CrudMapper;
 import ru.rerumu.lists.model.User;
@@ -8,14 +9,15 @@ import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID> {
+public class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID> {
 
     private final CrudMapper<T,ID, EntityDTO<T>> mapper;
 
-    public CrudRepositoryDtoImpl(@Qualifier("CrudMapper") CrudMapper<T,ID, EntityDTO<T>> mapper) {
+    public CrudRepositoryDtoImpl(CrudMapper<T,ID, EntityDTO<T>> mapper) {
         this.mapper = mapper;
     }
 
@@ -25,7 +27,7 @@ public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID
         if (entityDTO==null){
             return Optional.empty();
         } else {
-            return Optional.of(entityDTO.toDomain());
+            return Optional.ofNullable(entityDTO.toDomain());
         }
     }
 
@@ -34,6 +36,7 @@ public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID
         List<EntityDTO<T>> entityDTOList = mapper.findAll();
         return entityDTOList.stream()
                 .map(EntityDTO::toDomain)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -42,6 +45,7 @@ public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID
         List<EntityDTO<T>> entityDTOList = mapper.findByUser(user);
         return entityDTOList.stream()
                 .map(EntityDTO::toDomain)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

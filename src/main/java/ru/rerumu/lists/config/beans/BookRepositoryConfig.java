@@ -8,6 +8,7 @@ import ru.rerumu.lists.mappers.BookTypeMapper;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.impl.BookRepositoryImpl;
+import ru.rerumu.lists.repository.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
 
 @Configuration
@@ -15,13 +16,10 @@ public class BookRepositoryConfig {
 
     @Bean
     public BookRepository getBookRepository(
-            BookMapper bookMapper,
-            BookTypeMapper bookTypeMapper
+            BookMapper bookMapper
     ) {
-        CrudRepositoryEntityImpl<BookType, Integer> bookTypeRepository1 = new CrudRepositoryEntityImpl<>(bookTypeMapper);
         return new BookRepositoryImpl(
-                bookMapper,
-                bookTypeRepository1
+                bookMapper
         );
     }
 }

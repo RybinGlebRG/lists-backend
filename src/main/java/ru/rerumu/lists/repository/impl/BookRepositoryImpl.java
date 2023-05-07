@@ -11,20 +11,19 @@ import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-
+// TODO: Refactor class
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
-    private final CrudRepository<BookType,Integer> crudRepository;
 
     public BookRepositoryImpl(
-            BookMapper bookMapper,
-            CrudRepository<BookType,Integer> crudRepository
-    ){
+            BookMapper bookMapper
+    ) {
         this.bookMapper = bookMapper;
-        this.crudRepository = crudRepository;
     }
 
 
@@ -37,7 +36,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookStatus().statusId(),
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
-                book.getLastChapter().isPresent() ? book.getLastChapter().get() : null ,
+                book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null
         );
     }
@@ -46,7 +45,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public Book getOne(Long readListId, Long bookId) {
         Optional<Book> optionalBook = getOne(bookId);
-        if (optionalBook.isEmpty()){
+        if (optionalBook.isEmpty()) {
             throw new IllegalArgumentException();
         }
         return optionalBook.get();
@@ -54,37 +53,22 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Optional<Book> getOne(Long bookId) {
-        BookDTO bookDTO = bookMapper.getOne( bookId);
-        if (bookDTO == null){
+        BookDTO bookDTO = bookMapper.getOne(bookId);
+        if (bookDTO == null) {
             return Optional.empty();
         } else {
-            Optional<BookType> optionalBookType = crudRepository.findById(bookDTO.getBookType());
-            optionalBookType.ifPresent(bookType -> bookDTO.bookTypeObj = bookType);
-            try {
-                return Optional.of(bookDTO.toBook());
-            } catch (EmptyMandatoryParameterException e) {
-                // Database is supposed to provide everything needed
-                throw new AssertionError(e);
-            }
+            return Optional.of(bookDTO.toDomain());
         }
     }
 
     @Override
     public List<Book> getAll(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAll(readListId);
-        List<Book> bookList = new ArrayList<>();
-        for (BookDTO bookDTO: bookDTOList){
-            if (bookDTO != null){
-                Optional<BookType> optionalBookType = crudRepository.findById(bookDTO.getBookType());
-                optionalBookType.ifPresent(bookType -> bookDTO.bookTypeObj = bookType);
-                try {
-                    bookList.add(bookDTO.toBook());
-                } catch (EmptyMandatoryParameterException e) {
-                    // Database is supposed to provide everything needed
-                    throw new AssertionError(e);
-                }
-            }
-        }
+
+        List<Book> bookList = bookDTOList.stream()
+                .map(BookDTO::toDomain)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
 
         return bookList;
     }

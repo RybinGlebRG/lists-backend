@@ -18,7 +18,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public Date lastUpdateDate;
     public Integer lastChapter;
     public Integer bookType;
-    public BookType bookTypeObj;
+    public BookTypeDTO bookTypeObj;
     public BookStatusRecord bookStatusObj;
 
     public BookDTO() {
@@ -79,19 +79,18 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
         return bookType;
     }
 
-    public Book toBook() throws EmptyMandatoryParameterException {
-        Book.Builder builder = new Book.Builder(this);
-        builder.bookType(bookTypeObj);
-        builder.bookStatus(bookStatusObj);
-
-        return builder.build();
-    }
-
     @Override
     public Book toDomain() {
         try {
-            return toBook();
+            Book.Builder builder = new Book.Builder(this);
+            if (bookTypeObj != null){
+                builder.bookType(bookTypeObj.toDomain());
+            }
+            builder.bookStatus(bookStatusObj);
+            Book book = builder.build();
+            return book;
         } catch (EmptyMandatoryParameterException e) {
+            // Database is supposed to provide everything needed
             throw new AssertionError(e);
         }
     }
