@@ -27,7 +27,7 @@
 <!--        </rollingPolicy>-->
 <!--    </appender>-->
 
-    <root level="TRACE">
+    <root level="ERROR">
         <appender-ref ref="Console" />
 <!--        <appender-ref ref="RollingFile" />-->
     </root>
