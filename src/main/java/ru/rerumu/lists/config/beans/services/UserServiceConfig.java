@@ -1,4 +1,4 @@
-package ru.rerumu.lists.config.beans;
+package ru.rerumu.lists.config.beans.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -41,6 +42,7 @@ public class UserServiceConfig {
     }
 
     @Bean("UserServiceProtectionProxy")
+    @Primary
     @RequestScope
     public UserService getProtectionProxy(
             @Qualifier("UserService") UserService userService

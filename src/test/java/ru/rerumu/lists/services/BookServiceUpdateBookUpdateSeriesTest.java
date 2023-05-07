@@ -42,6 +42,9 @@ class BookServiceUpdateBookUpdateSeriesTest {
     @Mock
     private BookTypesService bookTypesService;
 
+    @Mock
+    BookStatusesService bookStatusesService;
+
 
     @Test
     void shouldUpdateChangeSeries() throws Exception{
@@ -63,7 +66,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -75,6 +78,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                  List.of(new SeriesBookRelation(book,series,1L))
         );
 //        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -84,7 +89,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -118,7 +124,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -130,6 +136,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 List.of()
         );
 //        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -139,7 +147,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -173,7 +182,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -185,6 +194,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 List.of(new SeriesBookRelation(book,series,1L))
         );
 //        when(bookSeriesService.getSeries(anyLong(),anyLong())).thenReturn(Optional.of(shouldSeries));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -194,7 +205,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -226,7 +238,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -238,6 +250,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 List.of(new SeriesBookRelation(book,series,1L))
         );
 //        when(seriesService.getSeries(anyLong())).thenReturn(Optional.of(series));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
 
         ReadListService readListService = new ReadListService(
@@ -248,7 +262,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
         readListService.updateBook(8L,bookUpdateView);
 

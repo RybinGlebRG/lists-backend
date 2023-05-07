@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
+import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
@@ -38,14 +39,14 @@ public class BookListViewTest {
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
         Book book2 = new Book.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
 
         bookList.add(book1);
@@ -92,14 +93,14 @@ public class BookListViewTest {
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
         Book book2 = new Book.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
 
         bookList.add(book1);
@@ -147,14 +148,14 @@ public class BookListViewTest {
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
         Book book2 = new Book.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
 
         bookList.add(book1);
@@ -194,14 +195,14 @@ public class BookListViewTest {
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
         Book book2 = new Book.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
 
         bookList.add(book1);
@@ -241,14 +242,14 @@ public class BookListViewTest {
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
         Book book2 = new Book.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 9, 22, 35))
-                .bookStatus(BookStatus.COMPLETED)
+                .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
 
         bookList.add(book1);

@@ -2,28 +2,27 @@ package ru.rerumu.lists.model.dto;
 
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.BookType;
-import ru.rerumu.lists.model.SeriesItem;
+import ru.rerumu.lists.model.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
-public class BookDTO  implements EntityDTO<Book>, SeriesItemDTO{
-    public   Long bookId;
-    public  Long readListId;
-    public  String title;
-    public  Integer bookStatus;
-    public  Date insertDate;
-    public  Date lastUpdateDate;
-    public  Integer lastChapter;
-    public  Integer bookType;
+public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
+    public Long bookId;
+    public Long readListId;
+    public String title;
+    public Integer bookStatus;
+    public Date insertDate;
+    public Date lastUpdateDate;
+    public Integer lastChapter;
+    public Integer bookType;
     public BookType bookTypeObj;
+    public BookStatusRecord bookStatusObj;
 
-    public BookDTO(){}
+    public BookDTO() {
+    }
 
 //    public BookDTO(Long bookId,
 //                Long readListId,
@@ -67,6 +66,7 @@ public class BookDTO  implements EntityDTO<Book>, SeriesItemDTO{
     public Date getLastUpdateDate() {
         return lastUpdateDate;
     }
+
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
     }
@@ -82,25 +82,16 @@ public class BookDTO  implements EntityDTO<Book>, SeriesItemDTO{
     public Book toBook() throws EmptyMandatoryParameterException {
         Book.Builder builder = new Book.Builder(this);
         builder.bookType(bookTypeObj);
+        builder.bookStatus(bookStatusObj);
 
-        switch (bookStatus) {
-            case 1:
-                builder.bookStatus(BookStatus.IN_PROGRESS);
-                break;
-            case 2:
-                builder.bookStatus(BookStatus.COMPLETED);
-                break;
-            default:
-                builder.bookStatus(null);
-        }
-            return builder.build();
+        return builder.build();
     }
 
     @Override
-    public Book toDomain()  {
+    public Book toDomain() {
         try {
             return toBook();
-        } catch (EmptyMandatoryParameterException e){
+        } catch (EmptyMandatoryParameterException e) {
             throw new AssertionError(e);
         }
     }

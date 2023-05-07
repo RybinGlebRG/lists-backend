@@ -4,32 +4,47 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.BookMapper">
 
-    <resultMap id="BookResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
-        <result column="book_id" property="bookId" />
-        <result column="list_list_id" property="readListId" />
-        <result column="title" property="title" />
-        <result column="status_id" property="bookStatus" />
-        <result column="insert_date" property="insertDate" />
-        <result column="last_update_date" property="lastUpdateDate" />
-        <result column="last_chapter" property="lastChapter" />
-        <result column="type_id" property="bookType" />
-    </resultMap>
+<!--    <resultMap id="BookResultMap" type="ru.rerumu.lists.model.dto.BookDTO">-->
+<!--        <result column="book_id" property="bookId" />-->
+<!--        <result column="list_list_id" property="readListId" />-->
+<!--        <result column="title" property="title" />-->
+<!--        <result column="status_id" property="bookStatus" />-->
+<!--        <result column="insert_date" property="insertDate" />-->
+<!--        <result column="last_update_date" property="lastUpdateDate" />-->
+<!--        <result column="last_chapter" property="lastChapter" />-->
+<!--        <result column="type_id" property="bookType" />-->
+<!--    </resultMap>-->
 
     <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus_">
         <result column="status_id" property="statusId" />
         <result column="status_name" property="name" />
     </resultMap>
 
+    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
+        <id property="bookId" column="book_id" javaType="Long"/>
+        <result  property="readListId" column="book_list_id" javaType="Long"/>
+        <result  property="title" column="book_title" javaType="String"/>
+        <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
+        <result  property="insertDate" column="book_insert_date" javaType="Date"/>
+        <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
+        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
+<!--        <result  property="bookType" column="type_id" javaType="Integer"/>-->
+        <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeResultMap"/>
+        <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
+    </resultMap>
+
     <sql id="selectBooks">
         select  b.book_id,
-                b.list_list_id,
-                b.title,
-                s."STATUS_ID" as status_id,
-                b.insert_date AT TIME ZONE 'UTC' as insert_date,
-                b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                b.list_list_id as book_list_id,
+                b.title as book_title,
+                s."STATUS_ID" as book_status_id_old,
+                b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
+                b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                 b.last_chapter,
-                bt.type_id as type_id,
-                bt.name as type_name
+                bt.type_id as book_type_id,
+                bt.name as book_type_name,
+                s."STATUS_ID" as book_status_id,
+                s."NAME" as book_status_name
 
         from lists.books b
                 inner join lists.statuses s
@@ -45,12 +60,12 @@
     </select>
 
 
-    <select id="getOne" resultMap="BookResultMap">
+    <select id="getOne" resultMap="BookDTOResultMap">
         <include refid="selectBooks"/>
         where b.book_id=#{bookId}
     </select>
 
-    <select id="getAll" resultMap="BookResultMap">
+    <select id="getAll" resultMap="BookDTOResultMap">
         <include refid="selectBooks"/>
         WHERE b.list_list_id=#{readListId}
     </select>

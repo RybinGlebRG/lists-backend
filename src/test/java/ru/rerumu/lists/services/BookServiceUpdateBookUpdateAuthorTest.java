@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+// TODO: Check tests
 @ExtendWith(MockitoExtension.class)
 class BookServiceUpdateBookUpdateAuthorTest {
 
@@ -39,6 +40,9 @@ class BookServiceUpdateBookUpdateAuthorTest {
 
     @Mock
     private BookTypesService bookTypesService;
+
+    @Mock
+    BookStatusesService bookStatusesService;
 
     @Test
     void shouldChangeAuthor() throws Exception{
@@ -62,7 +66,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -72,6 +76,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 List.of(new AuthorBookRelation(book,author))
         );
         when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -81,7 +87,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -113,7 +120,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -123,6 +130,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 List.of()
         );
         when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.of(shouldAuthor));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -132,7 +141,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -164,7 +174,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
@@ -174,6 +184,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 List.of(new AuthorBookRelation(book,author))
         );
 //        when(authorsService.getAuthor(anyLong(),anyLong())).thenReturn(Optional.empty());
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -183,7 +195,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);

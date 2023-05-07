@@ -16,8 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +42,9 @@ class BookServiceUpdateBookUpdateTypeTest {
     @Mock
     private BookTypesService bookTypesService;
 
+    @Mock
+    BookStatusesService bookStatusesService;
+
     @Test
     void shouldUpdateType() throws Exception{
         BookUpdateView bookUpdateView = new BookUpdateView(
@@ -61,7 +63,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .bookType(new BookType(1,"Book"))
                 .build();
@@ -70,7 +72,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .bookType(new BookType(2,"Light Novel"))
                 .build();
@@ -79,6 +81,8 @@ class BookServiceUpdateBookUpdateTypeTest {
         when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 //        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
         when(bookTypesService.findById(anyInt())).thenReturn(Optional.of(new BookType(2,"Light Novel")));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -88,7 +92,8 @@ class BookServiceUpdateBookUpdateTypeTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -114,7 +119,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .build();
         Book shouldBook = new Book.Builder()
@@ -122,7 +127,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .bookType(new BookType(2,"Light Novel"))
                 .build();
@@ -131,6 +136,8 @@ class BookServiceUpdateBookUpdateTypeTest {
         when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 //        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
         when(bookTypesService.findById(anyInt())).thenReturn(Optional.of(new BookType(2,"Light Novel")));
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -140,7 +147,8 @@ class BookServiceUpdateBookUpdateTypeTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -166,7 +174,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .bookType(new BookType(1,"Book"))
                 .build();
@@ -175,13 +183,15 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
         when(authorsBooksRepository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
 //        when(seriesBooksRespository.getByBookId(anyLong(), anyLong())).thenReturn(List.of());
+        when(bookStatusesService.findById(anyInt()))
+                .thenReturn(Optional.of(new BookStatusRecord(1,"In Progress")));
 
         ReadListService readListService = new ReadListService(
                 bookRepository,
@@ -191,7 +201,8 @@ class BookServiceUpdateBookUpdateTypeTest {
                 dateFactory,
                 bookSeriesRelationService,
                 authorsBooksRelationService,
-                bookTypesService
+                bookTypesService,
+                bookStatusesService
         );
 
         readListService.updateBook(8L,bookUpdateView);

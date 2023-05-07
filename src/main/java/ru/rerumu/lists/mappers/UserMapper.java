@@ -19,13 +19,13 @@ public interface UserMapper extends CrudMapper<User,Long,User>{
     @Override
     User findById(Long id);
 
-    @Override
-    default List<User> findAll(User user){
-        return new ArrayList<>();
-    };
+//    @Override
+//    default List<User> findAll(User user){
+//        return new ArrayList<>();
+//    };
 
-    @Override
-    default void save(User entity){
-        return;
-    };
+//    @Override
+//    default void save(User entity){
+//        return;
+//    };
 }
