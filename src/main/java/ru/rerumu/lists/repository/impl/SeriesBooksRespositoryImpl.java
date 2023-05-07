@@ -95,39 +95,39 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @Override
-    public List<SeriesBookRelation> getBySeries(Series series) throws EntityNotFoundException, EmptyMandatoryParameterException {
-        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
-        List<SeriesBookRelationDTO> seriesBookRelationDTOList;
-        try {
-            seriesBookRelationDTOList = MonitoringService.gatherExecutionTime(
-                    () -> seriesBookMapper.findBySeries(series),
-                    MetricType.SERIES_BOOK_MAPPER__FIND_BY_SERIES__EXECUTION_TIME
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        for (var item : seriesBookRelationDTOList) {
-            Book.Builder builder = new Book.Builder()
-                    .bookId(item.bookId())
-                    .readListId(item.bookListId())
-                    .title(item.title())
-                    .bookStatus(item.bookStatus())
-                    .insertDate(item.insertDate())
-                    .lastUpdateDate(item.lastUpdateDate())
-                    .lastChapter(item.lastChapter())
-                    .bookType(item.bookType());
-            seriesBookRelationList.add(new SeriesBookRelation(
-                    builder.build(),
-                    series,
-                    item.order())
-            );
-        }
-
-        return seriesBookRelationList;
-
-    }
+//    @Override
+//    public List<SeriesBookRelation> getBySeries(Series series) throws EntityNotFoundException, EmptyMandatoryParameterException {
+//        List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
+//        List<SeriesBookRelationDTO> seriesBookRelationDTOList;
+//        try {
+//            seriesBookRelationDTOList = MonitoringService.gatherExecutionTime(
+//                    () -> seriesBookMapper.findBySeries(series),
+//                    MetricType.SERIES_BOOK_MAPPER__FIND_BY_SERIES__EXECUTION_TIME
+//            );
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        for (var item : seriesBookRelationDTOList) {
+//            Book.Builder builder = new Book.Builder()
+//                    .bookId(item.bookId())
+//                    .readListId(item.bookListId())
+//                    .title(item.title())
+//                    .bookStatus(item.bookStatus())
+//                    .insertDate(item.insertDate())
+//                    .lastUpdateDate(item.lastUpdateDate())
+//                    .lastChapter(item.lastChapter())
+//                    .bookType(item.bookType());
+//            seriesBookRelationList.add(new SeriesBookRelation(
+//                    builder.build(),
+//                    series,
+//                    item.order())
+//            );
+//        }
+//
+//        return seriesBookRelationList;
+//
+//    }
 
     @Override
     public void update(SeriesBookRelation seriesBookRelation) {

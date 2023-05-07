@@ -27,6 +27,6 @@ public class GameService {
     }
 
     public List<Game> getAll(User user){
-        return crudRepository.findAll(user);
+        return crudRepository.findByUser(user);
     }
 }

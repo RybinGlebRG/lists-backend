@@ -9,13 +9,16 @@ import ru.rerumu.lists.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-@Component("CrudRepositoryEntityImpl")
+//@Component("CrudRepositoryEntityImpl")
 public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
 
 
     protected final CrudMapper<T,ID, T> mapper;
 
-    public CrudRepositoryEntityImpl(@Qualifier("CrudMapper") CrudMapper<T,ID, T> mapper) {
+    public CrudRepositoryEntityImpl(
+//            @Qualifier("CrudMapper")
+            CrudMapper<T,ID, T> mapper
+    ) {
         this.mapper = mapper;
     }
 
@@ -31,8 +34,8 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     }
 
     @Override
-    public List<T> findAll(User user) {
-        return mapper.findAll(user);
+    public List<T> findByUser(User user) {
+        return mapper.findByUser(user);
     }
 
     @Override

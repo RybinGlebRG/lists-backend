@@ -53,7 +53,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .build();
         Series series = new Series.Builder()
@@ -69,7 +69,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("10")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -81,7 +81,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("1")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -93,7 +93,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("3")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -105,7 +105,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("4")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -117,7 +117,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("2")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -129,7 +129,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("5")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -149,7 +149,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("2")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -161,7 +161,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("3")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -173,7 +173,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                         .title("4")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                         .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                        .bookStatus(BookStatus.IN_PROGRESS)
+                        .bookStatus(new BookStatusRecord(1,"In Progress"))
                         .readListId(3L)
                         .build(),
                 series,
@@ -195,7 +195,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
                 .lastUpdateDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .build();
         Series series = new Series.Builder()

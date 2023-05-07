@@ -10,10 +10,7 @@ public interface CrudRepository<T,ID> {
 
     Optional<T> findById(ID id);
 
-    @Deprecated
     List<T> findAll();
-    default List<T> findAll(User user){
-        return new ArrayList<>();
-    };
+    List<T> findByUser(User user);
     void save(T entity);
 }

@@ -12,10 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.services.*;
 
 import java.util.*;
@@ -63,7 +60,7 @@ class SeriesControllerGetSeriesTest {
                 .readListId(2L)
                 .bookId(88L)
                 .title("Title")
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)
@@ -95,7 +92,7 @@ class SeriesControllerGetSeriesTest {
                 .readListId(2L)
                 .bookId(88L)
                 .title("Title")
-                .bookStatus(BookStatus.IN_PROGRESS)
+                .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(4)

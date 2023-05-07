@@ -23,31 +23,31 @@
 
     <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
-            <case value="1" resultMap="BookDTOResultMap"/>
+            <case value="1" resultMap="ru.rerumu.lists.mappers.BookMapper.BookDTOResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>
             <case value="3" resultType="ru.rerumu.lists.model.dto.NullDTO"/>
         </discriminator>
     </resultMap>
 
-    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
-        <id property="bookId" column="book_id" javaType="Long"/>
-        <result  property="readListId" column="book_list_id" javaType="Long"/>
-        <result  property="title" column="book_title" javaType="String"/>
-        <result  property="bookStatus" column="status_status_id" javaType="Integer"/>
-        <result  property="insertDate" column="insert_date" javaType="Date"/>
-        <result  property="lastUpdateDate" column="last_update_date" javaType="Date"/>
-        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
-        <result  property="bookType" column="type_id" javaType="Integer"/>
-<!--        <result  property="bookTypeObj" column="type_name" javaType="ru.rerumu.lists.model.BookType"/>-->
-        <association property="bookTypeObj" resultMap="BookTypeResultMap"/>
-    </resultMap>
+<!--    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">-->
+<!--        <id property="bookId" column="book_id" javaType="Long"/>-->
+<!--        <result  property="readListId" column="book_list_id" javaType="Long"/>-->
+<!--        <result  property="title" column="book_title" javaType="String"/>-->
+<!--        <result  property="bookStatus" column="status_status_id" javaType="Integer"/>-->
+<!--        <result  property="insertDate" column="insert_date" javaType="Date"/>-->
+<!--        <result  property="lastUpdateDate" column="last_update_date" javaType="Date"/>-->
+<!--        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>-->
+<!--        <result  property="bookType" column="type_id" javaType="Integer"/>-->
+<!--&lt;!&ndash;        <result  property="bookTypeObj" column="type_name" javaType="ru.rerumu.lists.model.BookType"/>&ndash;&gt;-->
+<!--        <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeResultMap"/>-->
+<!--    </resultMap>-->
 
-    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">
-        <constructor>
-            <idArg column="type_id2" javaType="Integer"/>
-            <arg column="type_name" javaType="String"/>
-        </constructor>
-    </resultMap>
+<!--    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">-->
+<!--        <constructor>-->
+<!--            <idArg column="type_id2" javaType="Integer"/>-->
+<!--            <arg column="type_name" javaType="String"/>-->
+<!--        </constructor>-->
+<!--    </resultMap>-->
 
     <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.dto.TitleDTO">
         <id property="titleId" column="title_id"/>
@@ -103,13 +103,15 @@
         select      b.book_id,
                     b.list_list_id as book_list_id,
                     b.title as book_title,
-                    b.status_status_id,
-                    b.insert_date AT TIME ZONE 'UTC' as insert_date,
-                    b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                    b.status_status_id as book_status_id_old,
+                    b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
+                    b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                     b.last_chapter,
                     bt.type_id as type_id,
-                    bt.type_id as type_id2,
-                    bt.name as type_name,
+                    bt.type_id as book_type_id,
+                    bt.name as book_type_name,
+                    st."STATUS_ID" as book_status_id,
+                    st."NAME" as book_status_name,
                     s_series.series_id,
                     sb.series_order,
                     1 as item_type
@@ -156,78 +158,55 @@
         ), s_data as (
 
 
-        select s_series.*,
-        null,
-        s_titles.item_type,
-        s_titles.series_order,
-        null as book_id,
-        null as book_list_id,
-        null as book_title,
-        null as status_status_id,
-        null as insert_date,
-        null as last_update_date,
-        null as last_chapter,
-        null as type_id,
-        null as type_id2,
-        null as type_name,
-        s_titles.title_id,
-        s_titles.title_list_id,
-        s_titles.title_name,
-        s_titles.title_create_date_utc,
-        s_titles.title_status,
-        s_titles.title_type_id,
-        s_titles.title_type_name,
-        s_titles.title_status_id,
-        s_titles.title_status_name
-        from s_series
-        inner join s_titles
-        on s_titles.series_id = s_series.series_id
-        union
-
-        select s_series.*,
-        0 as book_count,
-        s_books.item_type,
-        s_books.series_order,
-        s_books.book_id,
-        s_books.book_list_id,
-        s_books.book_title,
-        s_books.status_status_id,
-        s_books.insert_date,
-        s_books.last_update_date,
-        s_books.last_chapter,
-        s_books.type_id,
-        s_books.type_id2,
-        s_books.type_name,
-        null as title_id,
-        null as title_list_id,
-        null as title_name,
-        null as title_create_date_utc,
-        null as title_status,
-        null as title_type_id,
-        null as title_type_name,
-        null as title_status_id,
-        null as title_status_name
-        from s_series
-        inner join s_books
-        on s_books.series_id = s_series.series_id
-
-
-        union
-
-        select s_series.*,
-                null as book_count,
-                3 as item_type,
-                null as series_order,
+        select  s_series.*,
+                null,
+                s_titles.item_type,
+                s_titles.series_order,
                 null as book_id,
                 null as book_list_id,
                 null as book_title,
-                null as status_status_id,
-                null as insert_date,
-                null as last_update_date,
+                null as book_status_id_old,
+                null as book_insert_date,
+                null as book_last_update_date,
                 null as last_chapter,
                 null as type_id,
-                null as type_id2,
-                null as type_name,
+                null as book_type_id,
+                null as book_type_name,
+                null as book_status_id,
+                null as book_status_name,
+                --
+                s_titles.title_id,
+                s_titles.title_list_id,
+                s_titles.title_name,
+                s_titles.title_create_date_utc,
+                s_titles.title_status,
+                s_titles.title_type_id,
+                s_titles.title_type_name,
+                s_titles.title_status_id,
+                s_titles.title_status_name
+        from s_series
+            inner join s_titles
+                on s_titles.series_id = s_series.series_id
+
+        union
+
+        select  s_series.*,
+                0 as book_count,
+                s_books.item_type,
+                s_books.series_order,
+                s_books.book_id,
+                s_books.book_list_id,
+                s_books.book_title,
+                s_books.book_status_id_old,
+                s_books.book_insert_date,
+                s_books.book_last_update_date,
+                s_books.last_chapter,
+                s_books.type_id,
+                s_books.book_type_id,
+                s_books.book_type_name,
+                s_books.book_status_id,
+                s_books.book_status_name,
+                --
                 null as title_id,
                 null as title_list_id,
                 null as title_name,
@@ -238,8 +217,41 @@
                 null as title_status_id,
                 null as title_status_name
         from s_series
-        inner join s_empty
-        on s_empty.series_id = s_series.series_id
+            inner join s_books
+                on s_books.series_id = s_series.series_id
+
+
+        union
+
+        select  s_series.*,
+                null as book_count,
+                3 as item_type,
+                null as series_order,
+                null as book_id,
+                null as book_list_id,
+                null as book_title,
+                null as book_status_id_old,
+                null as book_insert_date,
+                null as book_last_update_date,
+                null as last_chapter,
+                null as type_id,
+                null as book_type_id,
+                null as book_type_name,
+                null as book_status_id,
+                null as book_status_name,
+                --
+                null as title_id,
+                null as title_list_id,
+                null as title_name,
+                null as title_create_date_utc,
+                null as title_status,
+                null as title_type_id,
+                null as title_type_name,
+                null as title_status_id,
+                null as title_status_name
+        from s_series
+            inner join s_empty
+                on s_empty.series_id = s_series.series_id
         )
 
 

@@ -37,11 +37,9 @@ public class BookTypesController {
 
     @GetMapping(value = "/api/v0.2/bookTypes",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getAll(@RequestAttribute("authUserId") Long authUserId)
-            throws EntityNotFoundException {
+    ResponseEntity<String> getAll() {
 
-        User user = userService.getOne(authUserId).orElseThrow();
-        List<BookType> bookTypeList = bookTypesService.findAll(user);
+        List<BookType> bookTypeList = bookTypesService.findAll();
         BookTypesListView bookTypesListView = new BookTypesListView(bookTypeList);
 
         return new ResponseEntity<>(bookTypesListView.toString(), HttpStatus.OK);

@@ -1,6 +1,5 @@
 package ru.rerumu.lists.services;
 
-import org.springframework.stereotype.Component;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
@@ -16,8 +15,8 @@ public class BookTypesService {
         this.crudRepository = crudRepository;
     }
 
-    public List<BookType> findAll(User user){
-        return crudRepository.findAll(user);
+    public List<BookType> findAll(){
+        return crudRepository.findAll();
     }
 
     public Optional<BookType> findById(int bookTypeId){

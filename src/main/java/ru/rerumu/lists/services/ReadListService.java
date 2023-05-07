@@ -15,6 +15,7 @@ import ru.rerumu.lists.views.BookUpdateView;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -39,6 +40,8 @@ public class ReadListService {
 
     private final BookTypesService bookTypesService;
 
+    private final BookStatusesService bookStatusesService;
+
     public ReadListService(
             BookRepository bookRepository,
 //            SeriesRepository seriesRepository,
@@ -50,7 +53,8 @@ public class ReadListService {
 //            SeriesService seriesService,
             BookSeriesRelationService bookSeriesRelationService,
             AuthorsBooksRelationService authorsBooksRelationService,
-            BookTypesService bookTypesService
+            BookTypesService bookTypesService,
+            BookStatusesService bookStatusesService
     ) {
         this.bookRepository = bookRepository;
 //        this.seriesRepository = seriesRepository;
@@ -63,6 +67,7 @@ public class ReadListService {
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookTypesService = bookTypesService;
+        this.bookStatusesService = bookStatusesService;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
@@ -159,26 +164,20 @@ public class ReadListService {
 
         bookUpdateView.getLastChapter().ifPresent(builder::lastChapter);
 
-        // TODO: Test
+        // TODO: Test + add other fields
         if (!bookUpdateView.getLastChapter().equals(currentBook.getLastChapter()) ||
-                bookUpdateView.getStatus() != currentBook.getBookStatus().getId()) {
+                bookUpdateView.getStatus() != currentBook.getBookStatus().statusId()) {
             builder.lastUpdateDate(dateFactory.getLocalDateTime());
         }
 
-        switch (bookUpdateView.getStatus()) {
-            case 1:
-                builder.bookStatus(BookStatus.IN_PROGRESS);
-                break;
-            case 2:
-                builder.bookStatus(BookStatus.COMPLETED);
-                break;
-            default:
-                builder.bookStatus(null);
-        }
+        Objects.requireNonNull(bookUpdateView.getStatus(),"Book status cannot be null");
+        builder.bookStatus(
+                bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow()
+        );
 
         if (bookUpdateView.getBookTypeId() != null) {
             Optional<BookType> optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId());
-            if (optionalBookType.isEmpty()){
+            if (optionalBookType.isEmpty()) {
                 throw new IllegalArgumentException();
             }
 
@@ -208,7 +207,7 @@ public class ReadListService {
         return book;
     }
 
-    public  Optional<Book> getBook(Long bookId) {
+    public Optional<Book> getBook(Long bookId) {
         return this.bookRepository.getOne(bookId);
     }
 
@@ -232,31 +231,37 @@ public class ReadListService {
 
         Book.Builder bookBuilder = new Book.Builder();
 
-        BookStatus bookStatus;
-        switch (bookAddView.getStatus()) {
-            case 1:
-                bookStatus = BookStatus.IN_PROGRESS;
-                break;
-            case 2:
-                bookStatus = BookStatus.COMPLETED;
-                break;
-            default:
-                bookStatus = null;
-        }
+//        BookStatus bookStatus;
+//        switch (bookAddView.getStatus()) {
+//            case 1:
+//                bookStatus = BookStatus.IN_PROGRESS;
+//                break;
+//            case 2:
+//                bookStatus = BookStatus.COMPLETED;
+//                break;
+//            default:
+//                bookStatus = null;
+//        }
 
 
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(bookAddView.getTitle())
-                .bookStatus(bookStatus)
                 .insertDate(dt)
                 .lastUpdateDate(dt)
                 .lastChapter(bookAddView.getLastChapter());
 
+        Objects.requireNonNull(bookAddView.status());
+        bookBuilder.bookStatus(
+                bookStatusesService.findById(bookAddView.status())
+                        .orElseThrow()
+        );
+
+
         if (bookAddView.getBookTypeId() != null) {
             Optional<BookType> optionalBookType = bookTypesService.findById(bookAddView.getBookTypeId());
-            if (optionalBookType.isEmpty()){
+            if (optionalBookType.isEmpty()) {
                 throw new IllegalArgumentException();
             }
 

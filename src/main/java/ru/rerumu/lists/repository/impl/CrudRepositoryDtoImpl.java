@@ -2,6 +2,7 @@ package ru.rerumu.lists.repository.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import ru.rerumu.lists.mappers.CrudMapper;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.dto.EntityDTO;
 import ru.rerumu.lists.repository.CrudRepository;
 
@@ -31,6 +32,14 @@ public abstract class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID
     @Override
     public List<T> findAll() {
         List<EntityDTO<T>> entityDTOList = mapper.findAll();
+        return entityDTOList.stream()
+                .map(EntityDTO::toDomain)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public List<T> findByUser(User user){
+        List<EntityDTO<T>> entityDTOList = mapper.findByUser(user);
         return entityDTOList.stream()
                 .map(EntityDTO::toDomain)
                 .collect(Collectors.toCollection(ArrayList::new));
