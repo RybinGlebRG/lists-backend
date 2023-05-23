@@ -12,6 +12,7 @@ import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -170,7 +171,7 @@ public class ReadListService {
             builder.lastUpdateDate(dateFactory.getLocalDateTime());
         }
 
-        Objects.requireNonNull(bookUpdateView.getStatus(),"Book status cannot be null");
+        Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
         builder.bookStatus(
                 bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow()
         );
@@ -224,32 +225,13 @@ public class ReadListService {
 
     @Transactional(rollbackFor = Exception.class)
     public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
-
         Long bookId = bookRepository.getNextId();
-
-        Date dt = dateFactory.getCurrentDate();
-
         Book.Builder bookBuilder = new Book.Builder();
-
-//        BookStatus bookStatus;
-//        switch (bookAddView.getStatus()) {
-//            case 1:
-//                bookStatus = BookStatus.IN_PROGRESS;
-//                break;
-//            case 2:
-//                bookStatus = BookStatus.COMPLETED;
-//                break;
-//            default:
-//                bookStatus = null;
-//        }
-
 
         bookBuilder
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(bookAddView.getTitle())
-                .insertDate(dt)
-                .lastUpdateDate(dt)
                 .lastChapter(bookAddView.getLastChapter());
 
         Objects.requireNonNull(bookAddView.status());
@@ -258,20 +240,20 @@ public class ReadListService {
                         .orElseThrow()
         );
 
+        if (bookAddView.insertDate() != null){
+            bookBuilder.insertDate(bookAddView.insertDate());
+            bookBuilder.lastUpdateDate(bookAddView.insertDate());
+        } else {
+            LocalDateTime tmp = dateFactory.getLocalDateTime();
+            bookBuilder.insertDate(tmp);
+            bookBuilder.lastUpdateDate(tmp);
+        }
+
 
         if (bookAddView.getBookTypeId() != null) {
-            Optional<BookType> optionalBookType = bookTypesService.findById(bookAddView.getBookTypeId());
-            if (optionalBookType.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-
-            optionalBookType.ifPresent(bookBuilder::bookType);
-
-//            bookBuilder.bookType(
-//                    new BookTypeOld.Builder()
-//                            .typeId(bookAddView.getBookTypeId())
-//                            .build()
-//            );
+            bookBuilder.bookType(
+                    bookTypesService.findById(bookAddView.getBookTypeId()).orElseThrow()
+            );
         }
 
         Book newBook = bookBuilder.build();
@@ -279,26 +261,15 @@ public class ReadListService {
         bookRepository.addOne(newBook);
 
         if (bookAddView.getAuthorId() != null) {
-            Optional<Author> author = authorsService.getAuthor(readListId, bookAddView.getAuthorId());
-            if (author.isEmpty()) {
-                throw new EntityNotFoundException();
-            }
-            author.ifPresent(value -> authorsBooksRepository.add(newBook.getBookId(), value.getAuthorId(), readListId));
+            authorsBooksRepository.add(
+                    newBook.getBookId(),
+                    authorsService.getAuthor(
+                            readListId,
+                            bookAddView.getAuthorId()
+                    ).orElseThrow().getAuthorId(),
+                    readListId
+            );
         }
-
-//        if (bookAddView.getSeriesId() != null) {
-//            Optional<Series> series = seriesService.getSeries( bookAddView.getSeriesId());
-//            if (series.isEmpty()) {
-//                throw new EntityNotFoundException();
-//            }
-//            series.ifPresent(value -> seriesBooksRespository.add(
-//                    newBook.getBookId(),
-//                    value.getSeriesId(),
-//                    readListId,
-//                    bookAddView.getOrder())
-//            );
-//        }
-
 
         return getBook(readListId, bookId);
     }

@@ -11,6 +11,8 @@ import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
@@ -47,13 +49,15 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBook() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, 3L, 4L, 7, null
+                "Test", 1L, 2, 3L, 4L, 7, null, null
         );
 
         Author author = new Author(1L, 5L, "Author");
         Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
-        Date dt = new Date();
+
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -68,7 +72,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
 //        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
@@ -100,11 +104,12 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookSimplest() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, null, null, null, null
+                "Test", null, 2, null, null, null, null, null
         );
 
 
-        Date dt = new Date();
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -118,7 +123,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
         when(bookStatusesService.findById(anyInt()))
                 .thenReturn(Optional.of(new BookStatusRecord(2,"Completed")));
@@ -143,13 +148,14 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoChapter() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, 3L, 4L, null, null
+                "Test", 1L, 2, 3L, 4L, null, null, null
         );
 
         Author author = new Author(1L, 5L, "Author");
         Series series = new Series.Builder().seriesId(3L).readListId(5L).title("Series").build();
 
-        Date dt = new Date();
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -163,7 +169,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
 //        Mockito.when(seriesService.getSeries(Mockito.anyLong())).thenReturn(Optional.of(series));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
@@ -195,12 +201,13 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoAuthor() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, 3L, 4L, 7, null
+                "Test", null, 2, 3L, 4L, 7, null, null
         );
 
         Series series = new Series.Builder().seriesId(3L).readListId(25L).title("Series").build();
 
-        Date dt = new Date();
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -215,7 +222,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(shouldBook);
         when(bookStatusesService.findById(anyInt()))
@@ -247,12 +254,13 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoSeries() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, null, null, 7, null
+                "Test", 1L, 2, null, null, 7, null, null
         );
 
         Author author = new Author(1L, 5L, "Author");
 
-        Date dt = new Date();
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -267,7 +275,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        Mockito.when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(authorsService.getAuthor(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(author));
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
         when(bookStatusesService.findById(anyInt()))
@@ -300,11 +308,12 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookWithType() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, null, null, null, 3
+                "Test", null, 2, null, null, null, 3, null
         );
 
 
-        Date dt = new Date();
+        LocalDateTime dtl = LocalDateTime.now();
+        Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
         Book shouldBook = new Book.Builder()
                 .bookId(6L)
@@ -319,7 +328,7 @@ class BookServiceAddBookTest {
 
 
         Mockito.when(bookRepository.getNextId()).thenReturn(6L);
-        Mockito.when(dateFactory.getCurrentDate()).thenReturn(dt);
+        when(dateFactory.getLocalDateTime()).thenReturn(dtl);
         Mockito.when(bookRepository.getOne(Mockito.anyLong(), Mockito.anyLong())).thenReturn(shouldBook);
         Mockito.when(bookTypesService.findById(Mockito.anyInt())).thenReturn(Optional.of(new BookType(3,"Webtoon")));
         when(bookStatusesService.findById(anyInt()))

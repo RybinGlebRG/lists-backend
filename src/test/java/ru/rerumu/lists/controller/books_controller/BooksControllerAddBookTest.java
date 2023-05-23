@@ -78,7 +78,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,5L,7L, 4,3));
+                new BookAddView("Title",6L,1,5L,7L, 4,3,null));
     }
 
     @Test
@@ -98,7 +98,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",null,1,null,null, null,null));
+                new BookAddView("Title",null,1,null,null, null,null,null));
     }
 
     @Test
@@ -122,7 +122,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",null,1,5L,7L, 4,3));
+                new BookAddView("Title",null,1,5L,7L, 4,3,null));
     }
 
     @Test
@@ -145,7 +145,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,null,null, 4,3));
+                new BookAddView("Title",6L,1,null,null, 4,3, null));
     }
 
     @Test
@@ -169,7 +169,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,5L,7L, null,3));
+                new BookAddView("Title",6L,1,5L,7L, null,3,null));
     }
 
     @Test
@@ -193,7 +193,7 @@ class BooksControllerAddBookTest {
 
         Mockito.verify(readListService).addBook(
                 2L,
-                new BookAddView("Title",6L,1,5L,7L, 4,null));
+                new BookAddView("Title",6L,1,5L,7L, 4,null,null));
     }
 
 }
