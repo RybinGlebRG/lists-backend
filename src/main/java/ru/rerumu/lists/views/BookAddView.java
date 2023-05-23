@@ -1,13 +1,6 @@
 package ru.rerumu.lists.views;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.Series;
-
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 public record BookAddView(
         String title,
@@ -16,7 +9,8 @@ public record BookAddView(
         Long seriesId,
         Long order,
         Integer lastChapter,
-        Integer bookTypeId
+        Integer bookTypeId,
+        LocalDateTime insertDate
 ) {
 
     public int getStatus() {
