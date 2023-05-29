@@ -7,9 +7,7 @@ import ru.rerumu.lists.model.dto.BookDTO;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public record Book(
         Long bookId,
@@ -19,7 +17,9 @@ public record Book(
         Date insertDate,
         Date lastUpdateDate,
         Integer lastChapter,
-        BookType bookType
+        BookType bookType,
+
+        List<Book> previousBooks
 ) implements Cloneable, SeriesItem{
     private final static String SERIES_ITEM_TYPE = "BOOK";
 //    private final Long bookId;
@@ -36,6 +36,7 @@ public record Book(
         Objects.requireNonNull(bookStatus,"Book status cannot be null");
         Objects.requireNonNull(insertDate,"Book insert date cannot be null");
         Objects.requireNonNull(lastUpdateDate,"Book last update date cannot be null");
+        previousBooks = new ArrayList<>(previousBooks);
     }
 
 
@@ -46,7 +47,7 @@ public record Book(
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter){
-        this(bookId,readListId,title,bookStatus,insertDate,lastUpdateDate,lastChapter,null);
+        this(bookId,readListId,title,bookStatus,insertDate,lastUpdateDate,lastChapter,null, null);
     }
 
     public Long getReadListId() {
@@ -149,6 +150,8 @@ public record Book(
 
         private BookType bookType;
 
+        List<Book> previousBooks;
+
         public Builder() {
         }
 
@@ -160,18 +163,18 @@ public record Book(
             this.insertDate = book.insertDate;
             this.lastUpdateDate = book.lastUpdateDate;
             this.lastChapter = book.lastChapter;
+            this.previousBooks = book.previousBooks;
         }
 
-        // TODO: Move to DTO
-        public Builder(BookDTO bookDTO) {
-            this.bookId = bookDTO.getBookId();
-            this.readListId = bookDTO.getReadListId();
-            this.title = bookDTO.getTitle();
-            this.insertDate = bookDTO.getInsertDate();
-            this.lastUpdateDate = bookDTO.getLastUpdateDate();
-            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
-            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
-        }
+//        public Builder(BookDTO bookDTO) {
+////            this.bookId = bookDTO.getBookId();
+////            this.readListId = bookDTO.getReadListId();
+////            this.title = bookDTO.getTitle();
+////            this.insertDate = bookDTO.getInsertDate();
+////            this.lastUpdateDate = bookDTO.getLastUpdateDate();
+////            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
+////            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
+//        }
 
         public Builder bookId(Long bookId) {
             this.bookId = bookId;
@@ -223,6 +226,11 @@ public record Book(
             return this;
         }
 
+        public Builder previousBooks(List<Book> previousBooks){
+            this.previousBooks = previousBooks;
+            return this;
+        }
+
 
         public Book build() throws EmptyMandatoryParameterException {
             return new Book(
@@ -233,7 +241,8 @@ public record Book(
                     insertDate,
                     lastUpdateDate,
                     lastChapter,
-                    bookType
+                    bookType,
+                    previousBooks
             );
         }
     }

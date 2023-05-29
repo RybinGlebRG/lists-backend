@@ -6,8 +6,8 @@ import ru.rerumu.lists.model.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public Long bookId;
@@ -20,6 +20,8 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public Integer bookType;
     public BookTypeDTO bookTypeObj;
     public BookStatusRecord bookStatusObj;
+
+    public List<BookDTO> previousBooks;
 
     public BookDTO() {
     }
@@ -82,11 +84,27 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     @Override
     public Book toDomain() {
         try {
-            Book.Builder builder = new Book.Builder(this);
-            if (bookTypeObj != null){
+            Book.Builder builder = new Book.Builder();
+            builder.bookId(bookId);
+            builder.readListId(readListId);
+            builder.title(title);
+            builder.insertDate(insertDate);
+            builder.lastUpdateDate(lastUpdateDate);
+            if (lastChapter != null) {
+                builder.lastChapter(lastChapter);
+            }
+            if (bookTypeObj != null) {
                 builder.bookType(bookTypeObj.toDomain());
             }
             builder.bookStatus(bookStatusObj);
+
+            builder.previousBooks(
+                    previousBooks.stream()
+                            .filter(Objects::nonNull)
+                            .map(BookDTO::toDomain)
+                            .collect(Collectors.toCollection(ArrayList::new))
+            );
+
             Book book = builder.build();
             return book;
         } catch (EmptyMandatoryParameterException e) {

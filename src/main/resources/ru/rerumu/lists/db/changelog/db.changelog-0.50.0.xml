@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="2c9e2b8e-e248-4ad5-b58d-ccc8dd9975c8">
+        <sql dbms="postgresql">
+            insert into lists.statuses("STATUS_ID","NAME",key_name)
+            values(4,'Dropped','Dropped');
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

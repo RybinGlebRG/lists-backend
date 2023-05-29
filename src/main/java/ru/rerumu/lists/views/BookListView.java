@@ -62,18 +62,18 @@ public class BookListView {
 //        return arr;
 //    }
 
-    private JSONArray getBookChain(Book book){
-        List<Series> bookSeries = bookSeriesMap.getOrDefault(book, new ArrayList<>());
-
-        JSONArray booksChain = bookList.stream()
-                .filter(item -> !item.equals(book))
-                .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
-                .map(Book::toJSONObject)
-                .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
-
-        return booksChain;
-
-    }
+//    private JSONArray getBookChain(Book book){
+//        List<Series> bookSeries = bookSeriesMap.getOrDefault(book, new ArrayList<>());
+//
+//        JSONArray booksChain = bookList.stream()
+//                .filter(item -> !item.equals(book))
+//                .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
+//                .map(Book::toJSONObject)
+//                .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
+//
+//        return booksChain;
+//
+//    }
 
     private JSONArray toChainBySeries(List<Book> bookList) {
         Set<Set<Series>> processedSeries = new HashSet<>();

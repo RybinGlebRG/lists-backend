@@ -154,7 +154,9 @@ public class BooksController {
     ResponseEntity<String> searchBooks(
             @PathVariable Long readListId,
             @RequestBody Search search,
-            @RequestAttribute("username") String username
+            @RequestAttribute("username") String username,
+            @RequestAttribute("authUserId") Long authUserId
+
     ) throws UserIsNotOwnerException {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);

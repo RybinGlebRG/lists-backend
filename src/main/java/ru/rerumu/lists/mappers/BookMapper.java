@@ -31,6 +31,7 @@ public interface BookMapper {
     );
 
     List<BookDTO> getAll(Long readListId);
+    List<BookDTO> getAllChained(Long readListId);
 
     Long getNextId();
 
