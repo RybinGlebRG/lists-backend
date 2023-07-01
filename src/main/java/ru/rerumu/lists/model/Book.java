@@ -150,7 +150,7 @@ public record Book(
 
         private BookType bookType;
 
-        List<Book> previousBooks;
+        List<Book> previousBooks = new ArrayList<>();
 
         public Builder() {
         }

@@ -151,8 +151,8 @@
                     title
                 from s_prev
             )
-            select *
-            from s_wo_chain
+<!--            select *-->
+<!--            from s_wo_chain-->
             select  b.book_id,
                     b.list_list_id as book_list_id,
                     b.title as book_title,

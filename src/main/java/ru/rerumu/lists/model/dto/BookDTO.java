@@ -98,12 +98,14 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
             }
             builder.bookStatus(bookStatusObj);
 
-            builder.previousBooks(
-                    previousBooks.stream()
-                            .filter(Objects::nonNull)
-                            .map(BookDTO::toDomain)
-                            .collect(Collectors.toCollection(ArrayList::new))
-            );
+            if (previousBooks != null) {
+                builder.previousBooks(
+                        previousBooks.stream()
+                                .filter(Objects::nonNull)
+                                .map(BookDTO::toDomain)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                );
+            }
 
             Book book = builder.build();
             return book;

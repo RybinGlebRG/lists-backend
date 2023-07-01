@@ -7,19 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.BookStatusMapper;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.util.List;
 
-// TODO: Separate into unit and integration
 @SpringBootTest
-public class BookMapperTest {
+public class ITBookStatusMapper {
 
     @Autowired
-    BookMapper bookMapper;
+    BookStatusMapper bookStatusMapper;
 
 
     @Test
@@ -27,16 +24,12 @@ public class BookMapperTest {
         ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
                 .setLevel(Level.INFO);
 
-        List<BookDTO> res = bookMapper.getAll(2L);
-        Assertions.assertTrue(res.size() >0);
-    }
+        List<BookStatusRecord> res = bookStatusMapper.findAll();
 
-    @Test
-    void shouldFindNoType(){
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.TRACE);
-
-        BookDTO res = bookMapper.getOne(477L);
-        Assertions.assertNull(res.bookTypeObj);
+        Assertions.assertEquals(4,res.size());
+        Assertions.assertTrue(res.contains(new BookStatusRecord(1,"In progress")));
+        Assertions.assertTrue(res.contains(new BookStatusRecord(2,"Completed")));
+        Assertions.assertTrue(res.contains(new BookStatusRecord(3,"Expecting")));
+        Assertions.assertTrue(res.contains(new BookStatusRecord(4,"Dropped")));
     }
 }
