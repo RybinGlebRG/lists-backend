@@ -14,6 +14,7 @@ import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.util.List;
 
+// TODO: Separate into unit and integration
 @SpringBootTest
 public class BookMapperTest {
 

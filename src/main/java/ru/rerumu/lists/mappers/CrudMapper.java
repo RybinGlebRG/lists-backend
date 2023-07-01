@@ -16,4 +16,10 @@ public interface CrudMapper<T,ID, R> {
     List<R> findByUser(User user);
 
     void save(T entity);
+
+    void create(T entity);
+
+    void update(T entity);
+
+    int nextval();
 }

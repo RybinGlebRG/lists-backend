@@ -20,7 +20,7 @@
         </constructor>
     </resultMap>
 
-    <select id="findAll" parameterType="ru.rerumu.lists.model.User" resultMap="BookTypeResultMap">
+    <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="BookTypeResultMap">
         select  g.title,
                 u."USER_ID" as user_id,
                 u.name,
@@ -31,5 +31,16 @@
                             on u."USER_ID" = g.user_user_id
         where u.name=#{name}
     </select>
+
+    <insert id="insert" parameterType="ru.rerumu.lists.model.Game">
+        insert into games(game_id, user_user_id, title, insert_date)
+        values(#{gameId},#{user.userId},#{title},#{createDateUTC})
+    </insert>
+
+    <select id="nextval">
+        SELECT nextval('game_id_seq');
+    </select>
+
+
 
 </mapper>
