@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Title implements SeriesItem {
-    private final static String SERIES_ITEM_TYPE = "TITLE";
+    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.TITLE;
     private final Long titleId;
     private String name;
     private Date createDateUTC;
@@ -109,7 +109,7 @@ public class Title implements SeriesItem {
         obj.put("watchListId", this.watchListId);
         obj.put("statusId", this.statusId);
         obj.put("videoType", videoType != null ? videoType.toJSONObject() : null);
-        obj.put("itemType",SERIES_ITEM_TYPE);
+        obj.put("itemType",SERIES_ITEM_TYPE.name());
         return obj;
     }
 

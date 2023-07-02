@@ -53,4 +53,19 @@ public class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID> {
     public void save(T entity) {
         throw new RuntimeException("Not Ready");
     }
+
+    @Override
+    public void create(T entity) {
+        throw new RuntimeException("Not Ready");
+    }
+
+    @Override
+    public void update(T entity) {
+        throw new RuntimeException("Not Ready");
+    }
+
+    @Override
+    public ID getNextId() {
+        return mapper.nextval();
+    }
 }

@@ -21,7 +21,7 @@ public record Book(
 
         List<Book> previousBooks
 ) implements Cloneable, SeriesItem{
-    private final static String SERIES_ITEM_TYPE = "BOOK";
+    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 //    private final Long bookId;
 //    private final Long readListId;
 //    private final String title;
@@ -123,7 +123,7 @@ public record Book(
 
             obj.put("bookType", bookTypeJson);
         }
-        obj.put("itemType",SERIES_ITEM_TYPE);
+        obj.put("itemType",SERIES_ITEM_TYPE.name());
 
         return obj;
     }

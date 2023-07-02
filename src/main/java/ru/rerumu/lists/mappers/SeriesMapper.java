@@ -13,7 +13,7 @@ public interface SeriesMapper extends CrudMapper<Series,Long, EntityDTO<Series>>
     SeriesDTO getOneBySeriesOnly( Long seriesId);
     int getBookCount(Long readListId, Long seriesId);
 
-    long getNextId();
+//    long getNextId();
 
     void add(long readListId, long seriesId, String title);
 

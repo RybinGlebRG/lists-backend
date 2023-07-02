@@ -6,15 +6,16 @@
 
     <resultMap id="GameResultMap" type="ru.rerumu.lists.model.Game">
         <constructor>
+            <idArg column="game_id" name="gameId" javaType="Integer"/>
             <arg column="title" name="title" javaType="String"/>
             <arg name="user" resultMap="UserResultMap"/>
-            <arg column="create_date_utc" name="createDateUTC" javaType="java.time.LocalDateTime"/>
+            <arg column="insert_date" name="createDateUTC" javaType="java.time.LocalDateTime"/>
         </constructor>
     </resultMap>
 
     <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
         <constructor>
-            <arg column="user_id" name="userId" javaType="String"/>
+            <idArg column="user_id" name="userId" javaType="String"/>
             <arg column="name" name="name" javaType="String"/>
             <arg column="password" name="password" javaType="String"/>
         </constructor>
@@ -24,15 +25,15 @@
         select  g.title,
                 u."USER_ID" as user_id,
                 u.name,
-                u.password,
-                g.create_date_utc
+                null as password,
+                g.insert_date
         from    games g
                 inner join users u
                             on u."USER_ID" = g.user_user_id
-        where u.name=#{name}
+        where u."USER_ID"=#{userId}
     </select>
 
-    <insert id="insert" parameterType="ru.rerumu.lists.model.Game">
+    <insert id="create" parameterType="ru.rerumu.lists.model.Game">
         insert into games(game_id, user_user_id, title, insert_date)
         values(#{gameId},#{user.userId},#{title},#{createDateUTC})
     </insert>

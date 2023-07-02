@@ -21,5 +21,5 @@ public interface CrudMapper<T,ID, R> {
 
     void update(T entity);
 
-    int nextval();
+    ID nextval();
 }

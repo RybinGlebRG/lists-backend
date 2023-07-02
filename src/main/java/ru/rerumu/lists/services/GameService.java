@@ -3,6 +3,7 @@ package ru.rerumu.lists.services;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.model.Game;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.repository.CrudRepository;
 import ru.rerumu.lists.views.GameAddView;
 
@@ -22,11 +23,12 @@ public class GameService {
                 .title(gameAddView.title())
                 .user(user)
                 .createDateUTC(gameAddView.createDateUTC())
+                .gameId(crudRepository.getNextId())
                 .build();
-        crudRepository.save(newGame);
+        crudRepository.create(newGame);
     }
 
-    public List<Game> getAll(User user){
+    public List<Game> getAll(User user, Search search){
         return crudRepository.findByUser(user);
     }
 }
