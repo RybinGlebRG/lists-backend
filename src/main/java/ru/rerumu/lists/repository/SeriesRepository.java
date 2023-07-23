@@ -12,7 +12,7 @@ public interface SeriesRepository extends CrudRepository<Series,Long>{
     List<Series> getAll(Long seriesListId);
     int getBookCount(Long readListId, Long seriesId);
 
-    long getNextId();
+//    Integer getNextId();
     void add(Series series);
 
     void delete(long seriesId);

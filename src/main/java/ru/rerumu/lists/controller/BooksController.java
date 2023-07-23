@@ -154,16 +154,18 @@ public class BooksController {
     ResponseEntity<String> searchBooks(
             @PathVariable Long readListId,
             @RequestBody Search search,
-            @RequestAttribute("username") String username
+            @RequestAttribute("username") String username,
+            @RequestAttribute("authUserId") Long authUserId
+
     ) throws UserIsNotOwnerException {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);
 
-        List<Book> books = readListService.getAllBooks(readListId);
-        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+        List<Book> books = readListService.getAllBooks(readListId, search);
+//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
-                .bookSeriesMap(bookSeriesMap)
+                .bookSeriesMap(null)
                 .isChainBySeries(search.getChainBySeries())
                 .sort(search.getSortItemList())
                 .build();

@@ -64,8 +64,8 @@ class BooksControllerSearchBookTest {
 
         array.put(new JSONObject(
                 Map.ofEntries(
-                        new AbstractMap.SimpleEntry<String,String>("field","createDate"),
-                        new AbstractMap.SimpleEntry<String,String>("ordering","DESC")
+                        new AbstractMap.SimpleEntry<>("field", "createDate"),
+                        new AbstractMap.SimpleEntry<>("ordering", "DESC")
                 )
 
         ));
@@ -74,6 +74,7 @@ class BooksControllerSearchBookTest {
         RestAssuredMockMvc
                 .given()
                 .attribute("username","Test")
+                .attribute("authUserId","1")
                 .header("Content-Type", "application/json")
                 .body(requestBody.toString())
                 .when()

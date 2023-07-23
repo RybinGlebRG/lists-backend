@@ -42,4 +42,19 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     public void save(T entity) {
         mapper.save(entity);
     }
+
+    @Override
+    public void create(T entity) {
+        mapper.create(entity);
+    }
+
+    @Override
+    public void update(T entity) {
+        mapper.update(entity);
+    }
+
+    @Override
+    public ID getNextId() {
+        return mapper.nextval();
+    }
 }

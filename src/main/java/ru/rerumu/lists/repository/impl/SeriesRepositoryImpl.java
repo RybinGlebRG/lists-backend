@@ -51,8 +51,8 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
     }
 
     @Override
-    public long getNextId() {
-        return seriesMapper.getNextId();
+    public Long getNextId() {
+        return seriesMapper.nextval();
     }
 
     @Override

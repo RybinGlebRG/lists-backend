@@ -8,6 +8,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
@@ -212,8 +213,13 @@ public class ReadListService {
         return this.bookRepository.getOne(bookId);
     }
 
-    public List<Book> getAllBooks(Long readListId) {
-        List<Book> bookList = this.bookRepository.getAll(readListId);
+    public List<Book> getAllBooks(Long readListId, Search search) {
+        List<Book> bookList;
+        if (search.getChainBySeries()){
+            bookList = bookRepository.getAllChained(readListId);
+        } else {
+            bookList = this.bookRepository.getAll(readListId);
+        }
         logger.debug(bookList.toString());
         return bookList;
     }

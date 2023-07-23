@@ -12,5 +12,12 @@ public interface CrudRepository<T,ID> {
 
     List<T> findAll();
     List<T> findByUser(User user);
+
+    @Deprecated
     void save(T entity);
+
+    void create(T entity);
+
+    void update(T entity);
+    ID getNextId();
 }

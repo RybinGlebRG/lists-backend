@@ -16,7 +16,7 @@ public class Search {
             @JsonProperty("isChainBySeries") Boolean isChainBySeries
     ){
         this.sortItemList = sortItemList;
-        this.isChainBySeries = isChainBySeries;
+        this.isChainBySeries = isChainBySeries != null ? isChainBySeries : false;
     }
 
     public List<SortItem> getSortItemList() {

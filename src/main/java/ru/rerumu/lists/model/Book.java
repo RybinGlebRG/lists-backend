@@ -1,15 +1,13 @@
 package ru.rerumu.lists.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public record Book(
         Long bookId,
@@ -19,9 +17,11 @@ public record Book(
         Date insertDate,
         Date lastUpdateDate,
         Integer lastChapter,
-        BookType bookType
-) implements Cloneable, SeriesItem{
-    private final static String SERIES_ITEM_TYPE = "BOOK";
+        BookType bookType,
+
+        BookChain previousBooks
+) implements Cloneable, SeriesItem {
+    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 //    private final Long bookId;
 //    private final Long readListId;
 //    private final String title;
@@ -31,11 +31,11 @@ public record Book(
 //    private final Integer lastChapter;
 //    private final BookType bookType;
 
-    public Book{
-        Objects.requireNonNull(title ,"Book title cannot be null");
-        Objects.requireNonNull(bookStatus,"Book status cannot be null");
-        Objects.requireNonNull(insertDate,"Book insert date cannot be null");
-        Objects.requireNonNull(lastUpdateDate,"Book last update date cannot be null");
+    public Book {
+        Objects.requireNonNull(title, "Book title cannot be null");
+        Objects.requireNonNull(bookStatus, "Book status cannot be null");
+        Objects.requireNonNull(insertDate, "Book insert date cannot be null");
+        Objects.requireNonNull(lastUpdateDate, "Book last update date cannot be null");
     }
 
 
@@ -45,8 +45,8 @@ public record Book(
                 BookStatusRecord bookStatus,
                 Date insertDate,
                 Date lastUpdateDate,
-                Integer lastChapter){
-        this(bookId,readListId,title,bookStatus,insertDate,lastUpdateDate,lastChapter,null);
+                Integer lastChapter) {
+        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null);
     }
 
     public Long getReadListId() {
@@ -73,6 +73,7 @@ public record Book(
     public Date getLastUpdateDate() {
         return lastUpdateDate;
     }
+
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
     }
@@ -102,8 +103,8 @@ public record Book(
         obj.put("readListId", readListId);
         obj.put("title", title);
         JSONObject bookStatusJson = new JSONObject();
-        bookStatusJson.put("statusId",bookStatus.statusId());
-        bookStatusJson.put("statusName",bookStatus.statusName());
+        bookStatusJson.put("statusId", bookStatus.statusId());
+        bookStatusJson.put("statusName", bookStatus.statusName());
         obj.put("bookStatus", bookStatusJson);
         obj.put(
                 "insertDate",
@@ -122,7 +123,12 @@ public record Book(
 
             obj.put("bookType", bookTypeJson);
         }
-        obj.put("itemType",SERIES_ITEM_TYPE);
+        obj.put("itemType", SERIES_ITEM_TYPE.name());
+        JSONArray chainArray = new JSONArray();
+        if (previousBooks != null){
+            chainArray = previousBooks.toJSONArray();
+        }
+        obj.put("chain", chainArray);
 
         return obj;
     }
@@ -149,6 +155,8 @@ public record Book(
 
         private BookType bookType;
 
+        private BookChain previousBooks;
+
         public Builder() {
         }
 
@@ -160,18 +168,18 @@ public record Book(
             this.insertDate = book.insertDate;
             this.lastUpdateDate = book.lastUpdateDate;
             this.lastChapter = book.lastChapter;
+            this.previousBooks = book.previousBooks;
         }
 
-        // TODO: Move to DTO
-        public Builder(BookDTO bookDTO) {
-            this.bookId = bookDTO.getBookId();
-            this.readListId = bookDTO.getReadListId();
-            this.title = bookDTO.getTitle();
-            this.insertDate = bookDTO.getInsertDate();
-            this.lastUpdateDate = bookDTO.getLastUpdateDate();
-            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
-            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
-        }
+//        public Builder(BookDTO bookDTO) {
+////            this.bookId = bookDTO.getBookId();
+////            this.readListId = bookDTO.getReadListId();
+////            this.title = bookDTO.getTitle();
+////            this.insertDate = bookDTO.getInsertDate();
+////            this.lastUpdateDate = bookDTO.getLastUpdateDate();
+////            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
+////            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
+//        }
 
         public Builder bookId(Long bookId) {
             this.bookId = bookId;
@@ -188,7 +196,7 @@ public record Book(
             return this;
         }
 
-        public Builder bookStatus(BookStatusRecord bookStatus){
+        public Builder bookStatus(BookStatusRecord bookStatus) {
             this.bookStatus = bookStatus;
             return this;
         }
@@ -218,8 +226,13 @@ public record Book(
             return this;
         }
 
-        public Builder bookType(BookType bookType){
+        public Builder bookType(BookType bookType) {
             this.bookType = bookType;
+            return this;
+        }
+
+        public Builder previousBooks(BookChain previousBooks) {
+            this.previousBooks = previousBooks;
             return this;
         }
 
@@ -233,7 +246,8 @@ public record Book(
                     insertDate,
                     lastUpdateDate,
                     lastChapter,
-                    bookType
+                    bookType,
+                    previousBooks
             );
         }
     }

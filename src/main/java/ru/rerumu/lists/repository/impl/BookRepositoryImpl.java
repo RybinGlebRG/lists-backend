@@ -74,6 +74,18 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
+    public List<Book> getAllChained(Long readListId) {
+        List<BookDTO> bookDTOList = bookMapper.getAllChained(readListId);
+
+        List<Book> bookList = bookDTOList.stream()
+                .map(BookDTO::toDomain)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return bookList;
+    }
+
+    @Override
     public Long getNextId() {
         return bookMapper.getNextId();
     }
