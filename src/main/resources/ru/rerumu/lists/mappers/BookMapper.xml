@@ -32,6 +32,14 @@
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
     </resultMap>
 
+    <resultMap id="BookOrderedDTOResultMap" type="ru.rerumu.lists.model.dto.BookOrderedDTO">
+        <result  property="order" column="book_series_order" javaType="Integer"/>
+        <association
+                property="bookDTO"
+                resultMap="BookDTOResultMap"
+        />
+    </resultMap>
+
 
     <resultMap id="BookDTOChainedResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
         <id property="bookId" column="book_id" javaType="Long"/>
@@ -45,8 +53,8 @@
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
         <collection
                 property="previousBooks"
-                ofType="ru.rerumu.lists.model.dto.BookDTO"
-                resultMap="BookDTOResultMap"
+                ofType="ru.rerumu.lists.model.dto.BookOrderedDTO"
+                resultMap="BookOrderedDTOResultMap"
                 columnPrefix="previous_"
         />
     </resultMap>
@@ -96,8 +104,8 @@
                 (
                     select max(sb.series_order) as top_order,
                            sb.series_series_id
-                    from lists.books b
-                        inner join  lists.series_books sb
+                    from books b
+                        inner join  series_books sb
                                 on sb.book_book_id = b.book_id
                     group by sb.series_series_id
                 )
@@ -114,45 +122,37 @@
                     bt.name as book_type_name,
                     s."STATUS_ID" as book_status_id,
                     s."NAME" as book_status_name,
-                    max(sb.series_order) over (partition by sb.series_series_id) as mtop
-                from lists.books b
+                    max(sb.series_order) over (partition by sb.series_series_id) as mtop,
+				    sb2.series_order
+                from books b
 
-                     inner join lists.series_books sb
+                     inner join series_books sb
                                 on sb.book_book_id = b.book_id
                      inner join s_top
                                 on s_top.series_series_id = sb.series_series_id
                                 and s_top.top_order = sb.series_order
-                     inner join lists.series_books sb2
+                     inner join series_books sb2
                                 on sb2.series_series_id = sb.series_series_id
-                     inner join lists.books b2
+                     inner join books b2
                                 on b2.book_id = sb2.book_book_id
                                 and b2.book_Id != b.book_id
-                     inner join lists.statuses s
-                                on s."STATUS_ID"= b.status_status_id
-                     left outer join lists.book_types bt
+                     inner join statuses s
+                                on s."STATUS_ID"= b2.status_status_id
+                     left outer join book_types bt
                                     on bt.type_id = b.type_type_id
 
                 order by b.book_id,  sb2.series_order desc
 
-            ), s_all as
-            (
-                select b.book_id,
-                    title
-                from lists.books b
             ), s_wo_chain as
             (
-              select s_all.book_id,
-                    title
-              from s_all
+              select b.book_id
+              from books b
 
               except
 
-              select s_prev.join_id,
-                    title
-                from s_prev
+              select sb.book_book_id
+                from series_books sb
             )
-<!--            select *-->
-<!--            from s_wo_chain-->
             select  b.book_id,
                     b.list_list_id as book_list_id,
                     b.title as book_title,
@@ -174,14 +174,15 @@
                     s_prev.book_type_id as previous_book_type_id,
                     s_prev.book_type_name as previous_book_type_name,
                     s_prev.book_status_id as previous_book_status_id,
-                    s_prev.book_status_name as previous_book_status_name
-            from lists.books b
+                    s_prev.book_status_name as previous_book_status_name,
+					s_prev.series_order as previous_book_series_order
+            from books b
 
-                    inner join lists.statuses s
+                    inner join statuses s
                                 on s."STATUS_ID"= b.status_status_id
                     inner join s_prev
                                     on s_prev.join_id = b.book_id
-                    left outer join lists.book_types bt
+                    left outer join book_types bt
                                     on bt.type_id = b.type_type_id
 
 
@@ -210,14 +211,15 @@
                     null as previous_book_type_id,
                     null as previous_book_type_name,
                     null as previous_book_status_id,
-                    null as previous_book_status_name
-            from lists.books b
+                    null as previous_book_status_name,
+					null as previous_book_series_order
+            from books b
 
-                    inner join lists.statuses s
+                    inner join statuses s
                                 on s."STATUS_ID"= b.status_status_id
                     inner join s_wo_chain
                                     on s_wo_chain.book_id = b.book_id
-                    left outer join lists.book_types bt
+                    left outer join book_types bt
                                     on bt.type_id = b.type_type_id
             WHERE b.list_list_id=#{readListId}
         ]]>

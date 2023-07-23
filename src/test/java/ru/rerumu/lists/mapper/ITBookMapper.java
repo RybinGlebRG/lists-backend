@@ -24,7 +24,7 @@ public class ITBookMapper {
         ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
                 .setLevel(Level.INFO);
 
-        List<BookDTO> res = bookMapper.getAll(2L);
+        List<BookDTO> res = bookMapper.getAllChained(2L);
         Assertions.assertTrue(res.size() >0);
     }
 

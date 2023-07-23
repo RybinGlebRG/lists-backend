@@ -27,6 +27,7 @@ import java.util.Map;
 public class BookListViewTest {
 
     @Test
+    @Disabled
     void shouldChain() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));

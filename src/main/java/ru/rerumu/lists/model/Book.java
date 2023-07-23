@@ -1,8 +1,8 @@
 package ru.rerumu.lists.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.dto.BookDTO;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -19,8 +19,8 @@ public record Book(
         Integer lastChapter,
         BookType bookType,
 
-        List<Book> previousBooks
-) implements Cloneable, SeriesItem{
+        BookChain previousBooks
+) implements Cloneable, SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 //    private final Long bookId;
 //    private final Long readListId;
@@ -31,12 +31,11 @@ public record Book(
 //    private final Integer lastChapter;
 //    private final BookType bookType;
 
-    public Book{
-        Objects.requireNonNull(title ,"Book title cannot be null");
-        Objects.requireNonNull(bookStatus,"Book status cannot be null");
-        Objects.requireNonNull(insertDate,"Book insert date cannot be null");
-        Objects.requireNonNull(lastUpdateDate,"Book last update date cannot be null");
-        previousBooks = new ArrayList<>(previousBooks);
+    public Book {
+        Objects.requireNonNull(title, "Book title cannot be null");
+        Objects.requireNonNull(bookStatus, "Book status cannot be null");
+        Objects.requireNonNull(insertDate, "Book insert date cannot be null");
+        Objects.requireNonNull(lastUpdateDate, "Book last update date cannot be null");
     }
 
 
@@ -46,8 +45,8 @@ public record Book(
                 BookStatusRecord bookStatus,
                 Date insertDate,
                 Date lastUpdateDate,
-                Integer lastChapter){
-        this(bookId,readListId,title,bookStatus,insertDate,lastUpdateDate,lastChapter,null, null);
+                Integer lastChapter) {
+        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null);
     }
 
     public Long getReadListId() {
@@ -74,6 +73,7 @@ public record Book(
     public Date getLastUpdateDate() {
         return lastUpdateDate;
     }
+
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
     }
@@ -103,8 +103,8 @@ public record Book(
         obj.put("readListId", readListId);
         obj.put("title", title);
         JSONObject bookStatusJson = new JSONObject();
-        bookStatusJson.put("statusId",bookStatus.statusId());
-        bookStatusJson.put("statusName",bookStatus.statusName());
+        bookStatusJson.put("statusId", bookStatus.statusId());
+        bookStatusJson.put("statusName", bookStatus.statusName());
         obj.put("bookStatus", bookStatusJson);
         obj.put(
                 "insertDate",
@@ -123,7 +123,12 @@ public record Book(
 
             obj.put("bookType", bookTypeJson);
         }
-        obj.put("itemType",SERIES_ITEM_TYPE.name());
+        obj.put("itemType", SERIES_ITEM_TYPE.name());
+        JSONArray chainArray = new JSONArray();
+        if (previousBooks != null){
+            chainArray = previousBooks.toJSONArray();
+        }
+        obj.put("chain", chainArray);
 
         return obj;
     }
@@ -150,7 +155,7 @@ public record Book(
 
         private BookType bookType;
 
-        List<Book> previousBooks = new ArrayList<>();
+        private BookChain previousBooks;
 
         public Builder() {
         }
@@ -191,7 +196,7 @@ public record Book(
             return this;
         }
 
-        public Builder bookStatus(BookStatusRecord bookStatus){
+        public Builder bookStatus(BookStatusRecord bookStatus) {
             this.bookStatus = bookStatus;
             return this;
         }
@@ -221,12 +226,12 @@ public record Book(
             return this;
         }
 
-        public Builder bookType(BookType bookType){
+        public Builder bookType(BookType bookType) {
             this.bookType = bookType;
             return this;
         }
 
-        public Builder previousBooks(List<Book> previousBooks){
+        public Builder previousBooks(BookChain previousBooks) {
             this.previousBooks = previousBooks;
             return this;
         }

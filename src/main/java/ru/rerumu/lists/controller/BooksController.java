@@ -161,11 +161,11 @@ public class BooksController {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);
 
-        List<Book> books = readListService.getAllBooks(readListId);
-        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
+        List<Book> books = readListService.getAllBooks(readListId, search);
+//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
-                .bookSeriesMap(bookSeriesMap)
+                .bookSeriesMap(null)
                 .isChainBySeries(search.getChainBySeries())
                 .sort(search.getSortItemList())
                 .build();

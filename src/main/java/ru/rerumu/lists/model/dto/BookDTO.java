@@ -21,7 +21,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public BookTypeDTO bookTypeObj;
     public BookStatusRecord bookStatusObj;
 
-    public List<BookDTO> previousBooks;
+    public List<BookOrderedDTO> previousBooks;
 
     public BookDTO() {
     }
@@ -99,11 +99,20 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
             builder.bookStatus(bookStatusObj);
 
             if (previousBooks != null) {
+                HashMap<Book,Integer> bookOrderMap = previousBooks.stream()
+                        .filter(Objects::nonNull)
+                        .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                                item.bookDTO.toDomain(),
+                                item.getOrder()
+                        ))
+                        .collect(
+                                HashMap::new,
+                                (map,item) -> map.put(item.getKey(),item.getValue()),
+                                HashMap::putAll
+                        );
+
                 builder.previousBooks(
-                        previousBooks.stream()
-                                .filter(Objects::nonNull)
-                                .map(BookDTO::toDomain)
-                                .collect(Collectors.toCollection(ArrayList::new))
+                       new BookChain(bookOrderMap)
                 );
             }
 

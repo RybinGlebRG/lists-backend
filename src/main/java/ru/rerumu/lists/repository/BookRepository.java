@@ -13,6 +13,7 @@ public interface BookRepository {
     Book getOne(Long readListId, Long bookId);
     Optional<Book> getOne(Long bookId);
     List<Book> getAll(Long readListId);
+    List<Book> getAllChained(Long readListId);
 
     Long getNextId();
 

@@ -75,45 +75,11 @@ public class BookListView {
 //
 //    }
 
-    private JSONArray toChainBySeries(List<Book> bookList) {
-        Set<Set<Series>> processedSeries = new HashSet<>();
-
-        JSONArray res = new JSONArray();
-
-        for (Book book : bookList) {
-            Set<Series> bookSeries = new HashSet<>(bookSeriesMap.getOrDefault(book, new ArrayList<>()));
-
-            if (processedSeries.contains(bookSeries)){
-                continue;
-            }
-
-            JSONArray booksChain = bookList.stream()
-                    .filter(item -> !item.equals(book))
-                    .filter(item -> bookSeriesMap.getOrDefault(item, new ArrayList<>()).stream().anyMatch(bookSeries::contains))
-                    .map(Book::toJSONObject)
-                    .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
-            JSONObject bookObj = book.toJSONObject();
-            bookObj.put("chain", booksChain);
-            res.put(bookObj);
-
-            if (bookSeries.size() != 0){
-                processedSeries.add(bookSeries);
-            }
-
-        }
-        return res;
-    }
-
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
-        JSONArray bookArray;
-        if (isChainBySeries) {
-            bookArray = toChainBySeries(bookList);
-        } else {
-            bookArray = bookList.stream()
-                    .map(Book::toJSONObject)
-                    .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
-        }
+        JSONArray bookArray = bookList.stream()
+                .map(Book::toJSONObject)
+                .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
 
         obj.put("items", bookArray);
         return obj;
