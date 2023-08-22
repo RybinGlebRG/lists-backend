@@ -15,13 +15,13 @@
 
     <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
         <constructor>
-            <idArg column="user_id" name="userId" javaType="String"/>
+            <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
             <arg column="password" name="password" javaType="String"/>
         </constructor>
     </resultMap>
 
-    <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="BookTypeResultMap">
+    <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="GameResultMap">
         select  g.title,
                 u."USER_ID" as user_id,
                 u.name,
