@@ -22,7 +22,8 @@
     </resultMap>
 
     <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="GameResultMap">
-        select  g.title,
+        select  g.game_id,
+                g.title,
                 u."USER_ID" as user_id,
                 u.name,
                 null as password,
@@ -38,7 +39,7 @@
         values(#{gameId},#{user.userId},#{title},#{createDateUTC})
     </insert>
 
-    <select id="nextval">
+    <select id="nextval" resultType="Integer">
         SELECT nextval('game_id_seq');
     </select>
 

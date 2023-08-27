@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.exception.UserPermissionException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(value = {UserIsNotOwnerException.class, IllegalCallerException.class})
+    @ExceptionHandler(value = {UserIsNotOwnerException.class, IllegalCallerException.class, UserPermissionException.class})
     public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
 
         HttpHeaders httpHeaders = new HttpHeaders();

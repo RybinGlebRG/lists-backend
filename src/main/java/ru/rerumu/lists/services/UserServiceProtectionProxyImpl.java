@@ -7,6 +7,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.IncorrectPasswordException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.exception.UserPermissionException;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
@@ -36,7 +37,7 @@ public class UserServiceProtectionProxyImpl implements UserService {
     @Override
     public Optional<User> getOne(Long userId) throws EntityNotFoundException {
         if (!authUser.userId().equals(userId)){
-            throw new IllegalCallerException();
+            throw new UserPermissionException();
         }
         return userService.getOne(userId);
     }
