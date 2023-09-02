@@ -32,4 +32,10 @@ public class GameServiceProtectionProxy implements GameService{
         }
         gameService.addGame(user, gameAddView);
     }
+
+    @Override
+    public void deleteGame(Integer gameId) {
+        // TODO: Implement
+        throw new RuntimeException("NotImplemented");
+    }
 }

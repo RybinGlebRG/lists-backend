@@ -71,4 +71,9 @@
         and u.name=#{name}
     </select>
 
+    <insert id="create" parameterType="ru.rerumu.lists.model.User">
+        insert into users("USER_ID", name, password)
+        values(#{userId},#{name},#{password})
+    </insert>
+
 </mapper>

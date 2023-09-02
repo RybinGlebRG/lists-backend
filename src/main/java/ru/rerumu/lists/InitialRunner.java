@@ -1,0 +1,40 @@
+package ru.rerumu.lists;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.services.UserService;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Component
+public class InitialRunner implements CommandLineRunner {
+    private final static String DEFAULT_USERNAME ="admin";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final UserService userService;
+
+
+    public InitialRunner(
+            UserService userService
+    ) {
+        this.userService = userService;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        Optional<User> user = userService.getOne(0L);
+        if (user.isPresent()){
+            return;
+        }
+        String defaultPassword = UUID.randomUUID().toString();
+        logger.info(String.format("Initial username = '%s'", DEFAULT_USERNAME));
+        logger.info(String.format("Initial password = '%s'", defaultPassword));
+
+        userService.add(new User(0L, DEFAULT_USERNAME, defaultPassword));
+
+    }
+}

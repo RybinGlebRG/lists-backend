@@ -81,4 +81,9 @@ public class UserServiceProtectionProxyImpl implements UserService {
     public String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException {
         return userService.createToken(tokenRequest);
     }
+
+    @Override
+    public void add(User user) {
+        userService.add(user);
+    }
 }

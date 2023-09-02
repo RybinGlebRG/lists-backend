@@ -28,6 +28,12 @@ public class GameServiceImpl implements GameService{
         crudRepository.create(newGame);
     }
 
+    @Override
+    public void deleteGame(Integer gameId) {
+        // TODO: Implement
+        throw new RuntimeException("Not Implemented");
+    }
+
     public List<Game> getAll(User user, Search search){
         return crudRepository.findByUser(user);
     }
