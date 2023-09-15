@@ -15,7 +15,7 @@
         select  a.author_id,
                 a.list_list_id as author_list_id,
                 a.name as author_name
-        from lists.authors a
+        from authors a
         where a.author_id=#{authorId}
         and a.list_list_id=#{readListId}
     </select>
@@ -24,22 +24,22 @@
         select  a.author_id,
                 a.list_list_id as author_list_id,
                 a.name as author_name
-        from lists.authors a
+        from authors a
         where a.list_list_id=#{readListId}
     </select>
 
     <insert id="addOne">
-        insert into lists.authors(author_id, list_list_id, name)
+        insert into authors(author_id, list_list_id, name)
         values(#{authorId},#{readListId},#{name})
     </insert>
 
     <select id="getNextId" resultType="Long">
         select max(author_id)+1 as res
-        from lists.authors
+        from authors
     </select>
     
     <delete id="deleteOne">
-        delete from lists.authors
+        delete from authors
         where author_id=#{authorId}
     </delete>
 

@@ -20,7 +20,7 @@
                 st.title_title_id,
                 st.title_list_id,
                 st.series_order
-        from    lists.series_titles st
+        from    series_titles st
     </sql>
 
 

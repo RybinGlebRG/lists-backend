@@ -15,22 +15,23 @@
 
     <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
         <constructor>
-            <idArg column="user_id" name="userId" javaType="String"/>
+            <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
             <arg column="password" name="password" javaType="String"/>
         </constructor>
     </resultMap>
 
-    <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="BookTypeResultMap">
-        select  g.title,
-                u."USER_ID" as user_id,
+    <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="GameResultMap">
+        select  g.game_id,
+                g.title,
+                u.USER_ID as user_id,
                 u.name,
                 null as password,
                 g.insert_date
         from    games g
                 inner join users u
-                            on u."USER_ID" = g.user_user_id
-        where u."USER_ID"=#{userId}
+                            on u.USER_ID = g.user_user_id
+        where u.USER_ID=#{userId}
     </select>
 
     <insert id="create" parameterType="ru.rerumu.lists.model.Game">
@@ -38,7 +39,7 @@
         values(#{gameId},#{user.userId},#{title},#{createDateUTC})
     </insert>
 
-    <select id="nextval">
+    <select id="nextval" resultType="Integer">
         SELECT nextval('game_id_seq');
     </select>
 

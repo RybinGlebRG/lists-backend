@@ -53,28 +53,28 @@
                 b.last_chapter,
                 bt.type_id as type_id,
                 bt.name as type_name
-        from lists.series_books sb
-            inner join lists.books b
+        from series_books sb
+            inner join books b
                     on b.book_id = sb.book_book_id
-            inner join lists.statuses s
-                    on s."STATUS_ID"= b.status_status_id
-            left outer join lists.book_types bt
+            inner join statuses s
+                    on s.STATUS_ID= b.status_status_id
+            left outer join book_types bt
                     on bt.type_id = b.type_type_id
         where sb.series_series_id=#{seriesId}
     </select>
 
     <insert id="add">
-        insert into lists.series_books(series_series_id, series_list_id, book_book_id, book_list_id, series_order)
+        insert into series_books(series_series_id, series_list_id, book_book_id, book_list_id, series_order)
         values(#{seriesId}, #{readListId}, #{bookId},#{readListId}, #{seriesOrder})
     </insert>
 
     <delete id="deleteBySeries">
-        delete from lists.series_books
+        delete from series_books
         where series_series_id=#{seriesId}
     </delete>
 
     <delete id="delete">
-        delete from lists.series_books
+        delete from series_books
         where series_series_id=#{seriesId}
           and book_book_id = #{bookId}
           and book_list_id = #{readListId}
@@ -85,26 +85,26 @@
                 sb.book_list_id as readListId,
                 sb.series_series_id,
                 sb.series_order
-        from lists.series_books sb
+        from series_books sb
         where sb.book_book_id = #{bookId}
     </select>
 
     <select id="getSeriesIdsByBookId" resultType="Long">
         select  sb.series_series_id
-        from lists.series_books sb
+        from series_books sb
         where sb.book_book_id = #{bookId}
           and sb.book_list_id = #{readListId}
     </select>
 
     <select id="getBookIdsBySeriesId" resultType="Long">
         select  sb.book_book_id
-        from lists.series_books sb
+        from series_books sb
         where sb.series_series_id=#{seriesId}
     </select>
 
     <select id="getOrder" resultType="Long">
         select  sb.series_order
-        from lists.series_books sb
+        from series_books sb
         where sb.book_book_id = #{bookId}
           and sb.series_series_id = #{seriesId}
           and sb.book_list_id = #{readListId}
@@ -112,13 +112,13 @@
 
     <select id="getOrderByIdOnly" resultType="Long">
         select  sb.series_order
-        from lists.series_books sb
+        from series_books sb
         where sb.book_book_id = #{bookId}
         and sb.series_series_id = #{seriesId}
     </select>
 
     <update id="update">
-        update lists.series_books sb
+        update series_books sb
         set series_order=#{seriesOrder}
         where sb.book_book_id = #{bookId}
           and sb.series_series_id = #{seriesId}
@@ -126,14 +126,14 @@
     </update>
 
     <update id="save">
-        update lists.series_books sb
+        update series_books sb
         set series_order=#{order}
         where sb.book_book_id = #{book.bookId}
         and sb.series_series_id = #{series.seriesId}
     </update>
 
     <update id="merge">
-        MERGE INTO lists.series_books sb
+        MERGE INTO series_books sb
         USING
         (
             select #{series.seriesId} as series_series_id,

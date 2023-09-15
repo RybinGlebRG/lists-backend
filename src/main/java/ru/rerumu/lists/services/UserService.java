@@ -38,5 +38,7 @@ public interface UserService {
     @Deprecated
     String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException;
 
+    void add(User user);
+
 
 }

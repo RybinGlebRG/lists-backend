@@ -13,16 +13,16 @@
 
 
     <select id="findById" resultMap="BookStatusResultMap">
-        select s."STATUS_ID" as book_status_id,
-                s."NAME" as book_status_name
-        from lists.statuses s
+        select s.STATUS_ID as book_status_id,
+                s.NAME as book_status_name
+        from statuses s
         where s."STATUS_ID"=#{id}
     </select>
 
     <select id="findAll" resultMap="BookStatusResultMap">
-        select s."STATUS_ID" as book_status_id,
-                s."NAME" as book_status_name
-        from lists.statuses s
+        select s.STATUS_ID as book_status_id,
+                s.NAME as book_status_name
+        from statuses s
     </select>
 
 </mapper>

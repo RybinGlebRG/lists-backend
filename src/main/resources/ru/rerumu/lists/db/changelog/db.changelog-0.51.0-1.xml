@@ -6,11 +6,9 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-<!-- TODO: User variables for schema and other parameters-->
+
     <changeSet author="gleb" id="641a7e0c-f934-4f2c-a0e0-349463d0250f" >
-            <createSequence  catalogName="lists"
-                             incrementBy="1"
-                             schemaName="lists"
+            <createSequence  incrementBy="1"
                              sequenceName="game_id_seq"
                              startValue="1"/>
     </changeSet>

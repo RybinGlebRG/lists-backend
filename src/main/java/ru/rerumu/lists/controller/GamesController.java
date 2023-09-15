@@ -10,21 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Game;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.services.GameService;
 import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.services.UserServiceImpl;
-import ru.rerumu.lists.views.BookListView;
-import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.GameAddView;
 import ru.rerumu.lists.views.GameListView;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -53,7 +47,7 @@ public class GamesController {
     ) throws EntityNotFoundException {
 
         Optional<User> user = userService.getOne(userId);
-        gameService.addGame(user.orElseThrow(),gameAddView);
+        gameService.addGame(user.orElseThrow(), gameAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -72,5 +66,14 @@ public class GamesController {
                 .build();
 
         return new ResponseEntity<>(gameListView.toString(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/api/v1/games/{gameId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> deleteOne(
+            @PathVariable Integer gameId
+    ) {
+        gameService.deleteGame(gameId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

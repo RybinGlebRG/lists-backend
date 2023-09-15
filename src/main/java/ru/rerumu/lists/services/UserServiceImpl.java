@@ -16,8 +16,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -51,6 +53,43 @@ public class UserServiceImpl implements UserService{
         }
         String jwt = createJWT(user.getName());
         return jwt;
+    }
+
+    @Override
+    public void add(User user) {
+        Security.setProperty("crypto.policy", "unlimited");
+        Security.addProvider(new BouncyCastleProvider());
+
+        int iterations = 29000;
+        byte[] salt = new byte[32];
+
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+
+        String passwordString;
+
+        try {
+            KeySpec keySpec = new PBEKeySpec(user.password().toCharArray(), salt, iterations, 256);
+            SecretKey secretKey2 = new SecretKeySpec(
+                    SecretKeyFactory
+                            .getInstance("PBKDF2WithHmacSHA256")
+                            .generateSecret(keySpec)
+                            .getEncoded()
+                    , "AES");
+            byte[] tmp = secretKey2.getEncoded();
+            passwordString=String.format(
+                    "$pbkdf2-sha256$%d$%s$%s",
+                    iterations,
+                    new String(Base64.getEncoder().encode(salt), StandardCharsets.UTF_8),
+                    new String(Base64.getEncoder().encode(tmp), StandardCharsets.UTF_8)
+            );
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        user = new User(user.userId(), user.name(), passwordString);
+        crudRepository.create(user);
+
     }
 
     private boolean isValidPassword(String requestPassword, String hashedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {

@@ -9,9 +9,15 @@
 
     <changeSet author="gleb" id="c2ea02b4-9833-4b01-9d39-e5fdf9ec9cf1">
         <sql dbms="postgresql">
-            alter table lists.series_titles
+            alter table series_titles
             drop constraint series_titles_check;
         </sql>
+        <rollback>
+            <sql dbms="postgresql">
+                alter table series_titles
+                add constraint series_titles_check check (title_list_id = series_list_id);
+            </sql>
+        </rollback>
     </changeSet>
 
 

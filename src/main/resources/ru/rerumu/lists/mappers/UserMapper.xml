@@ -14,61 +14,66 @@
 
 
     <select id="getOne" resultMap="UserResultMap">
-        select "USER_ID" as user_id,
+        select user_id as user_id,
                 name,
                 password
-        from lists.users
+        from users
         where name=#{name}
     </select>
 
     <select id="findById" resultMap="UserResultMap">
-        select "USER_ID" as user_id,
+        select user_id as user_id,
         name,
         password
-        from lists.users
-        where "USER_ID"=#{id}
+        from users
+        where user_id=#{id}
     </select>
 
     <select id="count" resultType="int">
         select count(*) as cnt
-        from lists.lists l
-             inner join lists.users u
-                        on u."USER_ID" = l."USER_USER_ID"
+        from lists l
+             inner join users u
+                        on u.user_id = l.USER_USER_ID
         where l.list_id=#{listId}
           and u.name=#{name}
     </select>
 
     <select id="countAuthor" resultType="int">
         select count(*) as cnt
-        from lists.authors a
-            inner join lists.lists l
+        from authors a
+            inner join lists l
                         on l.list_id = a.list_list_id
-            inner join lists.users u
-                        on u."USER_ID" = l."USER_USER_ID"
+            inner join users u
+                        on u.user_id = l.USER_USER_ID
         where a.author_id=#{authorId}
         and u.name=#{name}
     </select>
 
     <select id="countSeries" resultType="int">
         select count(*) as cnt
-        from lists.series s
-            inner join lists.lists l
+        from series s
+            inner join lists l
                 on l.list_id = s.list_list_id
-            inner join lists.users u
-                on u."USER_ID" = l."USER_USER_ID"
+            inner join users u
+                on u.user_id = l.USER_USER_ID
         where s.series_id=#{seriesId}
         and u.name=#{name}
     </select>
 
     <select id="countBooks" resultType="int">
         select count(*) as cnt
-        from lists.books b
-            inner join lists.lists l
+        from books b
+            inner join lists l
                 on l.list_id = b.list_list_id
-            inner join lists.users u
-                on u."USER_ID" = l."USER_USER_ID"
+            inner join users u
+                on u.user_id = l.USER_USER_ID
         where b.book_id=#{bookId}
         and u.name=#{name}
     </select>
+
+    <insert id="create" parameterType="ru.rerumu.lists.model.User">
+        insert into users(user_id, name, password)
+        values(#{userId},#{name},#{password})
+    </insert>
 
 </mapper>

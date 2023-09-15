@@ -8,10 +8,13 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="gleb" id="20db1cbf-5adf-4ed2-a1cd-6af3864576ef">
-        <sql dbms="postgresql">
-            insert into lists.statuses("STATUS_ID","NAME",key_name)
-            values(3,'Expecting','EXPECTING');
-        </sql>
+        <insert  dbms="postgresql"
+                 tableName="statuses">
+            <column  name="status_id"  value="3"/>
+            <column  name="name"  value="Expecting"/>
+            <column  name="key_name"  value="EXPECTING"/>
+        </insert>
+        <rollback/>
     </changeSet>
 
 

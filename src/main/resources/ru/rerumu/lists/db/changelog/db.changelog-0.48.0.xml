@@ -8,9 +8,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="gleb" id="893246fe-08b2-4b1a-9fad-0f1f0db87581">
-        <insert  catalogName="lists"
-                 dbms="postgresql"
-                 schemaName="lists"
+        <insert  dbms="postgresql"
                  tableName="book_types">
             <column  name="type_id"  value="6"/>
             <column  name="name"  value="Web Novel"/>
