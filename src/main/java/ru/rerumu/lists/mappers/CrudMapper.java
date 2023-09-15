@@ -22,4 +22,6 @@ public interface CrudMapper<T,ID, R> {
     void update(T entity);
 
     ID nextval();
+
+    void delete(ID id);
 }

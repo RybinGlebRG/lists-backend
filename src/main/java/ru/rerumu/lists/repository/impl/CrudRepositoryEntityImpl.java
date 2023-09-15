@@ -57,4 +57,9 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     public ID getNextId() {
         return mapper.nextval();
     }
+
+    @Override
+    public void delete(ID id) {
+        mapper.delete(id);
+    }
 }

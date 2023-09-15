@@ -8,6 +8,7 @@ import ru.rerumu.lists.repository.CrudRepository;
 import ru.rerumu.lists.views.GameAddView;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GameServiceImpl implements GameService{
 
@@ -30,8 +31,12 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public void deleteGame(Integer gameId) {
-        // TODO: Implement
-        throw new RuntimeException("Not Implemented");
+        crudRepository.delete(gameId);
+    }
+
+    @Override
+    public Optional<Game> findById(Integer gameId) {
+        return crudRepository.findById(gameId);
     }
 
     public List<Game> getAll(User user, Search search){
