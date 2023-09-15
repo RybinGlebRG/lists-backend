@@ -63,26 +63,26 @@
         select  b.book_id,
                 b.list_list_id as book_list_id,
                 b.title as book_title,
-                s."STATUS_ID" as book_status_id_old,
+                s.STATUS_ID as book_status_id_old,
                 b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
                 b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                 b.last_chapter,
                 bt.type_id as book_type_id,
                 bt.name as book_type_name,
-                s."STATUS_ID" as book_status_id,
-                s."NAME" as book_status_name
+                s.STATUS_ID as book_status_id,
+                s.NAME as book_status_name
 
-        from lists.books b
-                inner join lists.statuses s
-                on s."STATUS_ID"= b.status_status_id
+        from books b
+                inner join statuses s
+                on s.STATUS_ID= b.status_status_id
                 left outer join lists.book_types bt
                                 on bt.type_id = b.type_type_id
     </sql>
 
     <select id="getBookStatus">
         select s.key_name
-        from lists.statuses
-        where "STATUS_ID"=#{statusId}
+        from statuses
+        where STATUS_ID=#{statusId}
     </select>
 
 
@@ -114,14 +114,14 @@
                     b2.book_id,
                     b2.list_list_id as book_list_id,
                     b2.title as book_title,
-                    s."STATUS_ID" as book_status_id_old,
+                    s.STATUS_ID as book_status_id_old,
                     b2.insert_date AT TIME ZONE 'UTC' as book_insert_date,
                     b2.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                     b2.last_chapter,
                     bt.type_id as book_type_id,
                     bt.name as book_type_name,
-                    s."STATUS_ID" as book_status_id,
-                    s."NAME" as book_status_name,
+                    s.STATUS_ID as book_status_id,
+                    s.NAME as book_status_name,
                     max(sb.series_order) over (partition by sb.series_series_id) as mtop,
 				    sb2.series_order
                 from books b
@@ -137,7 +137,7 @@
                                 on b2.book_id = sb2.book_book_id
                                 and b2.book_Id != b.book_id
                      inner join statuses s
-                                on s."STATUS_ID"= b2.status_status_id
+                                on s.STATUS_ID= b2.status_status_id
                      left outer join book_types bt
                                     on bt.type_id = b.type_type_id
 
@@ -156,14 +156,14 @@
             select  b.book_id,
                     b.list_list_id as book_list_id,
                     b.title as book_title,
-                    s."STATUS_ID" as book_status_id_old,
+                    s.STATUS_ID as book_status_id_old,
                     b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
                     b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                     b.last_chapter,
                     bt.type_id as book_type_id,
                     bt.name as book_type_name,
-                    s."STATUS_ID" as book_status_id,
-                    s."NAME" as book_status_name,
+                    s.STATUS_ID as book_status_id,
+                    s.NAME as book_status_name,
                     s_prev.book_id as previous_book_id,
                     s_prev.book_list_id as previous_book_list_id,
                     s_prev.book_title as previous_book_title,
@@ -179,7 +179,7 @@
             from books b
 
                     inner join statuses s
-                                on s."STATUS_ID"= b.status_status_id
+                                on s.STATUS_ID= b.status_status_id
                     inner join s_prev
                                     on s_prev.join_id = b.book_id
                     left outer join book_types bt
@@ -193,14 +193,14 @@
             select  b.book_id,
                     b.list_list_id as book_list_id,
                     b.title as book_title,
-                    s."STATUS_ID" as book_status_id_old,
+                    s.STATUS_ID as book_status_id_old,
                     b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
                     b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
                     b.last_chapter,
                     bt.type_id as book_type_id,
                     bt.name as book_type_name,
-                    s."STATUS_ID" as book_status_id,
-                    s."NAME" as book_status_name,
+                    s.STATUS_ID as book_status_id,
+                    s.NAME as book_status_name,
                     null as previous_book_id,
                     null as previous_book_list_id,
                     null as previous_book_title,
@@ -216,7 +216,7 @@
             from books b
 
                     inner join statuses s
-                                on s."STATUS_ID"= b.status_status_id
+                                on s.STATUS_ID= b.status_status_id
                     inner join s_wo_chain
                                     on s_wo_chain.book_id = b.book_id
                     left outer join book_types bt
@@ -226,7 +226,7 @@
     </select>
 
     <update id="update">
-        update lists.books
+        update books
         set title=#{title},
             status_status_id=#{statusId},
             insert_date=#{insertDate},
@@ -238,7 +238,7 @@
     </update>
 
     <update id="updateAuthor">
-        update lists.books_authors
+        update books_authors
         set author_author_id=#{authorId},
             author_list_id=#{authorListId}
         where book_book_id=#{bookId}
@@ -247,16 +247,16 @@
 
     <select id="getNextId" resultType="Long">
         select max(book_id)+1 as res
-        from lists.books
+        from books
     </select>
 
     <insert id="addOne">
-        insert into lists.books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id)
+        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id)
         values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId})
     </insert>
 
     <delete id="delete">
-        delete from lists.books
+        delete from books
         where book_id=#{bookId}
     </delete>
 

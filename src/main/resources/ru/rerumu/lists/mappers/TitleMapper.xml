@@ -26,7 +26,7 @@
                 status_status_id,
                 vt.type_id,
                 vt.name as type_name
-        from lists.titles t
+        from titles t
              inner join lists.video_types vt
                         on vt.type_id = t.type_type_id
     </sql>
@@ -44,11 +44,11 @@
 
     <select id="getNextId" resultType="Long">
         select max("title_id")+1 as res
-        from lists.titles
+        from titles
     </select>
 
     <update id="update">
-        update lists.titles
+        update titles
         set name=#{name},
             create_date_utc=#{createDateUTC},
             status_status_id=#{statusId},
@@ -58,12 +58,12 @@
     </update>
 
     <insert id="addOne">
-        insert into lists.titles(title_id, name, create_date_utc, list_list_id, status_status_id, type_type_id)
+        insert into titles(title_id, name, create_date_utc, list_list_id, status_status_id, type_type_id)
         values(#{titleId},#{name},#{createDateUTC},#{watchListId},#{statusId},#{typeId})
     </insert>
 
     <delete id="delete">
-        delete from lists.titles
+        delete from titles
         where title_id=#{titleId}
     </delete>
 </mapper>

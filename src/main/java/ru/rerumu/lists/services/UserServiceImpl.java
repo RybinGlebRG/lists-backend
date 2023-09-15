@@ -78,11 +78,10 @@ public class UserServiceImpl implements UserService{
                     , "AES");
             byte[] tmp = secretKey2.getEncoded();
             passwordString=String.format(
-                    "$%s$%d$%s$%s",
-                    secretKey2.getAlgorithm(),
+                    "$pbkdf2-sha256$%d$%s$%s",
                     iterations,
-                    new String(salt, StandardCharsets.UTF_8),
-                    new String(tmp, StandardCharsets.UTF_8)
+                    new String(Base64.getEncoder().encode(salt), StandardCharsets.UTF_8),
+                    new String(Base64.getEncoder().encode(tmp), StandardCharsets.UTF_8)
             );
         } catch (Exception e){
             throw new RuntimeException(e);

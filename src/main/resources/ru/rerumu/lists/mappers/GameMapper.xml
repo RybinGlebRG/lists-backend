@@ -24,14 +24,14 @@
     <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="GameResultMap">
         select  g.game_id,
                 g.title,
-                u."USER_ID" as user_id,
+                u.USER_ID as user_id,
                 u.name,
                 null as password,
                 g.insert_date
         from    games g
                 inner join users u
-                            on u."USER_ID" = g.user_user_id
-        where u."USER_ID"=#{userId}
+                            on u.USER_ID = g.user_user_id
+        where u.USER_ID=#{userId}
     </select>
 
     <insert id="create" parameterType="ru.rerumu.lists.model.Game">

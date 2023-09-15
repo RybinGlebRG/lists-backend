@@ -31,19 +31,19 @@
     </resultMap>
 
     <delete id="deleteByAuthor">
-        delete from lists.books_authors
+        delete from books_authors
         where author_author_id=#{authorId}
     </delete>
 
     <delete id="delete">
-        delete from lists.books_authors
+        delete from books_authors
         where author_author_id=#{authorId}
         and book_book_id = #{bookId}
         and book_list_id = #{readListId}
     </delete>
 
     <insert id="add">
-        insert into lists.books_authors(book_book_id, book_list_id, author_author_id, author_list_id)
+        insert into books_authors(book_book_id, book_list_id, author_author_id, author_list_id)
         values(#{bookId},#{readListId},#{authorId},#{readListId})
     </insert>
 
@@ -51,13 +51,13 @@
         select  ba.book_book_id,
                 ba.book_list_id as readListId,
                 ba.author_author_id
-        from lists.books_authors ba
+        from books_authors ba
         where ba.book_book_id = #{bookId}
     </select>
 
     <select id="getAuthorsByBookId" resultType="Long">
         select  ba.author_author_id
-        from lists.books_authors ba
+        from books_authors ba
         where ba.book_book_id = #{bookId}
     </select>
 

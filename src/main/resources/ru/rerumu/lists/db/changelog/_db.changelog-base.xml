@@ -30,16 +30,6 @@
                         startValue="0"/>
     </changeSet>
     <changeSet author="gleb"
-               id="1669559251361-4">
-        <createSequence cacheSize="1"
-                        cycle="false"
-                        incrementBy="1"
-                        maxValue="9223372036854775807"
-                        minValue="0"
-                        sequenceName="series_id_seq"
-                        startValue="0"/>
-    </changeSet>
-    <changeSet author="gleb"
                id="1669559251361-5">
         <createTable tableName="ROLES">
             <column autoIncrement="true"
@@ -139,15 +129,28 @@
                     type="VARCHAR"/>
         </createTable>
     </changeSet>
-    <changeSet author="gleb" id="b46c9c44-994c-4821-a872-b4aa22a947b5">
-        <update tableName="statuses">
-            <column name="key_name" value="IN_PROGRESS"/>
-            <where>status_id=1</where>
-        </update>
-        <update tableName="statuses">
-            <column name="key_name" value="COMPLETED"/>
-            <where>status_id=2</where>
-        </update>
+<!--    <changeSet author="gleb" id="b46c9c44-994c-4821-a872-b4aa22a947b5">-->
+<!--        <update tableName="statuses">-->
+<!--            <column name="key_name" value="IN_PROGRESS"/>-->
+<!--            <where>status_id=1</where>-->
+<!--        </update>-->
+<!--        <update tableName="statuses">-->
+<!--            <column name="key_name" value="COMPLETED"/>-->
+<!--            <where>status_id=2</where>-->
+<!--        </update>-->
+<!--        <rollback/>-->
+<!--    </changeSet>-->
+    <changeSet id="43fbc348-520a-462d-8783-b5820a084b38" author="gleb">
+        <insert tableName="statuses">
+            <column  name="status_id"  value="1"/>
+            <column  name="name"  value="In progress"/>
+            <column  name="key_name"  value="IN_PROGRESS"/>
+        </insert>
+        <insert tableName="statuses">
+            <column  name="status_id"  value="2"/>
+            <column  name="name"  value="Completed"/>
+            <column  name="key_name"  value="COMPLETED"/>
+        </insert>
         <rollback/>
     </changeSet>
     <!--  statuses  -->
@@ -165,6 +168,17 @@
             <column name="name"
                     type="TEXT"/>
         </createTable>
+    </changeSet>
+    <changeSet id="b038da79-7bde-4643-91cb-773fcd76beed" author="gleb">
+        <insert tableName="list_types">
+            <column  name="type_id"  value="0"/>
+            <column  name="name"  value="read_list"/>
+        </insert>
+        <insert tableName="list_types">
+            <column  name="type_id"  value="1"/>
+            <column  name="name"  value="watch_list"/>
+        </insert>
+        <rollback/>
     </changeSet>
     <!--  list_types  -->
 

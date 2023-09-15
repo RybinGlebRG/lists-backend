@@ -67,13 +67,13 @@
 				st.series_order,
 				2 as item_type
 		from    s_series
-				inner join lists.series_titles st
+				inner join series_titles st
 							on st.series_series_id = s_series.series_id
-				inner join lists.titles t
+				inner join titles t
 							on t.title_id = st.title_title_id
-				inner join lists.video_types vt
+				inner join video_types vt
 							on vt.type_id = t.type_type_id
-				inner join lists.titles_statuses ts
+				inner join titles_statuses ts
 							on ts.status_id = t.status_status_id
         ]]>
     </sql>
@@ -90,19 +90,19 @@
                     bt.type_id as type_id,
                     bt.type_id as book_type_id,
                     bt.name as book_type_name,
-                    st."STATUS_ID" as book_status_id,
-                    st."NAME" as book_status_name,
+                    st.STATUS_ID as book_status_id,
+                    st.NAME as book_status_name,
                     s_series.series_id,
                     sb.series_order,
                     1 as item_type
         from        s_series
-                    inner join lists.series_books sb
+                    inner join series_books sb
                                 on sb.series_series_id = s_series.series_id
-                    inner join  lists.books b
+                    inner join  books b
                                 on b.book_id = sb.book_book_id
-                    inner join  lists.statuses st
+                    inner join  statuses st
                                 on st."STATUS_ID"= b.status_status_id
-                    left outer join     lists.book_types bt
+                    left outer join     book_types bt
                                         on bt.type_id = b.type_type_id
         ]]>
     </sql>
@@ -114,7 +114,7 @@
                 select  s.series_id,
                         s.list_list_id,
                         s.title
-                from lists.series s
+                from series s
             ), s_titles as (
                 <include refid="titles"/>
             ), s_books as
@@ -271,7 +271,7 @@
 
     <select id="getBookCount" resultType="int">
         select count(*)
-        from lists.series_books
+        from series_books
         where series_series_id = #{seriesId}
         and series_list_id = #{readListId}
     </select>
@@ -281,12 +281,12 @@
     </select>
 
     <insert id="add">
-        insert into lists.series(series_id, list_list_id, title)
+        insert into series(series_id, list_list_id, title)
         values(#{seriesId}, #{readListId}, #{title})
     </insert>
 
     <delete id="delete">
-        delete from lists.series
+        delete from series
         where series_id=#{seriesId}
     </delete>
 
