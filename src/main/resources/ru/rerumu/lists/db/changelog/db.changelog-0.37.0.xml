@@ -9,9 +9,7 @@
 
 
     <changeSet author="gleb" id="53e1770a-c4f4-4947-918f-1cf21bb35b8a">
-        <insert  catalogName="lists"
-                 dbms="postgresql"
-                 schemaName="lists"
+        <insert  dbms="postgresql"
                  tableName="book_types">
             <column  name="type_id"  value="5"/>
             <column  name="name"  value="Manga"/>

@@ -6,11 +6,8 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-<!-- TODO: User variables for schema and other parameters-->
     <changeSet author="gleb" id="b9183833-6579-44a8-89bc-11999de23fde" >
-        <createTable tableName="games"
-                     catalogName="lists"
-                     schemaName="lists">
+        <createTable tableName="games">
             <column name="game_id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="games_pk"/>
             </column>

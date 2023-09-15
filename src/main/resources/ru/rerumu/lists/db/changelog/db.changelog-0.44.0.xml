@@ -9,9 +9,7 @@
 
 
     <changeSet author="gleb" id="085a9629-19e1-4b68-b27a-f91fe07bc0dc">
-        <createTable tableName="series_titles"
-                     catalogName="lists"
-                     schemaName="lists">
+        <createTable tableName="series_titles">
             <column name="series_title_id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="series_titles_pk"/>
             </column>
@@ -35,8 +33,6 @@
 
     <changeSet author="gleb" id="d8d72fb2-e9a0-4db5-9597-f3974af68ced">
         <addUniqueConstraint
-                catalogName="lists"
-                schemaName="lists"
                 tableName="titles"
                 columnNames="list_list_id, title_id"
                 constraintName="titles_list_list_id_uk"
@@ -45,8 +41,6 @@
 
     <changeSet author="gleb" id="d82109f1-cd31-4161-ae10-2d7827382943">
         <addForeignKeyConstraint
-                baseTableCatalogName="lists"
-                baseTableSchemaName="lists"
                 baseColumnNames="title_title_id,title_list_id"
                 baseTableName="series_titles"
                 constraintName="series_titles_title_title_id_title_list_id_fkey"
@@ -54,16 +48,12 @@
                 initiallyDeferred="false"
                 onDelete="NO ACTION"
                 onUpdate="NO ACTION"
-                referencedTableCatalogName="lists"
-                referencedTableSchemaName="lists"
                 referencedColumnNames="title_id,list_list_id"
                 referencedTableName="titles"
         />
     </changeSet>
     <changeSet author="gleb" id="f22f64c9-b460-42b6-a170-782510baa9d3">
         <addForeignKeyConstraint
-                baseTableCatalogName="lists"
-                baseTableSchemaName="lists"
                 baseColumnNames="series_series_id,series_list_id"
                 baseTableName="series_titles"
                 constraintName="series_titles_series_series_id_series_list_id_fkey"
@@ -71,8 +61,6 @@
                 initiallyDeferred="false"
                 onDelete="NO ACTION"
                 onUpdate="NO ACTION"
-                referencedTableCatalogName="lists"
-                referencedTableSchemaName="lists"
                 referencedColumnNames="series_id,list_list_id"
                 referencedTableName="series"
         />
