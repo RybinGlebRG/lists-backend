@@ -45,15 +45,6 @@
         <rollback/>
     </changeSet>
 
-    <changeSet author="gleb" id="176f017d-9545-4a6b-859e-f3e55c7d5a49">
-        <addColumn catalogName="lists"
-                   schemaName="lists"
-                   tableName="books">
-            <column name="type_type_id"
-                    type="INTEGER"/>
-        </addColumn>
-    </changeSet>
-
     <changeSet author="gleb" id="a3057fa5-3e75-4f2c-9a71-1cac52ebc9c3">
         <addForeignKeyConstraint
                 baseTableCatalogName="lists"

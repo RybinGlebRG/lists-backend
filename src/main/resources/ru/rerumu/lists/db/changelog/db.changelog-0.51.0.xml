@@ -26,14 +26,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet
-            author="gleb"
-            id="d82109f1-cd31-4161-ae10-2d7827382943"
-            objectQuotingStrategy="QUOTE_ALL_OBJECTS"
-    >
+    <changeSet author="gleb" id="3252a487-500e-4fbc-8236-8da9d60edda1">
         <addForeignKeyConstraint
-                baseTableCatalogName="lists"
-                baseTableSchemaName="lists"
                 baseColumnNames="user_user_id"
                 baseTableName="games"
                 constraintName="games_user_user_id_fk"
@@ -41,8 +35,6 @@
                 initiallyDeferred="false"
                 onDelete="NO ACTION"
                 onUpdate="NO ACTION"
-                referencedTableCatalogName="lists"
-                referencedTableSchemaName="lists"
                 referencedColumnNames="USER_ID"
                 referencedTableName="users"
         />
