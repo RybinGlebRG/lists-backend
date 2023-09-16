@@ -6,6 +6,7 @@ import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.views.GameAddView;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GameService {
 
@@ -13,6 +14,7 @@ public interface GameService {
 
     void addGame(User user, GameAddView gameAddView);
 
-    // TODO: Implement
     void deleteGame(Integer gameId);
+
+    Optional<Game> findById(Integer gameId);
 }
