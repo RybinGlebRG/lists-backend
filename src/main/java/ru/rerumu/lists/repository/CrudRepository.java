@@ -20,4 +20,6 @@ public interface CrudRepository<T,ID> {
 
     void update(T entity);
     ID getNextId();
+
+    void delete(ID id);
 }

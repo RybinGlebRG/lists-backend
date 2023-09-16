@@ -26,7 +26,7 @@
                 g.title,
                 u.USER_ID as user_id,
                 u.name,
-                null as password,
+                u.password,
                 g.insert_date
         from    games g
                 inner join users u
@@ -42,6 +42,24 @@
     <select id="nextval" resultType="Integer">
         SELECT nextval('game_id_seq');
     </select>
+
+    <select id="findById" parameterType="Integer" resultMap="GameResultMap">
+        select  g.game_id,
+                g.title,
+                u.USER_ID as user_id,
+                u.name,
+                u.password,
+                g.insert_date
+        from    games g
+                inner join users u
+                on u.USER_ID = g.user_user_id
+        where g.game_id=#{gameId}
+    </select>
+
+    <delete id="delete">
+        delete from games
+        where game_id=#{id}
+    </delete>
 
 
 

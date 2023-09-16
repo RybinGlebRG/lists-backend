@@ -68,7 +68,7 @@ public class GamesController {
         return new ResponseEntity<>(gameListView.toString(), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/api/v1/games/{gameId}",
+    @DeleteMapping(value = "/api/v0.2/games/{gameId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> deleteOne(
             @PathVariable Integer gameId
