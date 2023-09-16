@@ -1,5 +1,7 @@
 package ru.rerumu.lists.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.rerumu.lists.exception.UserPermissionException;
 import ru.rerumu.lists.model.Game;
 import ru.rerumu.lists.model.User;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class GameServiceProtectionProxy implements GameService{
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final User authUser;
     private final GameService gameService;
 
@@ -37,6 +40,8 @@ public class GameServiceProtectionProxy implements GameService{
     @Override
     public void deleteGame(Integer gameId) {
         Optional<Game> optionalGame = gameService.findById(gameId);
+        logger.debug(String.format("Got optional game: %s",optionalGame));
+        logger.debug(String.format("Comparing owner with authUser='%s'",authUser));
         if (!optionalGame.orElseThrow().user().equals(authUser)){
             throw new UserPermissionException();
         } else {

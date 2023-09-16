@@ -6,6 +6,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Game;
 
+import java.util.Comparator;
 import java.util.List;
 
 public record GameListView(List<Game> gamesList) {
@@ -27,6 +28,13 @@ public record GameListView(List<Game> gamesList) {
         return obj;
     }
 
+    private void sort(){
+        Comparator<Game> gameComparator = Comparator
+                .comparing(Game::createDateUTC).reversed()
+                .thenComparing(Game::title);
+        this.gamesList.sort(gameComparator);
+    }
+
     @Override
     public String toString() {
         return this.toJSONObject().toString();
@@ -41,7 +49,9 @@ public record GameListView(List<Game> gamesList) {
         }
 
         public GameListView build(){
-            return new GameListView(gamesList);
+            GameListView gameListView = new GameListView(gamesList);
+            gameListView.sort();
+            return gameListView;
         }
 
     }

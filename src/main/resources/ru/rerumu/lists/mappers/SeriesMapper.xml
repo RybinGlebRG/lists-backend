@@ -101,7 +101,7 @@
                     inner join  books b
                                 on b.book_id = sb.book_book_id
                     inner join  statuses st
-                                on st."STATUS_ID"= b.status_status_id
+                                on st.STATUS_ID= b.status_status_id
                     left outer join     book_types bt
                                         on bt.type_id = b.type_type_id
         ]]>
