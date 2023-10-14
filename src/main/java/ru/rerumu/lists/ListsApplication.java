@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ListsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ListsApplication.class, args);
+        try {
+            SpringApplication.run(ListsApplication.class, args);
+        } catch (Exception e){
+            System.exit(1);
+        }
     }
 }
