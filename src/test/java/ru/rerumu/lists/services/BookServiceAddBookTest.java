@@ -49,7 +49,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBook() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, 3L, 4L, 7, null, null
+                "Test", 1L, 2, 3L, 4L, 7, null, null, "test note"
         );
 
         Author author = new Author(1L, 5L, "Author");
@@ -67,6 +67,7 @@ class BookServiceAddBookTest {
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .lastChapter(7)
                 .readListId(5L)
+                .note("test note")
                 .build()
                 ;
 
@@ -104,7 +105,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookSimplest() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, null, null, null, null, null
+                "Test", null, 2, null, null, null, null, null, null
         );
 
 
@@ -148,7 +149,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoChapter() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, 3L, 4L, null, null, null
+                "Test", 1L, 2, 3L, 4L, null, null, null, null
         );
 
         Author author = new Author(1L, 5L, "Author");
@@ -201,7 +202,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoAuthor() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, 3L, 4L, 7, null, null
+                "Test", null, 2, 3L, 4L, 7, null, null, null
         );
 
         Series series = new Series.Builder().seriesId(3L).readListId(25L).title("Series").build();
@@ -254,7 +255,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookNoSeries() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", 1L, 2, null, null, 7, null, null
+                "Test", 1L, 2, null, null, 7, null, null, null
         );
 
         Author author = new Author(1L, 5L, "Author");
@@ -308,7 +309,7 @@ class BookServiceAddBookTest {
     @Test
     void shouldAddBookWithType() throws Exception {
         BookAddView bookAddView = new BookAddView(
-                "Test", null, 2, null, null, null, 3, null
+                "Test", null, 2, null, null, null, 3, null, null
         );
 
 

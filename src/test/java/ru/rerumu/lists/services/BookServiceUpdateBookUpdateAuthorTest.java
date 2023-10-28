@@ -55,6 +55,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 //        Series series = new Series(5L,3L,"Series");
@@ -109,6 +110,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 //        Series series = new Series(5L,3L,"Series");
@@ -163,6 +165,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 //        Series series = new Series(5L,3L,"Series");

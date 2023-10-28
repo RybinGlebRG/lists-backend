@@ -191,6 +191,8 @@ public class ReadListService {
 //            );
         }
 
+        builder.note(bookUpdateView.note());
+
         Book updatedBook = builder.build();
 
         logger.debug(String.format("Updated book: %s", updatedBook.toString()));
@@ -238,7 +240,8 @@ public class ReadListService {
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(bookAddView.getTitle())
-                .lastChapter(bookAddView.getLastChapter());
+                .lastChapter(bookAddView.getLastChapter())
+                .note(bookAddView.note());
 
         Objects.requireNonNull(bookAddView.status());
         bookBuilder.bookStatus(

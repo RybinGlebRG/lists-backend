@@ -57,6 +57,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
         Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
@@ -114,6 +115,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 //        Author author = new Author(5L, 3L, "Author");
@@ -172,6 +174,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 null,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 //        Author author = new Author(5L, 3L, "Author");
@@ -230,6 +233,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 7L,
                 4,
                 LocalDateTime.of(2000, 10, 1, 0, 0, 0),
+                null,
                 null
         );
         Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();

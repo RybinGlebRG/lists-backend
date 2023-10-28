@@ -56,7 +56,8 @@ class BookServiceUpdateBookTest {
                 null,
                 8,
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
-                null
+                null,
+                "test note 2"
         );
         LocalDateTime dt = LocalDateTime.now();
 
@@ -77,6 +78,7 @@ class BookServiceUpdateBookTest {
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .lastChapter(8)
                 .readListId(3L)
+                .note("test note 2")
                 .build();
 
         when(bookRepository.getOne(anyLong(),anyLong())).thenReturn(book);
@@ -115,6 +117,7 @@ class BookServiceUpdateBookTest {
                 null,
                 8,
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
+                null,
                 null
         );
 

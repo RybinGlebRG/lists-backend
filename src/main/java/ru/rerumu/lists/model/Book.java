@@ -19,17 +19,11 @@ public record Book(
         Integer lastChapter,
         BookType bookType,
 
-        BookChain previousBooks
+        BookChain previousBooks,
+
+        String note
 ) implements Cloneable, SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
-//    private final Long bookId;
-//    private final Long readListId;
-//    private final String title;
-//    private final BookStatus bookStatus;
-//    private final Date insertDate;
-//    private final Date lastUpdateDate;
-//    private final Integer lastChapter;
-//    private final BookType bookType;
 
     public Book {
         Objects.requireNonNull(title, "Book title cannot be null");
@@ -46,7 +40,7 @@ public record Book(
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter) {
-        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null);
+        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null);
     }
 
     public Long getReadListId() {
@@ -115,6 +109,7 @@ public record Book(
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastUpdateDate)
         );
         obj.put("lastChapter", lastChapter);
+        obj.put("note", note);
 
         if (bookType != null) {
             JSONObject bookTypeJson = new JSONObject();
@@ -157,6 +152,8 @@ public record Book(
 
         private BookChain previousBooks;
 
+        private String note;
+
         public Builder() {
         }
 
@@ -169,17 +166,8 @@ public record Book(
             this.lastUpdateDate = book.lastUpdateDate;
             this.lastChapter = book.lastChapter;
             this.previousBooks = book.previousBooks;
+            this.note = book.note;
         }
-
-//        public Builder(BookDTO bookDTO) {
-////            this.bookId = bookDTO.getBookId();
-////            this.readListId = bookDTO.getReadListId();
-////            this.title = bookDTO.getTitle();
-////            this.insertDate = bookDTO.getInsertDate();
-////            this.lastUpdateDate = bookDTO.getLastUpdateDate();
-////            Optional<Integer> optionalLastChapter = bookDTO.getLastChapter();
-////            optionalLastChapter.ifPresent(item -> {this.lastChapter = optionalLastChapter.get();});
-//        }
 
         public Builder bookId(Long bookId) {
             this.bookId = bookId;
@@ -236,6 +224,11 @@ public record Book(
             return this;
         }
 
+        public Builder note(String note){
+            this.note = note;
+            return this;
+        }
+
 
         public Book build() throws EmptyMandatoryParameterException {
             return new Book(
@@ -247,7 +240,8 @@ public record Book(
                     lastUpdateDate,
                     lastChapter,
                     bookType,
-                    previousBooks
+                    previousBooks,
+                    note
             );
         }
     }

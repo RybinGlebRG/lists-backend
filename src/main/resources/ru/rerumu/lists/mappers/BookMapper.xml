@@ -28,6 +28,7 @@
         <result  property="insertDate" column="book_insert_date" javaType="Date"/>
         <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
+        <result  property="note" column="note" javaType="String"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
     </resultMap>
@@ -49,6 +50,7 @@
         <result  property="insertDate" column="book_insert_date" javaType="Date"/>
         <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
+        <result  property="note" column="note" javaType="String"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
         <collection
@@ -70,7 +72,8 @@
                 bt.type_id as book_type_id,
                 bt.name as book_type_name,
                 s.STATUS_ID as book_status_id,
-                s.NAME as book_status_name
+                s.NAME as book_status_name,
+                b.note as book_note
 
         from books b
                 inner join statuses s
@@ -122,6 +125,7 @@
                     bt.name as book_type_name,
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
+                    b.note as book_note,
                     max(sb.series_order) over (partition by sb.series_series_id) as mtop,
 				    sb2.series_order
                 from books b
@@ -164,6 +168,7 @@
                     bt.name as book_type_name,
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
+                    b.note as book_note,
                     s_prev.book_id as previous_book_id,
                     s_prev.book_list_id as previous_book_list_id,
                     s_prev.book_title as previous_book_title,
@@ -175,6 +180,7 @@
                     s_prev.book_type_name as previous_book_type_name,
                     s_prev.book_status_id as previous_book_status_id,
                     s_prev.book_status_name as previous_book_status_name,
+                    s_prev.book_note as previous_book_note,
 					s_prev.series_order as previous_book_series_order
             from books b
 
@@ -201,6 +207,7 @@
                     bt.name as book_type_name,
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
+                    b.note as book_note,
                     null as previous_book_id,
                     null as previous_book_list_id,
                     null as previous_book_title,
@@ -212,6 +219,7 @@
                     null as previous_book_type_name,
                     null as previous_book_status_id,
                     null as previous_book_status_name,
+                    null as previous_book_note,
 					null as previous_book_series_order
             from books b
 
@@ -232,7 +240,8 @@
             insert_date=#{insertDate},
             last_update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
-            type_type_id = #{bookTypeId}
+            type_type_id = #{bookTypeId},
+            note = #{note}
         where book_id=#{bookId}
         and list_list_id=#{readListId}
     </update>
@@ -251,8 +260,8 @@
     </select>
 
     <insert id="addOne">
-        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id)
-        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId})
+        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note)
+        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note})
     </insert>
 
     <delete id="delete">

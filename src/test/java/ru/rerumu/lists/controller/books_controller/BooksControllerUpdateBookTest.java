@@ -70,6 +70,7 @@ class BooksControllerUpdateBookTest {
         requestBody.put("lastChapter", 4);
         requestBody.put("insertDateUTC", "2022-10-01T00:00:00");
         requestBody.put("bookTypeId",2);
+        requestBody.put("note","test note 2");
 
         RestAssuredMockMvc
                 .given()
@@ -91,7 +92,8 @@ class BooksControllerUpdateBookTest {
                         7L,
                         4,
                         LocalDateTime.of(2022, 10, 1, 0, 0, 0),
-                        2
+                        2,
+                        "test note 2"
                 )
         );
     }
