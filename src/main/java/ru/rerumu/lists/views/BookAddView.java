@@ -10,7 +10,9 @@ public record BookAddView(
         Long order,
         Integer lastChapter,
         Integer bookTypeId,
-        LocalDateTime insertDate
+        LocalDateTime insertDate,
+
+        String note
 ) {
 
     public int getStatus() {

@@ -56,7 +56,8 @@ class BookServiceUpdateBookUpdateTypeTest {
                 null,
                 null,
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
-                2
+                2,
+                null
         );
         Book book = new Book.Builder()
                 .bookId(8L)
@@ -112,7 +113,8 @@ class BookServiceUpdateBookUpdateTypeTest {
                 null,
                 null,
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
-                2
+                2,
+                null
         );
         Book book = new Book.Builder()
                 .bookId(8L)
@@ -167,6 +169,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 null,
                 null,
                 LocalDateTime.of(2020, 10, 1, 0, 0, 0),
+                null,
                 null
         );
         Book book = new Book.Builder()

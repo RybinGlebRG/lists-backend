@@ -37,7 +37,8 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
-                book.getBookType() != null ? book.getBookType().getId() : null
+                book.getBookType() != null ? book.getBookType().getId() : null,
+                book.note()
         );
     }
 
@@ -100,7 +101,8 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
-                book.getBookType() != null ? book.getBookType().getId() : null
+                book.getBookType() != null ? book.getBookType().getId() : null,
+                book.note()
         );
     }
 

@@ -18,6 +18,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public Date lastUpdateDate;
     public Integer lastChapter;
     public Integer bookType;
+    public String note;
     public BookTypeDTO bookTypeObj;
     public BookStatusRecord bookStatusObj;
 
@@ -25,24 +26,6 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
 
     public BookDTO() {
     }
-
-//    public BookDTO(Long bookId,
-//                Long readListId,
-//                String title,
-//                Integer bookStatus,
-//                Date insertDate,
-//                Date lastUpdateDate,
-//                Integer lastChapter,
-//                Integer bookType)  {
-//        this.bookId = bookId;
-//        this.readListId = readListId;
-//        this.title = title;
-//        this.bookStatus = bookStatus;
-//        this.insertDate = insertDate;
-//        this.lastUpdateDate = lastUpdateDate;
-//        this.lastChapter = lastChapter;
-//        this.bookType = bookType;
-//    }
 
     public Long getReadListId() {
         return readListId;
@@ -115,7 +98,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
                        new BookChain(bookOrderMap)
                 );
             }
-
+            builder.note(note);
             Book book = builder.build();
             return book;
         } catch (EmptyMandatoryParameterException e) {

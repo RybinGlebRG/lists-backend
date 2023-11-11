@@ -20,7 +20,8 @@ public interface BookMapper {
             Date insertDate,
             Date lastUpdateDate,
             Integer lastChapter,
-            Integer bookTypeId
+            Integer bookTypeId,
+            String note
     );
 
     void updateAuthor(
@@ -42,7 +43,9 @@ public interface BookMapper {
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter,
-                Integer bookTypeId);
+                Integer bookTypeId,
+                String note
+    );
 
     void delete (long bookId);
 }
