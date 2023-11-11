@@ -28,7 +28,7 @@
         <result  property="insertDate" column="book_insert_date" javaType="Date"/>
         <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
-        <result  property="note" column="note" javaType="String"/>
+        <result  property="note" column="book_note" javaType="String"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
     </resultMap>
