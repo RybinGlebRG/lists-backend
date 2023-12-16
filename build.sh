@@ -18,8 +18,7 @@ docker manifest inspect "$REGISTRY_URL/$APP_NAME:$APP_VERSION" && \
 {
   echo "Image already exists" && \
   exit 1;
-}
-|| \
+} || \
 {
   ./mvnw clean install -Dmaven.test.skip && \
   docker build --no-cache -t "$APP_NAME:$APP_VERSION" -f ./Dockerfile . && \

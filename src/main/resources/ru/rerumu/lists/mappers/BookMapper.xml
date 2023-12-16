@@ -143,7 +143,7 @@
                      inner join statuses s
                                 on s.STATUS_ID= b2.status_status_id
                      left outer join book_types bt
-                                    on bt.type_id = b.type_type_id
+                                    on bt.type_id = b2.type_type_id
 
                 order by b.book_id,  sb2.series_order desc
 
