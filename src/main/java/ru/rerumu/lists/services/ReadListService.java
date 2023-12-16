@@ -8,6 +8,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
@@ -15,10 +16,10 @@ import ru.rerumu.lists.views.BookUpdateView;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Component
 public class ReadListService {
@@ -222,9 +223,24 @@ public class ReadListService {
         } else {
             bookList = this.bookRepository.getAll(readListId);
         }
+
+        Stream<Book> bookStream = bookList.stream();
+        for (Filter filter: search.filters()){
+            switch (filter.field()){
+                case "bookStatusIds"->{
+                    bookStream = bookStream
+                            .filter(book -> filter.values().contains(book.bookStatus().statusId().toString()));
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+
+        bookList = bookStream.collect(Collectors.toCollection(ArrayList::new));
+
         logger.debug(bookList.toString());
         return bookList;
     }
+
 
     @Deprecated
     public List<Author> getAuthors(Long readListId) {

@@ -14,6 +14,7 @@ import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
