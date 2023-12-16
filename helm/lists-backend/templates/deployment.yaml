@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lists-backend-java-deployment
+  labels:
+    app: lists-backend-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lists-backend-java
+  template:
+    metadata:
+      labels:
+        app: lists-backend-java
+    spec:
+      containers:
+        - name: lists-backend-java0
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "{{ .Values.env.db.url }}"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "{{ .Values.env.db.username }}"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "{{ .Values.env.db.password }}"
+            - name: JWT_SECRET
+              value: "{{ .Values.env.db.jwt_sercet }}"
