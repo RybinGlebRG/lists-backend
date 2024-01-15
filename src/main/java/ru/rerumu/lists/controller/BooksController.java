@@ -82,7 +82,6 @@ public class BooksController {
             throw new EntityNotFoundException();
         }
         List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getBookId(), readListId);
-//        Optional<Author> author = authorsService.getAuthor(readListId, book.getAuthorId());
         List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getBookId(), readListId);
         List<Series> seriesList = seriesService.findByBook(book);
 
@@ -91,29 +90,9 @@ public class BooksController {
                 .authorBookRelation(authorBookRelationList)
                 .seriesBookRelation(seriesBookRelationList)
                 .seriesList(seriesList);
-//        author.ifPresent(builder::author);
-//        series.ifPresent(builder::series);
-
         ResponseEntity<String> resEnt = new ResponseEntity<>(builder.build().toString(), HttpStatus.OK);
         return resEnt;
     }
-
-
-//    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books",
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<String> getAll(@PathVariable Long readListId,
-//                                  @RequestAttribute("username") String username) {
-//        List<Book> books = readListService.getAllBooks(readListId);
-////        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
-//        BookListView bookListView = new BookListView.Builder()
-//                .bookList(books)
-////                .bookSeriesMap(bookSeriesMap)
-//                .build();
-//        bookListView.sort();
-//
-//        ResponseEntity<String> resEnt = new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
-//        return resEnt;
-//    }
 
     @PostMapping(value = "/api/v0.2/readLists/{readListId}/books",
             produces = MediaType.APPLICATION_JSON_VALUE,

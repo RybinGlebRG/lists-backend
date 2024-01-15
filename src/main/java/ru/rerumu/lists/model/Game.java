@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-public record Game(Integer gameId, String title, User user, LocalDateTime createDateUTC) implements SeriesItem {
+public record Game(
+        Integer gameId,
+        String title,
+        User user,
+        LocalDateTime createDateUTC,
+        String note
+) implements SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.GAME;
 
     public Game{
@@ -22,6 +28,7 @@ public record Game(Integer gameId, String title, User user, LocalDateTime create
         obj.put("title", title);
         obj.put("createDateUTC", createDateUTC.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         obj.put("itemType",SERIES_ITEM_TYPE.name());
+        obj.put("note",note);
         return obj;
     }
 
@@ -35,6 +42,8 @@ public record Game(Integer gameId, String title, User user, LocalDateTime create
         private String title;
         private User user;
         private LocalDateTime createDateUTC;
+
+        private String note;
 
         public Builder gameId(Integer gameId){
             this.gameId = gameId;
@@ -56,12 +65,18 @@ public record Game(Integer gameId, String title, User user, LocalDateTime create
             return this;
         }
 
+        public Builder note(String note){
+            this.note = note;
+            return this;
+        }
+
         public Game build(){
             return new Game(
                     gameId,
                     title,
                     user,
-                    createDateUTC != null ? createDateUTC : LocalDateTime.now(ZoneOffset.UTC)
+                    createDateUTC != null ? createDateUTC : LocalDateTime.now(ZoneOffset.UTC),
+                    note
             );
         }
     }

@@ -54,27 +54,6 @@ public class BookListView {
         this.bookList.sort(comparator);
     }
 
-//    private JSONArray formatSeriesList(Book book){
-//        JSONArray arr = new JSONArray();
-//        for(Series series: bookSeriesMap.get(book)){
-//            arr.put(series.toJSONObject("seriesId","title"));
-//        }
-//        return arr;
-//    }
-
-//    private JSONArray getBookChain(Book book){
-//        List<Series> bookSeries = bookSeriesMap.getOrDefault(book, new ArrayList<>());
-//
-//        JSONArray booksChain = bookList.stream()
-//                .filter(item -> !item.equals(book))
-//                .filter(item -> bookSeriesMap.get(item).stream().anyMatch(bookSeries::contains))
-//                .map(Book::toJSONObject)
-//                .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
-//
-//        return booksChain;
-//
-//    }
-
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray bookArray = bookList.stream()
