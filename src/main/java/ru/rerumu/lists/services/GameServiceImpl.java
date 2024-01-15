@@ -25,6 +25,7 @@ public class GameServiceImpl implements GameService{
                 .user(user)
                 .createDateUTC(gameAddView.createDateUTC())
                 .gameId(crudRepository.getNextId())
+                .note(gameAddView.note())
                 .build();
         crudRepository.create(newGame);
     }

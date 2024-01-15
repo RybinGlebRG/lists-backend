@@ -10,6 +10,7 @@
             <arg column="title" name="title" javaType="String"/>
             <arg name="user" resultMap="UserResultMap"/>
             <arg column="insert_date" name="createDateUTC" javaType="java.time.LocalDateTime"/>
+            <arg column="note" name="note" javaType="String"/>
         </constructor>
     </resultMap>
 
@@ -27,7 +28,8 @@
                 u.USER_ID as user_id,
                 u.name,
                 u.password,
-                g.insert_date
+                g.insert_date,
+                g.note
         from    games g
                 inner join users u
                             on u.USER_ID = g.user_user_id
@@ -35,8 +37,8 @@
     </select>
 
     <insert id="create" parameterType="ru.rerumu.lists.model.Game">
-        insert into games(game_id, user_user_id, title, insert_date)
-        values(#{gameId},#{user.userId},#{title},#{createDateUTC})
+        insert into games(game_id, user_user_id, title, insert_date, note)
+        values(#{gameId},#{user.userId},#{title},#{createDateUTC}, #{note})
     </insert>
 
     <select id="nextval" resultType="Integer">
@@ -49,7 +51,8 @@
                 u.USER_ID as user_id,
                 u.name,
                 u.password,
-                g.insert_date
+                g.insert_date,
+                g.note
         from    games g
                 inner join users u
                 on u.USER_ID = g.user_user_id
