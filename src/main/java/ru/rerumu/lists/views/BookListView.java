@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.books.Filter;
+import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 
@@ -19,11 +21,14 @@ public class BookListView {
 
     private final List<SortItem> sortItemList;
 
-    public BookListView(List<Book> bookList, Map<Book, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList) {
+    private final Search search;
+
+    public BookListView(List<Book> bookList, Map<Book, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList, Search search) {
         this.bookList = bookList;
         this.bookSeriesMap = bookSeriesMap;
         this.isChainBySeries = isChainBySeries;
         this.sortItemList = sortItemList;
+        this.search = search;
     }
 
     public void sort() {
@@ -36,6 +41,18 @@ public class BookListView {
     }
 
     public void sort(List<SortItem> sortItemList) {
+
+        boolean isSearch = false;
+        if (search != null && search.filters() != null) {
+            for (Filter filter : search.filters()) {
+                if (filter.field().equals("titles")) {
+                    isSearch = true;
+                }
+            }
+        }
+        if (isSearch){
+            return;
+        }
         Comparator<Book> comparator = Comparator.comparing(book -> 0);
 
         for (SortItem sortItem : sortItemList) {
@@ -78,6 +95,8 @@ public class BookListView {
 
         private List<SortItem> sortItemList;
 
+        private Search search;
+
         public Builder bookSeriesMap(Map<Book, List<Series>> bookSeriesMap) {
             this.bookSeriesMap = bookSeriesMap;
             return this;
@@ -97,12 +116,16 @@ public class BookListView {
             this.sortItemList = sortItemList;
             return this;
         }
+        public Builder search(Search search) {
+            this.search = search;
+            return this;
+        }
 
         public BookListView build() {
             if (isChainBySeries == null) {
                 isChainBySeries = false;
             }
-            return new BookListView(bookList, bookSeriesMap, isChainBySeries, sortItemList);
+            return new BookListView(bookList, bookSeriesMap, isChainBySeries, sortItemList, search);
         }
     }
 

@@ -148,6 +148,7 @@ public class BooksController {
                 .bookSeriesMap(null)
                 .isChainBySeries(search.getChainBySeries())
                 .sort(search.getSortItemList())
+                .search(search)
                 .build();
         bookListView.sort(search.getSortItemList());
 

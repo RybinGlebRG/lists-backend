@@ -44,6 +44,7 @@ public class ReadListService {
     private final BookTypesService bookTypesService;
 
     private final BookStatusesService bookStatusesService;
+    private final FuzzyMatchingService fuzzyMatchingService;
 
     public ReadListService(
             BookRepository bookRepository,
@@ -57,7 +58,8 @@ public class ReadListService {
             BookSeriesRelationService bookSeriesRelationService,
             AuthorsBooksRelationService authorsBooksRelationService,
             BookTypesService bookTypesService,
-            BookStatusesService bookStatusesService
+            BookStatusesService bookStatusesService,
+            FuzzyMatchingService fuzzyMatchingService
     ) {
         this.bookRepository = bookRepository;
 //        this.seriesRepository = seriesRepository;
@@ -71,6 +73,7 @@ public class ReadListService {
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookTypesService = bookTypesService;
         this.bookStatusesService = bookStatusesService;
+        this.fuzzyMatchingService = fuzzyMatchingService;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
@@ -231,6 +234,9 @@ public class ReadListService {
                     bookStream = bookStream
                             .filter(book -> filter.values().contains(book.bookStatus().statusId().toString()));
                 }
+                case "titles"->{
+                    bookStream = fuzzyMatchingService.findMatchingBooksByTitle(filter.values(),bookStream);
+                }
                 default -> throw new IllegalArgumentException();
             }
         }
@@ -240,7 +246,6 @@ public class ReadListService {
         logger.debug(bookList.toString());
         return bookList;
     }
-
 
     @Deprecated
     public List<Author> getAuthors(Long readListId) {

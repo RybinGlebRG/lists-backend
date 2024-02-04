@@ -44,6 +44,8 @@ class BookServiceUpdateBookTest {
 
     @Mock
     BookStatusesService bookStatusesService;
+    @Mock
+    FuzzyMatchingService fuzzyMatchingService;
 
     @Test
     void shouldUpdate() throws Exception{
@@ -97,7 +99,8 @@ class BookServiceUpdateBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -155,7 +158,8 @@ class BookServiceUpdateBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.updateBook(8L,bookUpdateView);

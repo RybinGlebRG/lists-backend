@@ -45,6 +45,8 @@ class BookServiceAddBookTest {
 
     @Mock
     BookStatusesService bookStatusesService;
+    @Mock
+    FuzzyMatchingService fuzzyMatchingService;
 
     @Test
     void shouldAddBook() throws Exception {
@@ -89,7 +91,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -138,7 +141,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -186,7 +190,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -238,7 +243,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -291,7 +297,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -344,7 +351,8 @@ class BookServiceAddBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.addBook(5L, bookAddView);
