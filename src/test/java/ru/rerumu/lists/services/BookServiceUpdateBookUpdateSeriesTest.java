@@ -44,6 +44,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
 
     @Mock
     BookStatusesService bookStatusesService;
+    @Mock
+    FuzzyMatchingService fuzzyMatchingService;
 
 
     @Test
@@ -91,7 +93,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -150,7 +153,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -209,7 +213,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -267,7 +272,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
         readListService.updateBook(8L,bookUpdateView);
 

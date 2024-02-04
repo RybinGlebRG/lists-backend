@@ -44,6 +44,8 @@ class BookServiceDeleteBookTest {
 
     @Mock
     BookStatusesService bookStatusesService;
+    @Mock
+    FuzzyMatchingService fuzzyMatchingService;
 
 
     @Test
@@ -81,7 +83,8 @@ class BookServiceDeleteBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
         readListService.deleteBook(bookId);
 
@@ -107,7 +110,8 @@ class BookServiceDeleteBookTest {
                 bookSeriesRelationService,
                 authorsBooksRelationService,
                 bookTypesService,
-                bookStatusesService
+                bookStatusesService,
+                fuzzyMatchingService
         );
 
         Assertions.assertThrows(EntityNotFoundException.class,() -> readListService.deleteBook(bookId));

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.56.0</version>
+	<version>0.57.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -141,6 +141,14 @@
 			<artifactId>checkstyle</artifactId>
 			<version>10.7.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.14.0</version>
+		</dependency>
+
 
 
 	</dependencies>
