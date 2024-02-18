@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.mappers.ReadingRecordMapper">
+
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.books.reading_records.ReadingRecord">
+        <constructor>
+            <idArg column="record_id" name="recordId" javaType="Long"/>
+            <arg column="book_book_id" name="bookId" javaType="Long"/>
+            <arg name="bookStatus" resultMap="BookStatusResultMap"/>
+            <arg column="start_date" name="startDate" javaType="java.time.LocalDateTime"/>
+            <arg column="end_date" name="endDate" javaType="java.time.LocalDateTime"/>
+            <arg column="is_migrated" name="isMigrated" javaType="Boolean"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatusRecord">
+        <constructor>
+            <idArg column="status_id" name="statusId" javaType="Integer"/>
+            <arg column="status_name" name="statusName" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findByBookId" resultMap="ReadingRecordResultMap">
+        select  rr.record_id,
+                rr.book_book_id,
+                s.status_id,
+                s.name as status_name,
+                rr.start_date,
+                rr.end_date,
+                rr.is_migrated
+        from reading_records rr
+            inner join statuses s
+                on s.status_id = rr.status_status_id
+        where rr.book_book_id = #{bookId}
+    </select>
+
+
+
+</mapper>
