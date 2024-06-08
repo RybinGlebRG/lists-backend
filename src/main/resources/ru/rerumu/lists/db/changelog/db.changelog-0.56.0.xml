@@ -14,5 +14,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet  author="gleb"  id="fb37f628-575b-4a16-9645-8b42970b0424">
+        <tagDatabase  tag="0.56.0"/>
+    </changeSet>
 
 </databaseChangeLog>

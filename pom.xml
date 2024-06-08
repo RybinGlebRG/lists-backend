@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<checkstyle.config.location>src/main/resources/checkstyle.xml</checkstyle.config.location>
+		<start-class>ru.rerumu.lists.ListsApplication</start-class>
 	</properties>
 	<dependencies>
 
