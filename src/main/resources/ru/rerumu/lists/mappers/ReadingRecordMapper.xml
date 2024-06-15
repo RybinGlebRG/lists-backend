@@ -6,30 +6,30 @@
 
     <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.books.reading_records.ReadingRecord">
         <constructor>
-            <idArg column="record_id" name="recordId" javaType="Long"/>
-            <arg column="book_book_id" name="bookId" javaType="Long"/>
-            <arg name="bookStatus" resultMap="BookStatusResultMap"/>
-            <arg column="start_date" name="startDate" javaType="java.time.LocalDateTime"/>
-            <arg column="end_date" name="endDate" javaType="java.time.LocalDateTime"/>
-            <arg column="is_migrated" name="isMigrated" javaType="Boolean"/>
+            <idArg column="recordId" javaType="java.lang.Long"/>
+            <arg column="bookId" javaType="java.lang.Long"/>
+            <arg resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.model.BookStatusRecord"/>
+            <arg column="startDate" javaType="java.time.LocalDateTime"/>
+            <arg column="endDate" javaType="java.time.LocalDateTime"/>
+            <arg column="isMigrated" javaType="java.lang.Boolean"/>
         </constructor>
     </resultMap>
 
     <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatusRecord">
         <constructor>
-            <idArg column="status_id" name="statusId" javaType="Integer"/>
-            <arg column="status_name" name="statusName" javaType="String"/>
+            <idArg column="statusId" javaType="java.lang.Integer"/>
+            <arg column="statusName" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
 
     <select id="findByBookId" resultMap="ReadingRecordResultMap">
-        select  rr.record_id,
-                rr.book_book_id,
-                s.status_id,
-                s.name as status_name,
-                rr.start_date,
-                rr.end_date,
-                rr.is_migrated
+        select  rr.record_id as recordId,
+                rr.book_book_id as bookId,
+                s.status_id as statusId,
+                s.name as statusName,
+                rr.start_date as startDate,
+                rr.end_date as endDate,
+                rr.is_migrated as isMigrated
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id

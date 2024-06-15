@@ -20,13 +20,7 @@ public class FuzzyMatchingService {
 
         for (Book book: bookList){
             for (String title: titles){
-                float score;
-                if (title.equals(book.title())){
-                    score = 1f;
-                } else {
-                    Integer distance = levenshteinDistance.apply(book.title(), title);
-                    score = (float) (book.title().length() - distance) / book.title().length();
-                }
+                float score = getScore(book.title(), title);
                  if (!booksDistances.containsKey(book) || (booksDistances.containsKey(book) && booksDistances.get(book) <= score)){
                     booksDistances.put(book,score);
                 }
@@ -40,5 +34,25 @@ public class FuzzyMatchingService {
                 .sorted(mapComparator)
                 .limit(LIMIT)
                 .map(Map.Entry::getKey);
+    }
+
+    private float getScore(String bookTitle, String searchString){
+        if (bookTitle.equalsIgnoreCase(searchString)){
+            return 1f;
+        }
+
+        List<String> titleSubstrings = new ArrayList<>();
+        titleSubstrings.add(bookTitle);
+        titleSubstrings.addAll(Arrays.asList(bookTitle.split(" ")));
+
+        List<Float> scores = new ArrayList<>();
+        for(String item: titleSubstrings){
+            Integer distance = levenshteinDistance.apply(item.toUpperCase(), searchString.toUpperCase());
+            Float score = (float) (item.length() - distance) / item.length();
+            scores.add(score);
+        }
+
+        Float res = scores.stream().max(Float::compareTo).orElseThrow();
+        return res;
     }
 }

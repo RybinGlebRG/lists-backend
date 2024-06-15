@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public String checkTokenAndGetIdentity(String token){
-        Jws<Claims> claims = Jwts.parserBuilder()
+        Jws<Claims> claims = Jwts.parser()
                 .setSigningKey(Base64.getDecoder().decode(jwtSecret))
                 .build()
                 .parseClaimsJws(token);
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public User checkTokenAndGetUser(String token){
-        Jws<Claims> claims = Jwts.parserBuilder()
+        Jws<Claims> claims = Jwts.parser()
                 .setSigningKey(Base64.getDecoder().decode(jwtSecret))
                 .build()
                 .parseClaimsJws(token);
