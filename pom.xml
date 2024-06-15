@@ -5,130 +5,124 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.0</version>
+		<!--	https://docs.spring.io/spring-boot/docs/3.0.x/reference/html/dependency-versions.html#appendix.dependency-versions	-->
+		<version>3.1.12</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.57.0</version>
+	<version>0.58.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
 		<java.version>17</java.version>
 		<checkstyle.config.location>src/main/resources/checkstyle.xml</checkstyle.config.location>
+		<start-class>ru.rerumu.lists.ListsApplication</start-class>
 	</properties>
 	<dependencies>
 
-		<!-- https://mvnrepository.com/artifact/io.rest-assured/spring-mock-mvc -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>spring-mock-mvc</artifactId>
-			<version>5.3.0</version>
-			<scope>test</scope>
-		</dependency>
+		<!--	Spring managed	-->
+			<!-- https://mvnrepository.com/artifact/io.rest-assured/spring-mock-mvc -->
+			<dependency>
+				<groupId>io.rest-assured</groupId>
+				<artifactId>spring-mock-mvc</artifactId>
+				<scope>test</scope>
+			</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>5.3.0</version>
-			<scope>test</scope>
-		</dependency>
+			<!-- https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator -->
+			<dependency>
+				<groupId>io.rest-assured</groupId>
+				<artifactId>json-schema-validator</artifactId>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.skyscreamer</groupId>
+						<artifactId>jsonassert</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-actuator</artifactId>
+				<!--			<version>3.0.1</version>-->
+			</dependency>
+		<!--	Spring managed	-->
 
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<version>3.0.2</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.0.2</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.skyscreamer</groupId>
-					<artifactId>jsonassert</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.5.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>2.0.6</version>
-		</dependency>
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.2.0</version>
+			<version>3.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.6</version>
+			<version>42.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20210307</version>
+			<version>20231013</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.11.5</version>
+			<version>0.12.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.11.5</version>
+			<version>0.12.5</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
-			<version>0.11.5</version>
+			<version>0.12.5</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>2.3.3</version>
+			<version>4.0.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.19.0</version>
+			<version>4.26.0</version>
 		</dependency>
 
+		<!--	TODO	-->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.69</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>3.0.1</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jolokia/jolokia-core -->
 		<dependency>
 			<groupId>org.jolokia</groupId>
@@ -139,7 +133,8 @@
 		<dependency>
 			<groupId>com.puppycrawl.tools</groupId>
 			<artifactId>checkstyle</artifactId>
-			<version>10.7.0</version>
+			<version>10.17.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
@@ -147,6 +142,27 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.14.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.28</version>
+<!--			<scope>provided</scope>-->
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.17.1</version>
 		</dependency>
 
 
@@ -157,7 +173,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.2.1</version>
+				<version>3.3.1</version>
 			</plugin>
 		</plugins>
 	</reporting>

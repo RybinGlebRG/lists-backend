@@ -8,7 +8,7 @@ image:
   
 env:
   db:
-    url: ""
-    username: ""
-    password: ""
-  jwt_secret: ""
+    url: "jdbc:postgresql://example.com:5432/example_db"
+    username: "example_username"
+    password: "example_password"
+  jwt_secret: "CharacterLongStringOfRandomCharactersWhichContainsLetterInUpperAndLowerRegistersAndDigits0"

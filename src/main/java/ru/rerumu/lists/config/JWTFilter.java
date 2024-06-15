@@ -1,25 +1,20 @@
 package ru.rerumu.lists.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.rerumu.lists.exception.NoJWTException;
-import ru.rerumu.lists.factories.UserServiceImplFactory;
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.repository.UsersRepository;
 import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.services.UserServiceImpl;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -58,4 +53,5 @@ public class JWTFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
+
 }

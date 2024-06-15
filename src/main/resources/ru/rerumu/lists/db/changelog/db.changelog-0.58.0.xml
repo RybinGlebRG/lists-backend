@@ -1,0 +1,97 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="894d6396-eb8c-44e9-9397-56c29fef2ee8" >
+        <createTable tableName="reading_records">
+            <column name="record_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="reading_records_pk"/>
+            </column>
+            <column name="book_book_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_status_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="DATETIME"/>
+            <column name="is_migrated" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb" id="611ddea2-f493-4391-86eb-dec4bccace11">
+        <addUniqueConstraint
+                tableName="books"
+                columnNames="book_id"
+                constraintName="books_book_id_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="0337e01c-6b52-4995-b6b7-915d2cca94d9">
+        <addForeignKeyConstraint
+                baseTableName="reading_records"
+                baseColumnNames="book_book_id"
+                referencedTableName="books"
+                referencedColumnNames="book_id"
+                constraintName="reading_records_books_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="196328b9-bf3a-45cc-ab56-22cb7c159a4d">
+        <addForeignKeyConstraint
+                baseTableName="reading_records"
+                baseColumnNames="status_status_id"
+                referencedTableName="statuses"
+                referencedColumnNames="status_id"
+                constraintName="reading_records_statuses_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb"  id="175fe23e-fb38-4b55-b1f8-2109f9df3580">
+        <createSequence cacheSize="1"
+                        cycle="false"
+                        incrementBy="1"
+                        maxValue="9223372036854775807"
+                        minValue="0"
+                        sequenceName="reading_record_id_seq"
+                        startValue="0"/>
+    </changeSet>
+
+<!--    <changeSet author="gleb" id="ca713186-bc44-46fd-89f3-ac72ddbcbc9d">-->
+<!--        <sql>-->
+<!--            insert into reading_records (record_id, book_book_id, status_status_id, start_date, end_date, is_migrated)-->
+<!--            select 	nextval('reading_record_id_seq') as record_id,-->
+<!--                    book_id as book_book_id,-->
+<!--                    status_status_id,-->
+<!--                    insert_date AT TIME ZONE 'UTC' as start_date,-->
+<!--                    last_update_date AT TIME ZONE 'UTC' as end_date,-->
+<!--                    true as is_migrated-->
+<!--            from books;-->
+<!--        </sql>-->
+<!--        <rollback>-->
+<!--            <sql>-->
+<!--                delete from reading_records;-->
+<!--            </sql>-->
+<!--        </rollback>-->
+<!--    </changeSet>-->
+
+    <changeSet  author="gleb"  id="fb37f628-575b-4a16-9645-8b42970b0424">
+        <tagDatabase  tag="0.58.0"/>
+    </changeSet>
+
+</databaseChangeLog>

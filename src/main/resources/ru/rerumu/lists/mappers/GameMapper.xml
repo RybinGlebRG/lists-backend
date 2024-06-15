@@ -6,29 +6,29 @@
 
     <resultMap id="GameResultMap" type="ru.rerumu.lists.model.Game">
         <constructor>
-            <idArg column="game_id" name="gameId" javaType="Integer"/>
-            <arg column="title" name="title" javaType="String"/>
-            <arg name="user" resultMap="UserResultMap"/>
-            <arg column="insert_date" name="createDateUTC" javaType="java.time.LocalDateTime"/>
-            <arg column="note" name="note" javaType="String"/>
+            <idArg column="gameId" javaType="Integer"/>
+            <arg column="title" javaType="String"/>
+            <arg resultMap="UserResultMap" javaType="ru.rerumu.lists.model.User"/>
+            <arg column="createDateUTC" javaType="java.time.LocalDateTime"/>
+            <arg column="note" javaType="String"/>
         </constructor>
     </resultMap>
 
     <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
         <constructor>
-            <idArg column="user_id" name="userId" javaType="Long"/>
-            <arg column="name" name="name" javaType="String"/>
-            <arg column="password" name="password" javaType="String"/>
+            <idArg column="userId" javaType="Long"/>
+            <arg column="name" javaType="String"/>
+            <arg column="password" javaType="String"/>
         </constructor>
     </resultMap>
 
     <select id="findByUser" parameterType="ru.rerumu.lists.model.User" resultMap="GameResultMap">
-        select  g.game_id,
+        select  g.game_id as gameId,
                 g.title,
-                u.USER_ID as user_id,
+                u.USER_ID as userId,
                 u.name,
                 u.password,
-                g.insert_date,
+                g.insert_date as createDateUTC,
                 g.note
         from    games g
                 inner join users u
@@ -46,12 +46,12 @@
     </select>
 
     <select id="findById" parameterType="Integer" resultMap="GameResultMap">
-        select  g.game_id,
+        select  g.game_id as gameId,
                 g.title,
-                u.USER_ID as user_id,
+                u.USER_ID as userId,
                 u.name,
                 u.password,
-                g.insert_date,
+                g.insert_date as createDateUTC,
                 g.note
         from    games g
                 inner join users u

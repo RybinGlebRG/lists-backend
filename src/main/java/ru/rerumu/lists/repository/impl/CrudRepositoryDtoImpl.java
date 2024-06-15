@@ -1,7 +1,5 @@
 package ru.rerumu.lists.repository.impl;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import ru.rerumu.lists.mappers.CrudMapper;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.dto.EntityDTO;
