@@ -34,7 +34,7 @@ class SeriesControllerUpdateSeriesTest {
     private ReadListService readListService;
 
     @MockBean
-    private SeriesService seriesService;
+    private SeriesServiceImpl seriesService;
 
     @MockBean(name="UserService")
     private UserService userService1;

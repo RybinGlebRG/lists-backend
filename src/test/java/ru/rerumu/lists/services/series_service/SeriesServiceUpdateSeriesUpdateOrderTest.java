@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
@@ -18,7 +16,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -138,7 +135,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
 
         when(seriesBooksRespository.getBySeriesId(anyLong())).thenReturn(relationList);
 
-        SeriesService seriesService = new SeriesService(seriesRepository,bookSeriesRelationService,seriesBooksRespository, readListService);
+        SeriesServiceImpl seriesService = new SeriesServiceImpl(seriesRepository,bookSeriesRelationService,seriesBooksRespository, readListService);
         seriesService.updateSeries(3L,seriesUpdateView);
 
 
@@ -206,7 +203,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
 
         when(seriesBooksRespository.getBySeriesId(anyLong())).thenReturn(List.of(new SeriesBookRelation(book,series,0L)));
 
-        SeriesService seriesService = new SeriesService(seriesRepository,bookSeriesRelationService,seriesBooksRespository, readListService);
+        SeriesServiceImpl seriesService = new SeriesServiceImpl(seriesRepository,bookSeriesRelationService,seriesBooksRespository, readListService);
         seriesService.updateSeries(3L,seriesUpdateView);
 
         verify(seriesBooksRespository).save(List.of());

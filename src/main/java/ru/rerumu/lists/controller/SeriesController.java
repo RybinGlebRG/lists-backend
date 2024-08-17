@@ -1,5 +1,6 @@
 package ru.rerumu.lists.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.Metric;
-import ru.rerumu.lists.model.MetricType;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -17,8 +16,6 @@ import ru.rerumu.lists.views.BookSeriesView;
 import ru.rerumu.lists.views.SeriesListView;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,20 +30,24 @@ public class SeriesController {
 
     private final BookSeriesRelationService bookSeriesRelationService;
 
-    private final SeriesService seriesService;
+    private final SeriesServiceImpl seriesServiceImpl;
 
     private final MonitoringService monitoringService = MonitoringService.getServiceInstance();
 
+    private final SeriesService seriesService;
 
+
+    @Autowired
     public SeriesController(
             ReadListService readListService,
             @Qualifier("UserServiceProtectionProxy")  UserService userService,
             BookSeriesRelationService bookSeriesRelationService,
-            SeriesService seriesService
+            SeriesServiceImpl seriesServiceImpl, SeriesService seriesService
     ) {
         this.readListService = readListService;
         this.userService = userService;
         this.bookSeriesRelationService = bookSeriesRelationService;
+        this.seriesServiceImpl = seriesServiceImpl;
         this.seriesService = seriesService;
     }
 
@@ -61,7 +62,7 @@ public class SeriesController {
         userService.checkOwnershipList(username, readListId);
 
         ResponseEntity<String> resEnt;
-        Optional<Series> optionalSeries = seriesService.getSeries(seriesId);
+        Optional<Series> optionalSeries = seriesServiceImpl.getSeries(seriesId);
         if (optionalSeries.isEmpty()){
             return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         } else {
@@ -73,18 +74,14 @@ public class SeriesController {
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/series",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getAll(@PathVariable Long readListId,
-                                  @RequestAttribute("username") String username) throws Exception {
-        userService.checkOwnershipList(username, readListId);
+    ResponseEntity<String> getAll(@PathVariable Long readListId) throws Exception {
 
-        ResponseEntity<String> resEnt;
         List<Series> series = seriesService.getAll(readListId);
         SeriesListView.Builder builder = new SeriesListView.Builder()
-                .seriesList(series)
-                ;
+                .seriesList(series);
         SeriesListView seriesListView = builder.build();
         seriesListView.sort();
-        resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
+        ResponseEntity<String> resEnt = new ResponseEntity<>(seriesListView.toString(), HttpStatus.OK);
         return resEnt;
     }
 
@@ -100,7 +97,7 @@ public class SeriesController {
     ) throws UserIsNotOwnerException {
         userService.checkOwnershipList(username, readListId);
 
-        seriesService.add(readListId, bookSeriesAddView);
+        seriesServiceImpl.add(readListId, bookSeriesAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -116,7 +113,7 @@ public class SeriesController {
 
         userService.checkOwnershipSeries(username, seriesId);
 
-        seriesService.delete(seriesId);
+        seriesServiceImpl.delete(seriesId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -133,7 +130,7 @@ public class SeriesController {
 
         userService.checkOwnershipSeries(username, seriesId);
 
-        seriesService.updateSeries(seriesId,seriesUpdateView);
+        seriesServiceImpl.updateSeries(seriesId,seriesUpdateView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

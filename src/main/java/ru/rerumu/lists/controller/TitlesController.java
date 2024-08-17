@@ -12,6 +12,7 @@ import ru.rerumu.lists.repository.TitlesRepository;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.services.WatchListService;
 import ru.rerumu.lists.views.TitleCreateView;
+import ru.rerumu.lists.views.TitleListView;
 
 import java.util.List;
 
@@ -19,31 +20,21 @@ import java.util.List;
 @RestController
 public class TitlesController {
 
-    @Autowired
-    private TitlesRepository repository;
+    private final WatchListService watchListService;
 
     @Autowired
-    private WatchListService watchListService;
+    public TitlesController(WatchListService watchListService) {
+        this.watchListService = watchListService;
+    }
 
     @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable long watchListId, @RequestAttribute("username") String username) {
-//        List<Title> titles = this.repository.getAll(watchListId);
-//        TitlesList titlesList = new TitlesList(titles);
-//        titlesList.sort();
-//        ResponseEntity<String> resEnt = new ResponseEntity<String>(titlesList.toString(), HttpStatus.OK);
-//        return resEnt;
-        ResponseEntity<String> resEnt;
-        try {
-            TitlesList titlesList = watchListService.getAll(watchListId);
-            resEnt = new ResponseEntity<>(titlesList.toString(), HttpStatus.OK);
-        } catch (Exception e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        TitlesList titlesList = watchListService.getAll(watchListId);
+        TitleListView titleListView = TitleListView.builder()
+                .titlesList(titlesList)
+                .build();
+        ResponseEntity<String> resEnt = new ResponseEntity<>(titleListView.toString(), HttpStatus.OK);
         return resEnt;
-
-
     }
 
     @PostMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)

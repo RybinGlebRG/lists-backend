@@ -1,5 +1,6 @@
 package ru.rerumu.lists.model;
 
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class TitlesList {
 
+    @Getter
     private final List<Title> titles;
 
     public TitlesList(List<Title> titles){
