@@ -15,37 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class SeriesListView {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class SeriesListView implements ResponseView{
     private final List<Series> seriesList;
-
-//    private final HashMap<Series, List<SeriesBookRelation>> seriesRelations;
 
     public SeriesListView(List<Series> seriesList, HashMap<Series, List<SeriesBookRelation>> seriesRelations) {
         if (seriesList == null){
             throw new RuntimeException("Series list is not supposed to be NULL");
         }
         this.seriesList = seriesList;
-//        if (seriesRelations == null){
-//            throw new RuntimeException("Relations are not supposed to be NULL");
-//        }
-//        this.seriesRelations = seriesRelations;
     }
-
-//    public void sort() {
-//        Comparator<Series> comparator = Comparator
-//                .comparing((Series series) -> {
-//                    Optional<LocalDateTime> maxDate = seriesRelations.get(series).stream()
-//                            .map(seriesBookRelation -> seriesBookRelation.book().getLastUpdateDate_V2())
-//                            .max(LocalDateTime::compareTo);
-//                    return maxDate.orElse(LocalDateTime.MIN);
-//                })
-//                .reversed()
-//                .thenComparing(Series::getTitle)
-//                .thenComparing(Series::getSeriesId);
-//
-//        this.seriesList.sort(comparator);
-//    }
 
     public void sort() {
         Comparator<Series> comparator = Comparator
@@ -54,8 +32,7 @@ public class SeriesListView {
                             .map(SeriesItem::getUpdateDate)
                             .max(LocalDateTime::compareTo);
                     return maxDate.orElse(LocalDateTime.MIN);
-                })
-                .reversed()
+                }).reversed()
                 .thenComparing(Series::title)
                 .thenComparing(Series::seriesId);
 
@@ -67,6 +44,7 @@ public class SeriesListView {
         return series.itemsList().size();
     }
 
+    @Override
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray seriesArray = new JSONArray();

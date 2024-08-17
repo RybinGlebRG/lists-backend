@@ -14,13 +14,11 @@ import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -31,7 +29,7 @@ public class BooksController {
 
     private final AuthorsService authorsService;
 
-    private final SeriesService seriesService;
+    private final SeriesServiceImpl seriesService;
 
     private final AuthorsBooksRelationService authorsBooksRelationService;
 
@@ -41,7 +39,7 @@ public class BooksController {
             ReadListService readListService,
             @Qualifier("UserServiceProtectionProxy") UserService userService,
             AuthorsService authorsService,
-            SeriesService seriesService,
+            SeriesServiceImpl seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,
             BookSeriesRelationService bookSeriesRelationService
     ) {
