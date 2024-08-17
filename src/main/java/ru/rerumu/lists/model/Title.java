@@ -1,6 +1,8 @@
 package ru.rerumu.lists.model;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 
@@ -12,37 +14,44 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Title implements SeriesItem {
+
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.TITLE;
+
+    @Getter
     private final Long titleId;
+
+    @Getter
     private String name;
+
+    @Getter
     private Date createDateUTC;
+
+    @Getter
     private final Long watchListId;
+
+    @Getter
+    @Setter
     private Long statusId;
+
+    @Getter
+    @Setter
     private VideoType videoType;
 
 
-    public Title(Long titleId, Long watchListId, String name, Date createDateUTC, Long statusId) {
+    public Title(
+            Long titleId,
+            Long watchListId,
+            String name,
+            Date createDateUTC,
+            Long statusId,
+            VideoType videoType
+    ) {
         this.titleId = titleId;
         this.watchListId = watchListId;
         this.name = name;
         this.createDateUTC = createDateUTC;
         this.statusId = statusId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Long getTitleId() {
-        return this.titleId;
-    }
-
-    public Date getCreateDateUTC() {
-        return this.createDateUTC;
-    }
-
-    public Long getWatchListId() {
-        return this.watchListId;
+        this.videoType = videoType;
     }
 
     public int getdd() {
@@ -83,22 +92,6 @@ public class Title implements SeriesItem {
         this.createDateUTC = createDateUTC;
     }
 
-    public Long getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Long statusId) {
-        this.statusId = statusId;
-    }
-
-    public VideoType getVideoType() {
-        return videoType;
-    }
-
-    public void setVideoType(VideoType videoType) {
-        this.videoType = videoType;
-    }
-
 
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
@@ -115,6 +108,13 @@ public class Title implements SeriesItem {
 
     @Override
     public LocalDateTime getUpdateDate() {
+        return createDateUTC
+                .toInstant()
+                .atOffset(ZoneOffset.UTC)
+                .toLocalDateTime();
+    }
+
+    public LocalDateTime getCreateDateLocal(){
         return createDateUTC
                 .toInstant()
                 .atOffset(ZoneOffset.UTC)
@@ -170,9 +170,9 @@ public class Title implements SeriesItem {
                     watchListId,
                     name,
                     createDateUTC,
-                    statusId
+                    statusId,
+                    videoType
             );
-            title.videoType = videoType;
             return title;
         }
 
