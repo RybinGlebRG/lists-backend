@@ -5,6 +5,7 @@ import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.dto.BookDTO;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.CrudRepository;
@@ -109,5 +110,10 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public void delete(Long bookId) {
         bookMapper.delete(bookId);
+    }
+
+    @Override
+    public Optional<User> getBookUser(Long bookId) {
+        return Optional.ofNullable(bookMapper.getBookUser(bookId));
     }
 }

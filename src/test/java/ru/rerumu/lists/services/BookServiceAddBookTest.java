@@ -47,6 +47,8 @@ class BookServiceAddBookTest {
     BookStatusesService bookStatusesService;
     @Mock
     FuzzyMatchingService fuzzyMatchingService;
+    @Mock
+    ReadingRecordService readingRecordService;
 
     @Test
     void shouldAddBook() throws Exception {
@@ -92,7 +94,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -142,7 +145,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -191,7 +195,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -244,7 +249,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -298,7 +304,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -352,7 +359,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);

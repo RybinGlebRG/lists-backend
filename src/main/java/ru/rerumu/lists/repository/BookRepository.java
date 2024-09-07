@@ -1,6 +1,7 @@
 package ru.rerumu.lists.repository;
 
 import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,6 @@ public interface BookRepository {
     void addOne(Book book);
 
     void delete(Long bookId);
+
+    Optional<User> getBookUser(Long bookId);
 }

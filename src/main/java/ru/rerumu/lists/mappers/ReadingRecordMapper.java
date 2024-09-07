@@ -7,4 +7,6 @@ import java.util.List;
 public interface ReadingRecordMapper extends CrudMapper<ReadingRecord,Long,ReadingRecord>{
 
     List<ReadingRecord> findByBookId(Long bookId);
+
+    Long getNextId();
 }

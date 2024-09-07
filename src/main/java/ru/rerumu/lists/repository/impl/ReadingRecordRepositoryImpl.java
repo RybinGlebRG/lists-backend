@@ -24,4 +24,9 @@ public class ReadingRecordRepositoryImpl extends CrudRepositoryEntityImpl<Readin
     public List<ReadingRecord> findByBookId(Long bookId) {
         return mapper.findByBookId(bookId);
     }
+
+    @Override
+    public Long getNextId() {
+        return mapper.getNextId();
+    }
 }

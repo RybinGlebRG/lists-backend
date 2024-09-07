@@ -61,6 +61,14 @@
         />
     </resultMap>
 
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
+        <constructor>
+            <idArg column="user_id" name="userId" javaType="Long"/>
+            <arg column="name" name="name" javaType="String"/>
+            <arg column="password" name="password" javaType="String"/>
+        </constructor>
+    </resultMap>
+
     <sql id="selectBooks">
         select  b.book_id,
                 b.list_list_id as book_list_id,
@@ -268,5 +276,18 @@
         delete from books
         where book_id=#{bookId}
     </delete>
+
+    <select id="getBookUser" resultMap="UserResultMap">
+        select
+            user_id,
+            name,
+            password
+        from books b
+            inner join lists l
+                on l.list_id = b.list_list_id
+            inner join users u
+                on u.user_id = l.USER_USER_ID
+        where b.book_id=#{bookId}
+    </select>
 
 </mapper>

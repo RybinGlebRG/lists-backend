@@ -10,9 +10,11 @@ import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
+import ru.rerumu.lists.views.ReadingRecordAddView;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -25,55 +27,42 @@ import java.util.stream.Stream;
 public class ReadListService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
     private final BookRepository bookRepository;
-
-//    private final SeriesRepository seriesRepository;
-
     private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesBooksRespository seriesBooksRespository;
-
     private final DateFactory dateFactory;
-//    private final SeriesService seriesService;
-
     private final BookSeriesRelationService bookSeriesRelationService;
-
     private final AuthorsBooksRelationService authorsBooksRelationService;
-
     private final BookTypesService bookTypesService;
-
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
+    private final ReadingRecordService readingRecordService;
 
     public ReadListService(
             BookRepository bookRepository,
-//            SeriesRepository seriesRepository,
-//            AuthorsRepository authorsRepository,
             AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesBooksRespository seriesBooksRespository,
             DateFactory dateFactory,
-//            SeriesService seriesService,
             BookSeriesRelationService bookSeriesRelationService,
             AuthorsBooksRelationService authorsBooksRelationService,
             BookTypesService bookTypesService,
             BookStatusesService bookStatusesService,
-            FuzzyMatchingService fuzzyMatchingService
+            FuzzyMatchingService fuzzyMatchingService,
+            ReadingRecordService readingRecordService
     ) {
         this.bookRepository = bookRepository;
-//        this.seriesRepository = seriesRepository;
-//        this.authorsRepository = authorsRepository;
         this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.dateFactory = dateFactory;
-//        this.seriesService = seriesService;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookTypesService = bookTypesService;
         this.bookStatusesService = bookStatusesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
+        this.readingRecordService = readingRecordService;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
@@ -265,10 +254,9 @@ public class ReadListService {
                 .note(bookAddView.note());
 
         Objects.requireNonNull(bookAddView.status());
-        bookBuilder.bookStatus(
-                bookStatusesService.findById(bookAddView.status())
-                        .orElseThrow()
-        );
+
+        BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
+        bookBuilder.bookStatus(bookStatus);
 
         if (bookAddView.insertDate() != null){
             bookBuilder.insertDate(bookAddView.insertDate());
@@ -332,5 +320,9 @@ public class ReadListService {
                 ));
 
         bookRepository.delete(bookOptional.get().getBookId());
+    }
+
+    public Optional<User> getBookUser(Long bookId){
+        return bookRepository.getBookUser(bookId);
     }
 }
