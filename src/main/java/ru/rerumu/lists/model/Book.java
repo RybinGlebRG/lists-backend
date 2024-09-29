@@ -1,8 +1,12 @@
 package ru.rerumu.lists.model;
 
+import jakarta.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.views.ReadingRecordAddView;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -18,10 +22,9 @@ public record Book(
         Date lastUpdateDate,
         Integer lastChapter,
         BookType bookType,
-
         BookChain previousBooks,
-
-        String note
+        String note,
+        List<ReadingRecord> readingRecords
 ) implements Cloneable, SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
@@ -40,7 +43,7 @@ public record Book(
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter) {
-        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null);
+        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null, new ArrayList<>());
     }
 
     public Long getReadListId() {
@@ -133,6 +136,54 @@ public record Book(
         return getLastUpdateDate_V2();
     }
 
+    public ReadingRecord addReadingRecord(
+            Long readingRecordId,
+            BookStatusRecord bookStatusRecord,
+            LocalDateTime startDate,
+            @Nullable LocalDateTime endDate
+    ){
+        ReadingRecord readingRecord = ReadingRecord.builder()
+                .recordId(readingRecordId)
+                .bookStatus(bookStatusRecord)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+
+        readingRecords.add(readingRecord);
+
+        return readingRecord;
+    }
+
+    public ReadingRecord deleteReadingRecord(Long readingRecordId){
+        ReadingRecord readingRecord = readingRecords.stream()
+                .filter(item -> item.recordId().equals(readingRecordId))
+                .findAny()
+                .orElseThrow(EntityNotFoundException::new);
+
+        readingRecords.remove(readingRecord);
+        return readingRecord;
+    }
+
+    public ReadingRecord updateReadingRecord(
+            Long readingRecordId,
+            BookStatusRecord bookStatusRecord,
+            LocalDateTime startDate,
+            @Nullable LocalDateTime endDate
+    ){
+        ReadingRecord readingRecord = readingRecords.stream()
+                .filter(item -> item.recordId().equals(readingRecordId))
+                .findAny()
+                .orElseThrow(EntityNotFoundException::new);
+
+        readingRecord = readingRecord.toBuilder()
+                .bookStatus(bookStatusRecord)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+
+        return readingRecord;
+    }
+
 
     @Override
     public String toString() {
@@ -153,6 +204,7 @@ public record Book(
         private BookChain previousBooks;
 
         private String note;
+        private List<ReadingRecord> readingRecords;
 
         public Builder() {
         }
@@ -229,6 +281,11 @@ public record Book(
             return this;
         }
 
+        public Builder readingRecords(List<ReadingRecord> readingRecords){
+            this.readingRecords = readingRecords;
+            return this;
+        }
+
 
         public Book build() throws EmptyMandatoryParameterException {
             return new Book(
@@ -241,7 +298,8 @@ public record Book(
                     lastChapter,
                     bookType,
                     previousBooks,
-                    note
+                    note,
+                    readingRecords
             );
         }
     }

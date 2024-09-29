@@ -1,14 +1,18 @@
 package ru.rerumu.lists.model.dto;
 
+import lombok.Builder;
 import org.json.JSONObject;
+import ru.rerumu.lists.exception.AssertionException;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Builder(toBuilder = true)
 public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public Long bookId;
     public Long readListId;
@@ -23,6 +27,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     public BookStatusRecord bookStatusObj;
 
     public List<BookOrderedDTO> previousBooks;
+    public List<ReadingRecord> readingRecords;
 
     public BookDTO() {
     }
@@ -67,12 +72,15 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
     @Override
     public Book toDomain() {
         try {
-            Book.Builder builder = new Book.Builder();
-            builder.bookId(bookId);
-            builder.readListId(readListId);
-            builder.title(title);
-            builder.insertDate(insertDate);
-            builder.lastUpdateDate(lastUpdateDate);
+            Book.Builder builder = new Book.Builder()
+                    .bookId(bookId)
+                    .readListId(readListId)
+                    .title(title)
+                    .insertDate(insertDate)
+                    .lastUpdateDate(lastUpdateDate)
+                    .note(note)
+                    .readingRecords(readingRecords);
+
             if (lastChapter != null) {
                 builder.lastChapter(lastChapter);
             }
@@ -98,12 +106,12 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
                        new BookChain(bookOrderMap)
                 );
             }
-            builder.note(note);
+
             Book book = builder.build();
             return book;
         } catch (EmptyMandatoryParameterException e) {
             // Database is supposed to provide everything needed
-            throw new AssertionError(e);
+            throw new AssertionException(e);
         }
     }
 

@@ -48,6 +48,18 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
     }
 
     @Override
+    public ReadingRecord addRecord(ReadingRecord readingRecord) {
+        crudRepository.create(readingRecord);
+
+        return readingRecord;
+    }
+
+    @Override
+    public Long getNextId() {
+        return crudRepository.getNextId();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public ReadingRecord addRecord(Long bookId, ReadingRecord readingRecord) {
         if (readingRecord.recordId() == null){
@@ -78,6 +90,12 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
 
         crudRepository.update(readingRecord);
 
+        return readingRecord;
+    }
+
+    @Override
+    public ReadingRecord updateRecord(ReadingRecord readingRecord) {
+        crudRepository.update(readingRecord);
         return readingRecord;
     }
 

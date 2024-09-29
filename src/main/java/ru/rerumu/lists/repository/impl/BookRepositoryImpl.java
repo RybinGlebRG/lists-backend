@@ -2,29 +2,30 @@ package ru.rerumu.lists.repository.impl;
 
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.mappers.BookMapper;
+import ru.rerumu.lists.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.dto.BookDTO;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.CrudRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO: Refactor class
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
+    private final ReadingRecordMapper readingRecordMapper;
 
     public BookRepositoryImpl(
-            BookMapper bookMapper
+            BookMapper bookMapper, ReadingRecordMapper readingRecordMapper
     ) {
         this.bookMapper = bookMapper;
+        this.readingRecordMapper = readingRecordMapper;
     }
 
 
@@ -59,6 +60,10 @@ public class BookRepositoryImpl implements BookRepository {
         if (bookDTO == null) {
             return Optional.empty();
         } else {
+            List<ReadingRecord> readingRecord = readingRecordMapper.findByBookId(bookDTO.bookId);
+            bookDTO = bookDTO.toBuilder()
+                    .readingRecords(readingRecord)
+                    .build();
             return Optional.of(bookDTO.toDomain());
         }
     }
@@ -67,7 +72,18 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> getAll(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAll(readListId);
 
+        HashMap<Long, List<ReadingRecord>> bookToRecordMap = bookDTOList.stream()
+                .flatMap(bookDTO -> readingRecordMapper.findByBookId(bookDTO.bookId).stream())
+                .collect(Collectors.groupingBy(
+                        ReadingRecord::bookId,
+                        HashMap::new,
+                        Collectors.toCollection(ArrayList::new)
+                ));
+
         List<Book> bookList = bookDTOList.stream()
+                .map(bookDTO -> bookDTO.toBuilder()
+                        .readingRecords(bookToRecordMap.get(bookDTO.bookId))
+                        .build())
                 .map(BookDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));

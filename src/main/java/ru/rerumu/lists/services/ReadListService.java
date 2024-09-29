@@ -15,6 +15,7 @@ import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
+import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -210,21 +211,21 @@ public class ReadListService {
 
     public List<Book> getAllBooks(Long readListId, Search search) {
         List<Book> bookList;
-        if (search.getChainBySeries()){
+        if (search.getChainBySeries()) {
             bookList = bookRepository.getAllChained(readListId);
         } else {
             bookList = this.bookRepository.getAll(readListId);
         }
 
         Stream<Book> bookStream = bookList.stream();
-        for (Filter filter: search.filters()){
-            switch (filter.field()){
-                case "bookStatusIds"->{
+        for (Filter filter : search.filters()) {
+            switch (filter.field()) {
+                case "bookStatusIds" -> {
                     bookStream = bookStream
                             .filter(book -> filter.values().contains(book.bookStatus().statusId().toString()));
                 }
-                case "titles"->{
-                    bookStream = fuzzyMatchingService.findMatchingBooksByTitle(filter.values(),bookStream);
+                case "titles" -> {
+                    bookStream = fuzzyMatchingService.findMatchingBooksByTitle(filter.values(), bookStream);
                 }
                 default -> throw new IllegalArgumentException();
             }
@@ -258,7 +259,7 @@ public class ReadListService {
         BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
         bookBuilder.bookStatus(bookStatus);
 
-        if (bookAddView.insertDate() != null){
+        if (bookAddView.insertDate() != null) {
             bookBuilder.insertDate(bookAddView.insertDate());
             bookBuilder.lastUpdateDate(bookAddView.insertDate());
         } else {
@@ -322,7 +323,49 @@ public class ReadListService {
         bookRepository.delete(bookOptional.get().getBookId());
     }
 
-    public Optional<User> getBookUser(Long bookId){
+    public Optional<User> getBookUser(Long bookId) {
         return bookRepository.getBookUser(bookId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ReadingRecord addReadingRecord(Long bookId, ReadingRecordAddView readingRecordAddView) {
+        Objects.requireNonNull(bookId, "bookId cannot be null");
+        Objects.requireNonNull(readingRecordAddView, "readingRecordAddView cannot be null");
+
+        Book book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordAddView.statusId()).orElseThrow();
+        Long readingRecordId = readingRecordService.getNextId();
+        ReadingRecord addedReadingRecord = book.addReadingRecord(
+                readingRecordId,
+                bookStatusRecord,
+                readingRecordAddView.startDate(),
+                readingRecordAddView.endDate()
+        );
+
+        return readingRecordService.addRecord(addedReadingRecord);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteReadingRecord(Long bookId, Long readingRecordId) {
+        Book book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+
+        ReadingRecord readingRecord = book.deleteReadingRecord(readingRecordId);
+
+        readingRecordService.deleteRecord(readingRecord.recordId());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateReadingRecord(Long bookId, Long recordId, ReadingRecordUpdateView readingRecordUpdateView) {
+        Book book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordUpdateView.statusId()).orElseThrow();
+
+        ReadingRecord readingRecord = book.updateReadingRecord(
+                recordId,
+                bookStatusRecord,
+                readingRecordUpdateView.startDate(),
+                readingRecordUpdateView.endDate()
+        );
+
+        readingRecordService.updateRecord(readingRecord);
     }
 }
