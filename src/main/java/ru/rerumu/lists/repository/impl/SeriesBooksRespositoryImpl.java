@@ -1,18 +1,14 @@
 package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.MetricType;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
-import ru.rerumu.lists.services.MonitoringService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +57,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId) {
         List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
         List<Long> seriesIdList = seriesBookMapper.getSeriesIdsByBookId(bookId, readListId);
-        Book book = bookRepository.getOne(readListId, bookId);
+        BookImpl book = bookRepository.getOne(readListId, bookId);
         for (Long seriesId : seriesIdList) {
             Series series = seriesRepository.getOne(readListId, seriesId);
             Long order = seriesBookMapper.getOrder(bookId, seriesId, readListId);
@@ -86,9 +82,9 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 //            seriesBookRelationList.add(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
 //        });
         return IntStream.range(0, optionalSeries.get().itemsList().size())
-                .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof Book)
+                .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof BookImpl)
                 .mapToObj(ind -> new SeriesBookRelation(
-                        (Book) optionalSeries.get().itemsList().get(ind),
+                        (BookImpl) optionalSeries.get().itemsList().get(ind),
                         optionalSeries.get(),
                         (long) ind
                 ))
@@ -173,10 +169,10 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
                          0,
                          optionalSeries.get().itemsList().size()
                  )
-                 .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof Book book &&
+                 .filter(ind -> optionalSeries.get().itemsList().get(ind) instanceof BookImpl book &&
                          book.getBookId().equals(bookId))
                  .mapToObj(ind -> new SeriesBookRelation(
-                         (Book) optionalSeries.get().itemsList().get(ind),
+                         (BookImpl) optionalSeries.get().itemsList().get(ind),
                          optionalSeries.get(),
                          (long) ind
                  ))

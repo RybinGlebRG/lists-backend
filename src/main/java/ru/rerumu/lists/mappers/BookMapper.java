@@ -1,8 +1,5 @@
 package ru.rerumu.lists.mappers;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.dto.BookDTO;
 

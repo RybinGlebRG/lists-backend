@@ -3,10 +3,10 @@ package ru.rerumu.lists.services;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookUpdateView;
 
@@ -63,7 +63,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 2,
                 null
         );
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -72,7 +72,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .readListId(3L)
                 .bookType(new BookType(1,"Book"))
                 .build();
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(8L)
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -122,7 +122,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 2,
                 null
         );
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -130,7 +130,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .bookStatus(new BookStatusRecord(1,"In Progress"))
                 .readListId(3L)
                 .build();
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(8L)
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -180,7 +180,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 null,
                 null
         );
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -189,7 +189,7 @@ class BookServiceUpdateBookUpdateTypeTest {
                 .readListId(3L)
                 .bookType(new BookType(1,"Book"))
                 .build();
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(8L)
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))

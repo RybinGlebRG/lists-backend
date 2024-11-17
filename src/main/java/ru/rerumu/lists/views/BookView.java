@@ -4,11 +4,12 @@ package ru.rerumu.lists.views;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 
 import java.util.List;
 
 public class BookView {
-    private Book book;
+    private BookImpl book;
     private BookStatus bookStatus;
     private Author author;
     private Series series;
@@ -17,7 +18,7 @@ public class BookView {
     private List<Series> seriesList;
 
     private BookView(
-            Book book,
+            BookImpl book,
             BookStatus bookStatus,
             Author author,
             Series series,
@@ -74,7 +75,7 @@ public class BookView {
 
     public static class Builder {
 
-        private Book book;
+        private BookImpl book;
         private BookStatus bookStatus;
         private Author author;
         private Series series;
@@ -84,7 +85,7 @@ public class BookView {
         private List<Series> seriesList;
 
 
-        public Builder bookStatus(Book book) {
+        public Builder bookStatus(BookImpl book) {
             this.book = book;
             return this;
         }

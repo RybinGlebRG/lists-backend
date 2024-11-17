@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 
 import java.util.Date;
@@ -54,7 +55,7 @@ class BookServiceDeleteBookTest {
     void shouldDeleteBook() throws Exception{
         long bookId = 1L;
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)

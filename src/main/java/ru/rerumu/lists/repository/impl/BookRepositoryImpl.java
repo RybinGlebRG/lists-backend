@@ -1,21 +1,20 @@
 package ru.rerumu.lists.repository.impl;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.dto.BookDTO;
+import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.repository.BookRepository;
-import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO: Refactor class
+@Slf4j
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
@@ -30,7 +29,7 @@ public class BookRepositoryImpl implements BookRepository {
 
 
     @Override
-    public void update(Book book) {
+    public void update(BookImpl book) {
         bookMapper.update(
                 book.getReadListId(),
                 book.getBookId(),
@@ -40,14 +39,14 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
-                book.note()
+                book.getNote()
         );
     }
 
     @Deprecated
     @Override
-    public Book getOne(Long readListId, Long bookId) {
-        Optional<Book> optionalBook = getOne(bookId);
+    public BookImpl getOne(Long readListId, Long bookId) {
+        Optional<BookImpl> optionalBook = getOne(bookId);
         if (optionalBook.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -55,7 +54,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Optional<Book> getOne(Long bookId) {
+    public Optional<BookImpl> getOne(Long bookId) {
         BookDTO bookDTO = bookMapper.getOne(bookId);
         if (bookDTO == null) {
             return Optional.empty();
@@ -69,7 +68,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> getAll(Long readListId) {
+    public List<BookImpl> getAll(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAll(readListId);
 
         HashMap<Long, List<ReadingRecord>> bookToRecordMap = bookDTOList.stream()
@@ -80,7 +79,7 @@ public class BookRepositoryImpl implements BookRepository {
                         Collectors.toCollection(ArrayList::new)
                 ));
 
-        List<Book> bookList = bookDTOList.stream()
+        List<BookImpl> bookList = bookDTOList.stream()
                 .map(bookDTO -> bookDTO.toBuilder()
                         .readingRecords(bookToRecordMap.get(bookDTO.bookId))
                         .build())
@@ -92,10 +91,42 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> getAllChained(Long readListId) {
+    public List<BookImpl> getAllChained(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAllChained(readListId);
 
-        List<Book> bookList = bookDTOList.stream()
+        List<Long> bookIds = bookDTOList.stream()
+                .map(BookDTO::getBookId)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+
+        Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
+                .collect(Collectors.groupingBy(
+                        ReadingRecord::bookId,
+                        HashMap::new,
+                        Collectors.toCollection(ArrayList::new)
+                ));
+
+        for(BookDTO bookDTO: bookDTOList){
+            List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
+
+            if (records == null){
+                records = new ArrayList<>();
+            }
+
+            bookDTO.setReadingRecords(records);
+
+            for (BookOrderedDTO bookOrderedDTO: bookDTO.getPreviousBooks()){
+                List<ReadingRecord> recordsOrdered = bookId2ReadingRecordMap.get(bookOrderedDTO.getBookDTO().getBookId());
+                if (recordsOrdered == null){
+                    recordsOrdered = new ArrayList<>();
+                }
+                bookOrderedDTO.getBookDTO().setReadingRecords(recordsOrdered);
+            }
+        }
+
+        List<BookImpl> bookList = bookDTOList.stream()
+                .peek(bookDTO -> log.debug(bookDTO.toString()))
                 .map(BookDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -109,7 +140,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void addOne(Book book) {
+    public void addOne(BookImpl book) {
         bookMapper.addOne(
                 book.getBookId(),
                 book.getReadListId(),
@@ -119,7 +150,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
-                book.note()
+                book.getNote()
         );
     }
 

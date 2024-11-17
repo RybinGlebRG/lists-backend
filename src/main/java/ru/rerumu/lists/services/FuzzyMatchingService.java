@@ -1,9 +1,8 @@
 package ru.rerumu.lists.services;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.book.BookImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,20 +13,20 @@ public class FuzzyMatchingService {
     private final static int LIMIT = 10;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
 
-    public Stream<Book> findMatchingBooksByTitle(List<String> titles, Stream<Book> books){
-        List<Book> bookList = books.collect(Collectors.toCollection(ArrayList::new));
-        Map<Book, Float> booksDistances = new HashMap<>();
+    public Stream<BookImpl> findMatchingBooksByTitle(List<String> titles, Stream<BookImpl> books){
+        List<BookImpl> bookList = books.collect(Collectors.toCollection(ArrayList::new));
+        Map<BookImpl, Float> booksDistances = new HashMap<>();
 
-        for (Book book: bookList){
+        for (BookImpl book: bookList){
             for (String title: titles){
-                float score = getScore(book.title(), title);
+                float score = getScore(book.getTitle(), title);
                  if (!booksDistances.containsKey(book) || (booksDistances.containsKey(book) && booksDistances.get(book) <= score)){
                     booksDistances.put(book,score);
                 }
             }
         }
 
-        Comparator<Map.Entry<Book, Float>> mapComparator= (e1,e2)->Float.compare(e1.getValue(), e2.getValue());
+        Comparator<Map.Entry<BookImpl, Float>> mapComparator= (e1, e2)->Float.compare(e1.getValue(), e2.getValue());
         mapComparator = mapComparator.reversed();
 
         return booksDistances.entrySet().stream()

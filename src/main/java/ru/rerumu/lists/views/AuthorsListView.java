@@ -3,7 +3,6 @@ package ru.rerumu.lists.views;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.Book;
 
 import java.util.List;
 

@@ -34,6 +34,16 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
     }
 
     @Override
+    public ReadingRecord addRecord(ReadingRecord readingRecord) {
+        return readingRecordService.addRecord(readingRecord);
+    }
+
+    @Override
+    public Long getNextId() {
+        return readingRecordService.getNextId();
+    }
+
+    @Override
     public ReadingRecord addRecord(Long bookId, ReadingRecord readingRecord) {
         User user = readListService.getBookUser(bookId).orElseThrow();
         if (!user.equals(authUser)){
@@ -52,6 +62,11 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
         }
 
         return readingRecordService.updateRecord(recordId, readingRecordUpdateView);
+    }
+
+    @Override
+    public ReadingRecord updateRecord(ReadingRecord readingRecord) {
+        return null;
     }
 
     @Override

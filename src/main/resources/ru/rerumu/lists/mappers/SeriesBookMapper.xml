@@ -6,7 +6,7 @@
 
     <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.model.SeriesBookRelation">
         <association property="book"
-                     javaType="ru.rerumu.lists.model.Book"
+                     javaType="ru.rerumu.lists.model.book.BookImpl"
                      column="{bookId=book_book_id,readListId=readListId}"
                      select="ru.rerumu.lists.mappers.BookMapper.getOne"
         />

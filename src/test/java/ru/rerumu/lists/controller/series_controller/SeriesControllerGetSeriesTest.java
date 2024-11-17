@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.services.*;
 
 import java.util.*;
@@ -56,7 +57,7 @@ class SeriesControllerGetSeriesTest {
     @Test
     void shouldGetSeriesOne() throws Exception{
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(88L)
                 .title("Title")
@@ -88,7 +89,7 @@ class SeriesControllerGetSeriesTest {
     @Test
     void shouldGetAll() throws Exception{
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(88L)
                 .title("Title")

@@ -21,6 +21,20 @@
     </resultMap>
 
     <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.dto.BookDTO">
+<!--        <constructor>-->
+<!--            <idArg column="book_id" name="bookId"/>-->
+<!--            <arg column="book_list_id" name="readListId"/>-->
+<!--            <arg column="book_title" name="title"/>-->
+<!--            <arg column="book_status_id_old" name="bookStatus"/>-->
+<!--            <arg column="book_insert_date" name="insertDate"/>-->
+<!--            <arg column="book_last_update_date" name="lastUpdateDate"/>-->
+<!--            <arg column="last_chapter" name="lastChapter"/>-->
+<!--            <arg column="book_type_id" name="bookType"/>-->
+<!--            <arg column="book_note" name="note"/>-->
+<!--            <arg name="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>-->
+<!--            <arg name="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>-->
+<!--            <arg name="readingRecords" columnPrefix="rr_" resultMap="ru.rerumu.lists.mappers.ReadingRecordMapper.ReadingRecordResultMap"/>-->
+<!--        </constructor>-->
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -32,6 +46,8 @@
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
     </resultMap>
+
+
 
     <resultMap id="BookOrderedDTOResultMap" type="ru.rerumu.lists.model.dto.BookOrderedDTO">
         <result  property="order" column="book_series_order" javaType="Integer"/>

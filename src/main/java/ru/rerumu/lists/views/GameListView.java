@@ -2,8 +2,6 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Game;
 
 import java.util.Comparator;
