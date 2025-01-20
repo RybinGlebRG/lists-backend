@@ -12,6 +12,7 @@ import ru.rerumu.lists.repository.BookRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // TODO: Refactor class
 @Slf4j
@@ -97,6 +98,19 @@ public class BookRepositoryImpl implements BookRepository {
         List<Long> bookIds = bookDTOList.stream()
                 .map(BookDTO::getBookId)
                 .collect(Collectors.toCollection(ArrayList::new));
+
+        bookIds.addAll(
+                bookDTOList.stream()
+                .flatMap(bookDTO -> {
+                    if (bookDTO.previousBooks != null){
+                        return  bookDTO.previousBooks.stream();
+                    } else {
+                        return Stream.empty();
+                    }
+                })
+                .map(bookOrderedDTO -> bookOrderedDTO.getBookDTO().bookId)
+                .collect(Collectors.toCollection(ArrayList::new))
+        );
 
         List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
 
