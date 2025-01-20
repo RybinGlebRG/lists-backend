@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.AuthorBookRelationMapper;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.AuthorsRepository;
 import ru.rerumu.lists.repository.BookRepository;
@@ -45,7 +45,7 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     public List<AuthorBookRelation> getByBookId(Long bookId, Long readListId) {
         List<AuthorBookRelation> authorBookRelationList = new ArrayList<>();
         List<Long> authorIdList = authorBookRelationMapper.getAuthorsByBookId(bookId);
-        Book book = bookRepository.getOne(readListId,bookId);
+        BookImpl book = bookRepository.getOne(readListId,bookId);
         for (Long authorId: authorIdList){
             Optional<Author>  authorOptional = authorsRepository.getOne(readListId,authorId);
             if (authorOptional.isEmpty()){

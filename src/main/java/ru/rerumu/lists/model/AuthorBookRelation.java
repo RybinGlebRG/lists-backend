@@ -1,13 +1,13 @@
 package ru.rerumu.lists.model;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.model.book.BookImpl;
 
 public final class AuthorBookRelation {
 
-    private final Book book;
+    private final BookImpl book;
     private final Author author;
 
-    public AuthorBookRelation(Book book, Author author)  {
+    public AuthorBookRelation(BookImpl book, Author author)  {
         this.book = book.clone();
         this.author = author.clone();
     }
@@ -16,7 +16,7 @@ public final class AuthorBookRelation {
         return author.clone();
     }
 
-    public Book getBook() {
+    public BookImpl getBook() {
         return book.clone();
     }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ReadingRecordsRepository extends CrudRepository<ReadingRecord,Long> {
     List<ReadingRecord> findByBookId(Long bookId);
+    List<ReadingRecord> findByBookIds(List<Long> bookIds);
 }

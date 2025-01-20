@@ -5,16 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.Title;
 import ru.rerumu.lists.model.TitlesList;
-import ru.rerumu.lists.repository.TitlesRepository;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.services.WatchListService;
 import ru.rerumu.lists.views.TitleCreateView;
 import ru.rerumu.lists.views.TitleListView;
-
-import java.util.List;
 
 @CrossOrigin
 @RestController

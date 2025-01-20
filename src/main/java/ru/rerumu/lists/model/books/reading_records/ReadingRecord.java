@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Builder;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.utils.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 
+@Builder(toBuilder = true)
 public record ReadingRecord(
         Long recordId,
         Long bookId,

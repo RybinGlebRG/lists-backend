@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookUpdateView;
 
@@ -46,6 +47,8 @@ class BookServiceUpdateBookTest {
     BookStatusesService bookStatusesService;
     @Mock
     FuzzyMatchingService fuzzyMatchingService;
+    @Mock
+    ReadingRecordService readingRecordService;
 
     @Test
     void shouldUpdate() throws Exception{
@@ -63,7 +66,7 @@ class BookServiceUpdateBookTest {
         );
         LocalDateTime dt = LocalDateTime.now();
 
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -72,7 +75,7 @@ class BookServiceUpdateBookTest {
                 .lastChapter(4)
                 .readListId(3L)
                 .build();
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(8L)
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -100,7 +103,8 @@ class BookServiceUpdateBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -124,7 +128,7 @@ class BookServiceUpdateBookTest {
                 null
         );
 
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -133,7 +137,7 @@ class BookServiceUpdateBookTest {
                 .lastChapter(8)
                 .readListId(3L)
                 .build();
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(8L)
                 .title("TitleNew")
                 .insertDate(Date.from(LocalDateTime.of(2020, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -159,7 +163,8 @@ class BookServiceUpdateBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);

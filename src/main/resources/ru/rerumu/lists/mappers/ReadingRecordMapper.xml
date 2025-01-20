@@ -36,6 +36,58 @@
         where rr.book_book_id = #{bookId}
     </select>
 
+    <select id="findByBookIds" resultMap="ReadingRecordResultMap">
+        select  rr.record_id as recordId,
+                rr.book_book_id as bookId,
+                s.status_id as statusId,
+                s.name as statusName,
+                rr.start_date as startDate,
+                rr.end_date as endDate,
+                rr.is_migrated as isMigrated
+        from reading_records rr
+            inner join statuses s
+                on s.status_id = rr.status_status_id
+        <where>
+            <foreach collection="bookIds" index="index" item="item" open="rr.book_book_id in (" separator="," close=")" >
+                #{item}
+            </foreach>
+        </where>
+    </select>
 
+    <select id="findById" resultMap="ReadingRecordResultMap">
+        select  rr.record_id as recordId,
+                rr.book_book_id as bookId,
+                s.status_id as statusId,
+                s.name as statusName,
+                rr.start_date as startDate,
+                rr.end_date as endDate,
+                rr.is_migrated as isMigrated
+        from reading_records rr
+            inner join statuses s
+                on s.status_id = rr.status_status_id
+        where rr.record_id = #{id}
+    </select>
+
+    <select id="getNextId" resultType="long">
+        select nextval('series_id_seq')
+    </select>
+
+    <insert id="create" parameterType="ru.rerumu.lists.model.books.reading_records.ReadingRecord">
+        insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated)
+        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated})
+    </insert>
+
+    <update id="update">
+        update reading_records
+        set status_status_id=#{bookStatus.statusId},
+            start_date=#{startDate},
+            end_date=#{endDate}
+        where record_id=#{recordId}
+    </update>
+
+    <delete id="delete">
+        delete from reading_records
+        where record_id=#{id}
+    </delete>
 
 </mapper>

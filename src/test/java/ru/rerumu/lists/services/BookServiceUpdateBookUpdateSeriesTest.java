@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookUpdateView;
 
@@ -46,6 +47,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
     BookStatusesService bookStatusesService;
     @Mock
     FuzzyMatchingService fuzzyMatchingService;
+    @Mock
+    ReadingRecordService readingRecordService;
 
 
     @Test
@@ -64,7 +67,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
         );
         Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
         Series shouldSeries = new Series.Builder().seriesId(6L).readListId(3L).title("SeriesNew").build();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -94,7 +97,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -124,7 +128,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
 //        Author author = new Author(5L, 3L, "Author");
 //        Series series = new Series(5L,3L,"Series");
         Series shouldSeries = new Series.Builder().seriesId(6L).readListId(3L).title("SeriesNew").build();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -154,7 +158,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -184,7 +189,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
 //        Author author = new Author(5L, 3L, "Author");
         Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -214,7 +219,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -242,7 +248,7 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 null
         );
         Series series = new Series.Builder().seriesId(5L).readListId(3L).title("Series").build();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -273,7 +279,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
         readListService.updateBook(8L,bookUpdateView);
 

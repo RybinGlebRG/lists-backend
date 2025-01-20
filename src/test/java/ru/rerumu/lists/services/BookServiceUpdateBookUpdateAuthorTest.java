@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookUpdateView;
 
@@ -45,6 +46,9 @@ class BookServiceUpdateBookUpdateAuthorTest {
     BookStatusesService bookStatusesService;
     @Mock
     FuzzyMatchingService fuzzyMatchingService;
+    @Mock
+    ReadingRecordService readingRecordService;
+
 
     @Test
     void shouldChangeAuthor() throws Exception{
@@ -64,7 +68,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
         Author author = new Author(2L, 3L,"Author");
         Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -92,7 +96,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -120,7 +125,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
 //        Author author = new Author(2L, 3L,"Author");
         Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -148,7 +153,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -176,7 +182,7 @@ class BookServiceUpdateBookUpdateAuthorTest {
 //        Series shouldSeries = new Series(6L,3L,"SeriesNew");
         Author author = new Author(2L, 3L,"Author");
 //        Author shouldAuthor = new Author(4L, 3L,"AuthorNew");
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(8L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -204,7 +210,8 @@ class BookServiceUpdateBookUpdateAuthorTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.updateBook(8L,bookUpdateView);

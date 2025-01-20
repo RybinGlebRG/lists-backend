@@ -1,55 +1,45 @@
 package ru.rerumu.lists.model.dto;
 
-import org.json.JSONObject;
+import lombok.*;
+import ru.rerumu.lists.exception.AssertionException;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.BookBuilder;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@ToString
+public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
+    @Getter
     public Long bookId;
+    @Getter
     public Long readListId;
+    @Getter
     public String title;
+    @Getter
     public Integer bookStatus;
+    @Getter
     public Date insertDate;
+    @Getter
     public Date lastUpdateDate;
     public Integer lastChapter;
+    @Getter
     public Integer bookType;
     public String note;
     public BookTypeDTO bookTypeObj;
     public BookStatusRecord bookStatusObj;
-
+    @Getter
     public List<BookOrderedDTO> previousBooks;
+    @Setter
+    public List<ReadingRecord> readingRecords;
 
     public BookDTO() {
-    }
-
-    public Long getReadListId() {
-        return readListId;
-    }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public String getTitle() {
-
-        return title;
-    }
-
-    public Integer getBookStatus() {
-        return bookStatus;
-    }
-
-    public Date getInsertDate() {
-        return insertDate;
-    }
-
-    public Date getLastUpdateDate() {
-        return lastUpdateDate;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -60,19 +50,18 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
         return Optional.ofNullable(lastChapter);
     }
 
-    public Integer getBookType() {
-        return bookType;
-    }
-
     @Override
-    public Book toDomain() {
+    public BookImpl toDomain() {
         try {
-            Book.Builder builder = new Book.Builder();
-            builder.bookId(bookId);
-            builder.readListId(readListId);
-            builder.title(title);
-            builder.insertDate(insertDate);
-            builder.lastUpdateDate(lastUpdateDate);
+            BookBuilder builder = new BookBuilder()
+                    .bookId(bookId)
+                    .readListId(readListId)
+                    .title(title)
+                    .insertDate(insertDate)
+                    .lastUpdateDate(lastUpdateDate)
+                    .note(note)
+                    .readingRecords(readingRecords);
+
             if (lastChapter != null) {
                 builder.lastChapter(lastChapter);
             }
@@ -82,7 +71,7 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
             builder.bookStatus(bookStatusObj);
 
             if (previousBooks != null) {
-                HashMap<Book,Integer> bookOrderMap = previousBooks.stream()
+                HashMap<BookImpl,Integer> bookOrderMap = previousBooks.stream()
                         .filter(Objects::nonNull)
                         .map(item -> new AbstractMap.SimpleImmutableEntry<>(
                                 item.bookDTO.toDomain(),
@@ -98,12 +87,12 @@ public class BookDTO implements EntityDTO<Book>, SeriesItemDTO {
                        new BookChain(bookOrderMap)
                 );
             }
-            builder.note(note);
-            Book book = builder.build();
+
+            BookImpl book = builder.build();
             return book;
         } catch (EmptyMandatoryParameterException e) {
             // Database is supposed to provide everything needed
-            throw new AssertionError(e);
+            throw new AssertionException(e);
         }
     }
 

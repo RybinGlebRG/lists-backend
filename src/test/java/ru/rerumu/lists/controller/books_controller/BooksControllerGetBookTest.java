@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.BooksController;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.services.*;
 
 import java.text.SimpleDateFormat;
@@ -69,7 +70,7 @@ class BooksControllerGetBookTest {
     @Test
     void shouldGetOne() throws Exception {
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
@@ -88,7 +89,7 @@ class BooksControllerGetBookTest {
                         .thenReturn(List.of(new AuthorBookRelation(book,author)));
 //        when(bookSeriesRelationService.getByBookId(anyLong(), anyLong()))
 //                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
-        when(seriesService.findByBook(Mockito.any(Book.class)))
+        when(seriesService.findByBook(Mockito.any(BookImpl.class)))
                 .thenReturn(List.of(series));
 
 
@@ -126,7 +127,7 @@ class BooksControllerGetBookTest {
     @Test
     void shouldGetOneNoAuthor() throws Exception {
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
@@ -139,7 +140,7 @@ class BooksControllerGetBookTest {
         when(readListService.getBook(Mockito.anyLong(),Mockito.anyLong())).thenReturn(book);
 //        when(bookSeriesRelationService.getByBookId(anyLong(), anyLong()))
 //                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
-        when(seriesService.findByBook(Mockito.any(Book.class)))
+        when(seriesService.findByBook(Mockito.any(BookImpl.class)))
                 .thenReturn(List.of(series));
 
 
@@ -174,7 +175,7 @@ class BooksControllerGetBookTest {
     @Test
     void shouldGetOneNoSeries() throws Exception {
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
@@ -218,7 +219,7 @@ class BooksControllerGetBookTest {
     @Test
     void shouldGetOneNoChapter() throws Exception {
         Date dt = new Date();
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .readListId(2L)
                 .bookId(3L)
                 .title("Title")
@@ -235,7 +236,7 @@ class BooksControllerGetBookTest {
                 .thenReturn(List.of(new AuthorBookRelation(book,author)));
 //        when(bookSeriesRelationService.getByBookId(anyLong(),anyLong()))
 //                .thenReturn(List.of(new SeriesBookRelation(book,series,1L)));
-        when(seriesService.findByBook(Mockito.any(Book.class)))
+        when(seriesService.findByBook(Mockito.any(BookImpl.class)))
                 .thenReturn(List.of(series));
 
 

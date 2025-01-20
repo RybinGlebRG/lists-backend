@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
 
@@ -47,6 +48,8 @@ class BookServiceAddBookTest {
     BookStatusesService bookStatusesService;
     @Mock
     FuzzyMatchingService fuzzyMatchingService;
+    @Mock
+    ReadingRecordService readingRecordService;
 
     @Test
     void shouldAddBook() throws Exception {
@@ -61,7 +64,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -92,7 +95,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -115,7 +119,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -142,7 +146,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -162,7 +167,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -191,7 +196,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -215,7 +221,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -244,7 +250,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -269,7 +276,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -298,7 +305,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);
@@ -323,7 +331,7 @@ class BookServiceAddBookTest {
         LocalDateTime dtl = LocalDateTime.now();
         Date dt = Date.from(dtl.toInstant(ZoneOffset.UTC));
 
-        Book shouldBook = new Book.Builder()
+        BookImpl shouldBook = new BookImpl.Builder()
                 .bookId(6L)
                 .title("Test")
                 .insertDate(dt)
@@ -352,7 +360,8 @@ class BookServiceAddBookTest {
                 authorsBooksRelationService,
                 bookTypesService,
                 bookStatusesService,
-                fuzzyMatchingService
+                fuzzyMatchingService,
+                readingRecordService
         );
 
         readListService.addBook(5L, bookAddView);

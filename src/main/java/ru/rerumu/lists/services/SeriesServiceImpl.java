@@ -2,11 +2,11 @@ package ru.rerumu.lists.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -80,9 +80,9 @@ public class SeriesServiceImpl implements SeriesService{
     }
 
     @Deprecated
-    public Map<Book, List<Series>> findByBook(List<Book> bookList) {
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
-        for (Book book : bookList) {
+    public Map<BookImpl, List<Series>> findByBook(List<BookImpl> bookList) {
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
+        for (BookImpl book : bookList) {
             List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
             List<Series> seriesList = seriesBookRelationList.stream()
                     .map(SeriesBookRelation::series)
@@ -92,7 +92,7 @@ public class SeriesServiceImpl implements SeriesService{
         return bookSeriesMap;
     }
 
-    public List<Series> findByBook(Book book) {
+    public List<Series> findByBook(BookImpl book) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId());
         return seriesBookRelationList.stream()
                 .map(SeriesBookRelation::series)
@@ -101,11 +101,11 @@ public class SeriesServiceImpl implements SeriesService{
 
     private void removeBookRelations(Series source, Series target) {
         List<SeriesBookRelation> relationsToRemove = source.getItemsList().stream()
-                .filter(o1 -> o1 instanceof Book)
-                .map(o1 -> (Book) o1)
+                .filter(o1 -> o1 instanceof BookImpl)
+                .map(o1 -> (BookImpl) o1)
                 .filter(b1 -> {
                     for (Object o2 : target.getItemsList()) {
-                        if (o2 instanceof Book b2 && b1.equals(b2)) {
+                        if (o2 instanceof BookImpl b2 && b1.equals(b2)) {
                             return false;
                         }
                     }
@@ -135,9 +135,9 @@ public class SeriesServiceImpl implements SeriesService{
     }
 
     private void saveBookRelations(Series series) {
-        List<Book> booksList = series.getItemsList().stream()
-                .filter(item -> item instanceof Book)
-                .map(item -> (Book) item)
+        List<BookImpl> booksList = series.getItemsList().stream()
+                .filter(item -> item instanceof BookImpl)
+                .map(item -> (BookImpl) item)
                 .collect(Collectors.toCollection(ArrayList::new));
         List<SeriesBookRelation> bookRelations = IntStream.range(0, booksList.size())
                 .mapToObj(i -> new SeriesBookRelation(booksList.get(i), series, (long) i + 1))
@@ -157,7 +157,7 @@ public class SeriesServiceImpl implements SeriesService{
         for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
             switch (seriesUpdateItem.itemType()) {
                 case BOOK -> {
-                    Optional<Book> optionalBook = readListService.getBook(seriesUpdateItem.itemId());
+                    Optional<BookImpl> optionalBook = readListService.getBook(seriesUpdateItem.itemId());
                     optionalBook.orElseThrow(EntityNotFoundException::new);
                     optionalBook.ifPresent(updatedItems::add);
                 }

@@ -1,4 +1,4 @@
 package ru.rerumu.lists.exception;
 
-public class EntityNotFoundException extends Exception{
+public class EntityNotFoundException extends ClientException{
 }

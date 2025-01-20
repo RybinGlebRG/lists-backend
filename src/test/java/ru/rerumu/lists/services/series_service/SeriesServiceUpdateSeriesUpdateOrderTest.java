@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
@@ -45,7 +46,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
         seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,4L,0L));
         seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,5L,0L));
         SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(5L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -61,7 +62,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
 
         List<SeriesBookRelation> relationList = new ArrayList<>();
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(0L)
                         .title("10")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -73,7 +74,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 0L
         ));
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(1L)
                         .title("1")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -85,7 +86,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 1L
         ));
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(3L)
                         .title("3")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -97,7 +98,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 2L
         ));
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(4L)
                         .title("4")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -109,7 +110,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 3L
         ));
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(2L)
                         .title("2")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -121,7 +122,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 4L
         ));
         relationList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(5L)
                         .title("5")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -141,7 +142,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
 
         List<SeriesBookRelation> updateRelationsList = new ArrayList<>();
         updateRelationsList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(2L)
                         .title("2")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -153,7 +154,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 2L
         ));
         updateRelationsList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(3L)
                         .title("3")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -165,7 +166,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
                 3L
         ));
         updateRelationsList.add(new SeriesBookRelation(
-                new Book.Builder()
+                new BookImpl.Builder()
                         .bookId(4L)
                         .title("4")
                         .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))
@@ -187,7 +188,7 @@ class SeriesServiceUpdateSeriesUpdateOrderTest {
         List<SeriesUpdateItem> seriesUpdateItemList = new ArrayList<>();
         seriesUpdateItemList.add(new SeriesUpdateItem(SeriesItemType.BOOK,5L,0L));
         SeriesUpdateView seriesUpdateView = new SeriesUpdateView("Series",seriesUpdateItemList);
-        Book book = new Book.Builder()
+        BookImpl book = new BookImpl.Builder()
                 .bookId(5L)
                 .title("Title")
                 .insertDate(Date.from(LocalDateTime.of(2000, 10, 1, 0, 0, 0).toInstant(ZoneOffset.UTC)))

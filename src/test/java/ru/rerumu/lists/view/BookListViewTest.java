@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.rerumu.lists.model.Book;
-import ru.rerumu.lists.model.BookStatus;
+import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 import ru.rerumu.lists.views.BookListView;
@@ -31,18 +29,18 @@ public class BookListViewTest {
     void shouldChain() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
 
-        List<Book> bookList = new ArrayList<>();
+        List<BookImpl> bookList = new ArrayList<>();
 
-        Book book1 = new Book.Builder()
+        BookImpl book1 = new BookImpl.Builder()
                 .bookId(1L)
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
-        Book book2 = new Book.Builder()
+        BookImpl book2 = new BookImpl.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
@@ -85,18 +83,18 @@ public class BookListViewTest {
     void shouldNotChainDifferentSeries() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
 
-        List<Book> bookList = new ArrayList<>();
+        List<BookImpl> bookList = new ArrayList<>();
 
-        Book book1 = new Book.Builder()
+        BookImpl book1 = new BookImpl.Builder()
                 .bookId(1L)
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
-        Book book2 = new Book.Builder()
+        BookImpl book2 = new BookImpl.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
@@ -140,18 +138,18 @@ public class BookListViewTest {
     void shouldNotChainNoSeriesOne() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
 
-        List<Book> bookList = new ArrayList<>();
+        List<BookImpl> bookList = new ArrayList<>();
 
-        Book book1 = new Book.Builder()
+        BookImpl book1 = new BookImpl.Builder()
                 .bookId(1L)
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
-        Book book2 = new Book.Builder()
+        BookImpl book2 = new BookImpl.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
@@ -187,18 +185,18 @@ public class BookListViewTest {
     void shouldNotChainNoSeriesOne2() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
 
-        List<Book> bookList = new ArrayList<>();
+        List<BookImpl> bookList = new ArrayList<>();
 
-        Book book1 = new Book.Builder()
+        BookImpl book1 = new BookImpl.Builder()
                 .bookId(1L)
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
-        Book book2 = new Book.Builder()
+        BookImpl book2 = new BookImpl.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
@@ -234,18 +232,18 @@ public class BookListViewTest {
     void shouldNotChainNoSeriesBoth() throws Exception {
         List<SortItem> sortItemList = new ArrayList<>();
         sortItemList.add(new SortItem("createDate", SearchOrder.DESC));
-        Map<Book, List<Series>> bookSeriesMap = new HashMap<>();
+        Map<BookImpl, List<Series>> bookSeriesMap = new HashMap<>();
 
-        List<Book> bookList = new ArrayList<>();
+        List<BookImpl> bookList = new ArrayList<>();
 
-        Book book1 = new Book.Builder()
+        BookImpl book1 = new BookImpl.Builder()
                 .bookId(1L)
                 .title("Test1")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .insertDate(LocalDateTime.of(2023, 4, 8, 22, 35))
                 .bookStatus(new BookStatusRecord(2,"Completed"))
                 .build();
-        Book book2 = new Book.Builder()
+        BookImpl book2 = new BookImpl.Builder()
                 .bookId(2L)
                 .title("Test2")
                 .lastUpdateDate(LocalDateTime.of(2023, 4, 9, 22, 35))
