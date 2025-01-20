@@ -73,6 +73,38 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
 
         try {
             List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
+
+            List<Long> bookIds = res.stream()
+                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
+                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
+                    .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+
+            Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
+                    .collect(Collectors.groupingBy(
+                            ReadingRecord::bookId,
+                            HashMap::new,
+                            Collectors.toCollection(ArrayList::new)
+                    ));
+
+            List<BookDTO> bookDTOList = res.stream()
+                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
+                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
+                    .map(seriesItemOrderDTO -> (BookDTO)seriesItemOrderDTO.itemDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            for(BookDTO bookDTO: bookDTOList){
+                List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
+
+                if (records == null){
+                    records = new ArrayList<>();
+                }
+
+                bookDTO.setReadingRecords(records);
+            }
+
             List<Series> resList = res.stream()
                     .map(SeriesDTO::toSeries)
                     .collect(Collectors.toCollection(ArrayList::new));
