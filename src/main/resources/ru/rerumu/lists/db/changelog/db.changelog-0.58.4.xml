@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="ca713186-bc44-46fd-89f3-ac72ddbcbc9d">
+        <sql>
+            insert into reading_records (record_id, book_book_id, status_status_id, start_date, end_date, is_migrated)
+            select
+                nextval('reading_record_id_seq') as record_id,
+                b.book_id as book_book_id,
+                b.status_status_id,
+                b.insert_date AT TIME ZONE 'UTC' as start_date,
+                b.last_update_date AT TIME ZONE 'UTC' as end_date,
+                true as is_migrated
+            from books b
+            where not exists (
+                select 1
+                from reading_records rr
+                where rr.book_book_id = b.book_id
+                    and rr.is_migrated = true
+            );
+        </sql>
+        <rollback>
+            <sql>
+                delete from reading_records rr
+                where rr.is_migrated = true;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="fb37f628-575b-4a16-9645-8b42970b0424">
+        <tagDatabase  tag="0.58.4"/>
+    </changeSet>
+
+</databaseChangeLog>
