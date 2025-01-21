@@ -10,6 +10,7 @@ import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.utils.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Builder(toBuilder = true)
 public record ReadingRecord(
@@ -28,5 +29,25 @@ public record ReadingRecord(
                 .registerModule(new JavaTimeModule());
         JsonNode jsonNode = objectMapper.valueToTree(this);
         return jsonNode;
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject obj = new JSONObject();
+
+        obj.put("recordId", recordId);
+        obj.put("bookId", bookId);
+
+        JSONObject recordStatusJson = new JSONObject();
+        recordStatusJson.put("statusId", bookStatus.statusId());
+        recordStatusJson.put("statusName", bookStatus.statusName());
+        obj.put("bookStatus", recordStatusJson);
+
+        obj.put("startDate", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        if (endDate != null) {
+            obj.put("endDate", endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        }
+        obj.put("isMigrated", isMigrated);
+
+        return obj;
     }
 }

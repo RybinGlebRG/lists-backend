@@ -7,13 +7,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.Book;
+import ru.rerumu.lists.model.BookChain;
+import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.SeriesItem;
+import ru.rerumu.lists.model.SeriesItemType;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BookImpl implements Book, Cloneable, SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
@@ -136,6 +146,14 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
             chainArray = previousBooks.toJSONArray();
         }
         obj.put("chain", chainArray);
+
+        JSONArray readingRecordsArray = new JSONArray();
+        if (readingRecords != null){
+            readingRecords.stream()
+                    .map(ReadingRecord::toJSONObject)
+                    .forEach(readingRecordsArray::put);
+        }
+        obj.put("readingRecords", readingRecordsArray);
 
         return obj;
     }
