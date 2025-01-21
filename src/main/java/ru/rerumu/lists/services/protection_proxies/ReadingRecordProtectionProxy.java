@@ -66,7 +66,12 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
 
     @Override
     public ReadingRecord updateRecord(ReadingRecord readingRecord) {
-        return null;
+        User user = readListService.getBookUser(readingRecord.bookId()).orElseThrow();
+        if (!user.equals(authUser)){
+            throw new UserPermissionException();
+        }
+
+        return readingRecordService.updateRecord(readingRecord);
     }
 
     @Override

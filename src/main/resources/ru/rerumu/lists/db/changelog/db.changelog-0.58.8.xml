@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="258e9d94-2e7b-401e-80a0-352f99ef2dfc">
+        <sql>
+            update reading_records
+            set end_date = null
+            where status_status_id in (1,3);
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="59e7af77-7989-4751-9ced-83e07316c960">
+        <tagDatabase  tag="0.58.8"/>
+    </changeSet>
+
+</databaseChangeLog>
