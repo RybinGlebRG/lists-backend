@@ -61,7 +61,7 @@ public class ReadingRecordsController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<String> searchBooks(@PathVariable Long bookId) {
-        BookImpl book = readListService.getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        BookImpl book = readListService.getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
         ReadingRecordListView readingRecordListView = new ReadingRecordListView(book.getReadingRecords());
         return new ResponseEntity<>(readingRecordListView.toString(), HttpStatus.OK);
     }

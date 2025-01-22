@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.factories.DateFactory;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @Component
@@ -15,6 +16,6 @@ public class DateFactoryImpl implements DateFactory {
 
     @Override
     public LocalDateTime getLocalDateTime() {
-        return LocalDateTime.now();
+        return LocalDateTime.now(ZoneOffset.UTC);
     }
 }

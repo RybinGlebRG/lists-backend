@@ -157,7 +157,7 @@ public class SeriesServiceImpl implements SeriesService{
         for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
             switch (seriesUpdateItem.itemType()) {
                 case BOOK -> {
-                    Optional<BookImpl> optionalBook = readListService.getBook(seriesUpdateItem.itemId());
+                    Optional<BookImpl> optionalBook = readListService.getOptionalBook(seriesUpdateItem.itemId());
                     optionalBook.orElseThrow(EntityNotFoundException::new);
                     optionalBook.ifPresent(updatedItems::add);
                 }

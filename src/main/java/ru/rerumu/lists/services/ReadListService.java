@@ -3,12 +3,15 @@ package ru.rerumu.lists.services;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.Book;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.book.BookBuilder;
 import ru.rerumu.lists.model.books.Filter;
@@ -41,7 +44,9 @@ public class ReadListService {
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
     private final ReadingRecordService readingRecordService;
+    private final BookFactory bookFactory;
 
+    @Autowired
     public ReadListService(
             BookRepository bookRepository,
             AuthorsService authorsService,
@@ -53,7 +58,7 @@ public class ReadListService {
             BookTypesService bookTypesService,
             BookStatusesService bookStatusesService,
             FuzzyMatchingService fuzzyMatchingService,
-            ReadingRecordService readingRecordService
+            ReadingRecordService readingRecordService, BookFactory bookFactory
     ) {
         this.bookRepository = bookRepository;
         this.authorsService = authorsService;
@@ -66,6 +71,7 @@ public class ReadListService {
         this.bookStatusesService = bookStatusesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
         this.readingRecordService = readingRecordService;
+        this.bookFactory = bookFactory;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
@@ -207,7 +213,13 @@ public class ReadListService {
         return book;
     }
 
-    public Optional<BookImpl> getBook(Long bookId) {
+    public Book getBook(Long bookId){
+        Book book = bookFactory.getBook(bookId);
+        logger.info(String.format("Got book '%s'", book.toString()));
+        return book;
+    }
+
+    public Optional<BookImpl> getOptionalBook(Long bookId) {
         return this.bookRepository.getOne(bookId);
     }
 
@@ -245,45 +257,31 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public BookImpl addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
-        Long bookId = bookRepository.getNextId();
-        BookImpl.Builder bookBuilder = new BookImpl.Builder();
+    public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
-        bookBuilder
-                .bookId(bookId)
-                .readListId(readListId)
-                .title(bookAddView.getTitle())
-                .lastChapter(bookAddView.getLastChapter())
-                .note(bookAddView.note());
-
-        Objects.requireNonNull(bookAddView.status());
-
+        // Create book
         BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
-        bookBuilder.bookStatus(bookStatus);
 
-        if (bookAddView.insertDate() != null) {
-            bookBuilder.insertDate(bookAddView.insertDate());
-            bookBuilder.lastUpdateDate(bookAddView.insertDate());
-        } else {
-            LocalDateTime tmp = dateFactory.getLocalDateTime();
-            bookBuilder.insertDate(tmp);
-            bookBuilder.lastUpdateDate(tmp);
-        }
-
-
+        BookType bookType = null;
         if (bookAddView.getBookTypeId() != null) {
-            bookBuilder.bookType(
-                    bookTypesService.findById(bookAddView.getBookTypeId()).orElseThrow()
-            );
+            bookType = bookTypesService.findById(bookAddView.getBookTypeId()).orElseThrow();
         }
 
-        BookImpl newBook = bookBuilder.build();
+        Book newBook = bookFactory.createBook(
+                readListId,
+                bookAddView.getTitle(),
+                bookAddView.getLastChapter(),
+                bookAddView.note(),
+                bookStatus,
+                bookAddView.insertDate(),
+                bookType
+        );
 
-        bookRepository.addOne(newBook);
 
+        // Connect with author
         if (bookAddView.getAuthorId() != null) {
             authorsBooksRepository.add(
-                    newBook.getBookId(),
+                    newBook.getId(),
                     authorsService.getAuthor(
                             readListId,
                             bookAddView.getAuthorId()
@@ -292,7 +290,14 @@ public class ReadListService {
             );
         }
 
-        return getBook(readListId, bookId);
+        // Create reading record
+        newBook.addReadingRecord(
+                bookStatus,
+                bookAddView.insertDate(),
+                null
+        );
+
+        return getBook(newBook.getId());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -332,7 +337,7 @@ public class ReadListService {
     @Transactional(rollbackFor = Exception.class)
     public ReadingRecord addReadingRecord(@NonNull Long bookId, @NonNull ReadingRecordAddView readingRecordAddView) {
 
-        Book book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        Book book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordAddView.statusId()).orElseThrow();
         Long readingRecordId = readingRecordService.getNextId();
         ReadingRecord addedReadingRecord = book.addReadingRecord(
@@ -348,7 +353,7 @@ public class ReadListService {
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteReadingRecord(Long bookId, Long readingRecordId) {
-        BookImpl book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        BookImpl book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
 
         ReadingRecord readingRecord = book.deleteReadingRecord(readingRecordId);
 
@@ -357,7 +362,7 @@ public class ReadListService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateReadingRecord(Long bookId, Long recordId, ReadingRecordUpdateView readingRecordUpdateView) {
-        BookImpl book = getBook(bookId).orElseThrow(EntityNotFoundException::new);
+        BookImpl book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordUpdateView.statusId()).orElseThrow();
 
         ReadingRecord readingRecord = book.updateReadingRecord(

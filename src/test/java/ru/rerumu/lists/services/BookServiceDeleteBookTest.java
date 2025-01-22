@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 
@@ -49,6 +50,8 @@ class BookServiceDeleteBookTest {
     FuzzyMatchingService fuzzyMatchingService;
     @Mock
     ReadingRecordService readingRecordService;
+    @Mock
+    BookFactory bookFactory;
 
 
     @Test
@@ -88,7 +91,8 @@ class BookServiceDeleteBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
         readListService.deleteBook(bookId);
 
@@ -116,7 +120,8 @@ class BookServiceDeleteBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         Assertions.assertThrows(EntityNotFoundException.class,() -> readListService.deleteBook(bookId));

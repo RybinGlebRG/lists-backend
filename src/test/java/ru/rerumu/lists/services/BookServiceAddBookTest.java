@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookAddView;
@@ -50,6 +51,8 @@ class BookServiceAddBookTest {
     FuzzyMatchingService fuzzyMatchingService;
     @Mock
     ReadingRecordService readingRecordService;
+    @Mock
+    BookFactory bookFactory;
 
     @Test
     void shouldAddBook() throws Exception {
@@ -96,7 +99,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);
@@ -147,7 +151,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);
@@ -197,7 +202,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);
@@ -251,7 +257,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);
@@ -306,7 +313,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);
@@ -361,7 +369,8 @@ class BookServiceAddBookTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.addBook(5L, bookAddView);

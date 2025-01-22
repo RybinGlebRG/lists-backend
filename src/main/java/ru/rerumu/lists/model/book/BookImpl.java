@@ -3,17 +3,18 @@ package ru.rerumu.lists.model.book;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.Book;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.BookType;
 import ru.rerumu.lists.model.SeriesItem;
 import ru.rerumu.lists.model.SeriesItemType;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.books.reading_records.ReadingRecordFactory;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -23,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BookImpl implements Book, Cloneable, SeriesItem {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
@@ -50,6 +50,10 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
     private String note;
     @Getter
     private List<ReadingRecord> readingRecords;
+
+    // TODO: Make final
+    @Setter
+    private ReadingRecordFactory readingRecordFactory;
 
 
     public BookImpl(
@@ -181,6 +185,34 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
         readingRecords.add(readingRecord);
 
         return readingRecord;
+    }
+
+    @Override
+    public void addReadingRecord(
+            @NonNull BookStatusRecord bookStatusRecord,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {
+
+        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
+                bookId,
+                bookStatusRecord,
+                startDate,
+                endDate
+        );
+
+        // TODO: Remove
+        if (readingRecords == null){
+            readingRecords = new ArrayList<>();
+        }
+
+        readingRecords.add(readingRecord);
+
+    }
+
+    @Override
+    public Long getId() {
+        return bookId;
     }
 
     public ReadingRecord deleteReadingRecord(Long readingRecordId){
