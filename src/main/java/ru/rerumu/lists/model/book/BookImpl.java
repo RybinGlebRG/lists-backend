@@ -201,6 +201,11 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
                 endDate
         );
 
+        // TODO: Remove
+        if (readingRecords == null){
+            readingRecords = new ArrayList<>();
+        }
+
         readingRecords.add(readingRecord);
 
     }

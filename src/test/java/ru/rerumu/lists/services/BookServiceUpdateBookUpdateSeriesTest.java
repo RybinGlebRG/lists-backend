@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.repository.*;
 import ru.rerumu.lists.views.BookUpdateView;
@@ -49,6 +50,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
     FuzzyMatchingService fuzzyMatchingService;
     @Mock
     ReadingRecordService readingRecordService;
+    @Mock
+    BookFactory bookFactory;
 
 
     @Test
@@ -98,7 +101,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -159,7 +163,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -220,7 +225,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
 
         readListService.updateBook(8L,bookUpdateView);
@@ -280,7 +286,8 @@ class BookServiceUpdateBookUpdateSeriesTest {
                 bookTypesService,
                 bookStatusesService,
                 fuzzyMatchingService,
-                readingRecordService
+                readingRecordService,
+                bookFactory
         );
         readListService.updateBook(8L,bookUpdateView);
 
