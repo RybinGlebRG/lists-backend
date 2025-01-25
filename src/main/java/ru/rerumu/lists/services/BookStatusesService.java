@@ -1,9 +1,6 @@
 package ru.rerumu.lists.services;
 
-import org.springframework.stereotype.Service;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
-import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.repository.CrudRepository;
 
 import java.util.List;

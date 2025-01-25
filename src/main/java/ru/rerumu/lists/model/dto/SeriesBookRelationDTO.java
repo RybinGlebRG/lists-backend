@@ -1,7 +1,7 @@
 package ru.rerumu.lists.model.dto;
 
 import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.book.type.BookType;
 
 import java.util.Date;
 

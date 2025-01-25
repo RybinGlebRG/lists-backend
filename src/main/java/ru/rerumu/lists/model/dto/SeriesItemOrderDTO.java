@@ -1,5 +1,7 @@
 package ru.rerumu.lists.model.dto;
 
+import ru.rerumu.lists.model.series.item.SeriesItemDTO;
+
 public class SeriesItemOrderDTO {
 
     public SeriesItemDTO itemDTO;

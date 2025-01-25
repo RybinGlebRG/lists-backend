@@ -1,25 +1,29 @@
 package ru.rerumu.lists.services;
 
-import ru.rerumu.lists.model.BookType;
-import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.book.type.BookType;
+import ru.rerumu.lists.model.book.type.BookTypeDTO;
 import ru.rerumu.lists.repository.CrudRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BookTypesService {
 
-    private final CrudRepository<BookType,Integer> crudRepository;
+    private final CrudRepository<BookTypeDTO,Integer> crudRepository;
 
-    public BookTypesService(CrudRepository<BookType,Integer> crudRepository){
+    public BookTypesService(CrudRepository<BookTypeDTO,Integer> crudRepository){
         this.crudRepository = crudRepository;
     }
 
     public List<BookType> findAll(){
-        return crudRepository.findAll();
+        return crudRepository.findAll().stream()
+                .map(BookTypeDTO::toDomain)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Optional<BookType> findById(int bookTypeId){
-        return crudRepository.findById(bookTypeId);
+        return crudRepository.findById(bookTypeId).map(BookTypeDTO::toDomain);
     }
 }

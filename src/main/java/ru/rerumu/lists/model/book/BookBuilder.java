@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 
 import java.time.LocalDateTime;
@@ -29,18 +29,6 @@ public class BookBuilder {
     private List<ReadingRecord> readingRecords;
 
     public BookBuilder() {
-    }
-
-    public BookBuilder(BookImpl book) {
-        this.bookId = book.getBookId();
-        this.readListId = book.getReadListId();
-        this.title = book.getTitle();
-        this.bookStatus = book.getBookStatus();
-        this.insertDate = book.getInsertDate();
-        this.lastUpdateDate = book.getLastUpdateDate();
-        this.lastChapter = book.getLastChapter().orElse(null);
-        this.previousBooks = book.getPreviousBooks();
-        this.note = book.getNote();
     }
 
     public BookBuilder bookId(Long bookId) {

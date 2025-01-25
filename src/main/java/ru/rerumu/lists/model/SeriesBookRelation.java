@@ -1,11 +1,12 @@
 package ru.rerumu.lists.model;
 
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.Book;
+import ru.rerumu.lists.model.series.Series;
 
-public record SeriesBookRelation(BookImpl book, Series series, Long order) {
+public record SeriesBookRelation(Book book, Series series, Long order) {
 
     public SeriesBookRelation {
-        book = book.clone();
+        book = book;
         series = series.clone();
     }
 
@@ -15,7 +16,7 @@ public record SeriesBookRelation(BookImpl book, Series series, Long order) {
     }
 
     @Override
-    public BookImpl book() {
-        return book.clone();
+    public Book book() {
+        return book;
     }
 }

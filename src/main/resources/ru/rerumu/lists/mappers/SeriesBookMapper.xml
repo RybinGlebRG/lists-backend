@@ -4,18 +4,18 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.SeriesBookMapper">
 
-    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.model.SeriesBookRelation">
-        <association property="book"
-                     javaType="ru.rerumu.lists.model.book.BookImpl"
-                     column="{bookId=book_book_id,readListId=readListId}"
-                     select="ru.rerumu.lists.mappers.BookMapper.getOne"
-        />
-        <association property="series"
-                     javaType="ru.rerumu.lists.model.Series"
-                     column="{seriesId=series_series_id,seriesListId=readListId}"
-                     select="ru.rerumu.lists.mappers.SeriesMapper.getOne"
-        />
-    </resultMap>
+<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.model.SeriesBookRelation">-->
+<!--        <association property="book"-->
+<!--                     javaType="ru.rerumu.lists.model.book.BookImpl"-->
+<!--                     column="{bookId=book_book_id,readListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.mappers.BookMapper.getOne"-->
+<!--        />-->
+<!--        <association property="series"-->
+<!--                     javaType="ru.rerumu.lists.model.series.Series"-->
+<!--                     column="{seriesId=series_series_id,seriesListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.mappers.SeriesMapper.getOne"-->
+<!--        />-->
+<!--    </resultMap>-->
 
     <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesBookRelationDTO">
         <constructor>
@@ -29,11 +29,11 @@
             <arg column="insert_date" javaType="Date"/>
             <arg column="last_update_date" javaType="Date"/>
             <arg column="last_chapter" javaType="Integer"/>
-            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.model.BookType"/>
+            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.model.book.type.BookType"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.BookType">
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.book.type.BookType">
         <constructor>
             <idArg column="type_id" javaType="Integer"/>
             <arg column="type_name" javaType="String"/>
@@ -80,14 +80,14 @@
           and book_list_id = #{readListId}
     </delete>
 
-    <select id="getByBookId" resultMap="SeriesBookResultMap">
-        select  sb.book_book_id,
-                sb.book_list_id as readListId,
-                sb.series_series_id,
-                sb.series_order
-        from series_books sb
-        where sb.book_book_id = #{bookId}
-    </select>
+<!--    <select id="getByBookId" resultMap="SeriesBookResultMap">-->
+<!--        select  sb.book_book_id,-->
+<!--                sb.book_list_id as readListId,-->
+<!--                sb.series_series_id,-->
+<!--                sb.series_order-->
+<!--        from series_books sb-->
+<!--        where sb.book_book_id = #{bookId}-->
+<!--    </select>-->
 
     <select id="getSeriesIdsByBookId" resultType="Long">
         select  sb.series_series_id

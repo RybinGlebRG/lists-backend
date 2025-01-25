@@ -1,12 +1,12 @@
-package ru.rerumu.lists.model;
+package ru.rerumu.lists.model.series;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.rerumu.lists.model.series.item.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public record Series(
@@ -123,6 +123,18 @@ public record Series(
             }
         }
         return obj;
+    }
+
+    public SeriesDTO toDTO(){
+        SeriesDTO seriesDTO = new SeriesDTO(
+                seriesId,
+                seriesListId,
+                title,
+                null,
+                null
+        );
+
+        return seriesDTO;
     }
 
     @Override

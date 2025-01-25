@@ -9,23 +9,29 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
-import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.AuthorBookRelation;
+import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.type.BookType;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
-import ru.rerumu.lists.model.book.BookBuilder;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
-import ru.rerumu.lists.repository.*;
+import ru.rerumu.lists.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.repository.BookRepository;
+import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,72 +88,25 @@ public class ReadListService {
                 Optional.empty();
 
         authorsBooksRepositoryList.stream()
-                .filter(item -> item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId) &&
+                .filter(item -> item.getBook().getId().equals(bookId) &&
+                        item.getBook().getListId().equals(readListId) &&
                         (optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item.getAuthor()))
                 )
                 .forEach(item -> authorsBooksRelationService.delete(
-                        item.getBook().getBookId(),
+                        item.getBook().getId(),
                         item.getAuthor().getAuthorId(),
-                        item.getBook().getReadListId()
+                        item.getBook().getListId()
                 ));
 
         if (authorsBooksRepositoryList.stream()
                 .noneMatch(item -> optionalAuthor.isPresent() &&
                         item.getAuthor().equals(optionalAuthor.get()) &&
-                        item.getBook().getBookId().equals(bookId) &&
-                        item.getBook().getReadListId().equals(readListId))
+                        item.getBook().getId().equals(bookId) &&
+                        item.getBook().getListId().equals(readListId))
         ) {
             optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
         }
     }
-
-//    private void updateSeries(long bookId, Long seriesId, long readListId, Long seriesOrder, Book book) {
-//        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(bookId, readListId);
-//
-////        List<Series> seriesList = seriesService.findByBook(book);
-//
-//
-//        Optional<Series> optionalSeries = seriesId != null ?
-//                seriesService.getSeries( seriesId) :
-//                Optional.empty();
-//
-//        seriesBookRelationList.stream()
-//                .filter(item -> item.book().getBookId().equals(bookId) &&
-//                        item.book().getReadListId().equals(readListId) &&
-//                        (optionalSeries.isEmpty() || !optionalSeries.get().equals(item.series()))
-//                )
-//                .forEach(item -> bookSeriesRelationService.delete(
-//                        item.book().getBookId(),
-//                        item.series().getSeriesId(),
-//                        item.book().getReadListId()
-//                ));
-//
-//        seriesBookRelationList.stream()
-//                .filter(item -> optionalSeries.isPresent() &&
-//                        item.series().equals(optionalSeries.get()) &&
-//                        item.book().getBookId().equals(bookId) &&
-//                        item.book().getReadListId().equals(readListId)
-//                )
-//                .forEach(item -> bookSeriesRelationService.update(new SeriesBookRelation(
-//                        item.book(),
-//                        item.series(),
-//                        seriesOrder
-//                )));
-//
-//        if (seriesBookRelationList.stream().noneMatch(item -> optionalSeries.isPresent() &&
-//                optionalSeries.get().equals(item.series()) &&
-//                item.book().getBookId().equals(bookId) &&
-//                item.book().getReadListId().equals(readListId))
-//        ) {
-//            optionalSeries.ifPresent(series -> seriesBooksRespository.add(
-//                    bookId,
-//                    series.getSeriesId(),
-//                    series.getSeriesListId(),
-//                    seriesOrder)
-//            );
-//        }
-//    }
 
     @Transactional(rollbackFor = Exception.class)
     public void updateBook(Long bookId, BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException, CloneNotSupportedException {
@@ -159,68 +118,34 @@ public class ReadListService {
             throw new EmptyMandatoryParameterException();
         }
 
-        BookImpl currentBook = bookRepository.getOne(bookUpdateView.getReadListId(), bookId);
+        Book book = bookFactory.getBook(bookId);
 
-        BookBuilder builder = new BookBuilder(currentBook);
-
-        builder.insertDate(Date.from(bookUpdateView.getInsertDateUTC().toInstant(ZoneOffset.UTC)))
-                .title(bookUpdateView.getTitle());
-
-        bookUpdateView.getLastChapter().ifPresent(builder::lastChapter);
-
-        // TODO: Test + add other fields
-        if (!bookUpdateView.getLastChapter().equals(currentBook.getLastChapter()) ||
-                bookUpdateView.getStatus() != currentBook.getBookStatus().statusId()) {
-            builder.lastUpdateDate(dateFactory.getLocalDateTime());
-        }
+        book.updateInsertDate(bookUpdateView.getInsertDateUTC());
+        book.updateTitle(bookUpdateView.getTitle());
+        bookUpdateView.getLastChapter().ifPresent(book::updateLastChapter);
 
         Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
-        builder.bookStatus(
-                bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow()
-        );
+        BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
+        book.updateStatus(bookStatusRecord);
+
+        book.updateNote(bookUpdateView.note());
 
         if (bookUpdateView.getBookTypeId() != null) {
-            Optional<BookType> optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId());
-            if (optionalBookType.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-
-            optionalBookType.ifPresent(builder::bookType);
-//            builder.bookType(
-//                    new BookTypeOld.Builder()
-//                            .typeId(bookUpdateView.getBookTypeId())
-//                            .build()
-//            );
+            BookType optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId()).orElseThrow(EntityNotFoundException::new);
+            book.updateType(optionalBookType);
         }
 
-        builder.note(bookUpdateView.note());
+        book.save();
 
-        BookImpl updatedBook = builder.build();
-
-        logger.debug(String.format("Updated book: %s", updatedBook.toString()));
-
-        bookRepository.update(updatedBook);
+        logger.debug(String.format("Updated book: %s", book));
 
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
-
-//        updateSeries(bookId, bookUpdateView.getSeriesId(), bookUpdateView.getReadListId(), bookUpdateView.getOrder(),updatedBook);
-
     }
 
-    public BookImpl getBook(Long readListId, Long bookId) {
-        BookImpl book = this.bookRepository.getOne(readListId, bookId);
-        logger.info(String.format("Got book '%s'", book.toString()));
-        return book;
-    }
-
-    public Book getBook(Long bookId){
+    public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
         Book book = bookFactory.getBook(bookId);
         logger.info(String.format("Got book '%s'", book.toString()));
         return book;
-    }
-
-    public Optional<BookImpl> getOptionalBook(Long bookId) {
-        return this.bookRepository.getOne(bookId);
     }
 
     public List<BookImpl> getAllBooks(Long readListId, Search search) {
@@ -257,7 +182,7 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Book addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
+    public void addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
         // Create book
         BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
@@ -297,37 +222,35 @@ public class ReadListService {
                 null
         );
 
-        return getBook(newBook.getId());
+        getBook(newBook.getId());
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteBook(Long bookId) throws EntityNotFoundException {
-        Optional<BookImpl> bookOptional = bookRepository.getOne(bookId);
-        if (bookOptional.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
+    public void deleteBook(Long bookId) throws EntityNotFoundException, EmptyMandatoryParameterException {
+
+        Book book = bookFactory.getBook(bookId);
 
         seriesBooksRespository.getByBookId(
-                        bookOptional.get().getBookId(),
-                        bookOptional.get().getReadListId()
+                        book.getId(),
+                        book.getListId()
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
-                        item.book().getBookId(),
+                        item.book().getId(),
                         item.series().getSeriesId(),
-                        item.book().getReadListId()
+                        item.book().getListId()
                 ));
 
         authorsBooksRepository.getByBookId(
-                        bookOptional.get().getBookId(),
-                        bookOptional.get().getBookId()
+                        book.getId(),
+                        book.getListId()
                 )
                 .forEach(item -> authorsBooksRelationService.delete(
-                        item.getBook().getBookId(),
+                        item.getBook().getId(),
                         item.getAuthor().getAuthorId(),
-                        item.getBook().getReadListId()
+                        item.getBook().getListId()
                 ));
 
-        bookRepository.delete(bookOptional.get().getBookId());
+        bookRepository.delete(book.getId());
     }
 
     public Optional<User> getBookUser(Long bookId) {
@@ -335,9 +258,9 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ReadingRecord addReadingRecord(@NonNull Long bookId, @NonNull ReadingRecordAddView readingRecordAddView) {
+    public ReadingRecord addReadingRecord(@NonNull Long bookId, @NonNull ReadingRecordAddView readingRecordAddView) throws EmptyMandatoryParameterException {
 
-        Book book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
+        Book book = getBook(bookId);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordAddView.statusId()).orElseThrow();
         Long readingRecordId = readingRecordService.getNextId();
         ReadingRecord addedReadingRecord = book.addReadingRecord(
@@ -352,8 +275,8 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteReadingRecord(Long bookId, Long readingRecordId) {
-        BookImpl book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
+    public void deleteReadingRecord(Long bookId, Long readingRecordId) throws EmptyMandatoryParameterException {
+        Book book = getBook(bookId);
 
         ReadingRecord readingRecord = book.deleteReadingRecord(readingRecordId);
 
@@ -361,8 +284,8 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateReadingRecord(Long bookId, Long recordId, ReadingRecordUpdateView readingRecordUpdateView) {
-        BookImpl book = getOptionalBook(bookId).orElseThrow(EntityNotFoundException::new);
+    public void updateReadingRecord(Long bookId, Long recordId, ReadingRecordUpdateView readingRecordUpdateView) throws EmptyMandatoryParameterException {
+        Book book = getBook(bookId);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordUpdateView.statusId()).orElseThrow();
 
         ReadingRecord readingRecord = book.updateReadingRecord(

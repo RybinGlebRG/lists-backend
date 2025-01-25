@@ -3,10 +3,11 @@ package ru.rerumu.lists.repository.impl;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.dto.BookDTO;
+import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.repository.BookRepository;
 
@@ -20,12 +21,14 @@ public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
     private final ReadingRecordMapper readingRecordMapper;
+    private final BookFactory bookFactory;
 
     public BookRepositoryImpl(
-            BookMapper bookMapper, ReadingRecordMapper readingRecordMapper
+            BookMapper bookMapper, ReadingRecordMapper readingRecordMapper, BookFactory bookFactory
     ) {
         this.bookMapper = bookMapper;
         this.readingRecordMapper = readingRecordMapper;
+        this.bookFactory = bookFactory;
     }
 
 
@@ -65,6 +68,20 @@ public class BookRepositoryImpl implements BookRepository {
                     .readingRecords(readingRecord)
                     .build();
             return Optional.of(bookDTO.toDomain());
+        }
+    }
+
+    @Override
+    public Optional<BookDTO> getOneDTO(Long bookId) {
+        BookDTO bookDTO = bookMapper.getOne(bookId);
+        if (bookDTO == null) {
+            return Optional.empty();
+        } else {
+            List<ReadingRecord> readingRecord = readingRecordMapper.findByBookId(bookDTO.bookId);
+            bookDTO = bookDTO.toBuilder()
+                    .readingRecords(readingRecord)
+                    .build();
+            return Optional.of(bookDTO);
         }
     }
 

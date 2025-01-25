@@ -1,6 +1,6 @@
 package ru.rerumu.lists.mappers;
 
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
 
@@ -12,8 +12,8 @@ public interface SeriesBookMapper {
 
     void deleteBySeries(Long seriesId);
 
-    @Deprecated
-    List<SeriesBookRelation> getByBookId(Long bookId);
+//    @Deprecated
+//    List<SeriesBookRelation> getByBookId(Long bookId);
     List<Long> getSeriesIdsByBookId(Long bookId, Long readListId);
     List<Long> getBookIdsBySeriesId(Long seriesId);
 

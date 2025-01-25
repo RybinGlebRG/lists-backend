@@ -1,16 +1,15 @@
 package ru.rerumu.lists.repository.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.mappers.SeriesMapper;
-import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.dto.BookDTO;
-import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.model.dto.SeriesDTO;
+import ru.rerumu.lists.model.book.BookDTO;
+import ru.rerumu.lists.model.series.SeriesDTO;
+import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.repository.SeriesRepository;
-import ru.rerumu.lists.services.MonitoringService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,21 +18,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;
+    private final SeriesFactory seriesFactory;
 
+    @Autowired
     public SeriesRepositoryImpl(
-            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper) {
+            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactory seriesFactory) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.readingRecordMapper = readingRecordMapper;
+        this.seriesFactory = seriesFactory;
     }
 
     @Deprecated
     @Override
-    public Series getOne(Long readListId, Long seriesId) {
+    public SeriesDTO getOne(Long readListId, Long seriesId) {
         SeriesDTO seriesDTO = seriesMapper.getOne(readListId, seriesId);
 
         List<Long> bookIds = seriesDTO.seriesItemOrderDTOList.stream()
@@ -65,11 +67,13 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
             bookDTO.setReadingRecords(records);
         }
 
-        return seriesDTO.toSeries();
+
+
+        return seriesDTO;
     }
 
     @Override
-    public List<Series> getAll(Long seriesListId) {
+    public List<SeriesDTO> getAll(Long seriesListId) {
 
         try {
             List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
@@ -105,9 +109,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
                 bookDTO.setReadingRecords(records);
             }
 
-            List<Series> resList = res.stream()
-                    .map(SeriesDTO::toSeries)
-                    .collect(Collectors.toCollection(ArrayList::new));
+            List<SeriesDTO> resList = new ArrayList<>(res);
             return resList;
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -126,11 +128,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<Series,Long> imp
     }
 
     @Override
-    public void add(Series series) {
+    public void add(SeriesDTO series) {
         seriesMapper.add(
-                series.seriesListId(),
-                series.seriesId(),
-                series.title()
+                series.seriesListId,
+                series.seriesId,
+                series.title
         );
     }
 

@@ -1,8 +1,12 @@
-package ru.rerumu.lists.model.dto;
+package ru.rerumu.lists.model.series;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.SeriesItem;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import ru.rerumu.lists.model.series.item.SeriesItem;
+import ru.rerumu.lists.model.dto.EntityDTO;
+import ru.rerumu.lists.model.series.item.SeriesItemDTO;
+import ru.rerumu.lists.model.dto.SeriesItemOrderDTO;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,6 +14,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class SeriesDTO implements EntityDTO<Series> {
 
     public  Long seriesId;
@@ -19,8 +27,6 @@ public class SeriesDTO implements EntityDTO<Series> {
     // TODO: remove
     public Integer bookCount=0;
     public List<SeriesItemOrderDTO> seriesItemOrderDTOList;
-
-    public SeriesDTO(){}
 
     public Series toSeries(){
         List<SeriesItem> tmp = seriesItemOrderDTOList.stream()

@@ -6,10 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.BookSeriesView;
@@ -126,7 +127,7 @@ public class SeriesController {
             @RequestBody SeriesUpdateView seriesUpdateView,
             @RequestAttribute("username") String username
     )
-            throws UserIsNotOwnerException, EntityNotFoundException {
+            throws UserIsNotOwnerException, EntityNotFoundException, EmptyMandatoryParameterException {
 
         userService.checkOwnershipSeries(username, seriesId);
 

@@ -1,7 +1,7 @@
 package ru.rerumu.lists.mappers;
 
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.dto.BookDTO;
+import ru.rerumu.lists.model.book.BookDTO;
 
 import java.util.Date;
 import java.util.List;

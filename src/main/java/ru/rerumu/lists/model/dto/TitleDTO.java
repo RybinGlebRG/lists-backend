@@ -3,6 +3,7 @@ package ru.rerumu.lists.model.dto;
 import ru.rerumu.lists.model.Title;
 import ru.rerumu.lists.model.TitleStatus;
 import ru.rerumu.lists.model.VideoType;
+import ru.rerumu.lists.model.series.item.SeriesItemDTO;
 
 import java.util.Date;
 

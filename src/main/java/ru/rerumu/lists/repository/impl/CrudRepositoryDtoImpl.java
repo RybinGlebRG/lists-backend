@@ -11,38 +11,32 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CrudRepositoryDtoImpl<T,ID> implements CrudRepository<T,ID> {
+public class CrudRepositoryDtoImpl<T extends EntityDTO<?>,ID> implements CrudRepository<T,ID> {
 
-    private final CrudMapper<T,ID, EntityDTO<T>> mapper;
+    private final CrudMapper<T, ID, T> mapper;
 
-    public CrudRepositoryDtoImpl(CrudMapper<T,ID, EntityDTO<T>> mapper) {
+    public CrudRepositoryDtoImpl(CrudMapper<T, ID, T> mapper) {
         this.mapper = mapper;
     }
 
     @Override
     public Optional<T> findById(ID id){
-        EntityDTO<T> entityDTO = mapper.findById(id);
-        if (entityDTO==null){
-            return Optional.empty();
-        } else {
-            return Optional.ofNullable(entityDTO.toDomain());
-        }
+        T entityDTO = mapper.findById(id);
+        return Optional.ofNullable(entityDTO);
     }
 
     @Override
     public List<T> findAll() {
-        List<EntityDTO<T>> entityDTOList = mapper.findAll();
+        List<T> entityDTOList = mapper.findAll();
         return entityDTOList.stream()
-                .map(EntityDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public List<T> findByUser(User user){
-        List<EntityDTO<T>> entityDTOList = mapper.findByUser(user);
+        List<T> entityDTOList = mapper.findByUser(user);
         return entityDTOList.stream()
-                .map(EntityDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
     }

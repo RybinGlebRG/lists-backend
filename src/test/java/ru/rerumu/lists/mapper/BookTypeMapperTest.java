@@ -7,11 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.rerumu.lists.mappers.BookStatusMapper;
 import ru.rerumu.lists.mappers.BookTypeMapper;
-import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
-import ru.rerumu.lists.model.dto.BookTypeDTO;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.dto.EntityDTO;
 
 import java.util.List;

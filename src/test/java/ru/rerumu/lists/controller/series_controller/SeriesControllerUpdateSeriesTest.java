@@ -13,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
-import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.series.item.SeriesItemType;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.series_update.SeriesUpdateItem;
 import ru.rerumu.lists.views.series_update.SeriesUpdateView;

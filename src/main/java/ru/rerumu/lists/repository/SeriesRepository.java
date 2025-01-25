@@ -1,19 +1,18 @@
 package ru.rerumu.lists.repository;
 
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.SeriesDTO;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface SeriesRepository extends CrudRepository<Series,Long>{
+public interface SeriesRepository extends CrudRepository<SeriesDTO,Long>{
 
     @Deprecated
-    Series getOne(Long seriesListId, Long seriesId);
-    List<Series> getAll(Long seriesListId);
+    SeriesDTO getOne(Long seriesListId, Long seriesId);
+    List<SeriesDTO> getAll(Long seriesListId);
     int getBookCount(Long readListId, Long seriesId);
 
 //    Integer getNextId();
-    void add(Series series);
+    void add(SeriesDTO series);
 
     void delete(long seriesId);
 }

@@ -5,13 +5,16 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
+import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecordFactory;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Objects;
 
 @Component
 public class BookFactory {
@@ -64,13 +67,90 @@ public class BookFactory {
         bookRepository.addOne(book);
 
         book.setReadingRecordFactory(readingRecordFactory);
+        book.setBookRepository(bookRepository);
+        book.setDateFactory(dateFactory);
 
         return book;
     }
 
-    public Book getBook(Long bookId){
-        BookImpl book = this.bookRepository.getOne(bookId).orElseThrow(EntityNotFoundException::new);
+    public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
+        BookDTO bookDTO = this.bookRepository.getOneDTO(bookId).orElseThrow(EntityNotFoundException::new);
+
+        BookBuilder builder = new BookBuilder()
+                .bookId(bookDTO.bookId)
+                .readListId(bookDTO.readListId)
+                .title(bookDTO.title)
+                .bookStatus(bookDTO.bookStatusObj)
+                .insertDate(bookDTO.insertDate)
+                .lastUpdateDate(bookDTO.lastUpdateDate)
+                .lastChapter(bookDTO.lastChapter)
+                .bookType(bookDTO.bookTypeObj.toDomain())
+                .note(bookDTO.note)
+                .readingRecords(bookDTO.readingRecords);
+
+        if (bookDTO.previousBooks != null) {
+            HashMap<Book,Integer> bookOrderMap = bookDTO.previousBooks.stream()
+                    .filter(Objects::nonNull)
+                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                            item.bookDTO.toDomain(),
+                            item.getOrder()
+                    ))
+                    .collect(
+                            HashMap::new,
+                            (map,item) -> map.put(item.getKey(),item.getValue()),
+                            HashMap::putAll
+                    );
+
+            builder.previousBooks(
+                    new BookChain(bookOrderMap)
+            );
+        }
+
+        BookImpl book = builder.build();
         book.setReadingRecordFactory(readingRecordFactory);
+        book.setBookRepository(bookRepository);
+        book.setDateFactory(dateFactory);
+
+        return book;
+    }
+
+    public Book fromDTO(BookDTO bookDTO) throws EmptyMandatoryParameterException {
+
+        BookBuilder builder = new BookBuilder()
+                .bookId(bookDTO.bookId)
+                .readListId(bookDTO.readListId)
+                .title(bookDTO.title)
+                .bookStatus(bookDTO.bookStatusObj)
+                .insertDate(bookDTO.insertDate)
+                .lastUpdateDate(bookDTO.lastUpdateDate)
+                .lastChapter(bookDTO.lastChapter)
+                .bookType(bookDTO.bookTypeObj.toDomain())
+                .note(bookDTO.note)
+                .readingRecords(bookDTO.readingRecords);
+
+        if (bookDTO.previousBooks != null) {
+            HashMap<Book,Integer> bookOrderMap = bookDTO.previousBooks.stream()
+                    .filter(Objects::nonNull)
+                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                            fromDTO(bookDTO),
+                            item.getOrder()
+                    ))
+                    .collect(
+                            HashMap::new,
+                            (map,item) -> map.put(item.getKey(),item.getValue()),
+                            HashMap::putAll
+                    );
+
+            builder.previousBooks(
+                    new BookChain(bookOrderMap)
+            );
+        }
+
+        BookImpl book = builder.build();
+        book.setReadingRecordFactory(readingRecordFactory);
+        book.setBookRepository(bookRepository);
+        book.setDateFactory(dateFactory);
+
         return book;
     }
 }

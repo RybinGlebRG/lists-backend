@@ -3,7 +3,7 @@ package ru.rerumu.lists.views;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.book.BookImpl;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;

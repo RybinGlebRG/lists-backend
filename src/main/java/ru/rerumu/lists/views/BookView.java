@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.series.Series;
 
 import java.util.List;
 

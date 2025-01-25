@@ -3,8 +3,7 @@ package ru.rerumu.lists.views;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.controller.BooksController;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
 import java.util.*;

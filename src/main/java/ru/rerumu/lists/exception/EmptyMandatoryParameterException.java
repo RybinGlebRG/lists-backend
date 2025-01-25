@@ -1,6 +1,6 @@
 package ru.rerumu.lists.exception;
 
-public class EmptyMandatoryParameterException  extends Exception{
+public class EmptyMandatoryParameterException  extends ClientException{
 
     private String message = "Mandatory parameter is null or empty";
 

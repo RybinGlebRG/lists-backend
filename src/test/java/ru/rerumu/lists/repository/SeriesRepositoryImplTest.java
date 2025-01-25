@@ -6,8 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.rerumu.lists.mappers.SeriesMapper;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 
 import java.util.List;
 
