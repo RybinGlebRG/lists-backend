@@ -9,6 +9,7 @@ import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface Book extends SeriesItem {
 
@@ -44,8 +45,10 @@ public interface Book extends SeriesItem {
     void updateStatus(BookStatusRecord bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
-
     void save();
+
+    boolean filterByStatusIds(List<Integer> statusIds);
+    Float getTitleFuzzyMatchScore(String value);
 
     String toString();
     BookDTO toDTO();

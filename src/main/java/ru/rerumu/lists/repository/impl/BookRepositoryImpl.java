@@ -3,6 +3,7 @@ package ru.rerumu.lists.repository.impl;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
+import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.User;
@@ -86,7 +87,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<BookImpl> getAll(Long readListId) {
+    public List<BookDTO> getAll(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAll(readListId);
 
         HashMap<Long, List<ReadingRecord>> bookToRecordMap = bookDTOList.stream()
@@ -97,11 +98,10 @@ public class BookRepositoryImpl implements BookRepository {
                         Collectors.toCollection(ArrayList::new)
                 ));
 
-        List<BookImpl> bookList = bookDTOList.stream()
+        List<BookDTO> bookList = bookDTOList.stream()
                 .map(bookDTO -> bookDTO.toBuilder()
                         .readingRecords(bookToRecordMap.get(bookDTO.bookId))
                         .build())
-                .map(BookDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -109,7 +109,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<BookImpl> getAllChained(Long readListId) {
+    public List<BookDTO> getAllChained(Long readListId) {
         List<BookDTO> bookDTOList = bookMapper.getAllChained(readListId);
 
         List<Long> bookIds = bookDTOList.stream()
@@ -156,9 +156,8 @@ public class BookRepositoryImpl implements BookRepository {
             }
         }
 
-        List<BookImpl> bookList = bookDTOList.stream()
+        List<BookDTO> bookList = bookDTOList.stream()
                 .peek(bookDTO -> log.debug(bookDTO.toString()))
-                .map(BookDTO::toDomain)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 

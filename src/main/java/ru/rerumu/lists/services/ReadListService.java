@@ -148,20 +148,23 @@ public class ReadListService {
         return book;
     }
 
-    public List<BookImpl> getAllBooks(Long readListId, Search search) {
-        List<BookImpl> bookList;
+    public List<Book> getAllBooks(Long readListId, Search search) {
+        List<Book> bookList;
         if (search.getChainBySeries()) {
-            bookList = bookRepository.getAllChained(readListId);
+            bookList = bookFactory.getAllChained(readListId);
         } else {
-            bookList = this.bookRepository.getAll(readListId);
+            bookList = bookFactory.getAll(readListId);
         }
 
-        Stream<BookImpl> bookStream = bookList.stream();
+        Stream<Book> bookStream = bookList.stream();
         for (Filter filter : search.filters()) {
             switch (filter.field()) {
                 case "bookStatusIds" -> {
+                    List<Integer> statusIds = filter.values().stream()
+                            .map(Integer::valueOf)
+                            .collect(Collectors.toCollection(ArrayList::new));
                     bookStream = bookStream
-                            .filter(book -> filter.values().contains(book.getBookStatus().statusId().toString()));
+                            .filter(book -> book.filterByStatusIds(statusIds));
                 }
                 case "titles" -> {
                     bookStream = fuzzyMatchingService.findMatchingBooksByTitle(filter.values(), bookStream);

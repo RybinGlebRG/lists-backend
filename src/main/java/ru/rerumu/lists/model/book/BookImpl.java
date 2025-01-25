@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EntityNotFoundException;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +62,8 @@ public class BookImpl implements Book, Cloneable {
 
     @Setter
     private DateFactory dateFactory;
+
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
 
 
     BookImpl(
@@ -265,6 +269,32 @@ public class BookImpl implements Book, Cloneable {
     @Override
     public void save() {
         bookRepository.update(this);
+    }
+
+    @Override
+    public boolean filterByStatusIds(List<Integer> statusIds) {
+        return statusIds.contains(bookStatus.statusId());
+    }
+
+    @Override
+    public Float getTitleFuzzyMatchScore(String value) {
+        if (title.equalsIgnoreCase(value)){
+            return 1f;
+        }
+
+        List<String> titleSubstrings = new ArrayList<>();
+        titleSubstrings.add(title);
+        titleSubstrings.addAll(Arrays.asList(title.split(" ")));
+
+        List<Float> scores = new ArrayList<>();
+        for(String item: titleSubstrings){
+            Integer distance = levenshteinDistance.apply(item.toUpperCase(), value.toUpperCase());
+            Float score = (float) (item.length() - distance) / item.length();
+            scores.add(score);
+        }
+
+        Float res = scores.stream().max(Float::compareTo).orElseThrow();
+        return res;
     }
 
     public ReadingRecord deleteReadingRecord(Long readingRecordId){

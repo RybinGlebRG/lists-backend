@@ -7,14 +7,18 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.books.reading_records.ReadingRecordFactory;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class BookFactory {
@@ -112,6 +116,18 @@ public class BookFactory {
         book.setDateFactory(dateFactory);
 
         return book;
+    }
+
+    public List<Book> getAllChained(Long readListId){
+        return bookRepository.getAllChained(readListId).stream()
+                .map(this::fromDTO)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public List<Book> getAll(Long readListId){
+        return bookRepository.getAll(readListId).stream()
+                .map(this::fromDTO)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Book fromDTO(BookDTO bookDTO) throws EmptyMandatoryParameterException {

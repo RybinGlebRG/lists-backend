@@ -11,6 +11,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.series.Series;
@@ -139,8 +140,9 @@ public class BooksController {
     ) throws UserIsNotOwnerException {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);
+//        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
 
-        List<BookImpl> books = readListService.getAllBooks(readListId, search);
+        List<Book> books = readListService.getAllBooks(readListId, search);
 //        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
