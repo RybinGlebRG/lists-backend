@@ -1,0 +1,25 @@
+package ru.rerumu.lists.model.tag;
+
+import lombok.Getter;
+import lombok.NonNull;
+import ru.rerumu.lists.exception.NotImplementedException;
+import ru.rerumu.lists.model.base.EntityDTO;
+
+@Getter
+public class TagDTO implements EntityDTO<Tag> {
+
+    private final Long tagId;
+    private final String name;
+    private final Long userId;
+
+    public TagDTO(@NonNull Long tagId, @NonNull String name, @NonNull Long userId) {
+        this.tagId = tagId;
+        this.name = name;
+        this.userId = userId;
+    }
+
+    @Override
+    public Tag toDomain() {
+        throw  new NotImplementedException();
+    }
+}

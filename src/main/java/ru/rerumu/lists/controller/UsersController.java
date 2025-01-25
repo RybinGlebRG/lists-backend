@@ -3,16 +3,13 @@ package ru.rerumu.lists.controller;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.rerumu.lists.factories.UserServiceImplFactory;
 import ru.rerumu.lists.model.TokenRequest;
-import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.services.user.UserService;
 
 @CrossOrigin
 @RestController

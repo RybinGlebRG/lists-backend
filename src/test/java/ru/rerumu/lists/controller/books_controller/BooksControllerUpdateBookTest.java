@@ -14,9 +14,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.BooksController;
 import ru.rerumu.lists.services.*;
+import ru.rerumu.lists.services.author.AuthorsService;
+import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookUpdateView;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @WebMvcTest(BooksController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -94,7 +99,8 @@ class BooksControllerUpdateBookTest {
                         LocalDateTime.of(2022, 10, 1, 0, 0, 0),
                         2,
                         "test note 2",
-                        null
+                        null,
+                        new ArrayList<>()
                 )
         );
     }

@@ -6,10 +6,10 @@
 //import org.mockito.Mock;
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import ru.rerumu.lists.exception.EntityNotFoundException;
-//import ru.rerumu.lists.factories.DateFactory;
+//import ru.rerumu.lists.utils.DateFactory;
 //import ru.rerumu.lists.model.*;
-//import ru.rerumu.lists.model.book.BookFactory;
-//import ru.rerumu.lists.model.book.BookImpl;
+//import ru.rerumu.lists.model.book.impl.BookFactory;
+//import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.repository.*;
 //
 //import java.util.Date;

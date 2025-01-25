@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.dto.EntityDTO;
+import ru.rerumu.lists.model.base.EntityDTO;
 import ru.rerumu.lists.model.series.item.SeriesItemDTO;
 import ru.rerumu.lists.model.dto.SeriesItemOrderDTO;
 

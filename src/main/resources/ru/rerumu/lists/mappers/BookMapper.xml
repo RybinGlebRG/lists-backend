@@ -2,18 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.mappers.BookMapper">
-
-<!--    <resultMap id="BookResultMap" type="ru.rerumu.lists.model.book.BookDTO">-->
-<!--        <result column="book_id" property="bookId" />-->
-<!--        <result column="list_list_id" property="readListId" />-->
-<!--        <result column="title" property="title" />-->
-<!--        <result column="status_id" property="bookStatus" />-->
-<!--        <result column="insert_date" property="insertDate" />-->
-<!--        <result column="last_update_date" property="lastUpdateDate" />-->
-<!--        <result column="last_chapter" property="lastChapter" />-->
-<!--        <result column="type_id" property="bookType" />-->
-<!--    </resultMap>-->
+<mapper namespace="ru.rerumu.lists.dao.book.BookMapper">
 
     <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.BookStatus_">
         <result column="status_id" property="statusId" />
@@ -21,20 +10,6 @@
     </resultMap>
 
     <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.book.BookDTO">
-<!--        <constructor>-->
-<!--            <idArg column="book_id" name="bookId"/>-->
-<!--            <arg column="book_list_id" name="readListId"/>-->
-<!--            <arg column="book_title" name="title"/>-->
-<!--            <arg column="book_status_id_old" name="bookStatus"/>-->
-<!--            <arg column="book_insert_date" name="insertDate"/>-->
-<!--            <arg column="book_last_update_date" name="lastUpdateDate"/>-->
-<!--            <arg column="last_chapter" name="lastChapter"/>-->
-<!--            <arg column="book_type_id" name="bookType"/>-->
-<!--            <arg column="book_note" name="note"/>-->
-<!--            <arg name="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>-->
-<!--            <arg name="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>-->
-<!--            <arg name="readingRecords" columnPrefix="rr_" resultMap="ru.rerumu.lists.mappers.ReadingRecordMapper.ReadingRecordResultMap"/>-->
-<!--        </constructor>-->
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -44,8 +19,14 @@
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
         <result  property="URL" column="book_url" javaType="String"/>
-        <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
-        <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
+        <result  property="userId" column="book_user_id" javaType="Long"/>
+        <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
+        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.status.BookStatusMapper.BookStatusResultMap"/>
+        <collection
+                property="tags"
+                ofType="ru.rerumu.lists.model.tag.TagDTO"
+                resultMap="ru.rerumu.lists.dao.tag.TagsMapper.TagResultMap"
+        />
     </resultMap>
 
 
@@ -60,21 +41,6 @@
 
 
     <resultMap id="BookDTOChainedResultMap" type="ru.rerumu.lists.model.book.BookDTO">
-<!--        <constructor>-->
-<!--            <idArg name="bookId"        column="book_id"                        javaType="Long"/>-->
-<!--            <arg name="readListId"      column="book_list_id"                   javaType="Long"/>-->
-<!--            <arg name="title"           column="book_title"                     javaType="String"/>-->
-<!--            <arg name="bookStatus"      column="book_status_id_old"             javaType="Integer"/>-->
-<!--            <arg name="insertDate"      column="book_insert_date"               javaType="Date"/>-->
-<!--            <arg name="lastUpdateDate"  column="book_last_update_date"          javaType="Date"/>-->
-<!--            <arg name="lastChapter"     column="last_chapter"                   javaType="Integer"/>-->
-<!--            <arg name="note"            column="book_note"                      javaType="String"/>-->
-<!--            <arg name="bookTypeObj"                                                                             resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>-->
-<!--            <arg name="bookStatusObj"                                                                           resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>-->
-<!--            <arg name="previousBooks"                                           javaType="java.util.List"       resultMap="BookOrderedDTOResultMap"                                             columnPrefix="previous_"/>-->
-<!--            <arg name="URL"             column="book_url"                       javaType="String"/>-->
-<!--        </constructor>-->
-
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -84,17 +50,23 @@
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
         <result  property="URL" column="book_url" javaType="String"/>
-        <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
-        <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
+        <result  property="userId" column="book_user_id" javaType="Long"/>
+        <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
+        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.status.BookStatusMapper.BookStatusResultMap"/>
         <collection
                 property="previousBooks"
                 ofType="ru.rerumu.lists.model.dto.BookOrderedDTO"
                 resultMap="BookOrderedDTOResultMap"
                 columnPrefix="previous_"
         />
+        <collection
+                property="tags"
+                ofType="ru.rerumu.lists.model.tag.TagDTO"
+                resultMap="ru.rerumu.lists.dao.tag.TagsMapper.TagResultMap"
+        />
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.user.User">
         <constructor>
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
@@ -116,12 +88,19 @@
                 s.NAME as book_status_name,
                 b.note as book_note,
                 b.url as book_url,
-                b.user_user_id as book_user_id
+                b.user_user_id as book_user_id,
+                t.tag_id as tag_id,
+                t.name as tag_name,
+                t.user_user_id as tag_user_id
         from books b
                 inner join statuses s
                 on s.STATUS_ID= b.status_status_id
-                left outer join lists.book_types bt
+                left outer join book_types bt
                                 on bt.type_id = b.type_type_id
+                left outer join books_tags btg
+                    on btg.book_book_id = b.book_id
+                left outer join tags t
+                    on t.tag_id = btg.tag_tag_id
     </sql>
 
     <select id="getBookStatus">
@@ -139,6 +118,11 @@
     <select id="getAll" resultMap="BookDTOResultMap">
         <include refid="selectBooks"/>
         WHERE b.list_list_id=#{readListId}
+    </select>
+
+    <select id="findByUser" resultMap="BookDTOResultMap">
+        <include refid="selectBooks"/>
+        where b.user_user_id = #{userId}
     </select>
 
     <select id="getAllChained" resultMap="BookDTOChainedResultMap">
@@ -171,7 +155,10 @@
                     b.url as book_url,
                     b.user_user_id as book_user_id,
                     max(sb.series_order) over (partition by sb.series_series_id) as mtop,
-				    sb2.series_order
+				    sb2.series_order,
+				    t.tag_id        as tag_id,
+                    t.name          as tag_name,
+                    t.user_user_id  as tag_user_id
                 from books b
 
                      inner join series_books sb
@@ -188,6 +175,10 @@
                                 on s.STATUS_ID= b2.status_status_id
                      left outer join book_types bt
                                     on bt.type_id = b2.type_type_id
+                     left outer join books_tags btg
+                        on btg.book_book_id = b.book_id
+                     left outer join tags t
+                        on t.tag_id = btg.tag_tag_id
 
                 order by b.book_id,  sb2.series_order desc
 
@@ -215,19 +206,25 @@
                     b.note as book_note,
                     b.url as book_url,
                     b.user_user_id as book_user_id,
-                    s_prev.book_id as previous_book_id,
-                    s_prev.book_list_id as previous_book_list_id,
-                    s_prev.book_title as previous_book_title,
-                    s_prev.book_status_id_old as previous_book_status_id_old,
-                    s_prev.book_insert_date as previous_book_insert_date,
-                    s_prev.book_last_update_date as previous_book_last_update_date,
-                    s_prev.last_chapter as previous_last_chapter,
-                    s_prev.book_type_id as previous_book_type_id,
-                    s_prev.book_type_name as previous_book_type_name,
-                    s_prev.book_status_id as previous_book_status_id,
-                    s_prev.book_status_name as previous_book_status_name,
-                    s_prev.book_note as previous_book_note,
-					s_prev.series_order as previous_book_series_order
+                    t.tag_id        as tag_id,
+                    t.name          as tag_name,
+                    t.user_user_id  as tag_user_id,
+                    s_prev.book_id                  as previous_book_id,
+                    s_prev.book_list_id             as previous_book_list_id,
+                    s_prev.book_title               as previous_book_title,
+                    s_prev.book_status_id_old       as previous_book_status_id_old,
+                    s_prev.book_insert_date         as previous_book_insert_date,
+                    s_prev.book_last_update_date    as previous_book_last_update_date,
+                    s_prev.last_chapter             as previous_last_chapter,
+                    s_prev.book_type_id             as previous_book_type_id,
+                    s_prev.book_type_name           as previous_book_type_name,
+                    s_prev.book_status_id           as previous_book_status_id,
+                    s_prev.book_status_name         as previous_book_status_name,
+                    s_prev.book_note                as previous_book_note,
+					s_prev.series_order             as previous_book_series_order,
+					s_prev.tag_id                   as previous_tag_id,
+					s_prev.tag_name                 as previous_tag_name,
+					s_prev.tag_user_id              as previous_tag_user_id
             from books b
 
                     inner join statuses s
@@ -236,6 +233,10 @@
                                     on s_prev.join_id = b.book_id
                     left outer join book_types bt
                                     on bt.type_id = b.type_type_id
+                    left outer join books_tags btg
+                        on btg.book_book_id = b.book_id
+                    left outer join tags t
+                        on t.tag_id = btg.tag_tag_id
 
 
             WHERE b.list_list_id=#{readListId}
@@ -256,6 +257,9 @@
                     b.note as book_note,
                     b.url as book_url,
                     b.user_user_id as book_user_id,
+                    t.tag_id        as tag_id,
+                    t.name          as tag_name,
+                    t.user_user_id  as tag_user_id,
                     null as previous_book_id,
                     null as previous_book_list_id,
                     null as previous_book_title,
@@ -268,15 +272,21 @@
                     null as previous_book_status_id,
                     null as previous_book_status_name,
                     null as previous_book_note,
-					null as previous_book_series_order
+					null as previous_book_series_order,
+					null as previous_tag_id,
+					null as previous_tag_name,
+					null as previous_tag_user_id
             from books b
-
                     inner join statuses s
                                 on s.STATUS_ID= b.status_status_id
                     inner join s_wo_chain
                                     on s_wo_chain.book_id = b.book_id
                     left outer join book_types bt
                                     on bt.type_id = b.type_type_id
+                    left outer join books_tags btg
+                        on btg.book_book_id = b.book_id
+                    left outer join tags t
+                        on t.tag_id = btg.tag_tag_id
             WHERE b.list_list_id=#{readListId}
         ]]>
     </select>

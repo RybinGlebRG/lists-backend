@@ -1,10 +1,9 @@
 package ru.rerumu.lists.views;
 
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Title;
+import ru.rerumu.lists.model.title.Title;
 import ru.rerumu.lists.model.TitlesList;
 
 import java.util.ArrayList;

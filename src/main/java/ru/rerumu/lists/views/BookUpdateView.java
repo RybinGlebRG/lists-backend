@@ -1,6 +1,7 @@
 package ru.rerumu.lists.views;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,8 +16,13 @@ public record BookUpdateView(
         LocalDateTime insertDateUTC,
         Integer bookTypeId,
         String note,
-        String URL
+        String URL,
+        List<Long> tagIds
 ) {
+
+    public BookUpdateView {
+        Objects.requireNonNull(tagIds, "tagIds cannot be null");
+    }
 //    private final Long readListId;
 //    private final String title;
 //    private final Long authorId;

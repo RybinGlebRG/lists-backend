@@ -1,0 +1,147 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="7e72c20e-f9ce-48ca-8295-a373d896aa22" >
+        <createTable tableName="tags">
+            <column name="tag_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="tags_pk"/>
+            </column>
+            <column name="user_user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb"  id="87546e3e-e609-4a43-abcc-a145f6e9c080">
+        <createSequence cacheSize="1"
+                        cycle="false"
+                        incrementBy="1"
+                        maxValue="9223372036854775807"
+                        minValue="0"
+                        sequenceName="tags_id_seq"
+                        startValue="0"/>
+    </changeSet>
+
+    <changeSet author="gleb" id="f4921cd5-c578-4ccf-92af-51a12d4e9272">
+        <addUniqueConstraint
+                tableName="tags"
+                columnNames="tag_id, user_user_id"
+                constraintName="tag_user_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="c9b61bbe-41ed-458e-b51f-b706aab2a83e">
+        <addUniqueConstraint
+                tableName="tags"
+                columnNames="user_user_id, name"
+                constraintName="user_tagname_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="8e53dc79-4b2b-4aa7-8f0c-d82a1907a216">
+        <addForeignKeyConstraint
+                baseTableName="tags"
+                baseColumnNames="user_user_id"
+                referencedTableName="users"
+                referencedColumnNames="user_id"
+                constraintName="tags_users_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="1f02ee77-12df-4fca-ba56-cd5cc459dabf">
+        <addUniqueConstraint
+                tableName="books"
+                columnNames="book_id, user_user_id"
+                constraintName="book_user_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="b93afac1-d2b1-457c-a285-76b230684da3" >
+        <createTable tableName="books_tags">
+            <column name="book_tag_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="book_tag_pk"/>
+            </column>
+            <column name="book_book_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="book_user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_tag_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="gleb"  id="bd0bdcc4-fcc7-4004-8f80-0063d4cdc283">
+        <createSequence cacheSize="1"
+                        cycle="false"
+                        incrementBy="1"
+                        maxValue="9223372036854775807"
+                        minValue="0"
+                        sequenceName="books_tags_id_seq"
+                        startValue="0"/>
+    </changeSet>
+
+    <changeSet author="gleb" id="6c9019ab-973b-458a-bb1b-dfb0661e6348">
+        <addForeignKeyConstraint
+                baseTableName="books_tags"
+                baseColumnNames="book_book_id, book_user_id"
+                referencedTableName="books"
+                referencedColumnNames="book_id, user_user_id"
+                constraintName="bt_books_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="fe7ee654-d54b-418b-b32f-dd9af1810709">
+        <addForeignKeyConstraint
+                baseTableName="books_tags"
+                baseColumnNames="tag_tag_id, tag_user_id"
+                referencedTableName="tags"
+                referencedColumnNames="tag_id, user_user_id"
+                constraintName="bt_tags_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="f520722c-8ef8-4b48-8fd1-01a39e01bf2d">
+        <sql dbms="postgresql">
+            alter table books_tags
+            add constraint books_tags_user_check check (book_user_id = tag_user_id);
+        </sql>
+        <rollback>
+            <sql dbms="postgresql">
+                alter table books_tags
+                drop constraint books_tags_user_check;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="d9267305-8431-4756-b3e2-142cd205a450">
+        <tagDatabase  tag="0.62.0"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -2,11 +2,11 @@ package ru.rerumu.lists.factories;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.mappers.UserMapper;
-import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.repository.UsersRepository;
-import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.dao.user.UserMapper;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
+import ru.rerumu.lists.services.user.impl.UserServiceImpl;
 
 @Component
 public class UserServiceImplFactory {

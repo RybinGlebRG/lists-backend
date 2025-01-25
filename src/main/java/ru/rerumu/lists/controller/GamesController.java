@@ -8,13 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.model.Game;
-import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.game.Game;
+import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.services.GameService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.game.GameService;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.GameAddView;
 import ru.rerumu.lists.views.GameListView;
 

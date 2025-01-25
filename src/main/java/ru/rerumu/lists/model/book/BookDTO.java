@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.model.dto.EntityDTO;
+import ru.rerumu.lists.model.base.EntityDTO;
 import ru.rerumu.lists.model.series.item.SeriesItemDTO;
+import ru.rerumu.lists.model.tag.TagDTO;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -48,6 +50,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public String URL;
     @Getter
     public Long userId;
+    public List<TagDTO> tags;
 
     public BookDTO() {
     }
@@ -63,7 +66,6 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
             String note,
             BookTypeDTO bookTypeObj,
             BookStatusRecord bookStatusObj,
-            List<BookOrderedDTO> previousBooks,
             String URL,
             Long userId
     ) {
@@ -77,7 +79,6 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
         this.note = note;
         this.bookTypeObj = bookTypeObj;
         this.bookStatusObj = bookStatusObj;
-        this.previousBooks = previousBooks;
         this.URL = URL;
         this.userId = userId;
     }

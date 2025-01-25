@@ -3,6 +3,7 @@ package ru.rerumu.lists.model;
 import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.rerumu.lists.model.title.Title;
 
 import java.util.Comparator;
 import java.util.List;

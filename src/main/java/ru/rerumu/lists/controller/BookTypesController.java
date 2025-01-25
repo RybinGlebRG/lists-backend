@@ -8,7 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.services.*;
+import ru.rerumu.lists.services.book.type.BookTypesService;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;

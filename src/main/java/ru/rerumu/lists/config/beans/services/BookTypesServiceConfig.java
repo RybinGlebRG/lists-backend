@@ -2,11 +2,10 @@ package ru.rerumu.lists.config.beans.services;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.rerumu.lists.mappers.BookTypeMapper;
-import ru.rerumu.lists.model.book.type.BookType;
+import ru.rerumu.lists.dao.book.type.BookTypeMapper;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
-import ru.rerumu.lists.repository.impl.CrudRepositoryDtoImpl;
-import ru.rerumu.lists.services.BookTypesService;
+import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
+import ru.rerumu.lists.services.book.type.BookTypesService;
 
 @Configuration
 public class BookTypesServiceConfig {

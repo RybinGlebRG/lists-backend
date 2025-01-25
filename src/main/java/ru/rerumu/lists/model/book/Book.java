@@ -1,13 +1,13 @@
 package ru.rerumu.lists.model.book;
 
-import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
+import ru.rerumu.lists.model.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,14 +33,19 @@ public interface Book extends SeriesItem {
 
     Long getId();
     Long getListId();
+    User getUser();
 
     void updateInsertDate(LocalDateTime insertDate);
     void updateTitle(String title);
+
+    @Deprecated
     void updateLastChapter(Integer lastChapter);
+
     void updateStatus(BookStatusRecord bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
     void updateURL(String URL);
+    void updateTags(List<Tag> tags);
     void save();
 
     boolean filterByStatusIds(List<Integer> statusIds);

@@ -2,7 +2,7 @@ package ru.rerumu.lists.model.series;
 
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.book.BookFactory;
+import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.dto.SeriesItemOrderDTO;
 
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Component
 public class SeriesFactory {
 
-    private final BookFactory bookFactory;
+    private final BookFactoryImpl bookFactory;
 
-    public SeriesFactory(BookFactory bookFactory) {
+    public SeriesFactory(BookFactoryImpl bookFactory) {
         this.bookFactory = bookFactory;
     }
 

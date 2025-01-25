@@ -1,0 +1,56 @@
+<!DOCTYPE import-control PUBLIC
+        "-//Checkstyle//DTD ImportControl Configuration 1.4//EN"
+        "https://checkstyle.org/dtds/import_control_1_4.dtd">
+
+<!-- ENFORCE LAYER SEPARATION -->
+<import-control pkg="ru.rerumu.lists" strategyOnMismatch="allowed">
+
+    <allow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
+
+    <!--  config  -->
+    <subpackage name="config(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.config(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  controller  -->
+    <subpackage name="controller(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.controller(\..*)?" regex="true"/>
+<!--        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>-->
+    </subpackage>
+
+    <!--  dao  -->
+    <subpackage name="dao(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  exception  -->
+    <subpackage name="exception(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.exception(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  factories  -->
+    <subpackage name="factories(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.factories(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  model  -->
+    <subpackage name="model(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  services  -->
+    <subpackage name="services(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  utils  -->
+    <subpackage name="utils(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.utils(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  views  -->
+    <subpackage name="views(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
+    </subpackage>
+
+</import-control>
