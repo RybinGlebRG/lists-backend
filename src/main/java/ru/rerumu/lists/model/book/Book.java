@@ -4,36 +4,31 @@ import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface Book extends SeriesItem {
 
-    ReadingRecord addReadingRecord(
-            Long bookId,
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
-    );
-
     void addReadingRecord(
             @NonNull BookStatusRecord bookStatusRecord,
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            Long lastChapter
     );
 
     ReadingRecord deleteReadingRecord(Long readingRecordId);
 
-    ReadingRecord updateReadingRecord(
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
+    void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
     );
 
     Long getId();

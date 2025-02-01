@@ -12,9 +12,6 @@ public interface BookRepository {
 
     void update(BookImpl book);
 
-    @Deprecated
-    BookImpl getOne(Long readListId, Long bookId);
-    Optional<BookImpl> getOne(Long bookId);
     Optional<BookDTO> getOneDTO(Long bookId);
     List<BookDTO> getAll(Long readListId);
     List<BookDTO> getAllChained(Long readListId);

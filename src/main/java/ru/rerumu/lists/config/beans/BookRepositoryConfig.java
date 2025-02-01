@@ -14,14 +14,10 @@ public class BookRepositoryConfig {
 
     @Bean
     public BookRepository getBookRepository(
-            BookMapper bookMapper,
-            ReadingRecordMapper readingRecordMapper,
-            BookFactory bookFactory
+            BookMapper bookMapper
     ) {
         return new BookRepositoryImpl(
-                bookMapper,
-                readingRecordMapper,
-                bookFactory
+                bookMapper
         );
     }
 }

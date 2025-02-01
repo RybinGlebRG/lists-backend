@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
+import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.book.BookImpl;
@@ -25,17 +26,19 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     private final BookRepository bookRepository;
     private final SeriesRepository seriesRepository;
     private final SeriesFactory seriesFactory;
+    private final BookFactory bookFactory;
 
     @Autowired
     public SeriesBooksRespositoryImpl(
             SeriesBookMapper seriesBookMapper,
             BookRepository bookRepository,
-            SeriesRepository seriesRepository, SeriesFactory seriesFactory
+            SeriesRepository seriesRepository, SeriesFactory seriesFactory, BookFactory bookFactory
     ) {
         this.seriesBookMapper = seriesBookMapper;
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
         this.seriesFactory = seriesFactory;
+        this.bookFactory = bookFactory;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId) {
         List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
         List<Long> seriesIdList = seriesBookMapper.getSeriesIdsByBookId(bookId, readListId);
-        BookImpl book = bookRepository.getOne(readListId, bookId);
+        BookImpl book = (BookImpl) bookFactory.getBook(bookId);
         for (Long seriesId : seriesIdList) {
             Series series = seriesFactory.fromDTO(seriesRepository.getOne(readListId, seriesId));
             Long order = seriesBookMapper.getOrder(bookId, seriesId, readListId);

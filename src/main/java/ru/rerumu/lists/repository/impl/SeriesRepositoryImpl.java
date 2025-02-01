@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.mappers.SeriesMapper;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.series.SeriesDTO;
 import ru.rerumu.lists.model.series.SeriesFactory;
@@ -23,14 +25,16 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;
     private final SeriesFactory seriesFactory;
+    private final ReadingRecordFactory readingRecordFactory;
 
     @Autowired
     public SeriesRepositoryImpl(
-            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactory seriesFactory) {
+            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactory seriesFactory, ReadingRecordFactory readingRecordFactory) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.readingRecordMapper = readingRecordMapper;
         this.seriesFactory = seriesFactory;
+        this.readingRecordFactory = readingRecordFactory;
     }
 
     @Deprecated
@@ -43,11 +47,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
                 .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+        List<ReadingRecord> readingRecords = readingRecordFactory.findByBookIds(bookIds);
 
         Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
                 .collect(Collectors.groupingBy(
-                        ReadingRecord::bookId,
+                        ReadingRecord::getBookId,
                         HashMap::new,
                         Collectors.toCollection(ArrayList::new)
                 ));
@@ -64,7 +68,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
                 records = new ArrayList<>();
             }
 
-            bookDTO.setReadingRecords(records);
+            bookDTO.setReadingRecords(
+                    records.stream()
+                            .map(ReadingRecord::toDTO)
+                            .collect(Collectors.toCollection(ArrayList::new))
+            );
         }
 
 
@@ -84,11 +92,13 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
                     .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
                     .collect(Collectors.toCollection(ArrayList::new));
 
-            List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+            List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds).stream()
+                    .map(readingRecordFactory::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
             Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
                     .collect(Collectors.groupingBy(
-                            ReadingRecord::bookId,
+                            ReadingRecord::getBookId,
                             HashMap::new,
                             Collectors.toCollection(ArrayList::new)
                     ));
@@ -106,7 +116,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
                     records = new ArrayList<>();
                 }
 
-                bookDTO.setReadingRecords(records);
+                bookDTO.setReadingRecords(
+                        records.stream()
+                                .map(ReadingRecord::toDTO)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                );
             }
 
             List<SeriesDTO> resList = new ArrayList<>(res);

@@ -4,14 +4,15 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.ReadingRecordMapper">
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.books.reading_records.ReadingRecord">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO">
         <constructor>
-            <idArg column="recordId" javaType="java.lang.Long"/>
-            <arg column="bookId" javaType="java.lang.Long"/>
-            <arg resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.model.BookStatusRecord"/>
-            <arg column="startDate" javaType="java.time.LocalDateTime"/>
-            <arg column="endDate" javaType="java.time.LocalDateTime"/>
-            <arg column="isMigrated" javaType="java.lang.Boolean"/>
+            <idArg column="recordId" name="recordId" javaType="java.lang.Long"/>
+            <arg column="bookId" name="bookId" javaType="java.lang.Long"/>
+            <arg resultMap="BookStatusResultMap" name="bookStatus" javaType="ru.rerumu.lists.model.BookStatusRecord"/>
+            <arg column="startDate" name="startDate" javaType="java.time.LocalDateTime"/>
+            <arg column="endDate" name="endDate" javaType="java.time.LocalDateTime"/>
+            <arg column="isMigrated" name="isMigrated" javaType="java.lang.Boolean"/>
+            <arg column="last_chapter" name="lastChapter" javaType="java.lang.Long"/>
         </constructor>
     </resultMap>
 
@@ -29,7 +30,8 @@
                 s.name as statusName,
                 rr.start_date as startDate,
                 rr.end_date as endDate,
-                rr.is_migrated as isMigrated
+                rr.is_migrated as isMigrated,
+                rr.last_chapter
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -43,7 +45,8 @@
                 s.name as statusName,
                 rr.start_date as startDate,
                 rr.end_date as endDate,
-                rr.is_migrated as isMigrated
+                rr.is_migrated as isMigrated,
+                rr.last_chapter
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -61,7 +64,8 @@
                 s.name as statusName,
                 rr.start_date as startDate,
                 rr.end_date as endDate,
-                rr.is_migrated as isMigrated
+                rr.is_migrated as isMigrated,
+                rr.last_chapter
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -72,16 +76,17 @@
         select nextval('series_id_seq')
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.model.books.reading_records.ReadingRecord">
-        insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated)
-        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated})
+    <insert id="create" parameterType="ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl">
+        insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated, last_chapter)
+        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter})
     </insert>
 
     <update id="update">
         update reading_records
         set status_status_id=#{bookStatus.statusId},
             start_date=#{startDate},
-            end_date=#{endDate}
+            end_date=#{endDate},
+            last_chapter = #{lastChapter}
         where record_id=#{recordId}
     </update>
 

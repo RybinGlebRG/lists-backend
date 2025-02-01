@@ -11,10 +11,11 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordFactory;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.text.SimpleDateFormat;
@@ -22,10 +23,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BookImpl implements Book, Cloneable {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
@@ -90,7 +93,7 @@ public class BookImpl implements Book, Cloneable {
         this.bookStatus = bookStatus;
         this.insertDate = insertDate;
         this.lastUpdateDate = lastUpdateDate;
-        this.lastChapter = lastChapter;
+//        this.lastChapter = lastChapter;
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
@@ -177,38 +180,20 @@ public class BookImpl implements Book, Cloneable {
         return getLastUpdateDate_V2();
     }
 
-    public ReadingRecord addReadingRecord(
-            Long bookId,
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
-    ){
-        ReadingRecord readingRecord = ReadingRecord.builder()
-                .bookId(bookId)
-                .recordId(readingRecordId)
-                .bookStatus(bookStatusRecord)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-
-        readingRecords.add(readingRecord);
-
-        return readingRecord;
-    }
-
     @Override
     public void addReadingRecord(
             @NonNull BookStatusRecord bookStatusRecord,
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            Long lastChapter
     ) {
 
-        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
-                endDate
+                endDate,
+                lastChapter
         );
 
         // TODO: Remove
@@ -242,10 +227,10 @@ public class BookImpl implements Book, Cloneable {
 
     @Override
     public void updateLastChapter(Integer lastChapter) {
-        if (!Objects.equals(this.lastChapter, lastChapter)){
-            this.lastChapter = lastChapter;
-            lastUpdateDate = dateFactory.getCurrentDate();
-        }
+//        if (!Objects.equals(this.lastChapter, lastChapter)){
+//            this.lastChapter = lastChapter;
+//            lastUpdateDate = dateFactory.getCurrentDate();
+//        }
     }
 
     @Override
@@ -299,32 +284,34 @@ public class BookImpl implements Book, Cloneable {
 
     public ReadingRecord deleteReadingRecord(Long readingRecordId){
         ReadingRecord readingRecord = readingRecords.stream()
-                .filter(item -> item.recordId().equals(readingRecordId))
+                .filter(item -> item.getId().equals(readingRecordId))
                 .findAny()
                 .orElseThrow(EntityNotFoundException::new);
 
         readingRecords.remove(readingRecord);
+        readingRecord.delete();
+
         return readingRecord;
     }
 
-    public ReadingRecord updateReadingRecord(
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
+    public void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
     ){
         ReadingRecord readingRecord = readingRecords.stream()
-                .filter(item -> item.recordId().equals(readingRecordId))
+                .filter(item -> item.getId().equals(readingRecordId))
                 .findAny()
                 .orElseThrow(EntityNotFoundException::new);
 
-        readingRecord = readingRecord.toBuilder()
-                .bookStatus(bookStatusRecord)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
+        readingRecord.setStatus(bookStatusRecord);
+        readingRecord.setStartDate(startDate);
+        readingRecord.setEndDate(endDate);
+        readingRecord.setLastChapter(lastChapter);
 
-        return readingRecord;
+        readingRecord.save();
     }
 
 
@@ -349,7 +336,9 @@ public class BookImpl implements Book, Cloneable {
             bookType.toDTO(),
             bookStatus,
             previousBooks.toDTO(),
-            readingRecords
+            readingRecords.stream()
+                    .map(ReadingRecord::toDTO)
+                    .collect(Collectors.toCollection(ArrayList::new))
         );
 
         return bookDTO;

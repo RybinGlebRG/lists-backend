@@ -1,13 +1,14 @@
 package ru.rerumu.lists.mappers;
 
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 
 import java.util.List;
 
-public interface ReadingRecordMapper extends CrudMapper<ReadingRecord,Long,ReadingRecord>{
+public interface ReadingRecordMapper extends CrudMapper<ReadingRecordDTO,Long, ReadingRecordDTO>{
 
-    List<ReadingRecord> findByBookId(Long bookId);
-    List<ReadingRecord> findByBookIds(List<Long> bookIds);
+    List<ReadingRecordDTO> findByBookId(Long bookId);
+    List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
 
     Long getNextId();
 }

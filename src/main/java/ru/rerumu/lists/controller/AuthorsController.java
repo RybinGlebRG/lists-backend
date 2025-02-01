@@ -23,16 +23,20 @@ import java.util.Optional;
 @RestController
 public class AuthorsController {
 
-    @Autowired
-    private ReadListService readListService;
+    private final ReadListService readListService;
+    private final AuthorsService authorsService;
+    private final UserService userService;
 
     @Autowired
-    private AuthorsService authorsService;
-
-    @Autowired
-    @Qualifier("UserServiceProtectionProxy")
-    private UserService userService;
-
+    public AuthorsController(
+            ReadListService readListService,
+            AuthorsService authorsService,
+            @Qualifier("UserServiceProtectionProxy") UserService userService
+    ) {
+        this.readListService = readListService;
+        this.authorsService = authorsService;
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/api/v0.2/readLists/{readListId}/authors/{authorId}",
             produces = MediaType.APPLICATION_JSON_VALUE)

@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.model.dto.EntityDTO;
 import ru.rerumu.lists.model.series.item.SeriesItemDTO;
@@ -43,7 +43,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     @Getter
     public List<BookOrderedDTO> previousBooks;
     @Setter
-    public List<ReadingRecord> readingRecords;
+    public List<ReadingRecordDTO> readingRecords;
 
     public BookDTO() {
     }

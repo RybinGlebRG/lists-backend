@@ -43,17 +43,17 @@ public class CrudRepositoryDtoImpl<T extends EntityDTO<?>,ID> implements CrudRep
 
     @Override
     public void save(T entity) {
-        throw new RuntimeException("Not Ready");
+        mapper.save(entity);
     }
 
     @Override
     public void create(T entity) {
-        throw new RuntimeException("Not Ready");
+        mapper.create(entity);
     }
 
     @Override
     public void update(T entity) {
-        throw new RuntimeException("Not Ready");
+        mapper.update(entity);
     }
 
     @Override

@@ -2,7 +2,8 @@ package ru.rerumu.lists.services.protection_proxies;
 
 import ru.rerumu.lists.exception.UserPermissionException;
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.services.ReadListService;
 import ru.rerumu.lists.services.ReadingRecordService;
 import ru.rerumu.lists.views.ReadingRecordAddView;
@@ -24,7 +25,7 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
     }
 
     @Override
-    public ReadingRecord addRecord(Long bookId, ReadingRecordAddView readingRecordAddView) {
+    public ReadingRecordImpl addRecord(Long bookId, ReadingRecordAddView readingRecordAddView) {
         User user = readListService.getBookUser(bookId).orElseThrow();
         if (!user.equals(authUser)){
             throw new UserPermissionException();
@@ -33,30 +34,30 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
         return readingRecordService.addRecord(bookId, readingRecordAddView);
     }
 
-    @Override
-    public ReadingRecord addRecord(ReadingRecord readingRecord) {
-        return readingRecordService.addRecord(readingRecord);
-    }
+//    @Override
+//    public ReadingRecordImpl addRecord(ReadingRecordImpl readingRecord) {
+//        return readingRecordService.addRecord(readingRecord);
+//    }
 
     @Override
     public Long getNextId() {
         return readingRecordService.getNextId();
     }
 
-    @Override
-    public ReadingRecord addRecord(Long bookId, ReadingRecord readingRecord) {
-        User user = readListService.getBookUser(bookId).orElseThrow();
-        if (!user.equals(authUser)){
-            throw new UserPermissionException();
-        }
-
-        return readingRecordService.addRecord(bookId, readingRecord);
-    }
+//    @Override
+//    public ReadingRecordImpl addRecord(Long bookId, ReadingRecordImpl readingRecord) {
+//        User user = readListService.getBookUser(bookId).orElseThrow();
+//        if (!user.equals(authUser)){
+//            throw new UserPermissionException();
+//        }
+//
+//        return readingRecordService.addRecord(bookId, readingRecord);
+//    }
 
     @Override
     public ReadingRecord updateRecord(Long recordId, ReadingRecordUpdateView readingRecordUpdateView) {
         ReadingRecord readingRecord = readingRecordService.getReadingRecord(recordId).orElseThrow();
-        User user = readListService.getBookUser(readingRecord.bookId()).orElseThrow();
+        User user = readListService.getBookUser(readingRecord.getBookId()).orElseThrow();
         if (!user.equals(authUser)){
             throw new UserPermissionException();
         }
@@ -65,8 +66,8 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
     }
 
     @Override
-    public ReadingRecord updateRecord(ReadingRecord readingRecord) {
-        User user = readListService.getBookUser(readingRecord.bookId()).orElseThrow();
+    public ReadingRecordImpl updateRecord(ReadingRecordImpl readingRecord) {
+        User user = readListService.getBookUser(readingRecord.getBookId()).orElseThrow();
         if (!user.equals(authUser)){
             throw new UserPermissionException();
         }
@@ -77,7 +78,7 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
     @Override
     public void deleteRecord(Long recordId) {
         ReadingRecord readingRecord = readingRecordService.getReadingRecord(recordId).orElseThrow();
-        User user = readListService.getBookUser(readingRecord.bookId()).orElseThrow();
+        User user = readListService.getBookUser(readingRecord.getBookId()).orElseThrow();
         if (!user.equals(authUser)){
             throw new UserPermissionException();
         }
@@ -98,7 +99,7 @@ public class ReadingRecordProtectionProxy implements ReadingRecordService {
     @Override
     public Optional<ReadingRecord> getReadingRecord(Long readingRecordId) {
         ReadingRecord readingRecord = readingRecordService.getReadingRecord(readingRecordId).orElseThrow();
-        User user = readListService.getBookUser(readingRecord.bookId()).orElseThrow();
+        User user = readListService.getBookUser(readingRecord.getBookId()).orElseThrow();
         if (!user.equals(authUser)){
             throw new UserPermissionException();
         }

@@ -4,13 +4,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookImpl;
-import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
+import ru.rerumu.lists.model.series.Series;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class BookListView {
 

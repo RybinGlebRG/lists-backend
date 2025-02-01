@@ -1,17 +1,15 @@
 package ru.rerumu.lists.repository.impl;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.mappers.CrudMapper;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
-import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.repository.ReadingRecordsRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
-public class ReadingRecordRepositoryImpl extends CrudRepositoryEntityImpl<ReadingRecord,Long> implements ReadingRecordsRepository {
+public class ReadingRecordRepositoryImpl extends CrudRepositoryDtoImpl<ReadingRecordDTO,Long> implements ReadingRecordsRepository {
 
     private final ReadingRecordMapper mapper;
 
@@ -21,12 +19,12 @@ public class ReadingRecordRepositoryImpl extends CrudRepositoryEntityImpl<Readin
     }
 
     @Override
-    public List<ReadingRecord> findByBookId(Long bookId) {
+    public List<ReadingRecordDTO> findByBookId(Long bookId) {
         return mapper.findByBookId(bookId);
     }
 
     @Override
-    public List<ReadingRecord> findByBookIds(List<Long> bookIds) {
+    public List<ReadingRecordDTO> findByBookIds(List<Long> bookIds) {
         return mapper.findByBookIds(bookIds);
     }
 

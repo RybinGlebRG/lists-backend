@@ -16,10 +16,9 @@ import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookFactory;
-import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
@@ -222,7 +221,8 @@ public class ReadListService {
         newBook.addReadingRecord(
                 bookStatus,
                 bookAddView.insertDate(),
-                null
+                null,
+                bookAddView.getLastChapter().longValue()
         );
 
         getBook(newBook.getId());
@@ -261,29 +261,23 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ReadingRecord addReadingRecord(@NonNull Long bookId, @NonNull ReadingRecordAddView readingRecordAddView) throws EmptyMandatoryParameterException {
+    public void addReadingRecord(@NonNull Long bookId, @NonNull ReadingRecordAddView readingRecordAddView) throws EmptyMandatoryParameterException {
 
         Book book = getBook(bookId);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordAddView.statusId()).orElseThrow();
-        Long readingRecordId = readingRecordService.getNextId();
-        ReadingRecord addedReadingRecord = book.addReadingRecord(
-                bookId,
-                readingRecordId,
+
+        book.addReadingRecord(
                 bookStatusRecord,
                 readingRecordAddView.startDate(),
-                readingRecordAddView.endDate()
+                readingRecordAddView.endDate(),
+                readingRecordAddView.lastChapter()
         );
-
-        return readingRecordService.addRecord(addedReadingRecord);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteReadingRecord(Long bookId, Long readingRecordId) throws EmptyMandatoryParameterException {
         Book book = getBook(bookId);
-
-        ReadingRecord readingRecord = book.deleteReadingRecord(readingRecordId);
-
-        readingRecordService.deleteRecord(readingRecord.recordId());
+        book.deleteReadingRecord(readingRecordId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -291,13 +285,12 @@ public class ReadListService {
         Book book = getBook(bookId);
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordUpdateView.statusId()).orElseThrow();
 
-        ReadingRecord readingRecord = book.updateReadingRecord(
+        book.updateReadingRecord(
                 recordId,
                 bookStatusRecord,
                 readingRecordUpdateView.startDate(),
-                readingRecordUpdateView.endDate()
+                readingRecordUpdateView.endDate(),
+                readingRecordUpdateView.lastChapter()
         );
-
-        readingRecordService.updateRecord(readingRecord);
     }
 }

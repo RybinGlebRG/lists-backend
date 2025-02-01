@@ -3,11 +3,10 @@ package ru.rerumu.lists.repository.impl;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.mappers.BookMapper;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
-import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.repository.BookRepository;
@@ -21,15 +20,11 @@ import java.util.stream.Stream;
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
-    private final ReadingRecordMapper readingRecordMapper;
-    private final BookFactory bookFactory;
 
     public BookRepositoryImpl(
-            BookMapper bookMapper, ReadingRecordMapper readingRecordMapper, BookFactory bookFactory
+            BookMapper bookMapper
     ) {
         this.bookMapper = bookMapper;
-        this.readingRecordMapper = readingRecordMapper;
-        this.bookFactory = bookFactory;
     }
 
 
@@ -48,64 +43,14 @@ public class BookRepositoryImpl implements BookRepository {
         );
     }
 
-    @Deprecated
-    @Override
-    public BookImpl getOne(Long readListId, Long bookId) {
-        Optional<BookImpl> optionalBook = getOne(bookId);
-        if (optionalBook.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        return optionalBook.get();
-    }
-
-    @Override
-    public Optional<BookImpl> getOne(Long bookId) {
-        BookDTO bookDTO = bookMapper.getOne(bookId);
-        if (bookDTO == null) {
-            return Optional.empty();
-        } else {
-            List<ReadingRecord> readingRecord = readingRecordMapper.findByBookId(bookDTO.bookId);
-            bookDTO = bookDTO.toBuilder()
-                    .readingRecords(readingRecord)
-                    .build();
-            return Optional.of(bookDTO.toDomain());
-        }
-    }
-
     @Override
     public Optional<BookDTO> getOneDTO(Long bookId) {
-        BookDTO bookDTO = bookMapper.getOne(bookId);
-        if (bookDTO == null) {
-            return Optional.empty();
-        } else {
-            List<ReadingRecord> readingRecord = readingRecordMapper.findByBookId(bookDTO.bookId);
-            bookDTO = bookDTO.toBuilder()
-                    .readingRecords(readingRecord)
-                    .build();
-            return Optional.of(bookDTO);
-        }
+        return Optional.ofNullable(bookMapper.getOne(bookId));
     }
 
     @Override
     public List<BookDTO> getAll(Long readListId) {
-        List<BookDTO> bookDTOList = bookMapper.getAll(readListId);
-
-        HashMap<Long, List<ReadingRecord>> bookToRecordMap = bookDTOList.stream()
-                .flatMap(bookDTO -> readingRecordMapper.findByBookId(bookDTO.bookId).stream())
-                .collect(Collectors.groupingBy(
-                        ReadingRecord::bookId,
-                        HashMap::new,
-                        Collectors.toCollection(ArrayList::new)
-                ));
-
-        List<BookDTO> bookList = bookDTOList.stream()
-                .map(bookDTO -> bookDTO.toBuilder()
-                        .readingRecords(bookToRecordMap.get(bookDTO.bookId))
-                        .build())
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return bookList;
+        return bookMapper.getAll(readListId);
     }
 
     @Override
@@ -129,32 +74,32 @@ public class BookRepositoryImpl implements BookRepository {
                 .collect(Collectors.toCollection(ArrayList::new))
         );
 
-        List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+//        List<ReadingRecordImpl> readingRecords = readingRecordMapper.findByBookIds(bookIds);
+//
+//        Map<Long, List<ReadingRecordImpl>> bookId2ReadingRecordMap = readingRecords.stream()
+//                .collect(Collectors.groupingBy(
+//                        ReadingRecordImpl::getBookId,
+//                        HashMap::new,
+//                        Collectors.toCollection(ArrayList::new)
+//                ));
 
-        Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
-                .collect(Collectors.groupingBy(
-                        ReadingRecord::bookId,
-                        HashMap::new,
-                        Collectors.toCollection(ArrayList::new)
-                ));
-
-        for(BookDTO bookDTO: bookDTOList){
-            List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
-
-            if (records == null){
-                records = new ArrayList<>();
-            }
-
-            bookDTO.setReadingRecords(records);
-
-            for (BookOrderedDTO bookOrderedDTO: bookDTO.getPreviousBooks()){
-                List<ReadingRecord> recordsOrdered = bookId2ReadingRecordMap.get(bookOrderedDTO.getBookDTO().getBookId());
-                if (recordsOrdered == null){
-                    recordsOrdered = new ArrayList<>();
-                }
-                bookOrderedDTO.getBookDTO().setReadingRecords(recordsOrdered);
-            }
-        }
+//        for(BookDTO bookDTO: bookDTOList){
+////            List<ReadingRecordImpl> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
+////
+////            if (records == null){
+////                records = new ArrayList<>();
+////            }
+////
+////            bookDTO.setReadingRecords(records);
+//
+////            for (BookOrderedDTO bookOrderedDTO: bookDTO.getPreviousBooks()){
+////                List<ReadingRecordImpl> recordsOrdered = bookId2ReadingRecordMap.get(bookOrderedDTO.getBookDTO().getBookId());
+////                if (recordsOrdered == null){
+////                    recordsOrdered = new ArrayList<>();
+////                }
+////                bookOrderedDTO.getBookDTO().setReadingRecords(recordsOrdered);
+////            }
+//        }
 
         List<BookDTO> bookList = bookDTOList.stream()
                 .peek(bookDTO -> log.debug(bookDTO.toString()))
