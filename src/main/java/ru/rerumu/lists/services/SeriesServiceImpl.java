@@ -3,10 +3,15 @@ package ru.rerumu.lists.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.*;
+import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.SeriesFactory;
+import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -27,22 +32,24 @@ public class SeriesServiceImpl implements SeriesService{
     private final SeriesBooksRespository seriesBooksRespository;
 
     private final ReadListService readListService;
+    private final SeriesFactory seriesFactory;
 
     public SeriesServiceImpl(
             SeriesRepository seriesRepository,
             BookSeriesRelationService bookSeriesRelationService,
             SeriesBooksRespository seriesBooksRespository,
-            ReadListService readListService
+            ReadListService readListService, SeriesFactory seriesFactory
     ) {
         this.seriesRepository = seriesRepository;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.seriesBooksRespository = seriesBooksRespository;
         this.readListService = readListService;
+        this.seriesFactory = seriesFactory;
     }
 
 
     public Optional<Series> getSeries(Long seriesId) {
-        return seriesRepository.findById(seriesId);
+        return seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -55,13 +62,13 @@ public class SeriesServiceImpl implements SeriesService{
                 .readListId(readListId)
                 .build();
 
-        seriesRepository.add(series);
+        seriesRepository.add(series.toDTO());
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(long seriesId) throws EntityNotFoundException, EntityHasChildrenException {
 
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
 
         if (optionalSeries.isEmpty()) {
             throw new EntityNotFoundException();
@@ -76,7 +83,9 @@ public class SeriesServiceImpl implements SeriesService{
     }
 
     public List<Series> getAll(Long readListId) {
-        return seriesRepository.getAll(readListId);
+        return seriesRepository.getAll(readListId).stream()
+                .map(seriesFactory::fromDTO)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Deprecated
@@ -127,7 +136,7 @@ public class SeriesServiceImpl implements SeriesService{
 
         for (SeriesBookRelation seriesBookRelation : relationsToRemove) {
             seriesBooksRespository.delete(
-                    seriesBookRelation.book().getBookId(),
+                    seriesBookRelation.book().getId(),
                     seriesBookRelation.series().getSeriesId(),
                     seriesBookRelation.series().getSeriesListId()
             );
@@ -147,7 +156,7 @@ public class SeriesServiceImpl implements SeriesService{
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException {
+    public void updateSeries(Long seriesId, SeriesUpdateView seriesUpdateView) throws EntityNotFoundException, EmptyMandatoryParameterException {
         logger.debug(seriesUpdateView.toString());
 
         Optional<Series> series = getSeries(seriesId);
@@ -157,9 +166,8 @@ public class SeriesServiceImpl implements SeriesService{
         for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
             switch (seriesUpdateItem.itemType()) {
                 case BOOK -> {
-                    Optional<BookImpl> optionalBook = readListService.getOptionalBook(seriesUpdateItem.itemId());
-                    optionalBook.orElseThrow(EntityNotFoundException::new);
-                    optionalBook.ifPresent(updatedItems::add);
+                    Book book = readListService.getBook(seriesUpdateItem.itemId());
+                    updatedItems.add(book);
                 }
                 default -> throw new IllegalArgumentException();
             }

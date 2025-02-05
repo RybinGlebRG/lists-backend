@@ -1,11 +1,14 @@
 package ru.rerumu.lists.repository.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
-import ru.rerumu.lists.model.book.BookImpl;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.book.BookFactory;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
@@ -22,15 +25,20 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     private final SeriesBookMapper seriesBookMapper;
     private final BookRepository bookRepository;
     private final SeriesRepository seriesRepository;
+    private final SeriesFactory seriesFactory;
+    private final BookFactory bookFactory;
 
+    @Autowired
     public SeriesBooksRespositoryImpl(
             SeriesBookMapper seriesBookMapper,
             BookRepository bookRepository,
-            SeriesRepository seriesRepository
+            SeriesRepository seriesRepository, SeriesFactory seriesFactory, BookFactory bookFactory
     ) {
         this.seriesBookMapper = seriesBookMapper;
         this.bookRepository = bookRepository;
         this.seriesRepository = seriesRepository;
+        this.seriesFactory = seriesFactory;
+        this.bookFactory = bookFactory;
     }
 
     @Override
@@ -41,9 +49,9 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     @Override
     public void add(SeriesBookRelation seriesBookRelation) {
         seriesBookMapper.add(
-                seriesBookRelation.book().getBookId(),
+                seriesBookRelation.book().getId(),
                 seriesBookRelation.series().getSeriesId(),
-                seriesBookRelation.book().getReadListId(),
+                seriesBookRelation.book().getListId(),
                 seriesBookRelation.order()
         );
     }
@@ -57,9 +65,9 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId) {
         List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
         List<Long> seriesIdList = seriesBookMapper.getSeriesIdsByBookId(bookId, readListId);
-        BookImpl book = bookRepository.getOne(readListId, bookId);
+        BookImpl book = (BookImpl) bookFactory.getBook(bookId);
         for (Long seriesId : seriesIdList) {
-            Series series = seriesRepository.getOne(readListId, seriesId);
+            Series series = seriesFactory.fromDTO(seriesRepository.getOne(readListId, seriesId));
             Long order = seriesBookMapper.getOrder(bookId, seriesId, readListId);
             seriesBookRelationList.add(new SeriesBookRelation(book, series, order));
         }
@@ -68,7 +76,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
         optionalSeries.orElseThrow(EntityNotFoundException::new);
 
 
@@ -128,7 +136,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     @Override
     public void update(SeriesBookRelation seriesBookRelation) {
         seriesBookMapper.update(
-                seriesBookRelation.book().getBookId(),
+                seriesBookRelation.book().getId(),
                 seriesBookRelation.series().getSeriesId(),
                 seriesBookRelation.series().getSeriesListId(),
                 seriesBookRelation.order()
@@ -155,7 +163,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException {
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId);
+        Optional<Series> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
         optionalSeries.orElseThrow(EntityNotFoundException::new);
 
         //

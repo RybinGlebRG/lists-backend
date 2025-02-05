@@ -2,7 +2,7 @@ package ru.rerumu.lists.services;
 
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.exception.UserPermissionException;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.User;
 
 import java.util.List;

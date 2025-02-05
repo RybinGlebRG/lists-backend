@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public record ReadingRecordAddView(
         Integer statusId,
         LocalDateTime startDate,
-        LocalDateTime endDate
+        LocalDateTime endDate,
+        Long lastChapter
 ) {
 }

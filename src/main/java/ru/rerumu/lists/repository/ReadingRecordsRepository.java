@@ -1,11 +1,11 @@
 package ru.rerumu.lists.repository;
 
-import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 
 import java.util.List;
 
-public interface ReadingRecordsRepository extends CrudRepository<ReadingRecord,Long> {
-    List<ReadingRecord> findByBookId(Long bookId);
-    List<ReadingRecord> findByBookIds(List<Long> bookIds);
+public interface ReadingRecordsRepository extends CrudRepository<ReadingRecordDTO,Long> {
+    List<ReadingRecordDTO> findByBookId(Long bookId);
+    List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
 }

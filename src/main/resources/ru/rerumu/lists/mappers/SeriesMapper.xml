@@ -4,7 +4,7 @@
 
 <mapper namespace="ru.rerumu.lists.mappers.SeriesMapper">
 
-    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.dto.SeriesDTO">
+    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.series.SeriesDTO">
         <id column="series_id" property="seriesId" javaType="Long"/>
         <result column="list_list_id" property="seriesListId" javaType="Long"/>
         <result column="title" property="title" javaType="String"/>
@@ -21,7 +21,7 @@
         <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
     </resultMap>
 
-    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesItemDTO">
+    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.series.item.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
             <case value="1" resultMap="ru.rerumu.lists.mappers.BookMapper.BookDTOResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>

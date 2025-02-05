@@ -10,6 +10,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
 import ru.rerumu.lists.repository.SeriesRepository;
 import ru.rerumu.lists.services.*;
@@ -32,13 +33,15 @@ public class SeriesServiceConfig {
             SeriesRepository seriesRepository,
             BookSeriesRelationService bookSeriesRelationService,
             SeriesBooksRespository seriesBooksRespository,
-            ReadListService readListService
+            ReadListService readListService,
+            SeriesFactory seriesFactory
     ){
         return new SeriesServiceImpl(
                 seriesRepository,
                 bookSeriesRelationService,
                 seriesBooksRespository,
-                readListService
+                readListService,
+                seriesFactory
         );
     }
 

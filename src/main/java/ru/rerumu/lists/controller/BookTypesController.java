@@ -7,17 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.model.*;
-import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.views.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController

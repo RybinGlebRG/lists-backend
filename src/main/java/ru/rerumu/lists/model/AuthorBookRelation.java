@@ -1,14 +1,14 @@
 package ru.rerumu.lists.model;
 
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.Book;
 
 public final class AuthorBookRelation {
 
-    private final BookImpl book;
+    private final Book book;
     private final Author author;
 
-    public AuthorBookRelation(BookImpl book, Author author)  {
-        this.book = book.clone();
+    public AuthorBookRelation(Book book, Author author)  {
+        this.book = book;
         this.author = author.clone();
     }
 
@@ -16,7 +16,7 @@ public final class AuthorBookRelation {
         return author.clone();
     }
 
-    public BookImpl getBook() {
-        return book.clone();
+    public Book getBook() {
+        return book;
     }
 }

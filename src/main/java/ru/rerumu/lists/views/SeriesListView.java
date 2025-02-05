@@ -2,9 +2,9 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Series;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.SeriesItem;
+import ru.rerumu.lists.model.series.item.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;

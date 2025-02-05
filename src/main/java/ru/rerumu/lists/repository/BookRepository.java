@@ -1,7 +1,9 @@
 package ru.rerumu.lists.repository;
 
+import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.book.BookDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +12,9 @@ public interface BookRepository {
 
     void update(BookImpl book);
 
-    @Deprecated
-    BookImpl getOne(Long readListId, Long bookId);
-    Optional<BookImpl> getOne(Long bookId);
-    List<BookImpl> getAll(Long readListId);
-    List<BookImpl> getAllChained(Long readListId);
+    Optional<BookDTO> getOneDTO(Long bookId);
+    List<BookDTO> getAll(Long readListId);
+    List<BookDTO> getAllChained(Long readListId);
 
     Long getNextId();
 

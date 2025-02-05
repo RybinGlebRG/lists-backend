@@ -1,8 +1,9 @@
 package ru.rerumu.lists.model;
 
 import org.json.JSONObject;
+import ru.rerumu.lists.model.series.item.SeriesItem;
+import ru.rerumu.lists.model.series.item.SeriesItemType;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;

@@ -4,28 +4,33 @@ import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
-import ru.rerumu.lists.model.SeriesItem;
-import ru.rerumu.lists.model.SeriesItemType;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.books.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.type.BookType;
+import ru.rerumu.lists.model.series.item.SeriesItemType;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.repository.BookRepository;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class BookImpl implements Book, Cloneable, SeriesItem {
+public class BookImpl implements Book, Cloneable {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
     @Getter
@@ -55,8 +60,16 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
     @Setter
     private ReadingRecordFactory readingRecordFactory;
 
+    @Setter
+    private BookRepository bookRepository;
 
-    public BookImpl(
+    @Setter
+    private DateFactory dateFactory;
+
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+
+
+    BookImpl(
             Long bookId,
             Long readListId,
             String title,
@@ -80,22 +93,22 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
         this.bookStatus = bookStatus;
         this.insertDate = insertDate;
         this.lastUpdateDate = lastUpdateDate;
-        this.lastChapter = lastChapter;
+//        this.lastChapter = lastChapter;
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
         this.readingRecords = readingRecords;
     }
 
-    public BookImpl(Long bookId,
-                    Long readListId,
-                    String title,
-                    BookStatusRecord bookStatus,
-                    Date insertDate,
-                    Date lastUpdateDate,
-                    Integer lastChapter) {
-        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null, new ArrayList<>());
-    }
+//    public BookImpl(Long bookId,
+//                    Long readListId,
+//                    String title,
+//                    BookStatusRecord bookStatus,
+//                    Date insertDate,
+//                    Date lastUpdateDate,
+//                    Integer lastChapter) {
+//        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null, new ArrayList<>());
+//    }
 
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
@@ -167,38 +180,20 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
         return getLastUpdateDate_V2();
     }
 
-    public ReadingRecord addReadingRecord(
-            Long bookId,
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
-    ){
-        ReadingRecord readingRecord = ReadingRecord.builder()
-                .bookId(bookId)
-                .recordId(readingRecordId)
-                .bookStatus(bookStatusRecord)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-
-        readingRecords.add(readingRecord);
-
-        return readingRecord;
-    }
-
     @Override
     public void addReadingRecord(
             @NonNull BookStatusRecord bookStatusRecord,
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            Long lastChapter
     ) {
 
-        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
-                endDate
+                endDate,
+                lastChapter
         );
 
         // TODO: Remove
@@ -215,34 +210,108 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
         return bookId;
     }
 
+    @Override
+    public Long getListId() {
+        return readListId;
+    }
+
+    @Override
+    public void updateInsertDate(LocalDateTime insertDate) {
+        this.insertDate = Date.from(insertDate.toInstant(ZoneOffset.UTC));
+    }
+
+    @Override
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public void updateLastChapter(Integer lastChapter) {
+//        if (!Objects.equals(this.lastChapter, lastChapter)){
+//            this.lastChapter = lastChapter;
+//            lastUpdateDate = dateFactory.getCurrentDate();
+//        }
+    }
+
+    @Override
+    public void updateStatus(BookStatusRecord bookStatusRecord) {
+        if (!Objects.equals(this.bookStatus.statusId(), bookStatusRecord.statusId())){
+            this.bookStatus = bookStatusRecord;
+            lastUpdateDate = dateFactory.getCurrentDate();
+        }
+    }
+
+    @Override
+    public void updateNote(String note) {
+        this.note = note;
+    }
+
+    @Override
+    public void updateType(BookType bookType) {
+        this.bookType = bookType;
+    }
+
+    @Override
+    public void save() {
+        bookRepository.update(this);
+    }
+
+    @Override
+    public boolean filterByStatusIds(List<Integer> statusIds) {
+        return statusIds.contains(bookStatus.statusId());
+    }
+
+    @Override
+    public Float getTitleFuzzyMatchScore(String value) {
+        if (title.equalsIgnoreCase(value)){
+            return 1f;
+        }
+
+        List<String> titleSubstrings = new ArrayList<>();
+        titleSubstrings.add(title);
+        titleSubstrings.addAll(Arrays.asList(title.split(" ")));
+
+        List<Float> scores = new ArrayList<>();
+        for(String item: titleSubstrings){
+            Integer distance = levenshteinDistance.apply(item.toUpperCase(), value.toUpperCase());
+            Float score = (float) (item.length() - distance) / item.length();
+            scores.add(score);
+        }
+
+        Float res = scores.stream().max(Float::compareTo).orElseThrow();
+        return res;
+    }
+
     public ReadingRecord deleteReadingRecord(Long readingRecordId){
         ReadingRecord readingRecord = readingRecords.stream()
-                .filter(item -> item.recordId().equals(readingRecordId))
+                .filter(item -> item.getId().equals(readingRecordId))
                 .findAny()
                 .orElseThrow(EntityNotFoundException::new);
 
         readingRecords.remove(readingRecord);
+        readingRecord.delete();
+
         return readingRecord;
     }
 
-    public ReadingRecord updateReadingRecord(
-            Long readingRecordId,
-            BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            @Nullable LocalDateTime endDate
+    public void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
     ){
         ReadingRecord readingRecord = readingRecords.stream()
-                .filter(item -> item.recordId().equals(readingRecordId))
+                .filter(item -> item.getId().equals(readingRecordId))
                 .findAny()
                 .orElseThrow(EntityNotFoundException::new);
 
-        readingRecord = readingRecord.toBuilder()
-                .bookStatus(bookStatusRecord)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
+        readingRecord.setStatus(bookStatusRecord);
+        readingRecord.setStartDate(startDate);
+        readingRecord.setEndDate(endDate);
+        readingRecord.setLastChapter(lastChapter);
 
-        return readingRecord;
+        readingRecord.save();
     }
 
 
@@ -251,121 +320,27 @@ public class BookImpl implements Book, Cloneable, SeriesItem {
         return this.toJSONObject().toString();
     }
 
-    /**
-     * @deprecated Use {@link BookBuilder}
-     */
-    @Deprecated
-    public final static class Builder {
-        private Long bookId;
-        private Long readListId;
-        private String title;
-        private BookStatusRecord bookStatus;
-        private Date insertDate;
-        private Date lastUpdateDate;
-        private Integer lastChapter;
+    @Override
+    public BookDTO toDTO() {
 
-        private BookType bookType;
+        BookDTO bookDTO = new BookDTO(
+            bookId,
+            readListId,
+            title,
+            bookStatus.statusId(),
+            insertDate,
+            lastUpdateDate,
+            lastChapter,
+            bookType.getId(),
+            note,
+            bookType.toDTO(),
+            bookStatus,
+            previousBooks.toDTO(),
+            readingRecords.stream()
+                    .map(ReadingRecord::toDTO)
+                    .collect(Collectors.toCollection(ArrayList::new))
+        );
 
-        private BookChain previousBooks;
-
-        private String note;
-        private List<ReadingRecord> readingRecords;
-
-        public Builder() {
-        }
-
-        public Builder(BookImpl book) {
-            this.bookId = book.bookId;
-            this.readListId = book.readListId;
-            this.title = book.title;
-            this.bookStatus = book.bookStatus;
-            this.insertDate = book.insertDate;
-            this.lastUpdateDate = book.lastUpdateDate;
-            this.lastChapter = book.lastChapter;
-            this.previousBooks = book.previousBooks;
-            this.note = book.note;
-        }
-
-        public Builder bookId(Long bookId) {
-            this.bookId = bookId;
-            return this;
-        }
-
-        public Builder readListId(Long readListId) {
-            this.readListId = readListId;
-            return this;
-        }
-
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder bookStatus(BookStatusRecord bookStatus) {
-            this.bookStatus = bookStatus;
-            return this;
-        }
-
-        public Builder insertDate(Date insertDate) {
-            this.insertDate = insertDate;
-            return this;
-        }
-
-        public Builder insertDate(LocalDateTime insertDate) {
-            this.insertDate = Date.from(insertDate.toInstant(ZoneOffset.UTC));
-            return this;
-        }
-
-        public Builder lastUpdateDate(Date lastUpdateDate) {
-            this.lastUpdateDate = lastUpdateDate;
-            return this;
-        }
-
-        public Builder lastUpdateDate(LocalDateTime lastUpdateDate) {
-            this.lastUpdateDate = Date.from(lastUpdateDate.toInstant(ZoneOffset.UTC));
-            return this;
-        }
-
-        public Builder lastChapter(Integer lastChapter) {
-            this.lastChapter = lastChapter;
-            return this;
-        }
-
-        public Builder bookType(BookType bookType) {
-            this.bookType = bookType;
-            return this;
-        }
-
-        public Builder previousBooks(BookChain previousBooks) {
-            this.previousBooks = previousBooks;
-            return this;
-        }
-
-        public Builder note(String note){
-            this.note = note;
-            return this;
-        }
-
-        public Builder readingRecords(@NonNull List<ReadingRecord> readingRecords){
-            this.readingRecords = readingRecords;
-            return this;
-        }
-
-
-        public BookImpl build() throws EmptyMandatoryParameterException {
-            return new BookImpl(
-                    bookId,
-                    readListId,
-                    title,
-                    bookStatus,
-                    insertDate,
-                    lastUpdateDate,
-                    lastChapter,
-                    bookType,
-                    previousBooks,
-                    note,
-                    readingRecords
-            );
-        }
+        return bookDTO;
     }
 }

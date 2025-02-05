@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.model.series.item.SeriesItem;
+import ru.rerumu.lists.model.series.item.SeriesItemType;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 
 public class Title implements SeriesItem {
 

@@ -2,18 +2,21 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookImpl;
-import ru.rerumu.lists.model.Series;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
+import ru.rerumu.lists.model.series.Series;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class BookListView {
 
-    private final List<BookImpl> bookList;
+    private final List<Book> bookList;
     private final Map<BookImpl, List<Series>> bookSeriesMap;
 
     private final Boolean isChainBySeries;
@@ -22,7 +25,7 @@ public class BookListView {
 
     private final Search search;
 
-    public BookListView(List<BookImpl> bookList, Map<BookImpl, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList, Search search) {
+    public BookListView(List<Book> bookList, Map<BookImpl, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList, Search search) {
         this.bookList = bookList;
         this.bookSeriesMap = bookSeriesMap;
         this.isChainBySeries = isChainBySeries;
@@ -30,14 +33,14 @@ public class BookListView {
         this.search = search;
     }
 
-    public void sort() {
-        Comparator<BookImpl> comparator = Comparator
-                .comparing(BookImpl::getInsertDate)
-                .thenComparing(BookImpl::getTitle)
-                .thenComparing(BookImpl::getBookId);
-
-        this.bookList.sort(comparator);
-    }
+//    public void sort() {
+//        Comparator<Object> comparator = Comparator
+//                .comparing(book -> ((BookImpl)book).getInsertDate())
+//                .thenComparing(book -> ((BookImpl)book).getTitle())
+//                .thenComparing(book -> ((BookImpl)book).getId());
+//
+//        this.bookList.sort(comparator);
+//    }
 
     public void sort(List<SortItem> sortItemList) {
 
@@ -52,12 +55,12 @@ public class BookListView {
         if (isSearch){
             return;
         }
-        Comparator<BookImpl> comparator = Comparator.comparing(book -> 0);
+        Comparator<Book> comparator = Comparator.comparing(book -> 0);
 
         for (SortItem sortItem : sortItemList) {
             if (sortItem.getSortField().equals("createDate")) {
 
-                comparator = comparator.thenComparing(BookImpl::getInsertDate);
+                comparator = comparator.thenComparing(book -> ((BookImpl)book).getInsertDate());
 
                 if (sortItem.getSearchOrder() == SearchOrder.DESC) {
                     comparator = comparator.reversed();
@@ -65,7 +68,7 @@ public class BookListView {
             }
         }
 
-        comparator = comparator.thenComparing(BookImpl::getBookId);
+        comparator = comparator.thenComparing(Book::getId);
 
         this.bookList.sort(comparator);
     }
@@ -73,7 +76,7 @@ public class BookListView {
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         JSONArray bookArray = bookList.stream()
-                .map(BookImpl::toJSONObject)
+                .map(Book::toJSONObject)
                 .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
 
         obj.put("items", bookArray);
@@ -88,7 +91,7 @@ public class BookListView {
 
     public static class Builder {
         private Map<BookImpl, List<Series>> bookSeriesMap;
-        private List<BookImpl> bookList;
+        private List<Book> bookList;
 
         private Boolean isChainBySeries;
 
@@ -101,7 +104,7 @@ public class BookListView {
             return this;
         }
 
-        public Builder bookList(List<BookImpl> bookList) {
+        public Builder bookList(List<Book> bookList) {
             this.bookList = bookList;
             return this;
         }

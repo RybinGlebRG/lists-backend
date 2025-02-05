@@ -3,11 +3,8 @@ package ru.rerumu.lists.views;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.BookType;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BookStatusesView {
 

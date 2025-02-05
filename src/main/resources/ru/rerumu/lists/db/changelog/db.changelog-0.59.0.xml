@@ -1,0 +1,48 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="e37c0c6f-f879-4049-bebd-a01100d1d216">
+        <addColumn tableName="reading_records">
+            <column name="last_chapter"
+                    type="NUMBER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="3086989f-e92b-4168-a279-02ea5dc014ff">
+        <sql>
+            update reading_records
+            set last_chapter = s.last_chapter
+            from (
+                select s1.*
+                from (
+                    select
+                            rr.record_id,
+                            rr.start_date,
+                            b.book_id ,
+                            b.last_chapter,
+                            row_number() over (partition by b.book_id order by rr.start_date asc) as rn,
+                            count(*) over (partition by b.book_id)  as cnt
+                    from
+                            reading_records rr
+                                inner join books b
+                                    on b.book_id = rr.book_book_id
+                ) s1
+                where s1.rn = s1.cnt
+            ) s
+            where reading_records.record_id = s.record_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="d8d84a59-0fe5-4274-a12c-1201baa829c6">
+        <tagDatabase  tag="0.59.0"/>
+    </changeSet>
+
+</databaseChangeLog>

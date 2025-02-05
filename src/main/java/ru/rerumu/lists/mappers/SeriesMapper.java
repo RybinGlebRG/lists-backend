@@ -1,13 +1,11 @@
 package ru.rerumu.lists.mappers;
 
-import ru.rerumu.lists.model.dto.EntityDTO;
-import ru.rerumu.lists.model.Series;
-import ru.rerumu.lists.model.dto.SeriesDTO;
+import ru.rerumu.lists.model.series.SeriesDTO;
 
 import java.util.List;
 
 
-public interface SeriesMapper extends CrudMapper<Series,Long, EntityDTO<Series>> {
+public interface SeriesMapper extends CrudMapper<SeriesDTO,Long, SeriesDTO> {
     SeriesDTO getOne(Long readListId, Long seriesId);
     @Deprecated
     SeriesDTO getOneBySeriesOnly( Long seriesId);

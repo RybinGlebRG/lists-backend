@@ -1,6 +1,7 @@
 package ru.rerumu.lists.services;
 
-import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
@@ -9,13 +10,13 @@ import java.util.Optional;
 
 public interface ReadingRecordService {
 
-    ReadingRecord addRecord(Long bookId, ReadingRecordAddView readingRecordAddView);
-    ReadingRecord addRecord(ReadingRecord readingRecord);
+    ReadingRecordImpl addRecord(Long bookId, ReadingRecordAddView readingRecordAddView);
+//    ReadingRecordImpl addRecord(ReadingRecordImpl readingRecord);
     Long getNextId();
 
-    ReadingRecord addRecord(Long bookId, ReadingRecord readingRecord);
+//    ReadingRecordImpl addRecord(Long bookId, ReadingRecordImpl readingRecord);
     ReadingRecord updateRecord(Long recordId, ReadingRecordUpdateView readingRecordUpdateView);
-    ReadingRecord updateRecord(ReadingRecord readingRecord);
+    ReadingRecordImpl updateRecord(ReadingRecordImpl readingRecord);
 
     void deleteRecord(Long recordId);
     List<ReadingRecord> getReadingRecords(Long bookId);
