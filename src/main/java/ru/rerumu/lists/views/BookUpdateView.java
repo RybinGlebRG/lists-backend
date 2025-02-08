@@ -14,7 +14,8 @@ public record BookUpdateView(
         Integer lastChapter,
         LocalDateTime insertDateUTC,
         Integer bookTypeId,
-        String note
+        String note,
+        String URL
 ) {
 //    private final Long readListId;
 //    private final String title;

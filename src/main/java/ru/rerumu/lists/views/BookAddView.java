@@ -12,7 +12,8 @@ public record BookAddView(
         Integer bookTypeId,
         LocalDateTime insertDate,
 
-        String note
+        String note,
+        String URL
 ) {
 
     public int getStatus() {

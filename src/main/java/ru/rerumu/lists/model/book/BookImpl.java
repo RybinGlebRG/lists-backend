@@ -68,6 +68,8 @@ public class BookImpl implements Book, Cloneable {
 
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
 
+    private String URL;
+
 
     BookImpl(
             Long bookId,
@@ -80,7 +82,8 @@ public class BookImpl implements Book, Cloneable {
             BookType bookType,
             BookChain previousBooks,
             String note,
-            List<ReadingRecord> readingRecords
+            List<ReadingRecord> readingRecords,
+            String URL
     ) {
         Objects.requireNonNull(title, "Book title cannot be null");
         Objects.requireNonNull(bookStatus, "Book status cannot be null");
@@ -98,6 +101,7 @@ public class BookImpl implements Book, Cloneable {
         this.previousBooks = previousBooks;
         this.note = note;
         this.readingRecords = readingRecords;
+        this.URL = URL;
     }
 
 //    public BookImpl(Long bookId,
@@ -171,6 +175,7 @@ public class BookImpl implements Book, Cloneable {
                     .forEach(readingRecordsArray::put);
         }
         obj.put("readingRecords", readingRecordsArray);
+        obj.put("URL", URL);
 
         return obj;
     }
@@ -249,6 +254,12 @@ public class BookImpl implements Book, Cloneable {
     @Override
     public void updateType(BookType bookType) {
         this.bookType = bookType;
+    }
+
+    @Override
+    public void updateURL(String URL) {
+        this.URL = URL;
+        this.lastUpdateDate = dateFactory.getCurrentDate();
     }
 
     @Override
@@ -335,10 +346,11 @@ public class BookImpl implements Book, Cloneable {
             note,
             bookType.toDTO(),
             bookStatus,
-            previousBooks.toDTO(),
-            readingRecords.stream()
+            previousBooks != null ? previousBooks.toDTO() : null,
+            previousBooks != null ?readingRecords.stream()
                     .map(ReadingRecord::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new))
+                    .collect(Collectors.toCollection(ArrayList::new)) : null,
+            URL
         );
 
         return bookDTO;

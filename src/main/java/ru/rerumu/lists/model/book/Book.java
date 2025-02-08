@@ -40,6 +40,7 @@ public interface Book extends SeriesItem {
     void updateStatus(BookStatusRecord bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
+    void updateURL(String URL);
     void save();
 
     boolean filterByStatusIds(List<Integer> statusIds);

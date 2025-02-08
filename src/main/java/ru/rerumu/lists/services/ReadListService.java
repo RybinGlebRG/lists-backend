@@ -134,6 +134,8 @@ public class ReadListService {
             book.updateType(optionalBookType);
         }
 
+        book.updateURL(bookUpdateView.URL());
+
         book.save();
 
         logger.debug(String.format("Updated book: %s", book));
@@ -201,7 +203,8 @@ public class ReadListService {
                 bookAddView.note(),
                 bookStatus,
                 bookAddView.insertDate(),
-                bookType
+                bookType,
+                bookAddView.URL()
         );
 
 

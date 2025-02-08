@@ -30,6 +30,8 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void update(BookImpl book) {
+        BookDTO bookDTO = book.toDTO();
+
         bookMapper.update(
                 book.getReadListId(),
                 book.getBookId(),
@@ -39,7 +41,8 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
-                book.getNote()
+                book.getNote(),
+                bookDTO.URL
         );
     }
 
@@ -116,6 +119,8 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void addOne(BookImpl book) {
+        BookDTO bookDTO = book.toDTO();
+
         bookMapper.addOne(
                 book.getBookId(),
                 book.getReadListId(),
@@ -125,7 +130,8 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
-                book.getNote()
+                book.getNote(),
+                bookDTO.URL
         );
     }
 

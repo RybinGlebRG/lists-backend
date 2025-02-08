@@ -28,6 +28,7 @@ public class BookBuilder {
 
     private String note;
     private List<ReadingRecord> readingRecords;
+    private String URL;
 
     public BookBuilder() {
     }
@@ -97,6 +98,11 @@ public class BookBuilder {
         return this;
     }
 
+    public BookBuilder URL(String URL){
+        this.URL = URL;
+        return this;
+    }
+
 
     public BookImpl build() throws EmptyMandatoryParameterException {
         return new BookImpl(
@@ -110,7 +116,8 @@ public class BookBuilder {
                 bookType,
                 previousBooks,
                 note,
-                readingRecords
+                readingRecords,
+                URL
         );
     }
 }

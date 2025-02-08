@@ -93,7 +93,8 @@ class BooksControllerUpdateBookTest {
                         4,
                         LocalDateTime.of(2022, 10, 1, 0, 0, 0),
                         2,
-                        "test note 2"
+                        "test note 2",
+                        null
                 )
         );
     }

@@ -49,7 +49,8 @@ public class BookFactory {
             String note,
             BookStatusRecord bookStatus,
             LocalDateTime insertDate,
-            BookType bookType
+            BookType bookType,
+            String URL
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
@@ -59,7 +60,8 @@ public class BookFactory {
                 .title(title)
                 .lastChapter(lastChapter)
                 .note(note)
-                .bookStatus(bookStatus);
+                .bookStatus(bookStatus)
+                .URL(URL);
 
         if (insertDate != null) {
             bookBuilder.insertDate(insertDate);
@@ -247,7 +249,8 @@ public class BookFactory {
                 .insertDate(bookDTO.insertDate)
                 .lastUpdateDate(bookDTO.lastUpdateDate)
                 .lastChapter(bookDTO.lastChapter)
-                .note(bookDTO.note);
+                .note(bookDTO.note)
+                .URL(bookDTO.URL);
 
         if (bookDTO.bookTypeObj != null) {
             builder.bookType(bookDTO.bookTypeObj.toDomain());

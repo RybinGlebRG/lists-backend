@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.59.0</version>
+	<version>0.60.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
