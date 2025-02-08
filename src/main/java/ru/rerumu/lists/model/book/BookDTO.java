@@ -44,8 +44,38 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public List<BookOrderedDTO> previousBooks;
     @Setter
     public List<ReadingRecordDTO> readingRecords;
+    @Getter
+    public String URL;
 
     public BookDTO() {
+    }
+
+    public BookDTO(
+            Long bookId,
+            Long readListId,
+            String title,
+            Integer bookStatus,
+            Date insertDate,
+            Date lastUpdateDate,
+            Integer lastChapter,
+            String note,
+            BookTypeDTO bookTypeObj,
+            BookStatusRecord bookStatusObj,
+            List<BookOrderedDTO> previousBooks,
+            String URL
+    ) {
+        this.bookId = bookId;
+        this.readListId = readListId;
+        this.title = title;
+        this.bookStatus = bookStatus;
+        this.insertDate = insertDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.lastChapter = lastChapter;
+        this.note = note;
+        this.bookTypeObj = bookTypeObj;
+        this.bookStatusObj = bookStatusObj;
+        this.previousBooks = previousBooks;
+        this.URL = URL;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {

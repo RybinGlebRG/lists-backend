@@ -43,6 +43,7 @@
         <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
+        <result  property="URL" column="book_url" javaType="String"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
     </resultMap>
@@ -59,6 +60,21 @@
 
 
     <resultMap id="BookDTOChainedResultMap" type="ru.rerumu.lists.model.book.BookDTO">
+<!--        <constructor>-->
+<!--            <idArg name="bookId"        column="book_id"                        javaType="Long"/>-->
+<!--            <arg name="readListId"      column="book_list_id"                   javaType="Long"/>-->
+<!--            <arg name="title"           column="book_title"                     javaType="String"/>-->
+<!--            <arg name="bookStatus"      column="book_status_id_old"             javaType="Integer"/>-->
+<!--            <arg name="insertDate"      column="book_insert_date"               javaType="Date"/>-->
+<!--            <arg name="lastUpdateDate"  column="book_last_update_date"          javaType="Date"/>-->
+<!--            <arg name="lastChapter"     column="last_chapter"                   javaType="Integer"/>-->
+<!--            <arg name="note"            column="book_note"                      javaType="String"/>-->
+<!--            <arg name="bookTypeObj"                                                                             resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>-->
+<!--            <arg name="bookStatusObj"                                                                           resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>-->
+<!--            <arg name="previousBooks"                                           javaType="java.util.List"       resultMap="BookOrderedDTOResultMap"                                             columnPrefix="previous_"/>-->
+<!--            <arg name="URL"             column="book_url"                       javaType="String"/>-->
+<!--        </constructor>-->
+
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -67,6 +83,7 @@
         <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
+        <result  property="URL" column="book_url" javaType="String"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.mappers.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.mappers.BookStatusMapper.BookStatusResultMap"/>
         <collection
@@ -97,8 +114,8 @@
                 bt.name as book_type_name,
                 s.STATUS_ID as book_status_id,
                 s.NAME as book_status_name,
-                b.note as book_note
-
+                b.note as book_note,
+                b.url as book_url
         from books b
                 inner join statuses s
                 on s.STATUS_ID= b.status_status_id
@@ -150,6 +167,7 @@
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
                     b.note as book_note,
+                    b.url as book_url,
                     max(sb.series_order) over (partition by sb.series_series_id) as mtop,
 				    sb2.series_order
                 from books b
@@ -193,6 +211,7 @@
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
                     b.note as book_note,
+                    b.url as book_url,
                     s_prev.book_id as previous_book_id,
                     s_prev.book_list_id as previous_book_list_id,
                     s_prev.book_title as previous_book_title,
@@ -232,6 +251,7 @@
                     s.STATUS_ID as book_status_id,
                     s.NAME as book_status_name,
                     b.note as book_note,
+                    b.url as book_url,
                     null as previous_book_id,
                     null as previous_book_list_id,
                     null as previous_book_title,
@@ -265,7 +285,8 @@
             last_update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
             type_type_id = #{bookTypeId},
-            note = #{note}
+            note = #{note},
+            url = #{URL}
         where book_id=#{bookId}
         and list_list_id=#{readListId}
     </update>
@@ -284,8 +305,8 @@
     </select>
 
     <insert id="addOne">
-        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note)
-        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note})
+        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note, url)
+        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note}, #{URL})
     </insert>
 
     <delete id="delete">

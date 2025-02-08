@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="0d988926-d8ca-4259-9147-c4eb990fae0b">
+        <addColumn tableName="books">
+            <column name="url"
+                    type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="68f3557d-347d-4c4c-b06b-d3707208270e">
+        <tagDatabase  tag="0.60.0"/>
+    </changeSet>
+
+</databaseChangeLog>
