@@ -115,7 +115,8 @@
                 s.STATUS_ID as book_status_id,
                 s.NAME as book_status_name,
                 b.note as book_note,
-                b.url as book_url
+                b.url as book_url,
+                b.user_user_id as book_user_id
         from books b
                 inner join statuses s
                 on s.STATUS_ID= b.status_status_id
@@ -168,6 +169,7 @@
                     s.NAME as book_status_name,
                     b.note as book_note,
                     b.url as book_url,
+                    b.user_user_id as book_user_id,
                     max(sb.series_order) over (partition by sb.series_series_id) as mtop,
 				    sb2.series_order
                 from books b
@@ -212,6 +214,7 @@
                     s.NAME as book_status_name,
                     b.note as book_note,
                     b.url as book_url,
+                    b.user_user_id as book_user_id,
                     s_prev.book_id as previous_book_id,
                     s_prev.book_list_id as previous_book_list_id,
                     s_prev.book_title as previous_book_title,
@@ -252,6 +255,7 @@
                     s.NAME as book_status_name,
                     b.note as book_note,
                     b.url as book_url,
+                    b.user_user_id as book_user_id,
                     null as previous_book_id,
                     null as previous_book_list_id,
                     null as previous_book_title,
@@ -305,8 +309,8 @@
     </select>
 
     <insert id="addOne">
-        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note, url)
-        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note}, #{URL})
+        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note, url, user_user_id)
+        values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note}, #{URL}, #{userId})
     </insert>
 
     <delete id="delete">

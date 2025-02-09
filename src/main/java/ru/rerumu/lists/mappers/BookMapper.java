@@ -44,7 +44,8 @@ public interface BookMapper {
                 Integer lastChapter,
                 Integer bookTypeId,
                 String note,
-                String URL
+                String URL,
+                Long userId
     );
 
     void delete (long bookId);

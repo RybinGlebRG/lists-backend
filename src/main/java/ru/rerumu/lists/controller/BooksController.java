@@ -100,13 +100,16 @@ public class BooksController {
     ResponseEntity<String> addOne(
             @PathVariable Long readListId,
             @RequestBody BookAddView bookAddView,
-            @RequestAttribute("username") String username
+            @RequestAttribute("username") String username,
+            @RequestAttribute("authUserId") Long authUserId
     ) throws UserIsNotOwnerException, EmptyMandatoryParameterException, EntityNotFoundException {
 
         userService.checkOwnershipList(username, readListId);
         userService.checkOwnership(username,bookAddView);
 
-        readListService.addBook(readListId, bookAddView);
+        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
+
+        readListService.addBook(readListId, bookAddView, user);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
