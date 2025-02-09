@@ -1,0 +1,68 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="gleb" id="d32f5971-cd2b-4779-a8b6-5a9fdbb9f208">
+        <addColumn tableName="books">
+            <column name="user_user_id"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="8e2c79b1-fbf8-4cd5-8216-40f49ddc9941">
+        <sql>
+            update books b
+            set user_user_id = s.user_user_id
+            from (
+                select
+                    b.book_id,
+                    l.user_user_id
+                from books b
+                    inner join lists l
+                        on l.list_id = b.list_list_id
+            ) s
+            where b.book_id = s.book_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="01e17a25-10c1-434b-a52f-3a21883217a6">
+        <addNotNullConstraint
+            tableName="books"
+            columnName="user_user_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="84f83d2a-fa29-4182-8459-880b796054ce">
+        <addUniqueConstraint
+                tableName="books"
+                columnNames="user_user_id, type_type_id, title"
+                constraintName="books_user_title_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="3b82b0f8-1f86-4462-8ef9-b03dcc453863">
+        <addForeignKeyConstraint
+                baseTableName="books"
+                baseColumnNames="user_user_id"
+                referencedTableName="users"
+                referencedColumnNames="user_id"
+                constraintName="books_users_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet  author="gleb"  id="1208ce7e-7229-48fc-83fb-1e945384c55b">
+        <tagDatabase  tag="0.61.0"/>
+    </changeSet>
+
+</databaseChangeLog>

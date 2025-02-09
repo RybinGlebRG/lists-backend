@@ -186,7 +186,7 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void addBook(Long readListId, BookAddView bookAddView) throws EmptyMandatoryParameterException, EntityNotFoundException {
+    public void addBook(Long readListId, BookAddView bookAddView, User user) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
         // Create book
         BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
@@ -204,7 +204,8 @@ public class ReadListService {
                 bookStatus,
                 bookAddView.insertDate(),
                 bookType,
-                bookAddView.URL()
+                bookAddView.URL(),
+                user
         );
 
 

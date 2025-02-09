@@ -11,6 +11,7 @@ import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
@@ -70,25 +71,24 @@ public class BookImpl implements Book, Cloneable {
 
     private String URL;
 
+    private User user;
+
 
     BookImpl(
             Long bookId,
             Long readListId,
-            String title,
-            BookStatusRecord bookStatus,
-            Date insertDate,
-            Date lastUpdateDate,
+            @NonNull String title,
+            @NonNull BookStatusRecord bookStatus,
+            @NonNull Date insertDate,
+            @NonNull Date lastUpdateDate,
             Integer lastChapter,
             BookType bookType,
             BookChain previousBooks,
             String note,
             List<ReadingRecord> readingRecords,
-            String URL
+            String URL,
+            User user
     ) {
-        Objects.requireNonNull(title, "Book title cannot be null");
-        Objects.requireNonNull(bookStatus, "Book status cannot be null");
-        Objects.requireNonNull(insertDate, "Book insert date cannot be null");
-        Objects.requireNonNull(lastUpdateDate, "Book last update date cannot be null");
 
         this.bookId = bookId;
         this.readListId = readListId;
@@ -102,6 +102,7 @@ public class BookImpl implements Book, Cloneable {
         this.note = note;
         this.readingRecords = readingRecords;
         this.URL = URL;
+        this.user = user;
     }
 
 //    public BookImpl(Long bookId,
@@ -350,7 +351,8 @@ public class BookImpl implements Book, Cloneable {
             previousBooks != null ?readingRecords.stream()
                     .map(ReadingRecord::toDTO)
                     .collect(Collectors.toCollection(ArrayList::new)) : null,
-            URL
+            URL,
+            user != null ? user.userId() : null
         );
 
         return bookDTO;

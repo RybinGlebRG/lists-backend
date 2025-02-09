@@ -46,6 +46,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public List<ReadingRecordDTO> readingRecords;
     @Getter
     public String URL;
+    @Getter
+    public Long userId;
 
     public BookDTO() {
     }
@@ -62,7 +64,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
             BookTypeDTO bookTypeObj,
             BookStatusRecord bookStatusObj,
             List<BookOrderedDTO> previousBooks,
-            String URL
+            String URL,
+            Long userId
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
@@ -76,6 +79,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
         this.bookStatusObj = bookStatusObj;
         this.previousBooks = previousBooks;
         this.URL = URL;
+        this.userId = userId;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -90,61 +94,4 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public BookImpl toDomain() {
         throw new RuntimeException("Not implemented");
     }
-
-//    @Override
-//    public BookImpl toDomain() {
-//        try {
-//
-//
-//            BookBuilder builder = new BookBuilder()
-//                    .bookId(bookId)
-//                    .readListId(readListId)
-//                    .title(title)
-//                    .insertDate(insertDate)
-//                    .lastUpdateDate(lastUpdateDate)
-//                    .note(note)
-//                    .readingRecords(readingRecords);
-//
-//            if (lastChapter != null) {
-//                builder.lastChapter(lastChapter);
-//            }
-//            if (bookTypeObj != null) {
-//                builder.bookType(bookTypeObj.toDomain());
-//            }
-//            builder.bookStatus(bookStatusObj);
-//
-//            if (previousBooks != null) {
-//                HashMap<BookImpl,Integer> bookOrderMap = previousBooks.stream()
-//                        .filter(Objects::nonNull)
-//                        .map(item -> new AbstractMap.SimpleImmutableEntry<>(
-//                                item.bookDTO.toDomain(),
-//                                item.getOrder()
-//                        ))
-//                        .collect(
-//                                HashMap::new,
-//                                (map,item) -> map.put(item.getKey(),item.getValue()),
-//                                HashMap::putAll
-//                        );
-//
-//                builder.previousBooks(
-//                       new BookChain(bookOrderMap)
-//                );
-//            }
-//
-//            BookImpl book = builder.build();
-//            return book;
-//        } catch (EmptyMandatoryParameterException e) {
-//            // Database is supposed to provide everything needed
-//            throw new AssertionException(e);
-//        }
-//    }
-
-//    @Override
-//    public String toString() {
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("bookId",bookId);
-//        jsonObject.put("readListId",readListId);
-//        jsonObject.put("title",title);
-//        jsonObject.put("bookStatus",bookStatus);
-//    }
 }

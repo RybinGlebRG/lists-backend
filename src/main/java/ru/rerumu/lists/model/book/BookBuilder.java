@@ -4,6 +4,7 @@ import lombok.NonNull;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
@@ -29,6 +30,7 @@ public class BookBuilder {
     private String note;
     private List<ReadingRecord> readingRecords;
     private String URL;
+    private User user;
 
     public BookBuilder() {
     }
@@ -103,6 +105,11 @@ public class BookBuilder {
         return this;
     }
 
+    public BookBuilder user(User user){
+        this.user = user;
+        return this;
+    }
+
 
     public BookImpl build() throws EmptyMandatoryParameterException {
         return new BookImpl(
@@ -117,7 +124,8 @@ public class BookBuilder {
                 previousBooks,
                 note,
                 readingRecords,
-                URL
+                URL,
+                user
         );
     }
 }

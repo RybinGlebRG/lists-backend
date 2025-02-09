@@ -131,7 +131,8 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
-                bookDTO.URL
+                bookDTO.URL,
+                bookDTO.userId
         );
     }
 
