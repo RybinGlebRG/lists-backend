@@ -2,13 +2,9 @@ package ru.rerumu.lists.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.mappers.BookMapper;
-import ru.rerumu.lists.mappers.ReadingRecordMapper;
-import ru.rerumu.lists.model.book.BookFactory;
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.util.*;

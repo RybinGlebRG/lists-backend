@@ -1,7 +1,6 @@
 package ru.rerumu.lists.repository;
 
 import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 
 import java.util.List;
 

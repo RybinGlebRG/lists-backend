@@ -2,7 +2,6 @@ package ru.rerumu.lists.model;
 
 import org.json.JSONArray;
 import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.BookImpl;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 
 import java.util.ArrayList;

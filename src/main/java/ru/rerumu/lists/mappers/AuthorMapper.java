@@ -1,9 +1,11 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.Author;
 
 import java.util.List;
 
+@Mapper
 public interface AuthorMapper {
     Author getOne(Long readListId, Long authorId);
     List<Author> getAll(Long readListId);

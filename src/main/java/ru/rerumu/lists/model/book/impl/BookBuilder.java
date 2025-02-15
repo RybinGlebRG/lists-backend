@@ -1,4 +1,4 @@
-package ru.rerumu.lists.model.book;
+package ru.rerumu.lists.model.book.impl;
 
 import lombok.NonNull;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
@@ -7,7 +7,6 @@ import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

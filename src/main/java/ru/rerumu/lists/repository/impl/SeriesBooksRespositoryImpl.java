@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.SeriesBookMapper;
-import ru.rerumu.lists.model.book.BookFactory;
+import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
@@ -26,13 +26,13 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     private final BookRepository bookRepository;
     private final SeriesRepository seriesRepository;
     private final SeriesFactory seriesFactory;
-    private final BookFactory bookFactory;
+    private final BookFactoryImpl bookFactory;
 
     @Autowired
     public SeriesBooksRespositoryImpl(
             SeriesBookMapper seriesBookMapper,
             BookRepository bookRepository,
-            SeriesRepository seriesRepository, SeriesFactory seriesFactory, BookFactory bookFactory
+            SeriesRepository seriesRepository, SeriesFactory seriesFactory, BookFactoryImpl bookFactory
     ) {
         this.seriesBookMapper = seriesBookMapper;
         this.bookRepository = bookRepository;

@@ -13,7 +13,7 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.books.Search;

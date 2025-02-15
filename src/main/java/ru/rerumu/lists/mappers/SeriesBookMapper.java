@@ -1,11 +1,13 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
 
 import java.util.List;
 
+@Mapper
 public interface SeriesBookMapper {
 
     void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);

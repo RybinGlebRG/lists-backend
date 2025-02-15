@@ -76,7 +76,7 @@
         select nextval('series_id_seq')
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl">
+    <insert id="create" parameterType="ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl">
         insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated, last_chapter)
         values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter})
     </insert>

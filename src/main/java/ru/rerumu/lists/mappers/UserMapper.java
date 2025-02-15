@@ -1,10 +1,12 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Mapper
 public interface UserMapper extends CrudMapper<User,Long,User>{
 
     User getOne(String name);

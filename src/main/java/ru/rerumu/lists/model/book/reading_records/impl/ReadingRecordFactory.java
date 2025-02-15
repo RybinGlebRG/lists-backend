@@ -1,10 +1,12 @@
-package ru.rerumu.lists.model.book.reading_records;
+package ru.rerumu.lists.model.book.reading_records.impl;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
 import ru.rerumu.lists.repository.ReadingRecordsRepository;
 import ru.rerumu.lists.services.ReadingRecordService;
 

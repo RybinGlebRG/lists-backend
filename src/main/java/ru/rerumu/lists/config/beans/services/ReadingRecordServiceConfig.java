@@ -11,7 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
 import ru.rerumu.lists.repository.ReadingRecordsRepository;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.protection_proxies.ReadingRecordProtectionProxy;

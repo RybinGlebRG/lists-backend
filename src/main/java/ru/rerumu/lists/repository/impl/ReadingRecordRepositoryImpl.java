@@ -3,7 +3,6 @@ package ru.rerumu.lists.repository.impl;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.repository.ReadingRecordsRepository;
 
 import java.util.List;

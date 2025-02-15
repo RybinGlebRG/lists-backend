@@ -1,6 +1,5 @@
-package ru.rerumu.lists.model.book;
+package ru.rerumu.lists.model.book.impl;
 
-import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -12,11 +11,14 @@ import ru.rerumu.lists.factories.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.book.Book;
+import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.repository.BookRepository;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -73,6 +74,8 @@ public class BookImpl implements Book, Cloneable {
 
     private User user;
 
+    private List<Tag> tags;
+
 
     BookImpl(
             Long bookId,
@@ -87,7 +90,8 @@ public class BookImpl implements Book, Cloneable {
             String note,
             List<ReadingRecord> readingRecords,
             String URL,
-            User user
+            User user,
+            List<Tag> tags
     ) {
 
         this.bookId = bookId;
@@ -103,17 +107,8 @@ public class BookImpl implements Book, Cloneable {
         this.readingRecords = readingRecords;
         this.URL = URL;
         this.user = user;
+        this.tags = tags;
     }
-
-//    public BookImpl(Long bookId,
-//                    Long readListId,
-//                    String title,
-//                    BookStatusRecord bookStatus,
-//                    Date insertDate,
-//                    Date lastUpdateDate,
-//                    Integer lastChapter) {
-//        this(bookId, readListId, title, bookStatus, insertDate, lastUpdateDate, lastChapter, null, null, null, new ArrayList<>());
-//    }
 
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
@@ -264,6 +259,25 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
+    public void updateTags(@NonNull List<Tag> tags) {
+        // Adding new tags
+        tags.stream()
+                .filter(Objects::nonNull)
+                .filter(tag -> !this.tags.contains(tag))
+                .forEach(tags::add);
+        // TODO: add book_tag
+
+        // Removing tags
+        List<Tag> tagsToRemove = this.tags.stream()
+                .filter(tag -> !tags.contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Tag tag: tagsToRemove) {
+            this.tags.remove(tag);
+            tag.removeFromBook(bookId);
+        }
+    }
+
+    @Override
     public void save() {
         bookRepository.update(this);
     }
@@ -323,7 +337,10 @@ public class BookImpl implements Book, Cloneable {
         readingRecord.setEndDate(endDate);
         readingRecord.setLastChapter(lastChapter);
 
+        lastUpdateDate = dateFactory.getCurrentDate();
+
         readingRecord.save();
+        save();
     }
 
 

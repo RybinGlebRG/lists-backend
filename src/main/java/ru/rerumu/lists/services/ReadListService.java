@@ -15,10 +15,9 @@ import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.BookFactory;
+import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordImpl;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.BookRepository;
 import ru.rerumu.lists.repository.SeriesBooksRespository;
@@ -49,7 +48,7 @@ public class ReadListService {
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
     private final ReadingRecordService readingRecordService;
-    private final BookFactory bookFactory;
+    private final BookFactoryImpl bookFactory;
 
     @Autowired
     public ReadListService(
@@ -63,7 +62,7 @@ public class ReadListService {
             BookTypesService bookTypesService,
             BookStatusesService bookStatusesService,
             FuzzyMatchingService fuzzyMatchingService,
-            ReadingRecordService readingRecordService, BookFactory bookFactory
+            ReadingRecordService readingRecordService, BookFactoryImpl bookFactory
     ) {
         this.bookRepository = bookRepository;
         this.authorsService = authorsService;

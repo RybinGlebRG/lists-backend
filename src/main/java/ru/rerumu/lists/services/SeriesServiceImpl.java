@@ -8,7 +8,7 @@ import ru.rerumu.lists.exception.EntityHasChildrenException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.*;
 import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.model.series.item.SeriesItem;

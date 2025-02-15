@@ -1,9 +1,11 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.AuthorBookRelation;
 
 import java.util.List;
 
+@Mapper
 public interface AuthorBookRelationMapper {
 
     void deleteByAuthor(Long authorId);

@@ -6,7 +6,7 @@
 //import org.mockito.Mock;
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import ru.rerumu.lists.model.*;
-//import ru.rerumu.lists.model.book.BookImpl;
+//import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.repository.*;
 //import ru.rerumu.lists.services.*;
 //import ru.rerumu.lists.views.series_update.SeriesUpdateItem;

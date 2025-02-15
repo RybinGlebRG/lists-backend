@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.mappers.AuthorBookRelationMapper;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.book.BookFactory;
-import ru.rerumu.lists.model.book.BookImpl;
+import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.repository.AuthorsRepository;
 import ru.rerumu.lists.repository.BookRepository;
@@ -23,13 +23,13 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     private final BookRepository bookRepository;
     private final AuthorsRepository authorsRepository;
 
-    private final BookFactory bookFactory;
+    private final BookFactoryImpl bookFactory;
 
     @Autowired
     public AuthorsBooksRepositoryImpl(
             AuthorBookRelationMapper authorBookRelationMapper,
             BookRepository bookRepository,
-            AuthorsRepository authorsRepository, BookFactory bookFactory
+            AuthorsRepository authorsRepository, BookFactoryImpl bookFactory
     ){
 
         this.authorBookRelationMapper = authorBookRelationMapper;

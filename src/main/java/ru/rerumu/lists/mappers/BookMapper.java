@@ -1,11 +1,13 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.User;
 import ru.rerumu.lists.model.book.BookDTO;
 
 import java.util.Date;
 import java.util.List;
 
+@Mapper
 public interface BookMapper {
 
     BookDTO getOne(Long bookId);

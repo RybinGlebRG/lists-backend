@@ -16,7 +16,7 @@
 //import org.springframework.test.web.servlet.MockMvc;
 //import ru.rerumu.lists.controller.BooksController;
 //import ru.rerumu.lists.model.*;
-//import ru.rerumu.lists.model.book.BookImpl;
+//import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.services.*;
 //
 //import java.text.SimpleDateFormat;

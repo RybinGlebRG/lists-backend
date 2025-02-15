@@ -1,10 +1,11 @@
 package ru.rerumu.lists.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.series.SeriesDTO;
 
 import java.util.List;
 
-
+@Mapper
 public interface SeriesMapper extends CrudMapper<SeriesDTO,Long, SeriesDTO> {
     SeriesDTO getOne(Long readListId, Long seriesId);
     @Deprecated

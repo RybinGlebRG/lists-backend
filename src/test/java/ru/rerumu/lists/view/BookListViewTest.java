@@ -8,7 +8,7 @@
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.junit.jupiter.MockitoExtension;
-//import ru.rerumu.lists.model.book.BookImpl;
+//import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.model.BookStatusRecord;
 //import ru.rerumu.lists.model.series.Series;
 //import ru.rerumu.lists.model.books.SearchOrder;

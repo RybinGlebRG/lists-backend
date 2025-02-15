@@ -7,7 +7,7 @@ import ru.rerumu.lists.views.TitleCreateView;
 import java.util.Date;
 import java.util.List;
 
-
+@Mapper
 public interface TitleMapper {
     List<Title> getAllTitles(Long watchListId);
     Title getOne(Long watchListId, Long titleId);

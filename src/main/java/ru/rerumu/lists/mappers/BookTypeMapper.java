@@ -1,9 +1,9 @@
 package ru.rerumu.lists.mappers;
 
-import ru.rerumu.lists.model.book.type.BookType;
+import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
-import ru.rerumu.lists.model.dto.EntityDTO;
 
+@Mapper
 public interface BookTypeMapper extends CrudMapper<BookTypeDTO, Integer, BookTypeDTO> {
 
 }

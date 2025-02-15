@@ -1,25 +1,24 @@
-package ru.rerumu.lists.model.book.reading_records;
+package ru.rerumu.lists.model.book.reading_records.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
 import ru.rerumu.lists.repository.ReadingRecordsRepository;
 import ru.rerumu.lists.utils.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.Objects;
 
 
-public class ReadingRecordImpl implements ReadingRecord{
+public class ReadingRecordImpl implements ReadingRecord {
 
     @Getter
     private final Long recordId;

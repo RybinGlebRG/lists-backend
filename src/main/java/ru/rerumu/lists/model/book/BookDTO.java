@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
