@@ -7,9 +7,9 @@
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
-//import ru.rerumu.lists.mappers.BookTypeMapper;
+//import ru.rerumu.lists.dao.book.type.BookTypeMapper;
 //import ru.rerumu.lists.model.book.type.BookType;
-//import ru.rerumu.lists.model.dto.EntityDTO;
+//import ru.rerumu.lists.model.base.EntityDTO;
 //
 //import java.util.List;
 //

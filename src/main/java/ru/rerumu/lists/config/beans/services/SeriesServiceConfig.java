@@ -9,11 +9,16 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.User;
+import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.series.SeriesFactory;
-import ru.rerumu.lists.repository.SeriesBooksRespository;
-import ru.rerumu.lists.repository.SeriesRepository;
+import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.services.*;
+import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.series.SeriesService;
+import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
+import ru.rerumu.lists.services.series.impl.SeriesServiceProtectionProxy;
+import ru.rerumu.lists.services.user.UserService;
 
 import java.util.Optional;
 

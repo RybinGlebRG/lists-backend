@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.mappers.SeriesMapper">
+<mapper namespace="ru.rerumu.lists.dao.series.SeriesMapper">
 
     <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.series.SeriesDTO">
         <id column="series_id" property="seriesId" javaType="Long"/>
@@ -23,13 +23,13 @@
 
     <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.series.item.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
-            <case value="1" resultMap="ru.rerumu.lists.mappers.BookMapper.BookDTOResultMap"/>
+            <case value="1" resultMap="ru.rerumu.lists.dao.book.BookMapper.BookDTOResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>
-            <case value="3" resultType="ru.rerumu.lists.model.dto.NullDTO"/>
+            <case value="3" resultType="ru.rerumu.lists.model.base.NullDTO"/>
         </discriminator>
     </resultMap>
 
-    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.dto.TitleDTO">
+    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.title.TitleDTO">
         <id property="titleId" column="title_id"/>
         <result property="name" column="title_name"/>
         <result property="createDateUTC" column="title_create_date_utc"/>
@@ -45,7 +45,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.TitleStatus">
+    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.title.TitleStatus">
         <constructor>
             <idArg column="title_status_id" name="statusId" javaType="_int"/>
             <arg column="title_status_name" name="statusName" javaType="String"/>
@@ -154,6 +154,9 @@
                 null as book_type_name,
                 null as book_status_id,
                 null as book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
                 --
                 s_titles.title_id,
                 s_titles.title_list_id,
@@ -186,6 +189,9 @@
                 s_books.book_type_name,
                 s_books.book_status_id,
                 s_books.book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
                 --
                 null as title_id,
                 null as title_list_id,
@@ -219,6 +225,9 @@
                 null as book_type_name,
                 null as book_status_id,
                 null as book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
                 --
                 null as title_id,
                 null as title_list_id,

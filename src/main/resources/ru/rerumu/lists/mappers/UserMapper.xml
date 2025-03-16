@@ -2,9 +2,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.mappers.UserMapper">
+<mapper namespace="ru.rerumu.lists.dao.user.UserMapper">
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.user.User">
         <constructor>
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
@@ -22,11 +22,37 @@
     </select>
 
     <select id="findById" resultMap="UserResultMap">
-        select user_id as user_id,
-        name,
-        password
-        from users
-        where user_id=#{id}
+        select
+            user_id as user_id,
+            name,
+            password
+        from
+            users
+        where
+            user_id=#{id}
+    </select>
+
+    <select id="findByIds" resultMap="UserResultMap">
+        select
+            user_id as user_id,
+            name,
+            password
+        from
+            users
+        <where>
+            <foreach collection="ids" index="index" item="item" open="user_id in (" separator="," close=")" >
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="UserResultMap">
+        select
+            user_id as user_id,
+            name,
+            password
+        from
+            users
     </select>
 
     <select id="count" resultType="int">
@@ -71,7 +97,7 @@
         and u.name=#{name}
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.model.User">
+    <insert id="create" parameterType="ru.rerumu.lists.model.user.User">
         insert into users(user_id, name, password)
         values(#{userId},#{name},#{password})
     </insert>

@@ -13,6 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.SeriesController;
 import ru.rerumu.lists.services.*;
+import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 
 import static org.mockito.Mockito.*;

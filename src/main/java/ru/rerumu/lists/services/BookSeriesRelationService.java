@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

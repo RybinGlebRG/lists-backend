@@ -2,7 +2,7 @@ package ru.rerumu.lists.model.book.type;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.mappers.BookTypeMapper;
+import ru.rerumu.lists.dao.book.type.BookTypeMapper;
 
 import java.util.ArrayList;
 import java.util.List;

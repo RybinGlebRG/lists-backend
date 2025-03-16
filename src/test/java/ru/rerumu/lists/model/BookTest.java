@@ -4,7 +4,7 @@
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.TestInfo;
-//import ru.rerumu.lists.model.book.BookImpl;
+//import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.model.books.reading_records.ReadingRecord;
 //
 //import java.time.LocalDateTime;

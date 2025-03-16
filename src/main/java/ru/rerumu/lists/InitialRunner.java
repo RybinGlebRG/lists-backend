@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.services.user.UserService;
 
 import java.util.Optional;
 import java.util.UUID;

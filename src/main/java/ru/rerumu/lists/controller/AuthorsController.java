@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.services.AuthorsService;
-import ru.rerumu.lists.services.ReadListService;
-import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.services.UserServiceImpl;
+import ru.rerumu.lists.services.author.AuthorsService;
+import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.AddAuthorView;
 import ru.rerumu.lists.views.AuthorsListView;
 

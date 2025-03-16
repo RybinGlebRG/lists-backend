@@ -4,21 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.mappers.UserMapper;
-import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.repository.UsersRepository;
-import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
-import ru.rerumu.lists.services.UserService;
-import ru.rerumu.lists.services.UserServiceImpl;
-import ru.rerumu.lists.services.UserServiceProtectionProxyImpl;
-
-import java.util.Optional;
+import ru.rerumu.lists.dao.user.UserMapper;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.services.user.UserService;
 
 @Deprecated
 @Component

@@ -10,14 +10,14 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.mappers.GameMapper;
-import ru.rerumu.lists.model.Game;
-import ru.rerumu.lists.model.User;
-import ru.rerumu.lists.repository.impl.CrudRepositoryEntityImpl;
-import ru.rerumu.lists.services.GameService;
-import ru.rerumu.lists.services.GameServiceImpl;
-import ru.rerumu.lists.services.GameServiceProtectionProxy;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.dao.game.GameMapper;
+import ru.rerumu.lists.model.game.Game;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
+import ru.rerumu.lists.services.game.GameService;
+import ru.rerumu.lists.services.game.impl.GameServiceImpl;
+import ru.rerumu.lists.services.game.impl.GameServiceProtectionProxy;
+import ru.rerumu.lists.services.user.UserService;
 
 import java.util.Optional;
 

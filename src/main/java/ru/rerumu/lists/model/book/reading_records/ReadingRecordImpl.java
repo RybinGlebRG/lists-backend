@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.json.JSONObject;
+import ru.rerumu.lists.dao.reading_record.ReadingRecordsRepository;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.repository.ReadingRecordsRepository;
 import ru.rerumu.lists.utils.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;

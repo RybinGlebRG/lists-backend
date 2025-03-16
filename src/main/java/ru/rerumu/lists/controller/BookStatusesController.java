@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.services.BookStatusesService;
-import ru.rerumu.lists.services.UserService;
+import ru.rerumu.lists.services.book.status.BookStatusesService;
+import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookStatusesView;
 
 import java.util.List;

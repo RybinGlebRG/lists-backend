@@ -2,7 +2,7 @@ package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 
 import java.util.List;
 

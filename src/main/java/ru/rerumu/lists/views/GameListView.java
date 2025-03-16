@@ -2,7 +2,7 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Game;
+import ru.rerumu.lists.model.game.Game;
 
 import java.util.Comparator;
 import java.util.List;

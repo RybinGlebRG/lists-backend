@@ -6,15 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.repository.*;
+import ru.rerumu.lists.services.author.AuthorsService;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorsServiceTest {

@@ -13,6 +13,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.BooksController;
 import ru.rerumu.lists.services.*;
+import ru.rerumu.lists.services.author.AuthorsService;
+import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
+import ru.rerumu.lists.services.user.UserService;
 
 @WebMvcTest(BooksController.class)
 @AutoConfigureMockMvc(addFilters = false)
