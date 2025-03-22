@@ -1,15 +1,15 @@
-package ru.rerumu.lists.services.book.reading_record.impl;
+package ru.rerumu.lists.services.book.readingrecord.impl;
 
 import com.jcabi.aspects.Loggable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl;
-import ru.rerumu.lists.dao.reading_record.ReadingRecordsRepository;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
-import ru.rerumu.lists.services.book.reading_record.ReadingRecordService;
+import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 

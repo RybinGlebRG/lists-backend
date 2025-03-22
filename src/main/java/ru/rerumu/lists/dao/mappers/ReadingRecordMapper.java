@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 
 import java.util.List;
 

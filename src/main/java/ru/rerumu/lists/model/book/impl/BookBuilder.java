@@ -5,7 +5,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.tag.Tag;
 

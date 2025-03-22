@@ -1,4 +1,4 @@
-package ru.rerumu.lists.model.book.reading_records;
+package ru.rerumu.lists.model.book.readingrecords;
 
 import ru.rerumu.lists.exception.NotImplementedException;
 import ru.rerumu.lists.model.BookStatusRecord;

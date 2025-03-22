@@ -11,13 +11,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.mappers.ReadingRecordMapper;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
-import ru.rerumu.lists.dao.reading_record.ReadingRecordsRepository;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.services.book.ReadListService;
-import ru.rerumu.lists.services.book.reading_record.ReadingRecordService;
-import ru.rerumu.lists.services.book.reading_record.impl.ReadingRecordServiceImpl;
+import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
+import ru.rerumu.lists.services.book.readingrecord.impl.ReadingRecordServiceImpl;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
-import ru.rerumu.lists.services.protection_proxies.ReadingRecordProtectionProxy;
+import ru.rerumu.lists.services.protectionproxies.ReadingRecordProtectionProxy;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.util.Optional;

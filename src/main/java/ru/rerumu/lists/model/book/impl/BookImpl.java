@@ -13,11 +13,11 @@ import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.dao.book.BookRepository;
 

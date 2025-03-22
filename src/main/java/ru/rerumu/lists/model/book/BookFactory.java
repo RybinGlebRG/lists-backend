@@ -1,10 +1,8 @@
 package ru.rerumu.lists.model.book;
 
 import lombok.NonNull;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
 
 import java.util.List;
-import java.util.Map;
 
 public interface BookFactory {
 

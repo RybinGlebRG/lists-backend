@@ -1,7 +1,6 @@
 package ru.rerumu.lists.dao.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
-import ru.rerumu.lists.model.AuthorBookRelation;
 
 import java.util.List;
 

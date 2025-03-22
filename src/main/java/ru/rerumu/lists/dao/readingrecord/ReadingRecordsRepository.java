@@ -1,6 +1,6 @@
-package ru.rerumu.lists.dao.reading_record;
+package ru.rerumu.lists.dao.readingrecord;
 
-import ru.rerumu.lists.model.book.reading_records.ReadingRecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.dao.base.CrudRepository;
 
 import java.util.List;

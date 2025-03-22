@@ -3,10 +3,12 @@ package ru.rerumu.lists.views;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.series.Series;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class BookSeriesView {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

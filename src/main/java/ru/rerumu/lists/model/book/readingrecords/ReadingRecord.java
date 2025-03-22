@@ -1,4 +1,4 @@
-package ru.rerumu.lists.model.book.reading_records;
+package ru.rerumu.lists.model.book.readingrecords;
 
 import lombok.NonNull;
 import org.json.JSONObject;

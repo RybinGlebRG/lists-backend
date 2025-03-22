@@ -1,11 +1,11 @@
-package ru.rerumu.lists.services.protection_proxies;
+package ru.rerumu.lists.services.protectionproxies;
 
 import ru.rerumu.lists.exception.UserPermissionException;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
 import ru.rerumu.lists.services.book.ReadListService;
-import ru.rerumu.lists.services.book.reading_record.ReadingRecordService;
+import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 

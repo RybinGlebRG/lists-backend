@@ -30,7 +30,7 @@ import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 import ru.rerumu.lists.utils.FuzzyMatchingService;
-import ru.rerumu.lists.services.book.reading_record.ReadingRecordService;
+import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.ReadingRecordAddView;

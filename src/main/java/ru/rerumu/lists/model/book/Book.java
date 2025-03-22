@@ -4,7 +4,7 @@ import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.tag.Tag;
