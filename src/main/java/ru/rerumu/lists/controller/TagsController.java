@@ -50,6 +50,7 @@ public class TagsController {
     ) {
         List<Tag> tags = tagService.getAll(userId);
         TagListView tagListView = new TagListView(tags);
+        tagListView.sort();
 
         return new ResponseEntity<>(tagListView.toString(), HttpStatus.OK);
     }
