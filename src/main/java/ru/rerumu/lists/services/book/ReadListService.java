@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.utils.DateFactory;
 import ru.rerumu.lists.model.Author;

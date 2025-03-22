@@ -39,17 +39,22 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public Integer lastChapter;
     @Getter
     public Integer bookType;
+    @Getter
     public String note;
+    @Getter
     public BookTypeDTO bookTypeObj;
+    @Getter
     public BookStatusRecord bookStatusObj;
     @Getter
     public List<BookOrderedDTO> previousBooks;
     @Setter
+    @Getter
     public List<ReadingRecordDTO> readingRecords;
     @Getter
     public String URL;
     @Getter
     public Long userId;
+    @Getter
     public List<TagDTO> tags;
 
     public BookDTO() {
@@ -85,6 +90,10 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
 
     public LocalDateTime getLastUpdateDate_V2() {
         return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
+    }
+
+    public LocalDateTime getLastInsertLocalDate() {
+        return LocalDateTime.ofInstant(insertDate.toInstant(), ZoneOffset.UTC);
     }
 
     public Optional<Integer> getLastChapter() {

@@ -21,9 +21,11 @@ import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.book.Book;
+import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.item.SeriesItemType;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.AuthorsBooksRelationService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
@@ -36,7 +38,9 @@ import ru.rerumu.lists.views.BookListView;
 import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.BookView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -162,6 +166,13 @@ public class BooksController {
 //        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
 
         List<Book> books = readListService.getAllBooks(readListId, search);
+
+
+        List<ru.rerumu.lists.controller.book.view.out.BookView> bookViews = books.stream()
+                .map(Book::toDTO)
+                .map(ru.rerumu.lists.controller.book.view.out.BookView::new)
+                .collect(Collectors.toCollection(ArrayList::new));
+
 //        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
         BookListView bookListView = new BookListView.Builder()
                 .bookList(books)
