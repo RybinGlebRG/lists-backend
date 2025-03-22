@@ -6,18 +6,36 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--	https://docs.spring.io/spring-boot/docs/3.0.x/reference/html/dependency-versions.html#appendix.dependency-versions	-->
-		<version>3.1.12</version>
+		<version>3.3.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.62.0</version>
+	<version>0.63.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
 		<java.version>17</java.version>
-		<checkstyle.config.location>src/main/resources/checkstyle.xml</checkstyle.config.location>
 		<start-class>ru.rerumu.lists.ListsApplication</start-class>
+
+		<!-- versions -->
+			<mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
+			<mybatis.version>3.5.19</mybatis.version>
+			<postgresql.version>42.7.5</postgresql.version>
+			<json.version>20231013</json.version>
+			<jjwt.version>0.12.5</jjwt.version>
+			<jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
+			<liquibase-core.version>4.27.0</liquibase-core.version>
+			<bcpkix-jdk15on.version>1.69</bcpkix-jdk15on.version>
+			<jolokia-core.version>1.7.2</jolokia-core.version>
+			<checkstyle.version>10.17.0</checkstyle.version>
+			<commons-lang3.version>3.14.0</commons-lang3.version>
+			<lombok.version>1.18.36</lombok.version>
+			<jackson.version>2.17.3</jackson.version>
+			<jcabi-aspects.version>0.26.0</jcabi-aspects.version>
+			<aspectjrt.version>1.9.23</aspectjrt.version>
+		<!---->
+
 	</properties>
 	<dependencies>
 
@@ -64,7 +82,6 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-actuator</artifactId>
-				<!--			<version>3.0.1</version>-->
 			</dependency>
 		<!--	Spring managed	-->
 
@@ -72,76 +89,76 @@
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>3.0.4</version>
+			<version>${mybatis-spring-boot-starter.version}</version>
 		</dependency>
 
 		<!-- Override version in mybatis-spring-boot-starter -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.5.19</version>
+			<version>${mybatis.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.6.2</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20231013</version>
+			<version>${json.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.12.5</version>
+			<version>${jjwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
-			<version>0.12.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>4.0.1</version>
+			<version>${jakarta.xml.bind-api.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.26.0</version>
+			<version>${liquibase-core.version}</version>
 		</dependency>
 
 		<!--	TODO	-->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>1.69</version>
+			<version>${bcpkix-jdk15on.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.jolokia/jolokia-core -->
 		<dependency>
 			<groupId>org.jolokia</groupId>
 			<artifactId>jolokia-core</artifactId>
-			<version>1.7.2</version>
+			<version>${jolokia-core.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.puppycrawl.tools</groupId>
 			<artifactId>checkstyle</artifactId>
-			<version>10.17.0</version>
+			<version>${checkstyle.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -149,14 +166,14 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.14.0</version>
+			<version>${commons-lang3.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -164,24 +181,24 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.17.1</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.17.1</version>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.jcabi</groupId>
 			<artifactId>jcabi-aspects</artifactId>
-			<version>0.26.0</version>
+			<version>${jcabi-aspects.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.6.12</version>
+			<version>${aspectjrt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
