@@ -4,8 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.tag.Tag;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TagListView {
 
@@ -13,6 +13,12 @@ public class TagListView {
 
     public TagListView(List<Tag> tagList) {
         this.tagList = tagList;
+    }
+
+    public void sort() {
+        Comparator<Tag> tagComparator = Comparator.comparing(Tag::getName);
+
+        tagList.sort(tagComparator);
     }
 
     public JSONObject toJSONObject() {
