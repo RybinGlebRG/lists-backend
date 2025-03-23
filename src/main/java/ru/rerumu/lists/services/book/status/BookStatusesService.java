@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.book.status;
 
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.dao.base.CrudRepository;
 
 import java.util.List;

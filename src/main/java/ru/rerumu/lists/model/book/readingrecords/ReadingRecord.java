@@ -2,7 +2,7 @@ package ru.rerumu.lists.model.book.readingrecords;
 
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 
 import java.time.LocalDateTime;
 

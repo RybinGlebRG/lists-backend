@@ -1,7 +1,7 @@
 package ru.rerumu.lists.model.book.readingrecords;
 
 import ru.rerumu.lists.exception.NotImplementedException;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.base.EntityDTO;
 
 import java.time.LocalDateTime;

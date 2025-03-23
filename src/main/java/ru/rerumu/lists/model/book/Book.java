@@ -2,7 +2,7 @@ package ru.rerumu.lists.model.book;
 
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
@@ -30,6 +30,20 @@ public interface Book extends SeriesItem {
             LocalDateTime endDate,
             Long lastChapter
     );
+    void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull Long statusId,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
+
+    /**
+     * Deletes reading records that are not passed in the {@code readingRecordIdsToKeep} parameter.
+     *
+     * @param readingRecordIdsToKeep Reading records to keep
+     */
+    void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep);
 
     Long getId();
     Long getListId();
@@ -41,6 +55,7 @@ public interface Book extends SeriesItem {
     @Deprecated
     void updateLastChapter(Integer lastChapter);
 
+    @Deprecated
     void updateStatus(BookStatusRecord bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
@@ -13,7 +14,7 @@ import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.book.type.BookType;
@@ -32,7 +33,6 @@ import ru.rerumu.lists.services.book.type.BookTypesService;
 import ru.rerumu.lists.utils.DateFactory;
 import ru.rerumu.lists.utils.FuzzyMatchingService;
 import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
@@ -133,33 +133,77 @@ public class ReadListService {
             throw new EmptyMandatoryParameterException();
         }
 
+        logger.info("Getting book with id='{}'...", bookId);
         Book book = bookFactory.getBook(bookId);
 
+        // Update insert date
+        logger.info("Updating insert date...");
         book.updateInsertDate(bookUpdateView.getInsertDateUTC());
-        book.updateTitle(bookUpdateView.getTitle());
-        bookUpdateView.getLastChapter().ifPresent(book::updateLastChapter);
 
-        // Update book status
-        Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
-        BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
-        book.updateStatus(bookStatusRecord);
+        // Update book title
+        logger.info("Updating book title...");
+        book.updateTitle(bookUpdateView.getTitle());
+
+//        // Update book status
+//        logger.info("Updating book status...");
+//        Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
+//        BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
+//        book.updateStatus(bookStatusRecord);
 
         // Update note
-        book.updateNote(bookUpdateView.note());
+        logger.info("Updating note...");
+        book.updateNote(bookUpdateView.getNote());
 
         // Update book type
+        logger.info("Updating book type...");
         if (bookUpdateView.getBookTypeId() != null) {
             BookType optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId()).orElseThrow(EntityNotFoundException::new);
             book.updateType(optionalBookType);
         }
 
         // Update URL
-        book.updateURL(bookUpdateView.URL());
+        logger.info("Updating URL...");
+        book.updateURL(bookUpdateView.getURL());
 
         // Update tags
-        List<Tag> tags = tagFactory.findByIds(bookUpdateView.tagIds(), book.getUser());
+        logger.info("Updating tags...");
+        List<Tag> tags = tagFactory.findByIds(bookUpdateView.getTagIds(), book.getUser());
         book.updateTags(tags);
 
+
+        logger.info("Updating reading records...");
+        // Create or update reading records
+        for (BookUpdateView.ReadingRecordView readingRecordView : bookUpdateView.getReadingRecords()) {
+            if (readingRecordView.getReadingRecordId() == null) {
+                // Add record
+                BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordView.getStatusId())
+                        .orElseThrow(EntityNotFoundException::new);
+                book.addReadingRecord(
+                        bookStatusRecord,
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                );
+            } else {
+                // Update record
+                book.updateReadingRecord(
+                        readingRecordView.getReadingRecordId(),
+                        Long.valueOf(readingRecordView.getStatusId()),
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                );
+            }
+        }
+        // Collect record ids from view
+        List<Long> readingRecordIdsToKeep = bookUpdateView.getReadingRecords().stream()
+                .map(BookUpdateView.ReadingRecordView::getReadingRecordId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+        // Delete other reading records
+        book.deleteOtherReadingRecords(readingRecordIdsToKeep);
+
+        logger.info("Saving book...");
         // Save book
         book.save();
 

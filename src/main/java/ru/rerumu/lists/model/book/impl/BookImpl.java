@@ -7,9 +7,10 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.utils.DateFactory;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -70,6 +71,8 @@ public class BookImpl implements Book, Cloneable {
 
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
 
+    private final StatusFactory statusFactory;
+
     private String URL;
 
     private User user;
@@ -88,7 +91,7 @@ public class BookImpl implements Book, Cloneable {
             BookType bookType,
             BookChain previousBooks,
             String note,
-            List<ReadingRecord> readingRecords,
+            List<ReadingRecord> readingRecords, StatusFactory statusFactory,
             String URL,
             User user,
             @NonNull List<Tag> tags
@@ -105,6 +108,7 @@ public class BookImpl implements Book, Cloneable {
         this.previousBooks = previousBooks;
         this.note = note;
         this.readingRecords = readingRecords;
+        this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
         this.tags = tags;
@@ -335,6 +339,18 @@ public class BookImpl implements Book, Cloneable {
         return readingRecord;
     }
 
+    @Override
+    public void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep) {
+        List<ReadingRecord> readingRecordsToDelete = readingRecords.stream()
+                .filter(readingRecord -> !readingRecordIdsToKeep.contains(readingRecord.getId()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (ReadingRecord readingRecord: readingRecordsToDelete) {
+            readingRecords.remove(readingRecord);
+            readingRecord.delete();
+        }
+    }
+
     public void updateReadingRecord(
             @NonNull Long readingRecordId,
             @NonNull BookStatusRecord bookStatusRecord,
@@ -358,6 +374,11 @@ public class BookImpl implements Book, Cloneable {
         save();
     }
 
+    @Override
+    public void updateReadingRecord(@NonNull Long readingRecordId, @NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
+        updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
+    }
 
     @Override
     public String toString() {

@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.tag.TagFactory;
 import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.utils.DateFactory;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -43,6 +44,7 @@ public class BookFactoryImpl implements BookFactory {
     private final BookTypeFactory bookTypeFactory;
     private final UserFactory userFactory;
     private final TagFactory tagFactory;
+    private final StatusFactory statusFactory;
 
     @Autowired
     public BookFactoryImpl(
@@ -50,7 +52,7 @@ public class BookFactoryImpl implements BookFactory {
             BookRepository bookRepository,
             ReadingRecordFactory readingRecordFactory,
             BookTypeFactory bookTypeFactory,
-            UserFactory userFactory, TagFactory tagFactory
+            UserFactory userFactory, TagFactory tagFactory, StatusFactory statusFactory
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -58,6 +60,7 @@ public class BookFactoryImpl implements BookFactory {
         this.bookTypeFactory = bookTypeFactory;
         this.userFactory = userFactory;
         this.tagFactory = tagFactory;
+        this.statusFactory = statusFactory;
     }
 
     public Book createBook(
@@ -73,7 +76,7 @@ public class BookFactoryImpl implements BookFactory {
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
-        BookBuilder bookBuilder = new BookBuilder()
+        BookBuilder bookBuilder = new BookBuilder(statusFactory)
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(title)
@@ -189,7 +192,7 @@ public class BookFactoryImpl implements BookFactory {
 
         log.debug("bookDTO: {}", bookDTO);
 
-        BookBuilder builder = new BookBuilder()
+        BookBuilder builder = new BookBuilder(statusFactory)
                 .bookId(bookDTO.bookId)
                 .readListId(bookDTO.readListId)
                 .title(bookDTO.title)

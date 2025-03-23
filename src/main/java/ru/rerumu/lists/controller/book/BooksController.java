@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.controller.book.view.out.BookListView;
 import ru.rerumu.lists.controller.book.view.out.BookViewFactory;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
@@ -37,7 +38,6 @@ import ru.rerumu.lists.services.book.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.BookView;
 
 import java.util.ArrayList;
