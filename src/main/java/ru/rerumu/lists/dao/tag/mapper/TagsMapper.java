@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.tag;
+package ru.rerumu.lists.dao.tag.mapper;
 
 import lombok.NonNull;
 import org.apache.ibatis.annotations.Mapper;

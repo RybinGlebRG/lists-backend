@@ -16,8 +16,10 @@ import ru.rerumu.lists.model.tag.TagDTO;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder(toBuilder = true)
@@ -44,16 +46,13 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public BookTypeDTO bookTypeObj;
     @Getter
     public BookStatusRecord bookStatusObj;
-    @Getter
     public List<BookOrderedDTO> previousBooks;
     @Setter
-    @Getter
     public List<ReadingRecordDTO> readingRecords;
     @Getter
     public String URL;
     @Getter
     public Long userId;
-    @Getter
     public List<TagDTO> tags;
 
     public BookDTO() {
@@ -133,6 +132,21 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
 
     public Optional<Integer> getLastChapter() {
         return Optional.ofNullable(lastChapter);
+    }
+
+    @NonNull
+    public List<BookOrderedDTO> getPreviousBooks() {
+        return Objects.requireNonNullElseGet(previousBooks, ArrayList::new);
+    }
+
+    @NonNull
+    public List<ReadingRecordDTO> getReadingRecords() {
+        return Objects.requireNonNullElseGet(readingRecords, ArrayList::new);
+    }
+
+    @NonNull
+    public List<TagDTO> getTags() {
+        return Objects.requireNonNullElseGet(tags, ArrayList::new);
     }
 
     @Override

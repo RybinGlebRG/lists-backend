@@ -5,11 +5,13 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.model.book.BookDTO;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
+import ru.rerumu.lists.model.tag.TagDTO;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,41 +19,33 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BookViewBuilder {
+public class BookViewFactory {
 
     public BookView buildBookView(@NonNull BookDTO bookDTO, @NonNull Search search) {
 
-        List<BookView> chain = new ArrayList<>();
+        List<BookView> chain = bookDTO.getPreviousBooks().stream()
+                .sorted(Comparator.comparing(BookOrderedDTO::getOrder))
+                .map(BookOrderedDTO::getBookDTO)
+                .map(item -> buildBookView(item, search))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        if (bookDTO.getPreviousBooks() != null) {
-            chain = bookDTO.getPreviousBooks().stream()
-                    .sorted(Comparator.comparing(BookOrderedDTO::getOrder))
-                    .map(BookOrderedDTO::getBookDTO)
-                    .map(item -> buildBookView(item, search))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-
-        List<ReadingRecordView> readingRecordViews = new ArrayList<>();
-
-        if (bookDTO.getReadingRecords() != null) {
-            readingRecordViews =  bookDTO.getReadingRecords().stream()
-                    .map(readingRecordDTO -> new ReadingRecordView(
-                            readingRecordDTO.recordId(),
-                            readingRecordDTO.bookId(),
-                            new BookStatusView(
-                                    readingRecordDTO.bookStatus().statusId(),
-                                    readingRecordDTO.bookStatus().statusName()
-                            ),
-                            readingRecordDTO.startDate(),
-                            readingRecordDTO.endDate(),
-                            readingRecordDTO.isMigrated(),
-                            readingRecordDTO.lastChapter()
-                    ))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
+        List<ReadingRecordView> readingRecordViews = bookDTO.getReadingRecords().stream()
+                .sorted(Comparator.comparing(ReadingRecordDTO::startDate))
+                .map(readingRecordDTO -> new ReadingRecordView(
+                        readingRecordDTO.recordId(),
+                        readingRecordDTO.bookId(),
+                        new BookStatusView(
+                                readingRecordDTO.bookStatus().statusId(),
+                                readingRecordDTO.bookStatus().statusName()
+                        ),
+                        readingRecordDTO.startDate(),
+                        readingRecordDTO.endDate(),
+                        readingRecordDTO.isMigrated(),
+                        readingRecordDTO.lastChapter()
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         BookView.BookType bookType = null;
-
         if (bookDTO.getBookTypeObj() != null) {
             bookType = new BookView.BookType(
                     bookDTO.getBookTypeObj().id,
@@ -59,6 +53,13 @@ public class BookViewBuilder {
             );
         }
 
+        List<TagView> tagViews = bookDTO.getTags().stream()
+                .sorted(Comparator.comparing(TagDTO::getName))
+                .map(tagDTO -> new TagView(
+                        tagDTO.getTagId(),
+                        tagDTO.getName()
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         BookView bookView = new BookView(
                 bookDTO.getBookId(),
@@ -77,12 +78,7 @@ public class BookViewBuilder {
                 chain,
                 readingRecordViews,
                 bookDTO.getURL(),
-                bookDTO.getTags().stream()
-                        .map(tagDTO -> new TagView(
-                                tagDTO.getTagId(),
-                                tagDTO.getName()
-                        ))
-                        .collect(Collectors.toCollection(ArrayList::new))
+                tagViews
         );
 
         return bookView;

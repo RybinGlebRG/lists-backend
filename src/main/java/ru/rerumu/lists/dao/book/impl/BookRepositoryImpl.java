@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.book.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.rerumu.lists.dao.book.BookMapper;
+import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;

@@ -23,7 +23,7 @@
 
     <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.series.item.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
-            <case value="1" resultMap="ru.rerumu.lists.dao.book.BookMapper.BookDTOResultMap"/>
+            <case value="1" resultMap="ru.rerumu.lists.dao.book.mapper.BookMapper.BookDTOResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>
             <case value="3" resultType="ru.rerumu.lists.model.base.NullDTO"/>
         </discriminator>

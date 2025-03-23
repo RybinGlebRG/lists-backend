@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.book.view.out.BookListView;
-import ru.rerumu.lists.controller.book.view.out.BookViewBuilder;
+import ru.rerumu.lists.controller.book.view.out.BookViewFactory;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
@@ -54,7 +54,7 @@ public class BooksController {
     private final SeriesServiceImpl seriesService;
     private final AuthorsBooksRelationService authorsBooksRelationService;
     private final BookSeriesRelationService bookSeriesRelationService;
-    private final BookViewBuilder bookViewBuilder;
+    private final BookViewFactory bookViewFactory;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -64,7 +64,7 @@ public class BooksController {
             AuthorsService authorsService,
             SeriesServiceImpl seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,
-            BookSeriesRelationService bookSeriesRelationService, BookViewBuilder bookViewBuilder, ObjectMapper objectMapper
+            BookSeriesRelationService bookSeriesRelationService, BookViewFactory bookViewFactory, ObjectMapper objectMapper
     ) {
         this.readListService = readListService;
         this.userService = userService;
@@ -72,7 +72,7 @@ public class BooksController {
         this.seriesService = seriesService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookSeriesRelationService = bookSeriesRelationService;
-        this.bookViewBuilder = bookViewBuilder;
+        this.bookViewFactory = bookViewFactory;
         this.objectMapper = objectMapper;
     }
 
@@ -170,7 +170,7 @@ public class BooksController {
 
         List<Book> books = readListService.getAllBooks(readListId, search);
 
-        BookListView bookListView = bookViewBuilder.buildBookListView(
+        BookListView bookListView = bookViewFactory.buildBookListView(
                 books.stream()
                         .map(Book::toDTO)
                         .collect(Collectors.toCollection(ArrayList::new)),

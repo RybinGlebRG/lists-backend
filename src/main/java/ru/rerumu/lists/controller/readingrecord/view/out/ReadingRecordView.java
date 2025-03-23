@@ -1,12 +1,20 @@
 package ru.rerumu.lists.controller.readingrecord.view.out;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import ru.rerumu.lists.controller.DeepCopyable;
 import ru.rerumu.lists.controller.book.view.out.BookStatusView;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode
+@ToString
 @Getter
-public class ReadingRecordView {
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
 
     private final Long recordId;
     private final Long bookId;
@@ -32,5 +40,13 @@ public class ReadingRecordView {
         this.endDate = endDate;
         this.isMigrated = isMigrated;
         this.lastChapter = lastChapter;
+    }
+
+
+    @Override
+    public ReadingRecordView deepCopy() {
+        return this.toBuilder()
+                .bookStatus(bookStatus.deepCopy())
+                .build();
     }
 }

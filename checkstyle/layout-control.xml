@@ -20,7 +20,6 @@
         <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
 
-
         <allow class="ru.rerumu.lists.factories.UserServiceProxyFactory"/>
 
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>

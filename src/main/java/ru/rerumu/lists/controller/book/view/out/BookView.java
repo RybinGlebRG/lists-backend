@@ -1,13 +1,24 @@
 package ru.rerumu.lists.controller.book.view.out;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
+import ru.rerumu.lists.controller.DeepCopyable;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class BookView {
+@EqualsAndHashCode
+@ToString
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+public class BookView implements DeepCopyable<BookView>{
 
     @Getter
     private final Long bookId;
@@ -35,17 +46,21 @@ public class BookView {
 
     @Getter
     private final BookType bookType;
-    public static class BookType {
+    @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+    @Getter
+    public static class BookType implements DeepCopyable<BookType> {
 
-        @Getter
         private final Integer typeId;
-
-        @Getter
         private final String typeName;
 
-        public BookType(Integer typeId, String typeName) {
+        public BookType(@NonNull Integer typeId, @NonNull String typeName) {
             this.typeId = typeId;
             this.typeName = typeName;
+        }
+
+        @Override
+        public BookType deepCopy() {
+            return this.toBuilder().build();
         }
     }
 
@@ -65,34 +80,75 @@ public class BookView {
     private final List<TagView> tags;
 
     public BookView(
-            Long bookId,
-            Long readListId,
-            String title,
-            BookStatusView bookStatus,
-            LocalDateTime insertDate,
-            LocalDateTime lastUpdateDate,
+            @NonNull Long bookId,
+            @NonNull Long readListId,
+            @NonNull String title,
+            @NonNull BookStatusView bookStatus,
+            @NonNull LocalDateTime insertDate,
+            @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
             String note,
             BookType bookType,
-            String itemType,
-            List<BookView> chain,
-            List<ReadingRecordView> readingRecords,
+            @NonNull String itemType,
+            @NonNull List<BookView> chain,
+            @NonNull List<ReadingRecordView> readingRecords,
             String URL,
-            List<TagView> tags
+            @NonNull List<TagView> tags
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
         this.title = title;
-        this.bookStatus = bookStatus;
+        this.bookStatus = bookStatus.deepCopy();
         this.insertDate = insertDate;
         this.lastUpdateDate = lastUpdateDate;
         this.lastChapter = lastChapter;
         this.note = note;
-        this.bookType = bookType;
+
+        if (bookType != null) {
+            this.bookType = bookType.deepCopy();
+        } else {
+            this.bookType = null;
+        }
+
         this.itemType = itemType;
-        this.chain = chain;
-        this.readingRecords = readingRecords;
+
+        this.chain = chain.stream()
+                .map(BookView::deepCopy)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        this.readingRecords = readingRecords.stream()
+                .map(ReadingRecordView::deepCopy)
+                .collect(Collectors.toCollection(ArrayList::new));
+
         this.URL = URL;
-        this.tags = tags;
+
+        this.tags = tags.stream()
+                .map(TagView::deepCopy)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public BookView deepCopy() {
+        BookView.BookViewBuilder builder = this.toBuilder()
+                .bookStatus(bookStatus.deepCopy())
+                .chain(chain.stream()
+                        .map(BookView::deepCopy)
+                        .collect(Collectors.toCollection(ArrayList::new))
+                )
+                .readingRecords(readingRecords.stream()
+                        .map(ReadingRecordView::deepCopy)
+                        .collect(Collectors.toCollection(ArrayList::new))
+                )
+                .tags(tags.stream()
+                        .map(TagView::deepCopy)
+                        .collect(Collectors.toCollection(ArrayList::new))
+                )
+                ;
+
+        if (bookType != null) {
+            builder.bookType(bookType.deepCopy());
+        }
+
+        return builder.build();
     }
 }

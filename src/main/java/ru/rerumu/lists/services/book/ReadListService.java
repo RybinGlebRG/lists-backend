@@ -139,26 +139,33 @@ public class ReadListService {
         book.updateTitle(bookUpdateView.getTitle());
         bookUpdateView.getLastChapter().ifPresent(book::updateLastChapter);
 
+        // Update book status
         Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
         book.updateStatus(bookStatusRecord);
 
+        // Update note
         book.updateNote(bookUpdateView.note());
 
+        // Update book type
         if (bookUpdateView.getBookTypeId() != null) {
             BookType optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId()).orElseThrow(EntityNotFoundException::new);
             book.updateType(optionalBookType);
         }
 
+        // Update URL
         book.updateURL(bookUpdateView.URL());
 
+        // Update tags
         List<Tag> tags = tagFactory.findByIds(bookUpdateView.tagIds(), book.getUser());
         book.updateTags(tags);
 
+        // Save book
         book.save();
 
         logger.debug(String.format("Updated book: %s", book));
 
+        // Update author
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
     }
 

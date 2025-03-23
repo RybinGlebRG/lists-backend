@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.tag.BookTagDTO;
 import ru.rerumu.lists.dao.tag.BookTagMapper;
-import ru.rerumu.lists.dao.tag.TagsMapper;
+import ru.rerumu.lists.dao.tag.mapper.TagsMapper;
 import ru.rerumu.lists.dao.tag.TagsRepository;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.tag.Tag;

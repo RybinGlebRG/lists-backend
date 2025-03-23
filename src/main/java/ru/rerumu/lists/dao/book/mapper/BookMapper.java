@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.book;
+package ru.rerumu.lists.dao.book.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
