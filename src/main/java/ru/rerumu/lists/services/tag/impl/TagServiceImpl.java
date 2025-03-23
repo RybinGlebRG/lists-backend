@@ -1,7 +1,7 @@
 package ru.rerumu.lists.services.tag.impl;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.controller.views.TagAddView;
+import ru.rerumu.lists.controller.tag.view.in.TagAddView;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.tag.TagFactory;

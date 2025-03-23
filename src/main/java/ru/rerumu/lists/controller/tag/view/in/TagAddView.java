@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller.views;
+package ru.rerumu.lists.controller.tag.view.in;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

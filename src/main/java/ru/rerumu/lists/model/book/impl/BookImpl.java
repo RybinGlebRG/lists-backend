@@ -375,19 +375,19 @@ public class BookImpl implements Book, Cloneable {
             insertDate,
             lastUpdateDate,
             lastChapter,
-            bookType.getId(),
+            bookType != null ? bookType.getId() : null,
             note,
-            bookType.toDTO(),
+            bookType != null ? bookType.toDTO() : null,
             bookStatus,
-            previousBooks != null ? previousBooks.toDTO() : null,
-            previousBooks != null ?readingRecords.stream()
+            previousBooks != null ? previousBooks.toDTO() : new ArrayList<>(),
+            readingRecords != null ? readingRecords.stream()
                     .map(ReadingRecord::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : null,
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
             URL,
             user != null ? user.userId() : null,
             tags != null ? tags.stream()
                     .map(Tag::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : null
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>()
         );
 
         return bookDTO;

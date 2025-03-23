@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.tag.impl;
 
-import ru.rerumu.lists.controller.views.TagAddView;
+import ru.rerumu.lists.controller.tag.view.in.TagAddView;
 import ru.rerumu.lists.exception.UserPermissionException;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.user.User;

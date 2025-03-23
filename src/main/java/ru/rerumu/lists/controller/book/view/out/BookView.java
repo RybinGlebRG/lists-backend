@@ -1,15 +1,11 @@
 package ru.rerumu.lists.controller.book.view.out;
 
 import lombok.Getter;
-import ru.rerumu.lists.controller.views.ReadingRecordView;
-import ru.rerumu.lists.controller.views.TagView;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.series.item.SeriesItemType;
+import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
+import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BookView {
 
@@ -24,16 +20,6 @@ public class BookView {
 
     @Getter
     private final BookStatusView bookStatus;
-    public static class BookStatusView{
-
-        private final Integer statusId;
-        private final String statusName;
-
-        public BookStatusView(Integer statusId, String statusName) {
-            this.statusId = statusId;
-            this.statusName = statusName;
-        }
-    }
 
     @Getter
     private final LocalDateTime insertDate;
@@ -51,7 +37,10 @@ public class BookView {
     private final BookType bookType;
     public static class BookType {
 
+        @Getter
         private final Integer typeId;
+
+        @Getter
         private final String typeName;
 
         public BookType(Integer typeId, String typeName) {
@@ -64,7 +53,7 @@ public class BookView {
     private final String itemType;
 
     @Getter
-    private final List<BookOrderedView> chain;
+    private final List<BookView> chain;
 
     @Getter
     private final List<ReadingRecordView> readingRecords;
@@ -86,7 +75,7 @@ public class BookView {
             String note,
             BookType bookType,
             String itemType,
-            List<BookOrderedView> chain,
+            List<BookView> chain,
             List<ReadingRecordView> readingRecords,
             String URL,
             List<TagView> tags
@@ -105,44 +94,5 @@ public class BookView {
         this.readingRecords = readingRecords;
         this.URL = URL;
         this.tags = tags;
-    }
-
-    public BookView(BookDTO bookDTO) {
-        bookId = bookDTO.getBookId();
-        readListId =  bookDTO.getReadListId();
-        title = bookDTO.getTitle();
-        bookStatus = new ru.rerumu.lists.controller.book.view.out.BookView.BookStatusView(
-                        bookDTO.getBookStatusObj().statusId(),
-                        bookDTO.getBookStatusObj().statusName()
-                );
-        insertDate = bookDTO.getLastInsertLocalDate();
-        lastUpdateDate = bookDTO.getLastUpdateDate_V2();
-        lastChapter = bookDTO.lastChapter;
-        note = bookDTO.getNote();
-        bookType = new ru.rerumu.lists.controller.book.view.out.BookView.BookType(
-                        bookDTO.getBookTypeObj().id,
-                        bookDTO.getBookTypeObj().name
-                );
-       itemType = SeriesItemType.BOOK.name();
-
-       if (bookDTO.getPreviousBooks() != null) {
-           chain = bookDTO.getPreviousBooks().stream()
-                   .map(bookOrderedDTO -> new BookOrderedView(
-                           new BookView(bookOrderedDTO.getBookDTO()),
-                           bookOrderedDTO.getOrder()
-                   ))
-                   .collect(Collectors.toCollection(ArrayList::new));
-       } else {
-           chain = new ArrayList<>();
-       }
-
-       readingRecords = bookDTO.getReadingRecords().stream()
-               .map(readingRecordDTO -> new ReadingRecordView())
-               .collect(Collectors.toCollection(ArrayList::new));
-
-       URL = bookDTO.getURL();
-       tags = bookDTO.getTags().stream()
-               .map(tagDTO -> new TagView())
-               .collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -1,7 +1,10 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.book;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,17 +18,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.book.view.out.BookListView;
+import ru.rerumu.lists.controller.book.view.out.BookViewBuilder;
 import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.exception.EntityNotFoundException;
 import ru.rerumu.lists.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.series.Series;
-import ru.rerumu.lists.model.series.item.SeriesItemType;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.AuthorsBooksRelationService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
@@ -34,7 +37,6 @@ import ru.rerumu.lists.services.book.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookListView;
 import ru.rerumu.lists.views.BookUpdateView;
 import ru.rerumu.lists.views.BookView;
 
@@ -48,22 +50,21 @@ public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(BooksController.class);
     private final ReadListService readListService;
     private final UserService userService;
-
     private final AuthorsService authorsService;
-
     private final SeriesServiceImpl seriesService;
-
     private final AuthorsBooksRelationService authorsBooksRelationService;
-
     private final BookSeriesRelationService bookSeriesRelationService;
+    private final BookViewBuilder bookViewBuilder;
+    private final ObjectMapper objectMapper;
 
+    @Autowired
     public BooksController(
             ReadListService readListService,
             @Qualifier("UserServiceProtectionProxy") UserService userService,
             AuthorsService authorsService,
             SeriesServiceImpl seriesService,
             AuthorsBooksRelationService authorsBooksRelationService,
-            BookSeriesRelationService bookSeriesRelationService
+            BookSeriesRelationService bookSeriesRelationService, BookViewBuilder bookViewBuilder, ObjectMapper objectMapper
     ) {
         this.readListService = readListService;
         this.userService = userService;
@@ -71,6 +72,8 @@ public class BooksController {
         this.seriesService = seriesService;
         this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookSeriesRelationService = bookSeriesRelationService;
+        this.bookViewBuilder = bookViewBuilder;
+        this.objectMapper = objectMapper;
     }
 
     @PutMapping(value = "/api/v0.2/books/{bookId}",
@@ -160,30 +163,23 @@ public class BooksController {
             @RequestAttribute("username") String username,
             @RequestAttribute("authUserId") Long authUserId
 
-    ) throws UserIsNotOwnerException {
+    ) throws UserIsNotOwnerException, JsonProcessingException {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);
 //        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
 
         List<Book> books = readListService.getAllBooks(readListId, search);
 
+        BookListView bookListView = bookViewBuilder.buildBookListView(
+                books.stream()
+                        .map(Book::toDTO)
+                        .collect(Collectors.toCollection(ArrayList::new)),
+                search
+        );
 
-        List<ru.rerumu.lists.controller.book.view.out.BookView> bookViews = books.stream()
-                .map(Book::toDTO)
-                .map(ru.rerumu.lists.controller.book.view.out.BookView::new)
-                .collect(Collectors.toCollection(ArrayList::new));
+        String result = objectMapper.writeValueAsString(bookListView);
 
-//        Map<Book,List<Series>> bookSeriesMap = seriesService.findByBook(books);
-        BookListView bookListView = new BookListView.Builder()
-                .bookList(books)
-                .bookSeriesMap(null)
-                .isChainBySeries(search.getChainBySeries())
-                .sort(search.getSortItemList())
-                .search(search)
-                .build();
-        bookListView.sort(search.getSortItemList());
-
-        return new ResponseEntity<>(bookListView.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

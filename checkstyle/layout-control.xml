@@ -15,7 +15,15 @@
     <!--  controller  -->
     <subpackage name="controller(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.controller(\..*)?" regex="true"/>
-<!--        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>-->
+        <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.exception(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+
+
+        <allow class="ru.rerumu.lists.factories.UserServiceProxyFactory"/>
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  dao  -->

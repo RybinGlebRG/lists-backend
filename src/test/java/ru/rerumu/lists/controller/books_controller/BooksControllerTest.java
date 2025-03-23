@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.controller.BooksController;
+import ru.rerumu.lists.controller.book.BooksController;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.ReadListService;

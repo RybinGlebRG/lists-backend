@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.tag;
 
-import ru.rerumu.lists.controller.views.TagAddView;
+import ru.rerumu.lists.controller.tag.view.in.TagAddView;
 import ru.rerumu.lists.model.tag.Tag;
 
 import java.util.List;
