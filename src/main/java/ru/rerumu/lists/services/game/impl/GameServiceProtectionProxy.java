@@ -2,7 +2,7 @@ package ru.rerumu.lists.services.game.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.exception.UserPermissionException;
+import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.model.game.Game;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.books.Search;

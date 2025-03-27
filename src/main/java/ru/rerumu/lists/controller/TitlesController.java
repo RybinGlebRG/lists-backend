@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.TitlesList;
 import ru.rerumu.lists.model.title.Title;
 import ru.rerumu.lists.services.WatchListService;

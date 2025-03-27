@@ -25,7 +25,6 @@ public class BookUpdateView {
     private final String note;
     private final String URL;
     private final List<Long> tagIds;
-
     private final List<ReadingRecordView> readingRecords;
 
     @Getter

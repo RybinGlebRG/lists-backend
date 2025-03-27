@@ -6,9 +6,10 @@ import lombok.Setter;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
-import ru.rerumu.lists.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
@@ -91,7 +92,8 @@ public class BookImpl implements Book, Cloneable {
             BookType bookType,
             BookChain previousBooks,
             String note,
-            List<ReadingRecord> readingRecords, StatusFactory statusFactory,
+            List<ReadingRecord> readingRecords,
+            StatusFactory statusFactory,
             String URL,
             User user,
             @NonNull List<Tag> tags
@@ -216,6 +218,28 @@ public class BookImpl implements Book, Cloneable {
 
         readingRecords.add(readingRecord);
 
+    }
+
+    @Override
+    public void addReadingRecord(@NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+        // Find status
+        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
+
+        // Create record
+        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+                bookId,
+                bookStatusRecord,
+                startDate,
+                endDate,
+                lastChapter
+        );
+
+        // TODO: Remove
+        if (readingRecords == null){
+            readingRecords = new ArrayList<>();
+        }
+
+        readingRecords.add(readingRecord);
     }
 
     @Override
@@ -378,6 +402,11 @@ public class BookImpl implements Book, Cloneable {
     public void updateReadingRecord(@NonNull Long readingRecordId, @NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
         BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
         updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
+    }
+
+    @Override
+    public void updateReadingRecords(List<RecordDTO> records) {
+        //TODO
     }
 
     @Override

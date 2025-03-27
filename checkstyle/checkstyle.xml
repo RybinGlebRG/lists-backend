@@ -127,6 +127,7 @@
         <!-- Layers Control -->
         <module name="ImportControl">
             <property name="file" value="checkstyle/layout-control.xml"/>
+            <property name="path" value="^.*[\\/]src[\\/]main[\\/].*$"/>
         </module>
 
         <!-- Checks for Size Violations.                    -->

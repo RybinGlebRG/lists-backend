@@ -21,7 +21,7 @@
         <result  property="URL" column="book_url" javaType="String"/>
         <result  property="userId" column="book_user_id" javaType="Long"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
-        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.status.BookStatusMapper.BookStatusResultMap"/>
+        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper.BookStatusResultMap"/>
         <collection
                 property="tags"
                 ofType="ru.rerumu.lists.model.tag.TagDTO"
@@ -52,7 +52,7 @@
         <result  property="URL" column="book_url" javaType="String"/>
         <result  property="userId" column="book_user_id" javaType="Long"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
-        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.status.BookStatusMapper.BookStatusResultMap"/>
+        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper.BookStatusResultMap"/>
         <collection
                 property="previousBooks"
                 ofType="ru.rerumu.lists.model.dto.BookOrderedDTO"

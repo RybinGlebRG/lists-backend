@@ -2,7 +2,7 @@ package ru.rerumu.lists.model.tag;
 
 import lombok.Getter;
 import lombok.NonNull;
-import ru.rerumu.lists.exception.NotImplementedException;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.model.base.EntityDTO;
 
 @Getter

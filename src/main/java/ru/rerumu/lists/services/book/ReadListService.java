@@ -10,10 +10,11 @@ import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
@@ -30,8 +31,8 @@ import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.utils.DateFactory;
-import ru.rerumu.lists.utils.FuzzyMatchingService;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.views.BookAddView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
@@ -173,17 +174,27 @@ public class ReadListService {
 
         logger.info("Updating reading records...");
         // Create or update reading records
+        List<RecordDTO> records = bookUpdateView.getReadingRecords().stream()
+                .map(readingRecordView -> new RecordDTO(
+                        readingRecordView.getReadingRecordId(),
+                        bookId,
+                        Long.valueOf(readingRecordView.getStatusId()),
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         for (BookUpdateView.ReadingRecordView readingRecordView : bookUpdateView.getReadingRecords()) {
             if (readingRecordView.getReadingRecordId() == null) {
                 // Add record
-                BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordView.getStatusId())
-                        .orElseThrow(EntityNotFoundException::new);
                 book.addReadingRecord(
-                        bookStatusRecord,
+                        Long.valueOf(readingRecordView.getStatusId()),
                         readingRecordView.getStartDate(),
                         readingRecordView.getEndDate(),
                         readingRecordView.getLastChapter()
                 );
+
             } else {
                 // Update record
                 book.updateReadingRecord(

@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.protectionproxies;
 
-import ru.rerumu.lists.exception.UserPermissionException;
+import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;

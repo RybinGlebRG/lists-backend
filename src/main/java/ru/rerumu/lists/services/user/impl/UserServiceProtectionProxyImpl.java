@@ -2,10 +2,10 @@ package ru.rerumu.lists.services.user.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.exception.IncorrectPasswordException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.exception.UserPermissionException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
+import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.user.UserService;

@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.book.impl;
 
-import ru.rerumu.lists.exception.UserPermissionException;
+import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.services.book.BookService;

@@ -1,7 +1,7 @@
 package ru.rerumu.lists.model.book.impl;
 
 import lombok.NonNull;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;

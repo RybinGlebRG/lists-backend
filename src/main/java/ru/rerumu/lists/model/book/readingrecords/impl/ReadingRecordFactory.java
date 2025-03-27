@@ -3,12 +3,12 @@ package ru.rerumu.lists.model.book.readingrecords.impl;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
-import ru.rerumu.lists.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

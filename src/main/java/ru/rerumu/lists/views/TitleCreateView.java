@@ -1,6 +1,6 @@
 package ru.rerumu.lists.views;
 
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.VideoType;
 
 import java.text.SimpleDateFormat;

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.author.AuthorsRepository;

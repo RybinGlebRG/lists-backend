@@ -1,7 +1,7 @@
 package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
-import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
