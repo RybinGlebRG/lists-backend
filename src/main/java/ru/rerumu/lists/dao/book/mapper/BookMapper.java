@@ -1,6 +1,8 @@
 package ru.rerumu.lists.dao.book.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import ru.rerumu.lists.dao.base.CrudMapper;
+import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -9,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Mapper
-public interface BookMapper {
+public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
 
     BookDTO getOne(Long bookId);
 

@@ -15,6 +15,8 @@ public interface BookRepository {
     List<BookDTO> getAll(Long readListId);
     List<BookDTO> getAllChained(Long readListId);
 
+    BookDtoDao findById(Long id);
+
     Long getNextId();
 
     void addOne(BookImpl book);

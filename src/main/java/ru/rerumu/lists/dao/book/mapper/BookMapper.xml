@@ -22,11 +22,28 @@
         <result  property="userId" column="book_user_id" javaType="Long"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
         <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper.BookStatusResultMap"/>
+        <collection property="tags" resultMap="TagResultMap" />
+    </resultMap>
+
+    <resultMap id="BookResultMap" type="ru.rerumu.lists.dao.book.BookDtoDao">
+        <id property="bookId" column="book_id" javaType="Long"/>
+        <result  property="readListId" column="book_list_id" javaType="Long"/>
+        <result  property="title" column="book_title" javaType="String"/>
+        <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
+        <result  property="insertDate" column="book_insert_date" javaType="Date"/>
+        <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
+        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
+        <result  property="note" column="book_note" javaType="String"/>
+        <result  property="URL" column="book_url" javaType="String"/>
+        <result  property="userId" column="book_user_id" javaType="Long"/>
+        <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
         <collection
-                property="tags"
-                ofType="ru.rerumu.lists.model.tag.TagDTO"
-                resultMap="ru.rerumu.lists.dao.tag.mapper.TagsMapper.TagResultMap"
+                property="previousBooks"
+                ofType="ru.rerumu.lists.model.dto.BookOrderedDTO"
+                resultMap="BookOrderedDTOResultMap"
+                columnPrefix="previous_"
         />
+        <collection property="tags" resultMap="TagResultMap" />
     </resultMap>
 
 
@@ -37,6 +54,14 @@
                 property="bookDTO"
                 resultMap="BookDTOResultMap"
         />
+    </resultMap>
+
+    <resultMap id="TagResultMap" type="ru.rerumu.lists.model.tag.TagDTO">
+        <constructor>
+            <idArg name="tagId" column="tag_id"/>
+            <arg name="name" column="tag_name"/>
+            <arg name="userId" column="tag_user_id"/>
+        </constructor>
     </resultMap>
 
 
@@ -62,7 +87,7 @@
         <collection
                 property="tags"
                 ofType="ru.rerumu.lists.model.tag.TagDTO"
-                resultMap="ru.rerumu.lists.dao.tag.mapper.TagsMapper.TagResultMap"
+                resultMap="TagResultMap"
         />
     </resultMap>
 
@@ -111,6 +136,11 @@
 
 
     <select id="getOne" resultMap="BookDTOResultMap">
+        <include refid="selectBooks"/>
+        where b.book_id=#{bookId}
+    </select>
+
+    <select id="findById" resultMap="BookResultMap">
         <include refid="selectBooks"/>
         where b.book_id=#{bookId}
     </select>

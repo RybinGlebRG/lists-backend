@@ -5,24 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
-import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.model.tag.TagFactory;
-import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.book.type.BookTypeFactory;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.tag.Tag;
+import ru.rerumu.lists.model.tag.TagFactory;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.model.user.UserFactory;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -112,7 +112,7 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
-        BookDTO bookDTO = this.bookRepository.getOneDTO(bookId).orElseThrow(EntityNotFoundException::new);
+        BookDtoDao bookDTO = this.bookRepository.findById(bookId);
         log.debug("bookDTO: {}", bookDTO);
         Book book = fromDTO(bookDTO);
         log.debug("Got book: {}", book);
@@ -125,12 +125,22 @@ public class BookFactoryImpl implements BookFactory {
         return fromDTO(res);
     }
 
+    @Override
+    public List<Book> findAll(User user, Boolean isChained) {
+        bookRepository.
+    }
+
     public List<Book> getAll(Long readListId) {
         return fromDTO(bookRepository.getAll(readListId));
     }
 
     public Book fromDTO(@NonNull BookDTO bookDTO) {
         return fromDTO(List.of(bookDTO)).get(0);
+    }
+
+    @Override
+    public Book fromDTO(@NonNull BookDtoDao bookDTO) {
+        return fromDTO(List.of(bookDTO), true).get(0);
     }
 
     public List<Book> fromDTO(@NonNull List<BookDTO> bookDTOList) {
@@ -184,8 +194,125 @@ public class BookFactoryImpl implements BookFactory {
 
     }
 
+    public List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList, boolean istrue) {
+        // Preparing reading records
+        Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordFactory.findByBookIds(
+                        // Collecting bookIds from chain
+                        bookDTOList.stream()
+                                // flatten book chain
+                                .flatMap(bookDTO -> {
+                                    List<BookDtoDao> tmp = new ArrayList<>();
+                                    tmp.add(bookDTO);
+
+//                                    if (bookDTO.getPreviousBooks() != null) {
+//                                        tmp.addAll(
+//                                                bookDTO.getPreviousBooks().stream()
+//                                                        .map(BookOrderedDTO::getBookDTO)
+//                                                        .collect(Collectors.toCollection(ArrayList::new))
+//                                        );
+//                                    }
+
+                                    return tmp.stream();
+                                })
+                                .map(BookDtoDao::getBookId)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                ).stream()
+                .collect(
+                        Collectors.groupingBy(
+                                ReadingRecord::getBookId,
+                                HashMap::new,
+                                Collectors.toCollection(ArrayList::new)
+                        )
+                );
+
+        // Prepare users
+        List<Long> userIdsToFind = bookDTOList.stream()
+                .map(item -> item.userId)
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+        Map<Long, User> userId2UserMap = userFactory.findByIds(userIdsToFind).stream()
+                .collect(Collectors.toMap(
+                        User::userId,
+                        Function.identity(),
+                        (o1, o2) -> o2,
+                        HashMap::new
+                ));
+
+
+        return bookDTOList.stream()
+                .map(bookDTO -> fromDTO(bookDTO, bookId2ReadingRecordsMap,userId2UserMap))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+    }
+
     private Book fromDTO(
             @NonNull BookDTO bookDTO,
+            @NonNull Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap,
+            @NonNull Map<Long, User> userId2UserMap
+    ) throws EmptyMandatoryParameterException {
+
+        log.debug("bookDTO: {}", bookDTO);
+
+        BookBuilder builder = new BookBuilder(statusFactory)
+                .bookId(bookDTO.bookId)
+                .readListId(bookDTO.readListId)
+                .title(bookDTO.title)
+                .bookStatus(bookDTO.bookStatusObj)
+                .insertDate(bookDTO.insertDate)
+                .lastUpdateDate(bookDTO.lastUpdateDate)
+                .lastChapter(bookDTO.lastChapter)
+                .note(bookDTO.note)
+                .URL(bookDTO.URL)
+                .user(userId2UserMap.get(bookDTO.userId));
+
+        if (bookDTO.bookTypeObj != null) {
+            builder.bookType(bookDTO.bookTypeObj.toDomain());
+        }
+
+        if (bookId2ReadingRecordsMap.get(bookDTO.bookId) != null) {
+            builder.readingRecords(bookId2ReadingRecordsMap.get(bookDTO.bookId));
+        }
+
+        if (bookDTO.previousBooks != null) {
+
+            HashMap<Book, Integer> bookOrderMap = bookDTO.previousBooks.stream()
+                    .filter(Objects::nonNull)
+                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                            fromDTO(item.getBookDTO(), bookId2ReadingRecordsMap, userId2UserMap),
+                            item.getOrder()
+                    ))
+                    .collect(
+                            HashMap::new,
+                            (map, item) -> map.put(item.getKey(), item.getValue()),
+                            HashMap::putAll
+                    );
+
+            builder.previousBooks(
+                    new BookChain(bookOrderMap)
+            );
+        }
+
+        // Set Tags
+        List<Tag> tags;
+        if (bookDTO.tags != null) {
+            tags = bookDTO.tags.stream()
+                    .map(tagFactory::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            tags = new ArrayList<>();
+        }
+        builder.tags(tags);
+
+        BookImpl book = builder.build();
+        book.setReadingRecordFactory(readingRecordFactory);
+        book.setBookRepository(bookRepository);
+        book.setDateFactory(dateFactory);
+
+        return book;
+    }
+
+    private Book fromDTO(
+            @NonNull BookDtoDao bookDTO,
             @NonNull Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap,
             @NonNull Map<Long, User> userId2UserMap
     ) throws EmptyMandatoryParameterException {

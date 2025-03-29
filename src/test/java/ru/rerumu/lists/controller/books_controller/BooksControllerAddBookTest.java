@@ -14,7 +14,7 @@
 //import org.springframework.test.web.servlet.MockMvc;
 //import ru.rerumu.lists.controller.book.BooksController;
 //import ru.rerumu.lists.services.*;
-//import ru.rerumu.lists.views.BookAddView;
+//import ru.rerumu.lists.controller.book.view.in.BookAddView;
 //
 //@WebMvcTest(BooksController.class)
 //@AutoConfigureMockMvc(addFilters = false)

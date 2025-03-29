@@ -1,8 +1,11 @@
 package ru.rerumu.lists.dao.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.extern.slf4j.Slf4j;
-import ru.rerumu.lists.dao.book.mapper.BookMapper;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.user.User;
@@ -46,6 +49,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public Optional<BookDTO> getOneDTO(Long bookId) {
         return Optional.ofNullable(bookMapper.getOne(bookId));
     }
@@ -109,6 +113,17 @@ public class BookRepositoryImpl implements BookRepository {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return bookList;
+    }
+
+    @Override
+    public BookDtoDao findById(Long id) {
+        BookDtoDao book = bookMapper.findById(id);
+
+        if (book == null) {
+            throw new EntityNotFoundException();
+        }
+
+        return book;
     }
 
     @Override

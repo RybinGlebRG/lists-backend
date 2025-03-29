@@ -37,7 +37,7 @@ import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.views.BookView;
 
 import java.util.ArrayList;

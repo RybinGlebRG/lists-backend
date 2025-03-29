@@ -1,4 +1,4 @@
-package ru.rerumu.lists.views;
+package ru.rerumu.lists.controller.book.view.in;
 
 import java.time.LocalDateTime;
 

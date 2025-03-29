@@ -1,5 +1,6 @@
 package ru.rerumu.lists.model.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -85,7 +86,7 @@ public class BookImpl implements Book, Cloneable {
             Long bookId,
             Long readListId,
             @NonNull String title,
-            @NonNull BookStatusRecord bookStatus,
+            BookStatusRecord bookStatus,
             @NonNull Date insertDate,
             @NonNull Date lastUpdateDate,
             Integer lastChapter,
@@ -142,8 +143,8 @@ public class BookImpl implements Book, Cloneable {
         obj.put("readListId", readListId);
         obj.put("title", title);
         JSONObject bookStatusJson = new JSONObject();
-        bookStatusJson.put("statusId", bookStatus.statusId());
-        bookStatusJson.put("statusName", bookStatus.statusName());
+//        bookStatusJson.put("statusId", bookStatus.statusId());
+//        bookStatusJson.put("statusName", bookStatus.statusName());
         obj.put("bookStatus", bookStatusJson);
         obj.put(
                 "insertDate",
@@ -404,9 +405,43 @@ public class BookImpl implements Book, Cloneable {
         updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
     }
 
+    /**
+     * Update reading records according to passed list of records
+     */
     @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public void updateReadingRecords(List<RecordDTO> records) {
-        //TODO
+
+        // Collect records to keep from dto
+        List<Long> readingRecordIdsToKeep = records.stream()
+                .map(RecordDTO::getRecordId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Delete other reading records
+        deleteOtherReadingRecords(readingRecordIdsToKeep);
+
+        for (RecordDTO recordDTO: records) {
+            if (recordDTO.getRecordId() == null) {
+                // Add record
+                addReadingRecord(
+                        recordDTO.getStatusId(),
+                        recordDTO.getStartDate(),
+                        recordDTO.getEndDate(),
+                        recordDTO.getLastChapter()
+                );
+            } else {
+                // Update record
+                updateReadingRecord(
+                        recordDTO.getRecordId(),
+                        recordDTO.getStatusId(),
+                        recordDTO.getStartDate(),
+                        recordDTO.getEndDate(),
+                        recordDTO.getLastChapter()
+                );
+            }
+        }
     }
 
     @Override

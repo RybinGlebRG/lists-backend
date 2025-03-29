@@ -1,5 +1,6 @@
 package ru.rerumu.lists.services.book;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,17 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
@@ -31,15 +34,12 @@ import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
-import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -125,6 +125,7 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public void updateBook(Long bookId, BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException, CloneNotSupportedException {
         if (
                 bookUpdateView == null
@@ -144,12 +145,6 @@ public class ReadListService {
         // Update book title
         logger.info("Updating book title...");
         book.updateTitle(bookUpdateView.getTitle());
-
-//        // Update book status
-//        logger.info("Updating book status...");
-//        Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
-//        BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
-//        book.updateStatus(bookStatusRecord);
 
         // Update note
         logger.info("Updating note...");
@@ -171,9 +166,8 @@ public class ReadListService {
         List<Tag> tags = tagFactory.findByIds(bookUpdateView.getTagIds(), book.getUser());
         book.updateTags(tags);
 
-
+        // Update reading records
         logger.info("Updating reading records...");
-        // Create or update reading records
         List<RecordDTO> records = bookUpdateView.getReadingRecords().stream()
                 .map(readingRecordView -> new RecordDTO(
                         readingRecordView.getReadingRecordId(),
@@ -184,38 +178,10 @@ public class ReadListService {
                         readingRecordView.getLastChapter()
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
+        book.updateReadingRecords(records);
 
-        for (BookUpdateView.ReadingRecordView readingRecordView : bookUpdateView.getReadingRecords()) {
-            if (readingRecordView.getReadingRecordId() == null) {
-                // Add record
-                book.addReadingRecord(
-                        Long.valueOf(readingRecordView.getStatusId()),
-                        readingRecordView.getStartDate(),
-                        readingRecordView.getEndDate(),
-                        readingRecordView.getLastChapter()
-                );
-
-            } else {
-                // Update record
-                book.updateReadingRecord(
-                        readingRecordView.getReadingRecordId(),
-                        Long.valueOf(readingRecordView.getStatusId()),
-                        readingRecordView.getStartDate(),
-                        readingRecordView.getEndDate(),
-                        readingRecordView.getLastChapter()
-                );
-            }
-        }
-        // Collect record ids from view
-        List<Long> readingRecordIdsToKeep = bookUpdateView.getReadingRecords().stream()
-                .map(BookUpdateView.ReadingRecordView::getReadingRecordId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
-        // Delete other reading records
-        book.deleteOtherReadingRecords(readingRecordIdsToKeep);
-
-        logger.info("Saving book...");
         // Save book
+        logger.info("Saving book...");
         book.save();
 
         logger.debug(String.format("Updated book: %s", book));
@@ -307,7 +273,7 @@ public class ReadListService {
                 bookStatus,
                 bookAddView.insertDate(),
                 null,
-                bookAddView.getLastChapter().longValue()
+                bookAddView.getLastChapter() != null ? bookAddView.getLastChapter().longValue() : null
         );
 
         getBook(newBook.getId());

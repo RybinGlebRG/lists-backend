@@ -14,7 +14,7 @@ import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
