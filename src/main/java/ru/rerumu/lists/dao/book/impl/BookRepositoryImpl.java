@@ -10,12 +10,8 @@ import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.user.User;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 // TODO: Refactor class
 @Slf4j
@@ -50,72 +46,13 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public Optional<BookDTO> getOneDTO(Long bookId) {
-        return Optional.ofNullable(bookMapper.getOne(bookId));
+    public List<BookDtoDao> findByUserChained(Long userId) {
+        List<BookDtoDao> bookDtoList = bookMapper.findByUserChained(userId);
+        return bookDtoList;
     }
 
     @Override
-    public List<BookDTO> getAll(Long readListId) {
-        return bookMapper.getAll(readListId);
-    }
-
-    @Override
-    public List<BookDTO> getAllChained(Long readListId) {
-        List<BookDTO> bookDTOList = bookMapper.getAllChained(readListId);
-
-        List<Long> bookIds = bookDTOList.stream()
-                .map(BookDTO::getBookId)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        bookIds.addAll(
-                bookDTOList.stream()
-                .flatMap(bookDTO -> {
-                    if (bookDTO.previousBooks != null){
-                        return  bookDTO.previousBooks.stream();
-                    } else {
-                        return Stream.empty();
-                    }
-                })
-                .map(bookOrderedDTO -> bookOrderedDTO.getBookDTO().bookId)
-                .collect(Collectors.toCollection(ArrayList::new))
-        );
-
-//        List<ReadingRecordImpl> readingRecords = readingRecordMapper.findByBookIds(bookIds);
-//
-//        Map<Long, List<ReadingRecordImpl>> bookId2ReadingRecordMap = readingRecords.stream()
-//                .collect(Collectors.groupingBy(
-//                        ReadingRecordImpl::getBookId,
-//                        HashMap::new,
-//                        Collectors.toCollection(ArrayList::new)
-//                ));
-
-//        for(BookDTO bookDTO: bookDTOList){
-////            List<ReadingRecordImpl> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
-////
-////            if (records == null){
-////                records = new ArrayList<>();
-////            }
-////
-////            bookDTO.setReadingRecords(records);
-//
-////            for (BookOrderedDTO bookOrderedDTO: bookDTO.getPreviousBooks()){
-////                List<ReadingRecordImpl> recordsOrdered = bookId2ReadingRecordMap.get(bookOrderedDTO.getBookDTO().getBookId());
-////                if (recordsOrdered == null){
-////                    recordsOrdered = new ArrayList<>();
-////                }
-////                bookOrderedDTO.getBookDTO().setReadingRecords(recordsOrdered);
-////            }
-//        }
-
-        List<BookDTO> bookList = bookDTOList.stream()
-                .peek(bookDTO -> log.debug(bookDTO.toString()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return bookList;
-    }
-
-    @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public BookDtoDao findById(Long id) {
         BookDtoDao book = bookMapper.findById(id);
 
@@ -124,6 +61,12 @@ public class BookRepositoryImpl implements BookRepository {
         }
 
         return book;
+    }
+
+    @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
+    public List<BookDtoDao> findByUser(User user) {
+        return bookMapper.findByUser(user);
     }
 
     @Override

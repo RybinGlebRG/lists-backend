@@ -3,17 +3,14 @@ package ru.rerumu.lists.dao.book.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.book.BookDtoDao;
-import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.BookDTO;
+import ru.rerumu.lists.model.user.User;
 
 import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
-
-    BookDTO getOne(Long bookId);
 
     void update(
             Long readListId,
@@ -28,18 +25,8 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             String URL
     );
 
-    void updateAuthor(
-            Long readListId,
-            Long bookId,
-            Long authorListId,
-            Long authorId
-    );
-
-    List<BookDTO> getAll(Long readListId);
-    List<BookDTO> getAllChained(Long readListId);
-//    List<BookDTO> getPrevious(Long bookId);
     List<BookDTO> findByUser(Long userId);
-    List<BookOrderedDTO> findPrevious(List<Long> bookIds);
+    List<BookDtoDao> findByUserChained(Long userId);
 
     Long getNextId();
 

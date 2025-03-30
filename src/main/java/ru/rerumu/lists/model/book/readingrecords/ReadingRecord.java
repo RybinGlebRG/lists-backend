@@ -19,6 +19,8 @@ public interface ReadingRecord extends Comparable<ReadingRecord>{
     void setEndDate(LocalDateTime endDate);
     void setLastChapter(Long lastChapter);
 
+    boolean statusEquals(@NonNull Long statusId);
+
     ReadingRecordDTO toDTO();
     JSONObject toJSONObject();
 }

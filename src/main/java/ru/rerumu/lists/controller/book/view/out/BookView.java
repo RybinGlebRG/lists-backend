@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @ToString
-@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true, access = AccessLevel.PACKAGE)
 public class BookView implements DeepCopyable<BookView>{
 
     @Getter
@@ -83,7 +83,7 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull Long bookId,
             @NonNull Long readListId,
             @NonNull String title,
-            @NonNull BookStatusView bookStatus,
+            BookStatusView bookStatus,
             @NonNull LocalDateTime insertDate,
             @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
@@ -98,7 +98,11 @@ public class BookView implements DeepCopyable<BookView>{
         this.bookId = bookId;
         this.readListId = readListId;
         this.title = title;
-        this.bookStatus = bookStatus.deepCopy();
+        if (bookStatus != null) {
+            this.bookStatus = bookStatus.deepCopy();
+        } else {
+            this.bookStatus = null;
+        }
         this.insertDate = insertDate;
         this.lastUpdateDate = lastUpdateDate;
         this.lastChapter = lastChapter;

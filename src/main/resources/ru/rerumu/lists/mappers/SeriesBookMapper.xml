@@ -13,7 +13,7 @@
 <!--        <association property="series"-->
 <!--                     javaType="ru.rerumu.lists.model.series.Series"-->
 <!--                     column="{seriesId=series_series_id,seriesListId=readListId}"-->
-<!--                     select="ru.rerumu.lists.dao.series.SeriesMapper.getOne"-->
+<!--                     select="ru.rerumu.lists.dao.series.mapper.SeriesMapper.getOne"-->
 <!--        />-->
 <!--    </resultMap>-->
 

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
@@ -17,7 +19,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-
+@Slf4j
+@ToString
 public class ReadingRecordImpl implements ReadingRecord {
 
     @Getter
@@ -37,6 +40,7 @@ public class ReadingRecordImpl implements ReadingRecord {
 
     private Long lastChapter;
 
+    @ToString.Exclude
     private final ReadingRecordsRepository readingRecordsRepository;
 
 
@@ -68,6 +72,9 @@ public class ReadingRecordImpl implements ReadingRecord {
     }
 
     public JSONObject toJSONObject(){
+
+        log.debug("toJSONObject: {}", this);
+
         JSONObject obj = new JSONObject();
 
         obj.put("recordId", recordId);
@@ -126,6 +133,11 @@ public class ReadingRecordImpl implements ReadingRecord {
     @Override
     public void setLastChapter(Long lastChapter) {
         this.lastChapter = lastChapter;
+    }
+
+    @Override
+    public boolean statusEquals(@NonNull Long statusId) {
+        return Long.valueOf(bookStatus.statusId()).equals(statusId);
     }
 
     @Override

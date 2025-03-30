@@ -163,12 +163,12 @@ public class BooksController {
             @RequestAttribute("username") String username,
             @RequestAttribute("authUserId") Long authUserId
 
-    ) throws UserIsNotOwnerException, JsonProcessingException {
+    ) throws JsonProcessingException {
         // TODO: rewrite
 //        userService.checkOwnershipList(username, readListId);
 //        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
 
-        List<Book> books = readListService.getAllBooks(readListId, search);
+        List<Book> books = readListService.getAllBooks(search, authUserId);
 
         BookListView bookListView = bookViewFactory.buildBookListView(
                 books.stream()

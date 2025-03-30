@@ -9,7 +9,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.mappers.ReadingRecordMapper;
+import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;

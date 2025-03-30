@@ -21,21 +21,21 @@ import java.util.List;
 @AllArgsConstructor
 public class BookDtoDao {
 
-    public Long bookId;
-    public Long readListId;
-    public String title;
-    public Integer bookStatus;
-    public Date insertDate;
-    public Date lastUpdateDate;
-    public Integer lastChapter;
-    public Integer bookType;
-    public String note;
-    public BookTypeDTO bookTypeObj;
-    public BookStatusRecord bookStatusObj;
-    public List<BookOrderedDTO> previousBooks;
-    public List<ReadingRecordDTO> readingRecords;
-    public String URL;
-    public Long userId;
-    public List<TagDTO> tags;
+    private Long bookId;
+    private Long readListId;
+    private String title;
+    private Integer bookStatus;
+    private Date insertDate;
+    private Date lastUpdateDate;
+    private Integer lastChapter;
+    private Integer bookType;
+    private String note;
+    private BookTypeDTO bookTypeObj;
+    private BookStatusRecord bookStatusObj;
+    private List<BookOrderedDTO> previousBooks;
+    private List<ReadingRecordDTO> readingRecords;
+    private String URL;
+    private Long userId;
+    private List<TagDTO> tags;
 
 }

@@ -19,23 +19,23 @@ public class ITBookMapper {
     BookMapper bookMapper;
 
 
-    @Test
-    void shouldFindAll(){
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.INFO);
+//    @Test
+//    void shouldFindAll(){
+//        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
+//                .setLevel(Level.INFO);
+//
+//        List<BookDTO> res = bookMapper.getAllChained(2L);
+//        Assertions.assertTrue(res.size() >0);
+//    }
 
-        List<BookDTO> res = bookMapper.getAllChained(2L);
-        Assertions.assertTrue(res.size() >0);
-    }
-
-    @Test
-    void shouldFindNoType(){
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.TRACE);
-
-        BookDTO res = bookMapper.getOne(477L);
-        Assertions.assertNull(res.bookTypeObj);
-    }
+//    @Test
+//    void shouldFindNoType(){
+//        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
+//                .setLevel(Level.TRACE);
+//
+//        BookDTO res = bookMapper.getOne(477L);
+//        Assertions.assertNull(res.bookTypeObj);
+//    }
 
     // TODO: Test chained
 }

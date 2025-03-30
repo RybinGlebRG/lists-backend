@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.book.readingrecord.impl;
 
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.dao.mappers.ReadingRecordMapper;
+import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 

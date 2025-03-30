@@ -1,5 +1,6 @@
 package ru.rerumu.lists.model.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,27 +112,26 @@ public class BookFactoryImpl implements BookFactory {
         return book;
     }
 
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
         BookDtoDao bookDTO = this.bookRepository.findById(bookId);
-        log.debug("bookDTO: {}", bookDTO);
         Book book = fromDTO(bookDTO);
-        log.debug("Got book: {}", book);
-
         return book;
     }
 
-    public List<Book> getAllChained(Long readListId) {
-        List<BookDTO> res = bookRepository.getAllChained(readListId);
-        return fromDTO(res);
-    }
-
+    /**
+     * Find all books of user
+     */
     @Override
     public List<Book> findAll(User user, Boolean isChained) {
-        bookRepository.
-    }
-
-    public List<Book> getAll(Long readListId) {
-        return fromDTO(bookRepository.getAll(readListId));
+        if (isChained) {
+            List<BookDtoDao> bookDtoList = bookRepository.findByUserChained(user.userId());
+            return fromDTO(bookDtoList, true);
+        } else {
+            return bookRepository.findByUser(user).stream()
+                    .map(this::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
     }
 
     public Book fromDTO(@NonNull BookDTO bookDTO) {
@@ -195,39 +195,39 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     public List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList, boolean istrue) {
-        // Preparing reading records
-        Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordFactory.findByBookIds(
-                        // Collecting bookIds from chain
-                        bookDTOList.stream()
-                                // flatten book chain
-                                .flatMap(bookDTO -> {
-                                    List<BookDtoDao> tmp = new ArrayList<>();
-                                    tmp.add(bookDTO);
-
-//                                    if (bookDTO.getPreviousBooks() != null) {
-//                                        tmp.addAll(
-//                                                bookDTO.getPreviousBooks().stream()
-//                                                        .map(BookOrderedDTO::getBookDTO)
-//                                                        .collect(Collectors.toCollection(ArrayList::new))
-//                                        );
-//                                    }
-
-                                    return tmp.stream();
-                                })
-                                .map(BookDtoDao::getBookId)
-                                .collect(Collectors.toCollection(ArrayList::new))
-                ).stream()
-                .collect(
-                        Collectors.groupingBy(
-                                ReadingRecord::getBookId,
-                                HashMap::new,
-                                Collectors.toCollection(ArrayList::new)
-                        )
-                );
+//        // Preparing reading records
+//        Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordFactory.findByBookIds(
+//                        // Collecting bookIds from chain
+//                        bookDTOList.stream()
+//                                // flatten book chain
+//                                .flatMap(bookDTO -> {
+//                                    List<BookDtoDao> tmp = new ArrayList<>();
+//                                    tmp.add(bookDTO);
+//
+////                                    if (bookDTO.getPreviousBooks() != null) {
+////                                        tmp.addAll(
+////                                                bookDTO.getPreviousBooks().stream()
+////                                                        .map(BookOrderedDTO::getBookDTO)
+////                                                        .collect(Collectors.toCollection(ArrayList::new))
+////                                        );
+////                                    }
+//
+//                                    return tmp.stream();
+//                                })
+//                                .map(BookDtoDao::getBookId)
+//                                .collect(Collectors.toCollection(ArrayList::new))
+//                ).stream()
+//                .collect(
+//                        Collectors.groupingBy(
+//                                ReadingRecord::getBookId,
+//                                HashMap::new,
+//                                Collectors.toCollection(ArrayList::new)
+//                        )
+//                );
 
         // Prepare users
         List<Long> userIdsToFind = bookDTOList.stream()
-                .map(item -> item.userId)
+                .map(item -> item.getUserId())
                 .distinct()
                 .collect(Collectors.toCollection(ArrayList::new));
         Map<Long, User> userId2UserMap = userFactory.findByIds(userIdsToFind).stream()
@@ -240,7 +240,7 @@ public class BookFactoryImpl implements BookFactory {
 
 
         return bookDTOList.stream()
-                .map(bookDTO -> fromDTO(bookDTO, bookId2ReadingRecordsMap,userId2UserMap))
+                .map(bookDTO -> fromDTO(bookDTO, new HashMap<>(),userId2UserMap))
                 .collect(Collectors.toCollection(ArrayList::new));
 
     }
@@ -320,28 +320,36 @@ public class BookFactoryImpl implements BookFactory {
         log.debug("bookDTO: {}", bookDTO);
 
         BookBuilder builder = new BookBuilder(statusFactory)
-                .bookId(bookDTO.bookId)
-                .readListId(bookDTO.readListId)
-                .title(bookDTO.title)
-                .bookStatus(bookDTO.bookStatusObj)
-                .insertDate(bookDTO.insertDate)
-                .lastUpdateDate(bookDTO.lastUpdateDate)
-                .lastChapter(bookDTO.lastChapter)
-                .note(bookDTO.note)
-                .URL(bookDTO.URL)
-                .user(userId2UserMap.get(bookDTO.userId));
+                .bookId(bookDTO.getBookId())
+                .readListId(bookDTO.getReadListId())
+                .title(bookDTO.getTitle())
+                .bookStatus(bookDTO.getBookStatusObj())
+                .insertDate(bookDTO.getInsertDate())
+                .lastUpdateDate(bookDTO.getLastUpdateDate())
+                .lastChapter(bookDTO.getLastChapter())
+                .note(bookDTO.getNote())
+                .URL(bookDTO.getURL())
+                .user(userId2UserMap.get(bookDTO.getUserId()));
 
-        if (bookDTO.bookTypeObj != null) {
-            builder.bookType(bookDTO.bookTypeObj.toDomain());
+        if (bookDTO.getBookTypeObj() != null) {
+            builder.bookType(bookDTO.getBookTypeObj().toDomain());
         }
 
-        if (bookId2ReadingRecordsMap.get(bookDTO.bookId) != null) {
-            builder.readingRecords(bookId2ReadingRecordsMap.get(bookDTO.bookId));
+//        if (bookId2ReadingRecordsMap.get(bookDTO.getBookId()) != null) {
+//            builder.readingRecords(bookId2ReadingRecordsMap.get(bookDTO.getBookId()));
+//        }
+        // TODO: ???
+        if (bookDTO.getReadingRecords() != null) {
+            builder.readingRecords(
+                    bookDTO.getReadingRecords().stream()
+                            .map(readingRecordFactory::fromDTO)
+                            .collect(Collectors.toCollection(ArrayList::new))
+            );
         }
 
-        if (bookDTO.previousBooks != null) {
+        if (bookDTO.getPreviousBooks() != null) {
 
-            HashMap<Book, Integer> bookOrderMap = bookDTO.previousBooks.stream()
+            HashMap<Book, Integer> bookOrderMap = bookDTO.getPreviousBooks().stream()
                     .filter(Objects::nonNull)
                     .map(item -> new AbstractMap.SimpleImmutableEntry<>(
                             fromDTO(item.getBookDTO(), bookId2ReadingRecordsMap, userId2UserMap),
@@ -360,8 +368,8 @@ public class BookFactoryImpl implements BookFactory {
 
         // Set Tags
         List<Tag> tags;
-        if (bookDTO.tags != null) {
-            tags = bookDTO.tags.stream()
+        if (bookDTO.getTags() != null) {
+            tags = bookDTO.getTags().stream()
                     .map(tagFactory::fromDTO)
                     .collect(Collectors.toCollection(ArrayList::new));
         } else {

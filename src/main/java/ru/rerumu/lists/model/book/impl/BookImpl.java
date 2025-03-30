@@ -8,21 +8,22 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.user.User;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -189,6 +190,15 @@ public class BookImpl implements Book, Cloneable {
         obj.put("tags", tagsArray);
 
         return obj;
+    }
+
+    @Override
+    public boolean currentStatusEquals(Long statusId) {
+        ReadingRecord readingRecord = readingRecords.stream()
+                .max(Comparable::compareTo)
+                .orElseThrow(() -> new ServerException("Error while processing records"));
+
+        return readingRecord.statusEquals(statusId);
     }
 
     @Override
@@ -456,7 +466,7 @@ public class BookImpl implements Book, Cloneable {
             bookId,
             readListId,
             title,
-            bookStatus.statusId(),
+            bookStatus != null ? bookStatus.statusId() : null,
             insertDate,
             lastUpdateDate,
             lastChapter,

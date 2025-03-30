@@ -79,4 +79,6 @@ public interface Book extends SeriesItem {
     String toString();
     BookDTO toDTO();
     JSONObject toJSONObject();
+
+    boolean currentStatusEquals(Long statusId);
 }

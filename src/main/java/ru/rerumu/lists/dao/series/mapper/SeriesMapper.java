@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.series;
+package ru.rerumu.lists.dao.series.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;

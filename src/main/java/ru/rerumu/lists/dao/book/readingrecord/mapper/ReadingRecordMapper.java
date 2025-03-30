@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.mappers;
+package ru.rerumu.lists.dao.book.readingrecord.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;

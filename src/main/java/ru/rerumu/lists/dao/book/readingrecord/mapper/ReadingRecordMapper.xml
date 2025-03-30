@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.dao.mappers.ReadingRecordMapper">
+<mapper namespace="ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper">
 
     <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO">
         <constructor>

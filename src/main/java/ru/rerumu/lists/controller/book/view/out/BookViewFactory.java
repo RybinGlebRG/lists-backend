@@ -1,9 +1,12 @@
 package ru.rerumu.lists.controller.book.view.out;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.books.Search;
@@ -18,9 +21,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class BookViewFactory {
 
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public BookView buildBookView(@NonNull BookDTO bookDTO, @NonNull Search search) {
 
         List<BookView> chain = bookDTO.getPreviousBooks().stream()
@@ -45,6 +50,10 @@ public class BookViewFactory {
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        ReadingRecordView maxRecord = readingRecordViews.stream()
+                .max(Comparator.comparing(ReadingRecordView::getStartDate))
+                .orElseThrow(() -> new ServerException("Error while processing records"));
+
         BookView.BookType bookType = null;
         if (bookDTO.getBookTypeObj() != null) {
             bookType = new BookView.BookType(
@@ -65,10 +74,7 @@ public class BookViewFactory {
                 bookDTO.getBookId(),
                 bookDTO.getReadListId(),
                 bookDTO.getTitle(),
-                new BookStatusView(
-                        bookDTO.getBookStatusObj().statusId(),
-                        bookDTO.getBookStatusObj().statusName()
-                ),
+                maxRecord.getBookStatus(),
                 bookDTO.getLastInsertLocalDate(),
                 bookDTO.getLastUpdateDate_V2(),
                 bookDTO.lastChapter,
