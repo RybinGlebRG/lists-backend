@@ -8,7 +8,6 @@ import lombok.ToString;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
-import ru.rerumu.lists.model.dto.BookOrderedDTO;
 import ru.rerumu.lists.model.tag.TagDTO;
 
 import java.util.Date;
@@ -32,7 +31,7 @@ public class BookDtoDao {
     private String note;
     private BookTypeDTO bookTypeObj;
     private BookStatusRecord bookStatusObj;
-    private List<BookOrderedDTO> previousBooks;
+    private List<BookOrderedDtoDao> previousBooks;
     private List<ReadingRecordDTO> readingRecords;
     private String URL;
     private Long userId;

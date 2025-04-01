@@ -227,7 +227,7 @@ public class BookFactoryImpl implements BookFactory {
 
         // Prepare users
         List<Long> userIdsToFind = bookDTOList.stream()
-                .map(item -> item.getUserId())
+                .map(BookDtoDao::getUserId)
                 .distinct()
                 .collect(Collectors.toCollection(ArrayList::new));
         Map<Long, User> userId2UserMap = userFactory.findByIds(userIdsToFind).stream()
@@ -311,13 +311,12 @@ public class BookFactoryImpl implements BookFactory {
         return book;
     }
 
+    @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     private Book fromDTO(
             @NonNull BookDtoDao bookDTO,
             @NonNull Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap,
             @NonNull Map<Long, User> userId2UserMap
     ) throws EmptyMandatoryParameterException {
-
-        log.debug("bookDTO: {}", bookDTO);
 
         BookBuilder builder = new BookBuilder(statusFactory)
                 .bookId(bookDTO.getBookId())
