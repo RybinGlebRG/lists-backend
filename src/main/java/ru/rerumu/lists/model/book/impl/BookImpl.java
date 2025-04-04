@@ -80,6 +80,7 @@ public class BookImpl implements Book, Cloneable {
 
     private User user;
 
+    @Getter
     private List<Tag> tags;
 
 
