@@ -2,6 +2,7 @@ package ru.rerumu.lists.model.book.impl;
 
 import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
@@ -12,6 +13,7 @@ import ru.rerumu.lists.model.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,18 +31,23 @@ public class BookBuilder {
     private BookChain previousBooks;
 
     private String note;
-    private List<ReadingRecord> readingRecords;
+    private List<ReadingRecord> readingRecords = new ArrayList<>();
     private String URL;
     private User user;
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
-    private StatusFactory statusFactory;
+    private final StatusFactory statusFactory;
+    private final DateFactory dateFactory;
 
-    public BookBuilder(StatusFactory statusFactory) {
+    public BookBuilder(
+            @NonNull StatusFactory statusFactory,
+            @NonNull DateFactory dateFactory
+    ) {
         this.statusFactory = statusFactory;
+        this.dateFactory = dateFactory;
     }
 
-    public BookBuilder bookId(Long bookId) {
+    public BookBuilder bookId(@NonNull Long bookId) {
         this.bookId = bookId;
         return this;
     }
@@ -115,7 +122,7 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder tags(List<Tag> tags){
+    public BookBuilder tags(@NonNull List<Tag> tags){
         this.tags = tags;
         return this;
     }
@@ -137,7 +144,8 @@ public class BookBuilder {
                 statusFactory,
                 URL,
                 user,
-                tags
+                tags,
+                dateFactory
         );
     }
 }

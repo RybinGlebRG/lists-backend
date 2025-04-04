@@ -33,12 +33,14 @@ public class BookTest {
         /*
         Given
          */
-        List<Tag> bookTags = new ArrayList<>();
-        bookTags.add(TestTagFactory.prepareTagImpl(1L, tagsRepository));
-        bookTags.add(TestTagFactory.prepareTagImpl(2L, tagsRepository));
-        bookTags.add(TestTagFactory.prepareTagImpl(3L, tagsRepository));
-
-        BookImpl bookImpl = TestBookFactory.prepareBookImpl(1L, bookTags);
+        BookImpl bookImpl = TestBookFactory.prepareBookImpl(
+                1L,
+                List.of(
+                        TestTagFactory.prepareTagImpl(1L, tagsRepository),
+                        TestTagFactory.prepareTagImpl(2L, tagsRepository),
+                        TestTagFactory.prepareTagImpl(3L, tagsRepository)
+                )
+        );
 
         List<TagImpl> newTagImpls = List.of(
                 TestTagFactory.prepareTagImpl(2L, tagsRepository),

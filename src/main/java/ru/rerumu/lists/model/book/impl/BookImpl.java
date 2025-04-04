@@ -69,23 +69,18 @@ public class BookImpl implements Book, Cloneable {
     @Setter
     private BookRepository bookRepository;
 
-    @Setter
-    private DateFactory dateFactory;
-
+    private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-
     private final StatusFactory statusFactory;
-
     private String URL;
-
-    private User user;
+    private final User user;
 
     @Getter
     private List<Tag> tags;
 
 
     BookImpl(
-            Long bookId,
+            @NonNull Long bookId,
             Long readListId,
             @NonNull String title,
             BookStatusRecord bookStatus,
@@ -95,11 +90,12 @@ public class BookImpl implements Book, Cloneable {
             BookType bookType,
             BookChain previousBooks,
             String note,
-            List<ReadingRecord> readingRecords,
-            StatusFactory statusFactory,
+            @NonNull List<ReadingRecord> readingRecords,
+            @NonNull StatusFactory statusFactory,
             String URL,
-            User user,
-            @NonNull List<Tag> tags
+            @NonNull User user,
+            @NonNull List<Tag> tags,
+            @NonNull DateFactory dateFactory
     ) {
 
         this.bookId = bookId;
@@ -112,11 +108,12 @@ public class BookImpl implements Book, Cloneable {
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
-        this.readingRecords = readingRecords;
+        this.readingRecords = new ArrayList<>(readingRecords);
         this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
-        this.tags = tags;
+        this.tags = new ArrayList<>(tags);
+        this.dateFactory = dateFactory;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {

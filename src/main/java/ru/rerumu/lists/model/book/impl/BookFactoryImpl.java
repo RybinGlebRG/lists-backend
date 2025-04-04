@@ -77,7 +77,7 @@ public class BookFactoryImpl implements BookFactory {
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
-        BookBuilder bookBuilder = new BookBuilder(statusFactory)
+        BookBuilder bookBuilder = new BookBuilder(statusFactory, dateFactory)
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(title)
@@ -107,7 +107,6 @@ public class BookFactoryImpl implements BookFactory {
 
         book.setReadingRecordFactory(readingRecordFactory);
         book.setBookRepository(bookRepository);
-        book.setDateFactory(dateFactory);
 
         return book;
     }
@@ -253,7 +252,7 @@ public class BookFactoryImpl implements BookFactory {
 
         log.debug("bookDTO: {}", bookDTO);
 
-        BookBuilder builder = new BookBuilder(statusFactory)
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory)
                 .bookId(bookDTO.bookId)
                 .readListId(bookDTO.readListId)
                 .title(bookDTO.title)
@@ -306,7 +305,6 @@ public class BookFactoryImpl implements BookFactory {
         BookImpl book = builder.build();
         book.setReadingRecordFactory(readingRecordFactory);
         book.setBookRepository(bookRepository);
-        book.setDateFactory(dateFactory);
 
         return book;
     }
@@ -318,7 +316,7 @@ public class BookFactoryImpl implements BookFactory {
             @NonNull Map<Long, User> userId2UserMap
     ) throws EmptyMandatoryParameterException {
 
-        BookBuilder builder = new BookBuilder(statusFactory)
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory)
                 .bookId(bookDTO.getBookId())
                 .readListId(bookDTO.getReadListId())
                 .title(bookDTO.getTitle())
@@ -379,7 +377,6 @@ public class BookFactoryImpl implements BookFactory {
         BookImpl book = builder.build();
         book.setReadingRecordFactory(readingRecordFactory);
         book.setBookRepository(bookRepository);
-        book.setDateFactory(dateFactory);
 
         return book;
     }
