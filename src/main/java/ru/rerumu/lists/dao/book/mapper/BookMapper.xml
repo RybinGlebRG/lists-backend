@@ -4,22 +4,6 @@
 
 <mapper namespace="ru.rerumu.lists.dao.book.mapper.BookMapper">
 
-<!--    <resultMap id="BookDTOResultMap" type="ru.rerumu.lists.model.book.BookDTO">-->
-<!--        <id property="bookId" column="book_id" javaType="Long"/>-->
-<!--        <result  property="readListId" column="book_list_id" javaType="Long"/>-->
-<!--        <result  property="title" column="book_title" javaType="String"/>-->
-<!--        <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>-->
-<!--        <result  property="insertDate" column="book_insert_date" javaType="Date"/>-->
-<!--        <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>-->
-<!--        <result  property="lastChapter" column="last_chapter" javaType="Integer"/>-->
-<!--        <result  property="note" column="book_note" javaType="String"/>-->
-<!--        <result  property="URL" column="book_url" javaType="String"/>-->
-<!--        <result  property="userId" column="book_user_id" javaType="Long"/>-->
-<!--        <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>-->
-<!--        <association property="bookStatusObj" resultMap="ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper.BookStatusResultMap"/>-->
-<!--        <collection property="tags" resultMap="TagResultMap" />-->
-<!--    </resultMap>-->
-
     <resultMap id="BookResultMap" type="ru.rerumu.lists.dao.book.BookDtoDao">
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
@@ -32,6 +16,7 @@
         <result  property="URL" column="book_url" javaType="String"/>
         <result  property="userId" column="book_user_id" javaType="Long"/>
         <association property="bookTypeObj" resultMap="ru.rerumu.lists.dao.book.type.BookTypeMapper.BookTypeDTOResultMap"/>
+        <association property="user" resultMap="UserDtoResultMap"/>
         <collection
                 property="previousBooks"
                 resultMap="BookOrderedDTOResultMap"
@@ -100,6 +85,12 @@
         </constructor>
     </resultMap>
 
+    <resultMap id="UserDtoResultMap" type="ru.rerumu.lists.dao.user.UserDtoDao">
+        <id property="userId" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <result property="password" column="user_password"/>
+    </resultMap>
+
     <sql id="selectBooks">
         select
             b.book_id,
@@ -122,14 +113,18 @@
             rr.record_id as rr_id,
             rr.start_date as rr_start_date,
             rr.end_date as rr_end_date,
-            rr.status_status_id as rr_status_id,
             rr.last_chapter as rr_last_chapter,
             rr.is_migrated as rr_is_migrated,
             s2.status_id as rr_status_id,
-            s2.name as rr_status_name
+            s2.name as rr_status_name,
+            u.user_id,
+            u.name as user_name,
+            u.password as user_password
         from books b
             inner join statuses s
                 on s.STATUS_ID= b.status_status_id
+            inner join users u
+                on u.user_id = b.user_user_id
             left outer join book_types bt
                 on bt.type_id = b.type_type_id
             left outer join books_tags btg
@@ -159,146 +154,113 @@
     </select>
 
     <select id="findByUserChained" resultMap="BookResultMap">
-        <![CDATA[
-              with s_books as
-             (
-                select
-                        b.book_id,
-                        b.list_list_id as book_list_id,
-                        b.title as book_title,
-                        s.STATUS_ID as book_status_id_old,
-                        b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
-                        b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
-                        b.last_chapter,
-                        bt.type_id as book_type_id,
-                        bt.name as book_type_name,
-                        s.STATUS_ID as book_status_id,
-                        s.NAME as book_status_name,
-                        b.note as book_note,
-                        b.url as book_url,
-                        b.user_user_id as book_user_id,
-                        t.tag_id as tag_id,
-                        t.name as tag_name,
-                        t.user_user_id as tag_user_id,
-                        rr.record_id as rr_id,
-                        rr.start_date as rr_start_date,
-                        rr.end_date as rr_end_date,
-                        rr.last_chapter as rr_last_chapter,
-                        rr.is_migrated as rr_is_migrated,
-                        s2.status_id as rr_status_id,
-                        s2.name as rr_status_name
-                    from books b
-                        inner join statuses s
-                            on s.STATUS_ID= b.status_status_id
-                        left outer join book_types bt
-                            on bt.type_id = b.type_type_id
-                        left outer join books_tags btg
-                            on btg.book_book_id = b.book_id
-                        left outer join tags t
-                            on t.tag_id = btg.tag_tag_id
-                        left outer join reading_records rr
-                            on rr.book_book_id = b.book_id
-                        left outer join statuses s2
-                            on s2.status_id = rr.status_status_id
-                 where b.user_user_id = #{userId}
-             ), s_top as
-            (
-                select max(sb.series_order) as top_order,
-                       sb.series_series_id
-                from books b
-                    inner join  series_books sb
-                            on sb.book_book_id = b.book_id
-                group by sb.series_series_id
-            ), s_prev as
-            (
-                select
-                    s_books.book_id as join_id,
-                    s_books2.*,
-                    max(sb.series_order) over (partition by sb.series_series_id) as mtop,
-                    sb2.series_order
-                from s_books
-                    inner join series_books sb
-                                on sb.book_book_id = s_books.book_id
-                    inner join s_top
-                                on s_top.series_series_id = sb.series_series_id
-                                and s_top.top_order = sb.series_order
-                    inner join series_books sb2
-                                on sb2.series_series_id = sb.series_series_id
-                    inner join s_books s_books2
-                                on s_books2.book_id = sb2.book_book_id
-                                and s_books2.book_Id != s_books.book_id
-                 order by s_books.book_id,  sb2.series_order desc
-
-            ), s_wo_chain as
-            (
-              select b.book_id
-              from books b
-
-              except
-
-              select sb.book_book_id
-                from series_books sb
-            )
-            select  s_books.*,
-                    s_prev.book_id                  as previous_book_id,
-                    s_prev.book_list_id             as previous_book_list_id,
-                    s_prev.book_title               as previous_book_title,
-                    s_prev.book_status_id_old       as previous_book_status_id_old,
-                    s_prev.book_insert_date         as previous_book_insert_date,
-                    s_prev.book_last_update_date    as previous_book_last_update_date,
-                    s_prev.last_chapter             as previous_last_chapter,
-                    s_prev.book_type_id             as previous_book_type_id,
-                    s_prev.book_type_name           as previous_book_type_name,
-                    s_prev.book_status_id           as previous_book_status_id,
-                    s_prev.book_status_name         as previous_book_status_name,
-                    s_prev.book_note                as previous_book_note,
-                    s_prev.series_order             as previous_book_series_order,
-                    s_prev.tag_id                   as previous_tag_id,
-                    s_prev.tag_name                 as previous_tag_name,
-                    s_prev.tag_user_id              as previous_tag_user_id,
-                    s_prev.rr_id                	as previous_rr_id,
-                    s_prev.rr_start_date            as previous_rr_start_date,
-                    s_prev.rr_end_date              as previous_rr_end_date,
-                    s_prev.rr_status_id         	as previous_rr_status_id,
-                    s_prev.rr_last_chapter          as previous_rr_last_chapter,
-                    s_prev.rr_is_migrated           as previous_rr_is_migrated,
-                    s_prev.rr_status_id             as previous_rr_status_id,
-                    s_prev.rr_status_name           as previous_rr_status_name
+         with s_books as
+         (
+            <include refid="selectBooks"/>
+             where b.user_user_id = #{userId}
+         ), s_top as
+        (
+            select max(sb.series_order) as top_order,
+                   sb.series_series_id
+            from books b
+                inner join  series_books sb
+                        on sb.book_book_id = b.book_id
+            group by sb.series_series_id
+        ), s_prev as
+        (
+            select
+                s_books.book_id as join_id,
+                s_books2.*,
+                max(sb.series_order) over (partition by sb.series_series_id) as mtop,
+                sb2.series_order
             from s_books
-                inner join s_prev
-                    on s_prev.join_id = s_books.book_id
+                inner join series_books sb
+                            on sb.book_book_id = s_books.book_id
+                inner join s_top
+                            on s_top.series_series_id = sb.series_series_id
+                            and s_top.top_order = sb.series_order
+                inner join series_books sb2
+                            on sb2.series_series_id = sb.series_series_id
+                inner join s_books s_books2
+                            on s_books2.book_id = sb2.book_book_id
+                            and s_books2.book_Id != s_books.book_id
+             order by s_books.book_id,  sb2.series_order desc
 
-            union all
+        ), s_wo_chain as
+        (
+          select b.book_id
+          from books b
 
-            select  s_books.*,
-                    null as previous_book_id,
-                    null as previous_book_list_id,
-                    null as previous_book_title,
-                    null as previous_book_status_id_old,
-                    null as previous_book_insert_date,
-                    null as previous_book_last_update_date,
-                    null as previous_last_chapter,
-                    null as previous_book_type_id,
-                    null as previous_book_type_name,
-                    null as previous_book_status_id,
-                    null as previous_book_status_name,
-                    null as previous_book_note,
-                    null as previous_book_series_order,
-                    null as previous_tag_id,
-                    null as previous_tag_name,
-                    null as previous_tag_user_id,
-                    null as previous_rr_id,
-                    null as previous_rr_start_date,
-                    null as previous_rr_end_date,
-                    null as previous_rr_status_id,
-                    null as previous_rr_last_chapter,
-                    null as previous_rr_is_migrated,
-                    null as previous_rr_status_id,
-                    null as previous_rr_status_name
-            from s_books
-                inner join s_wo_chain
-                    on s_wo_chain.book_id = s_books.book_id
-        ]]>
+          except
+
+          select sb.book_book_id
+            from series_books sb
+        )
+        select  s_books.*,
+                s_prev.book_id                  as previous_book_id,
+                s_prev.book_list_id             as previous_book_list_id,
+                s_prev.book_title               as previous_book_title,
+                s_prev.book_status_id_old       as previous_book_status_id_old,
+                s_prev.book_insert_date         as previous_book_insert_date,
+                s_prev.book_last_update_date    as previous_book_last_update_date,
+                s_prev.last_chapter             as previous_last_chapter,
+                s_prev.book_type_id             as previous_book_type_id,
+                s_prev.book_type_name           as previous_book_type_name,
+                s_prev.book_status_id           as previous_book_status_id,
+                s_prev.book_status_name         as previous_book_status_name,
+                s_prev.book_note                as previous_book_note,
+                s_prev.series_order             as previous_book_series_order,
+                s_prev.tag_id                   as previous_tag_id,
+                s_prev.tag_name                 as previous_tag_name,
+                s_prev.tag_user_id              as previous_tag_user_id,
+                s_prev.rr_id                	as previous_rr_id,
+                s_prev.rr_start_date            as previous_rr_start_date,
+                s_prev.rr_end_date              as previous_rr_end_date,
+                s_prev.rr_status_id         	as previous_rr_status_id,
+                s_prev.rr_last_chapter          as previous_rr_last_chapter,
+                s_prev.rr_is_migrated           as previous_rr_is_migrated,
+                s_prev.rr_status_id             as previous_rr_status_id,
+                s_prev.rr_status_name           as previous_rr_status_name,
+                s_prev.user_id                  as previous_user_id,
+                s_prev.user_name                as previous_user_name,
+                s_prev.user_password            as previous_user_password
+        from s_books
+            inner join s_prev
+                on s_prev.join_id = s_books.book_id
+
+        union all
+
+        select  s_books.*,
+                null as previous_book_id,
+                null as previous_book_list_id,
+                null as previous_book_title,
+                null as previous_book_status_id_old,
+                null as previous_book_insert_date,
+                null as previous_book_last_update_date,
+                null as previous_last_chapter,
+                null as previous_book_type_id,
+                null as previous_book_type_name,
+                null as previous_book_status_id,
+                null as previous_book_status_name,
+                null as previous_book_note,
+                null as previous_book_series_order,
+                null as previous_tag_id,
+                null as previous_tag_name,
+                null as previous_tag_user_id,
+                null as previous_rr_id,
+                null as previous_rr_start_date,
+                null as previous_rr_end_date,
+                null as previous_rr_status_id,
+                null as previous_rr_last_chapter,
+                null as previous_rr_is_migrated,
+                null as previous_rr_status_id,
+                null as previous_rr_status_name,
+                null as previous_user_id,
+                null  as previous_user_name,
+                null as previous_user_password
+        from s_books
+            inner join s_wo_chain
+                on s_wo_chain.book_id = s_books.book_id
     </select>
 
     <update id="update">

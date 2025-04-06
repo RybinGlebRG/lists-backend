@@ -12,5 +12,9 @@ public interface BookFactory {
     List<Book> findAll(User user, Boolean isChained);
     Book fromDTO(@NonNull BookDTO bookDTO);
     Book fromDTO(@NonNull BookDtoDao bookDTO);
-    List<Book> fromDTO(@NonNull List<BookDTO> bookDTOList);
+
+    @Deprecated
+    List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList);
+
+    List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList);
 }

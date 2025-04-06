@@ -3,7 +3,6 @@ package ru.rerumu.lists.model.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,42 +40,49 @@ public class BookImpl implements Book, Cloneable {
 
     @Getter
     private final Long bookId;
+
     @Getter
     private final Long readListId;
+
     @Getter
     private String title;
+
     @Getter
     private BookStatusRecord bookStatus;
+
     @Getter
     private Date insertDate;
+
     @Getter
     private Date lastUpdateDate;
 
     private Integer lastChapter;
+
     @Getter
     private BookType bookType;
+
     @Getter
     private BookChain previousBooks;
+
     @Getter
     private String note;
+
     @Getter
     private List<ReadingRecord> readingRecords;
 
-    // TODO: Make final
-    @Setter
-    private ReadingRecordFactory readingRecordFactory;
-
-    @Setter
-    private BookRepository bookRepository;
-
-    private final DateFactory dateFactory;
-    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-    private final StatusFactory statusFactory;
     private String URL;
+
     private final User user;
 
     @Getter
     private List<Tag> tags;
+
+    private final ReadingRecordFactory readingRecordFactory;
+    private final BookRepository bookRepository;
+    private final DateFactory dateFactory;
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+    private final StatusFactory statusFactory;
+
 
 
     BookImpl(
@@ -95,7 +101,9 @@ public class BookImpl implements Book, Cloneable {
             String URL,
             @NonNull User user,
             @NonNull List<Tag> tags,
-            @NonNull DateFactory dateFactory
+            @NonNull DateFactory dateFactory,
+            @NonNull ReadingRecordFactory readingRecordFactory,
+            @NonNull BookRepository bookRepository
     ) {
 
         this.bookId = bookId;
@@ -114,6 +122,8 @@ public class BookImpl implements Book, Cloneable {
         this.user = user;
         this.tags = new ArrayList<>(tags);
         this.dateFactory = dateFactory;
+        this.readingRecordFactory = readingRecordFactory;
+        this.bookRepository = bookRepository;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {

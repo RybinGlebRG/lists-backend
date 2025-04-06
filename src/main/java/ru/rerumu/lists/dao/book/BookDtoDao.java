@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.type.BookTypeDTO;
@@ -36,5 +37,6 @@ public class BookDtoDao {
     private String URL;
     private Long userId;
     private List<TagDTO> tags;
+    private UserDtoDao user;
 
 }

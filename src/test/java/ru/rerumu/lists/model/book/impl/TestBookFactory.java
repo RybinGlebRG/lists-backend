@@ -2,7 +2,9 @@ package ru.rerumu.lists.model.book.impl;
 
 
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.tag.TagsRepository;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.user.User;
@@ -19,7 +21,12 @@ public class TestBookFactory {
             Long bookId,
             List<Tag> tags
     ) {
-        BookImpl bookImpl = new BookBuilder(mock(StatusFactory.class), mock(DateFactory.class))
+        BookImpl bookImpl = new BookBuilder(
+                mock(StatusFactory.class),
+                mock(DateFactory.class),
+                mock(ReadingRecordFactory.class),
+                mock(BookRepository.class)
+        )
                 .bookId(bookId)
                 .title("Test book")
                 .insertDate(new Date())

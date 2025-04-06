@@ -3,7 +3,9 @@ package ru.rerumu.lists.model.book.impl;
 import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.user.User;
@@ -38,13 +40,19 @@ public class BookBuilder {
 
     private final StatusFactory statusFactory;
     private final DateFactory dateFactory;
+    private final ReadingRecordFactory readingRecordFactory;
+    private final BookRepository bookRepository;
 
     public BookBuilder(
             @NonNull StatusFactory statusFactory,
-            @NonNull DateFactory dateFactory
+            @NonNull DateFactory dateFactory,
+            @NonNull ReadingRecordFactory readingRecordFactory,
+            @NonNull BookRepository bookRepository
     ) {
         this.statusFactory = statusFactory;
         this.dateFactory = dateFactory;
+        this.readingRecordFactory = readingRecordFactory;
+        this.bookRepository = bookRepository;
     }
 
     public BookBuilder bookId(@NonNull Long bookId) {
@@ -145,7 +153,9 @@ public class BookBuilder {
                 URL,
                 user,
                 tags,
-                dateFactory
+                dateFactory,
+                readingRecordFactory,
+                bookRepository
         );
     }
 }
