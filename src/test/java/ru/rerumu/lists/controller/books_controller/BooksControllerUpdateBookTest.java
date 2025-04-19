@@ -12,13 +12,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.controller.BooksController;
+import ru.rerumu.lists.controller.book.BooksController;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookUpdateView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -100,6 +100,7 @@ class BooksControllerUpdateBookTest {
                         2,
                         "test note 2",
                         null,
+                        new ArrayList<>(),
                         new ArrayList<>()
                 )
         );

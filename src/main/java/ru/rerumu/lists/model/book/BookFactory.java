@@ -1,16 +1,20 @@
 package ru.rerumu.lists.model.book;
 
 import lombok.NonNull;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.model.user.User;
 
 import java.util.List;
-import java.util.Map;
 
 public interface BookFactory {
 
     Book getBook(Long bookId);
-    List<Book> getAllChained(Long readListId);
-    List<Book> getAll(Long readListId);
+    List<Book> findAll(User user, Boolean isChained);
     Book fromDTO(@NonNull BookDTO bookDTO);
-    List<Book> fromDTO(@NonNull List<BookDTO> bookDTOList);
+    Book fromDTO(@NonNull BookDtoDao bookDTO);
+
+    @Deprecated
+    List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList);
+
+    List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList);
 }

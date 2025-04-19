@@ -1,44 +1,45 @@
 package ru.rerumu.lists.services.book;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.user.UserFactory;
-import ru.rerumu.lists.utils.DateFactory;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
+import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.model.Author;
 import ru.rerumu.lists.model.AuthorBookRelation;
-import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.tag.TagFactory;
-import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.services.AuthorsBooksRelationService;
-import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
+import ru.rerumu.lists.services.author.AuthorsService;
+import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.utils.FuzzyMatchingService;
-import ru.rerumu.lists.services.book.reading_record.ReadingRecordService;
-import ru.rerumu.lists.views.BookAddView;
-import ru.rerumu.lists.views.BookUpdateView;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -124,6 +125,7 @@ public class ReadListService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public void updateBook(Long bookId, BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException, CloneNotSupportedException {
         if (
                 bookUpdateView == null
@@ -133,32 +135,58 @@ public class ReadListService {
             throw new EmptyMandatoryParameterException();
         }
 
+        logger.info("Getting book with id='{}'...", bookId);
         Book book = bookFactory.getBook(bookId);
 
+        // Update insert date
+        logger.info("Updating insert date...");
         book.updateInsertDate(bookUpdateView.getInsertDateUTC());
+
+        // Update book title
+        logger.info("Updating book title...");
         book.updateTitle(bookUpdateView.getTitle());
-        bookUpdateView.getLastChapter().ifPresent(book::updateLastChapter);
 
-        Objects.requireNonNull(bookUpdateView.getStatus(), "Book status cannot be null");
-        BookStatusRecord bookStatusRecord = bookStatusesService.findById(bookUpdateView.getStatus()).orElseThrow(EntityNotFoundException::new);
-        book.updateStatus(bookStatusRecord);
+        // Update note
+        logger.info("Updating note...");
+        book.updateNote(bookUpdateView.getNote());
 
-        book.updateNote(bookUpdateView.note());
-
+        // Update book type
+        logger.info("Updating book type...");
         if (bookUpdateView.getBookTypeId() != null) {
             BookType optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId()).orElseThrow(EntityNotFoundException::new);
             book.updateType(optionalBookType);
         }
 
-        book.updateURL(bookUpdateView.URL());
+        // Update URL
+        logger.info("Updating URL...");
+        book.updateURL(bookUpdateView.getURL());
 
-        List<Tag> tags = tagFactory.findByIds(bookUpdateView.tagIds(), book.getUser());
+        // Update tags
+        logger.info("Updating tags...");
+        List<Tag> tags = tagFactory.findByIds(bookUpdateView.getTagIds(), book.getUser());
         book.updateTags(tags);
 
+        // Update reading records
+        logger.info("Updating reading records...");
+        List<RecordDTO> records = bookUpdateView.getReadingRecords().stream()
+                .map(readingRecordView -> new RecordDTO(
+                        readingRecordView.getReadingRecordId(),
+                        bookId,
+                        Long.valueOf(readingRecordView.getStatusId()),
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
+        book.updateReadingRecords(records);
+
+        // Save book
+        logger.info("Saving book...");
         book.save();
 
         logger.debug(String.format("Updated book: %s", book));
 
+        // Update author
         updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
     }
 
@@ -168,23 +196,32 @@ public class ReadListService {
         return book;
     }
 
-    public List<Book> getAllBooks(Long readListId, Search search) {
+    public List<Book> getAllBooks(Search search, Long userId) {
         List<Book> bookList;
+
+        User user = userFactory.findById(userId);
         if (search.getChainBySeries()) {
-            bookList = bookFactory.getAllChained(readListId);
+            bookList = bookFactory.findAll(user, true);
         } else {
-            bookList = bookFactory.getAll(readListId);
+            bookList = bookFactory.findAll(user, false);
         }
 
         Stream<Book> bookStream = bookList.stream();
         for (Filter filter : search.filters()) {
             switch (filter.field()) {
                 case "bookStatusIds" -> {
-                    List<Integer> statusIds = filter.values().stream()
-                            .map(Integer::valueOf)
+                    List<Long> statusIds = filter.values().stream()
+                            .map(Long::valueOf)
                             .collect(Collectors.toCollection(ArrayList::new));
                     bookStream = bookStream
-                            .filter(book -> book.filterByStatusIds(statusIds));
+                            .filter(book -> {
+                                for (Long statusId: statusIds) {
+                                    if (book.currentStatusEquals(statusId)) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
                 }
                 case "titles" -> {
                     bookStream = fuzzyMatchingService.findMatchingBooksByTitle(filter.values(), bookStream);
@@ -245,7 +282,7 @@ public class ReadListService {
                 bookStatus,
                 bookAddView.insertDate(),
                 null,
-                bookAddView.getLastChapter().longValue()
+                bookAddView.getLastChapter() != null ? bookAddView.getLastChapter().longValue() : null
         );
 
         getBook(newBook.getId());

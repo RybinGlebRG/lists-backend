@@ -11,7 +11,7 @@
 //import ru.rerumu.lists.model.book.impl.BookFactory;
 //import ru.rerumu.lists.model.book.impl.BookImpl;
 //import ru.rerumu.lists.repository.*;
-//import ru.rerumu.lists.views.BookAddView;
+//import ru.rerumu.lists.controller.book.view.in.BookAddView;
 //
 //import java.time.LocalDateTime;
 //import java.time.ZoneOffset;

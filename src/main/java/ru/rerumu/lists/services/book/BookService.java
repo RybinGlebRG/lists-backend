@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.book;
 
-import ru.rerumu.lists.views.BookUpdateView;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 
 // TODO
 public interface BookService {

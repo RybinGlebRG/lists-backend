@@ -7,15 +7,24 @@
 
     <allow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
 
-    <!--  config  -->
-    <subpackage name="config(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.config(\..*)?" regex="true"/>
-    </subpackage>
-
     <!--  controller  -->
     <subpackage name="controller(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.controller(\..*)?" regex="true"/>
-<!--        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>-->
+        <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+
+        <!-- TODO: fix -->
+            <allow class="ru.rerumu.lists.model.factories.UserServiceProxyFactory"/>
+        <!-- -->
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
+    </subpackage>
+
+    <!--  crosscut  -->
+    <subpackage name="crosscut(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  dao  -->
@@ -23,29 +32,22 @@
         <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
     </subpackage>
 
-    <!--  exception  -->
-    <subpackage name="exception(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.exception(\..*)?" regex="true"/>
-    </subpackage>
-
-    <!--  factories  -->
-    <subpackage name="factories(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.factories(\..*)?" regex="true"/>
-    </subpackage>
-
     <!--  model  -->
     <subpackage name="model(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
+
+        <!-- TODO: fix -->
+            <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
+            <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
+        <!-- -->
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  services  -->
     <subpackage name="services(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
-    </subpackage>
-
-    <!--  utils  -->
-    <subpackage name="utils(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.utils(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  views  -->

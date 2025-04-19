@@ -1,0 +1,76 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.dao.tag.mapper.TagsMapper">
+
+    <resultMap id="TagResultMap" type="ru.rerumu.lists.model.tag.TagDTO">
+        <constructor>
+            <idArg name="tagId" column="tag_id" javaType="Long"/>
+            <arg name="name" column="tag_name" javaType="String"/>
+            <arg name="userId" column="tag_user_id" javaType="Long"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findByBookIds">
+<!--        <![CDATA[-->
+            select
+                t.tag_id,
+                t.name,
+                t.user_user_id
+            from
+                lists.tags t
+                    inner join lists.books_tags bt
+                        on bt.tag_tag_id = t.tag_id
+            <where>
+                <foreach collection="bookIds" index="index" item="item" open="bt.book_book_id in (" separator="," close=")" >
+                    #{item}
+                </foreach>
+            </where>
+<!--        ]]>-->
+    </select>
+
+    <insert id="create" parameterType="ru.rerumu.lists.model.tag.TagDTO">
+        insert into tags(tag_id, user_user_id, name)
+        values(#{tagId}, #{userId}, #{name})
+    </insert>
+
+    <select id="nextval" resultType="Long">
+        SELECT nextval('tags_id_seq');
+    </select>
+
+    <delete id="delete">
+        delete from tags
+        where tag_id=#{id}
+    </delete>
+
+    <select id="findByIds" resultMap="TagResultMap">
+        select
+            t.tag_id,
+            t.user_user_id as tag_user_id,
+            t.name as tag_name
+        from
+            tags t
+        where
+            t.user_user_id = #{userId}
+            and
+            <foreach collection="tagIds" index="index" item="item" open="t.tag_id in (" separator="," close=")" >
+                #{item}
+            </foreach>
+
+    </select>
+
+    <select id="findByUser" resultMap="TagResultMap">
+        select
+            t.tag_id,
+            t.user_user_id as tag_user_id,
+            t.name as tag_name
+        from
+            tags t
+        where
+            t.user_user_id = #{userId}
+    </select>
+
+
+
+</mapper>

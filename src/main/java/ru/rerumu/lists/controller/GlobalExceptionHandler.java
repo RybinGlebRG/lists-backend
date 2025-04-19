@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.exception.UserPermissionException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

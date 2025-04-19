@@ -1,27 +1,29 @@
 package ru.rerumu.lists.model.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.model.tag.TagFactory;
-import ru.rerumu.lists.model.user.UserFactory;
-import ru.rerumu.lists.utils.DateFactory;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.BookFactory;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.type.BookTypeFactory;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.tag.Tag;
+import ru.rerumu.lists.model.tag.TagFactory;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.model.user.UserFactory;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -43,6 +45,7 @@ public class BookFactoryImpl implements BookFactory {
     private final BookTypeFactory bookTypeFactory;
     private final UserFactory userFactory;
     private final TagFactory tagFactory;
+    private final StatusFactory statusFactory;
 
     @Autowired
     public BookFactoryImpl(
@@ -50,7 +53,9 @@ public class BookFactoryImpl implements BookFactory {
             BookRepository bookRepository,
             ReadingRecordFactory readingRecordFactory,
             BookTypeFactory bookTypeFactory,
-            UserFactory userFactory, TagFactory tagFactory
+            UserFactory userFactory,
+            TagFactory tagFactory,
+            StatusFactory statusFactory
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -58,6 +63,7 @@ public class BookFactoryImpl implements BookFactory {
         this.bookTypeFactory = bookTypeFactory;
         this.userFactory = userFactory;
         this.tagFactory = tagFactory;
+        this.statusFactory = statusFactory;
     }
 
     public Book createBook(
@@ -73,7 +79,7 @@ public class BookFactoryImpl implements BookFactory {
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
-        BookBuilder bookBuilder = new BookBuilder()
+        BookBuilder bookBuilder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(title)
@@ -101,36 +107,41 @@ public class BookFactoryImpl implements BookFactory {
 
         bookRepository.addOne(book);
 
-        book.setReadingRecordFactory(readingRecordFactory);
-        book.setBookRepository(bookRepository);
-        book.setDateFactory(dateFactory);
-
         return book;
     }
 
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
-        BookDTO bookDTO = this.bookRepository.getOneDTO(bookId).orElseThrow(EntityNotFoundException::new);
-        log.debug("bookDTO: {}", bookDTO);
+        BookDtoDao bookDTO = bookRepository.findById(bookId);
         Book book = fromDTO(bookDTO);
-        log.debug("Got book: {}", book);
-
         return book;
     }
 
-    public List<Book> getAllChained(Long readListId) {
-        List<BookDTO> res = bookRepository.getAllChained(readListId);
-        return fromDTO(res);
-    }
-
-    public List<Book> getAll(Long readListId) {
-        return fromDTO(bookRepository.getAll(readListId));
+    /**
+     * Find all books of user
+     */
+    @Override
+    public List<Book> findAll(User user, Boolean isChained) {
+        if (isChained) {
+            List<BookDtoDao> bookDtoList = bookRepository.findByUserChained(user.userId());
+            return fromDTO(bookDtoList);
+        } else {
+            return bookRepository.findByUser(user).stream()
+                    .map(this::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
     }
 
     public Book fromDTO(@NonNull BookDTO bookDTO) {
-        return fromDTO(List.of(bookDTO)).get(0);
+        return fromDTOOld(List.of(bookDTO)).get(0);
     }
 
-    public List<Book> fromDTO(@NonNull List<BookDTO> bookDTOList) {
+    @Override
+//    public Book fromDTO(@NonNull BookDtoDao bookDTO) {
+//        return fromDTO(List.of(bookDTO), true).get(0);
+//    }
+
+    public List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList) {
         // Preparing reading records
         Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordFactory.findByBookIds(
                         // Collecting bookIds from chain
@@ -181,6 +192,13 @@ public class BookFactoryImpl implements BookFactory {
 
     }
 
+    @Override
+    public List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList) {
+        return bookDTOList.stream()
+                .map(this::fromDTO)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     private Book fromDTO(
             @NonNull BookDTO bookDTO,
             @NonNull Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap,
@@ -189,7 +207,7 @@ public class BookFactoryImpl implements BookFactory {
 
         log.debug("bookDTO: {}", bookDTO);
 
-        BookBuilder builder = new BookBuilder()
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
                 .bookId(bookDTO.bookId)
                 .readListId(bookDTO.readListId)
                 .title(bookDTO.title)
@@ -240,9 +258,73 @@ public class BookFactoryImpl implements BookFactory {
         builder.tags(tags);
 
         BookImpl book = builder.build();
-        book.setReadingRecordFactory(readingRecordFactory);
-        book.setBookRepository(bookRepository);
-        book.setDateFactory(dateFactory);
+
+        return book;
+    }
+
+    @Override
+    @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
+    public Book fromDTO(@NonNull BookDtoDao bookDTO) throws EmptyMandatoryParameterException {
+
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
+                .bookId(bookDTO.getBookId())
+                .readListId(bookDTO.getReadListId())
+                .title(bookDTO.getTitle())
+                .bookStatus(bookDTO.getBookStatusObj())
+                .insertDate(bookDTO.getInsertDate())
+                .lastUpdateDate(bookDTO.getLastUpdateDate())
+                .lastChapter(bookDTO.getLastChapter())
+                .note(bookDTO.getNote())
+                .URL(bookDTO.getURL())
+                .user(userFactory.fromDTO(bookDTO.getUser()));
+
+        if (bookDTO.getBookTypeObj() != null) {
+            builder.bookType(bookDTO.getBookTypeObj().toDomain());
+        }
+
+//        if (bookId2ReadingRecordsMap.get(bookDTO.getBookId()) != null) {
+//            builder.readingRecords(bookId2ReadingRecordsMap.get(bookDTO.getBookId()));
+//        }
+        // TODO: ???
+        if (bookDTO.getReadingRecords() != null) {
+            builder.readingRecords(
+                    bookDTO.getReadingRecords().stream()
+                            .map(readingRecordFactory::fromDTO)
+                            .collect(Collectors.toCollection(ArrayList::new))
+            );
+        }
+
+        if (bookDTO.getPreviousBooks() != null) {
+
+            HashMap<Book, Integer> bookOrderMap = bookDTO.getPreviousBooks().stream()
+                    .filter(Objects::nonNull)
+                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                            fromDTO(item.getBookDTO()),
+                            item.getOrder()
+                    ))
+                    .collect(
+                            HashMap::new,
+                            (map, item) -> map.put(item.getKey(), item.getValue()),
+                            HashMap::putAll
+                    );
+
+            builder.previousBooks(
+                    new BookChain(bookOrderMap)
+            );
+        }
+
+        // Set Tags
+        List<Tag> tags;
+        if (bookDTO.getTags() != null) {
+            tags = bookDTO.getTags().stream()
+                    .map(tagFactory::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            tags = new ArrayList<>();
+        }
+        builder.tags(tags);
+
+        BookImpl book = builder.build();
 
         return book;
     }

@@ -3,7 +3,7 @@ package ru.rerumu.lists.model.tag.impl;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.exception.ServerException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.tag.Tag;
 import ru.rerumu.lists.model.tag.TagDTO;
@@ -68,10 +68,15 @@ public class TagFactoryImpl implements TagFactory {
     @NonNull
     @Override
     public List<Tag> findByIds(@NonNull List<Long> tagIds, @NonNull User user) {
-        List<TagDTO> tagDTOs = tagsRepository.findByIds(tagIds, user);
+        List<TagDTO> tagDTOs;
 
-        if (tagDTOs == null) {
-            throw new ServerException();
+        if (tagIds.isEmpty()) {
+            tagDTOs = new ArrayList<>();
+        } else {
+            tagDTOs = tagsRepository.findByIds(tagIds, user);
+            if (tagDTOs == null) {
+                throw new ServerException();
+            }
         }
 
         return tagDTOs.stream()

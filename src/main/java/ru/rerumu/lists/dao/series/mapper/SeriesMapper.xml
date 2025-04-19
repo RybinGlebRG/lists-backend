@@ -1,0 +1,306 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.dao.series.mapper.SeriesMapper">
+
+    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.model.series.SeriesDTO">
+        <id column="series_id" property="seriesId" javaType="Long"/>
+        <result column="list_list_id" property="seriesListId" javaType="Long"/>
+        <result column="title" property="title" javaType="String"/>
+        <result column="book_count" property="bookCount" javaType="Integer"/>
+        <collection
+                property="seriesItemOrderDTOList"
+                ofType="ru.rerumu.lists.model.dto.SeriesItemOrderDTO"
+                resultMap="SeriesItemOrderDTOResultMap"
+        />
+    </resultMap>
+
+    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesItemOrderDTO">
+        <result property="order" column="series_order" javaType="Long"/>
+        <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
+    </resultMap>
+
+    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.model.series.item.SeriesItemDTO">
+        <discriminator javaType="int" column="item_type">
+            <case value="1" resultMap="ru.rerumu.lists.dao.book.mapper.BookMapper.BookDTOResultMap"/>
+            <case value="2" resultMap="TitleDtoResultMap"/>
+            <case value="3" resultType="ru.rerumu.lists.model.base.NullDTO"/>
+        </discriminator>
+    </resultMap>
+
+    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.model.title.TitleDTO">
+        <id property="titleId" column="title_id"/>
+        <result property="name" column="title_name"/>
+        <result property="createDateUTC" column="title_create_date_utc"/>
+        <result property="listId" column="title_list_id"/>
+        <association property="titleStatus" resultMap="TitleStatusResultMap"/>
+        <association property="videoType" resultMap="VideoTypeResultMap"/>
+    </resultMap>
+
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
+        <constructor>
+            <idArg column="title_type_id" name="typeId" javaType="Long"/>
+            <arg column="title_type_name" name="name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.model.title.TitleStatus">
+        <constructor>
+            <idArg column="title_status_id" name="statusId" javaType="_int"/>
+            <arg column="title_status_name" name="statusName" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="titles">
+        <![CDATA[
+        select  t.title_id,
+				t.list_list_id as title_list_id,
+				t.name as title_name,
+				t.create_date_utc  AT TIME ZONE 'UTC' as title_create_date_utc,
+				t.status_status_id as title_status,
+				vt.type_id as title_type_id,
+				vt.name as title_type_name,
+				ts.status_id as title_status_id,
+				ts.name as title_status_name,
+				s_series.series_id,
+				st.series_order,
+				2 as item_type
+		from    s_series
+				inner join series_titles st
+							on st.series_series_id = s_series.series_id
+				inner join titles t
+							on t.title_id = st.title_title_id
+				inner join video_types vt
+							on vt.type_id = t.type_type_id
+				inner join titles_statuses ts
+							on ts.status_id = t.status_status_id
+        ]]>
+    </sql>
+
+    <sql id="books">
+        <![CDATA[
+        select      b.book_id,
+                    b.list_list_id as book_list_id,
+                    b.title as book_title,
+                    b.status_status_id as book_status_id_old,
+                    b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
+                    b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
+                    b.last_chapter,
+                    bt.type_id as type_id,
+                    bt.type_id as book_type_id,
+                    bt.name as book_type_name,
+                    st.STATUS_ID as book_status_id,
+                    st.NAME as book_status_name,
+                    s_series.series_id,
+                    sb.series_order,
+                    1 as item_type
+        from        s_series
+                    inner join series_books sb
+                                on sb.series_series_id = s_series.series_id
+                    inner join  books b
+                                on b.book_id = sb.book_book_id
+                    inner join  statuses st
+                                on st.STATUS_ID= b.status_status_id
+                    left outer join     book_types bt
+                                        on bt.type_id = b.type_type_id
+        ]]>
+    </sql>
+
+
+    <sql id="selectAll">
+
+            with s_series as (
+                select  s.series_id,
+                        s.list_list_id,
+                        s.title
+                from series s
+            ), s_titles as (
+                <include refid="titles"/>
+            ), s_books as
+            (
+                <include refid="books"/>
+            ), s_empty as
+        (
+        select series_id
+        from s_series
+
+        EXCEPT
+
+        select distinct series_id
+        from s_titles
+
+        EXCEPT
+
+        select distinct series_id
+        from s_books
+
+        ), s_data as (
+
+
+        select  s_series.*,
+                null,
+                s_titles.item_type,
+                s_titles.series_order,
+                null as book_id,
+                null as book_list_id,
+                null as book_title,
+                null as book_status_id_old,
+                null as book_insert_date,
+                null as book_last_update_date,
+                null as last_chapter,
+                null as type_id,
+                null as book_type_id,
+                null as book_type_name,
+                null as book_status_id,
+                null as book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
+                /**/
+                s_titles.title_id,
+                s_titles.title_list_id,
+                s_titles.title_name,
+                s_titles.title_create_date_utc,
+                s_titles.title_status,
+                s_titles.title_type_id,
+                s_titles.title_type_name,
+                s_titles.title_status_id,
+                s_titles.title_status_name
+        from s_series
+            inner join s_titles
+                on s_titles.series_id = s_series.series_id
+
+        union
+
+        select  s_series.*,
+                0 as book_count,
+                s_books.item_type,
+                s_books.series_order,
+                s_books.book_id,
+                s_books.book_list_id,
+                s_books.book_title,
+                s_books.book_status_id_old,
+                s_books.book_insert_date,
+                s_books.book_last_update_date,
+                s_books.last_chapter,
+                s_books.type_id,
+                s_books.book_type_id,
+                s_books.book_type_name,
+                s_books.book_status_id,
+                s_books.book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
+                /**/
+                null as title_id,
+                null as title_list_id,
+                null as title_name,
+                null as title_create_date_utc,
+                null as title_status,
+                null as title_type_id,
+                null as title_type_name,
+                null as title_status_id,
+                null as title_status_name
+        from s_series
+            inner join s_books
+                on s_books.series_id = s_series.series_id
+
+
+        union
+
+        select  s_series.*,
+                null as book_count,
+                3 as item_type,
+                null as series_order,
+                null as book_id,
+                null as book_list_id,
+                null as book_title,
+                null as book_status_id_old,
+                null as book_insert_date,
+                null as book_last_update_date,
+                null as last_chapter,
+                null as type_id,
+                null as book_type_id,
+                null as book_type_name,
+                null as book_status_id,
+                null as book_status_name,
+                null as tag_id,
+                null as tag_name,
+                null as tag_user_id,
+                /**/
+                null as title_id,
+                null as title_list_id,
+                null as title_name,
+                null as title_create_date_utc,
+                null as title_status,
+                null as title_type_id,
+                null as title_type_name,
+                null as title_status_id,
+                null as title_status_name
+        from s_series
+            inner join s_empty
+                on s_empty.series_id = s_series.series_id
+        )
+
+
+        select *
+        from s_data
+        where    1=1
+
+    </sql>
+
+    <select id="getAll" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        and s_data.list_list_id=#{readListId}
+    </select>
+
+    <select id="getOne" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        and s_data.series_id=#{seriesId}
+        and s_data.list_list_id=#{readListId}
+    </select>
+
+    <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        and s_data.series_id=#{seriesId}
+    </select>
+
+    <select id="findById" resultMap="SeriesResultMap">
+        <include refid="selectAll"/>
+        and s_data.series_id=#{seriesId}
+    </select>
+
+<!--    <select id="getAll" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        where s.list_list_id=#{readListId}-->
+<!--    </select>-->
+
+
+
+    <select id="getBookCount" resultType="int">
+        select count(*)
+        from series_books
+        where series_series_id = #{seriesId}
+        and series_list_id = #{readListId}
+    </select>
+
+    <select id="getNextId" resultType="long">
+        select nextval('series_id_seq')
+    </select>
+
+    <insert id="add">
+        insert into series(series_id, list_list_id, title)
+        values(#{seriesId}, #{readListId}, #{title})
+    </insert>
+
+    <delete id="delete">
+        delete from series
+        where series_id=#{seriesId}
+    </delete>
+
+    <select id="nextval" resultType="Long">
+        SELECT nextval('series_id_seq');
+    </select>
+
+</mapper>

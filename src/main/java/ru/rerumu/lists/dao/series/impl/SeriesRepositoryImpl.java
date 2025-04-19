@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
-import ru.rerumu.lists.dao.mappers.ReadingRecordMapper;
-import ru.rerumu.lists.dao.series.SeriesMapper;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
+import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.series.SeriesDTO;
 import ru.rerumu.lists.model.series.SeriesFactory;

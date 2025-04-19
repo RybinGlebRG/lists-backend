@@ -1,16 +1,21 @@
 package ru.rerumu.lists.model.book.impl;
 
 import lombok.NonNull;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,15 +33,29 @@ public class BookBuilder {
     private BookChain previousBooks;
 
     private String note;
-    private List<ReadingRecord> readingRecords;
+    private List<ReadingRecord> readingRecords = new ArrayList<>();
     private String URL;
     private User user;
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
-    public BookBuilder() {
+    private final StatusFactory statusFactory;
+    private final DateFactory dateFactory;
+    private final ReadingRecordFactory readingRecordFactory;
+    private final BookRepository bookRepository;
+
+    public BookBuilder(
+            @NonNull StatusFactory statusFactory,
+            @NonNull DateFactory dateFactory,
+            @NonNull ReadingRecordFactory readingRecordFactory,
+            @NonNull BookRepository bookRepository
+    ) {
+        this.statusFactory = statusFactory;
+        this.dateFactory = dateFactory;
+        this.readingRecordFactory = readingRecordFactory;
+        this.bookRepository = bookRepository;
     }
 
-    public BookBuilder bookId(Long bookId) {
+    public BookBuilder bookId(@NonNull Long bookId) {
         this.bookId = bookId;
         return this;
     }
@@ -111,7 +130,7 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder tags(List<Tag> tags){
+    public BookBuilder tags(@NonNull List<Tag> tags){
         this.tags = tags;
         return this;
     }
@@ -130,9 +149,13 @@ public class BookBuilder {
                 previousBooks,
                 note,
                 readingRecords,
+                statusFactory,
                 URL,
                 user,
-                tags
+                tags,
+                dateFactory,
+                readingRecordFactory,
+                bookRepository
         );
     }
 }

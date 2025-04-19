@@ -4,7 +4,7 @@ package ru.rerumu.lists.model.title;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
-import ru.rerumu.lists.exception.EmptyMandatoryParameterException;
+import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.model.VideoType;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.series.item.SeriesItemType;

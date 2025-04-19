@@ -2,14 +2,19 @@ package ru.rerumu.lists.services.user.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.exception.IncorrectPasswordException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.TokenRequest;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
+import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.model.TokenRequest;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.services.user.UserService;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -22,13 +27,12 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.*;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookAddView;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 
 public class UserServiceImpl implements UserService {

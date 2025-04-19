@@ -2,9 +2,10 @@ package ru.rerumu.lists.model.book;
 
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.tag.Tag;
@@ -21,6 +22,13 @@ public interface Book extends SeriesItem {
             Long lastChapter
     );
 
+    void addReadingRecord(
+            @NonNull Long statusId,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
+
     ReadingRecord deleteReadingRecord(Long readingRecordId);
 
     void updateReadingRecord(
@@ -30,6 +38,22 @@ public interface Book extends SeriesItem {
             LocalDateTime endDate,
             Long lastChapter
     );
+    void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull Long statusId,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
+
+    void updateReadingRecords(List<RecordDTO> records);
+
+    /**
+     * Deletes reading records that are not passed in the {@code readingRecordIdsToKeep} parameter.
+     *
+     * @param readingRecordIdsToKeep Reading records to keep
+     */
+    void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep);
 
     Long getId();
     Long getListId();
@@ -41,6 +65,7 @@ public interface Book extends SeriesItem {
     @Deprecated
     void updateLastChapter(Integer lastChapter);
 
+    @Deprecated
     void updateStatus(BookStatusRecord bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
@@ -54,4 +79,6 @@ public interface Book extends SeriesItem {
     String toString();
     BookDTO toDTO();
     JSONObject toJSONObject();
+
+    boolean currentStatusEquals(Long statusId);
 }

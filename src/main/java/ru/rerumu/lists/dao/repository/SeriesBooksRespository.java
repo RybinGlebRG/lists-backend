@@ -1,6 +1,6 @@
 package ru.rerumu.lists.dao.repository;
 
-import ru.rerumu.lists.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.SeriesBookRelation;
 
 import java.util.List;

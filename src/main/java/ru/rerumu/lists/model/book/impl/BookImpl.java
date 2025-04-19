@@ -1,25 +1,28 @@
 package ru.rerumu.lists.model.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.utils.DateFactory;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
-import ru.rerumu.lists.model.BookStatusRecord;
-import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.book.reading_records.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordImpl;
-import ru.rerumu.lists.model.book.reading_records.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.user.User;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -37,61 +40,70 @@ public class BookImpl implements Book, Cloneable {
 
     @Getter
     private final Long bookId;
+
     @Getter
     private final Long readListId;
+
     @Getter
     private String title;
+
     @Getter
     private BookStatusRecord bookStatus;
+
     @Getter
     private Date insertDate;
+
     @Getter
     private Date lastUpdateDate;
 
     private Integer lastChapter;
+
     @Getter
     private BookType bookType;
+
     @Getter
     private BookChain previousBooks;
+
     @Getter
     private String note;
+
     @Getter
     private List<ReadingRecord> readingRecords;
 
-    // TODO: Make final
-    @Setter
-    private ReadingRecordFactory readingRecordFactory;
-
-    @Setter
-    private BookRepository bookRepository;
-
-    @Setter
-    private DateFactory dateFactory;
-
-    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-
     private String URL;
 
-    private User user;
+    private final User user;
 
+    @Getter
     private List<Tag> tags;
+
+    private final ReadingRecordFactory readingRecordFactory;
+    private final BookRepository bookRepository;
+    private final DateFactory dateFactory;
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+    private final StatusFactory statusFactory;
+
 
 
     BookImpl(
-            Long bookId,
+            @NonNull Long bookId,
             Long readListId,
             @NonNull String title,
-            @NonNull BookStatusRecord bookStatus,
+            BookStatusRecord bookStatus,
             @NonNull Date insertDate,
             @NonNull Date lastUpdateDate,
             Integer lastChapter,
             BookType bookType,
             BookChain previousBooks,
             String note,
-            List<ReadingRecord> readingRecords,
+            @NonNull List<ReadingRecord> readingRecords,
+            @NonNull StatusFactory statusFactory,
             String URL,
-            User user,
-            @NonNull List<Tag> tags
+            @NonNull User user,
+            @NonNull List<Tag> tags,
+            @NonNull DateFactory dateFactory,
+            @NonNull ReadingRecordFactory readingRecordFactory,
+            @NonNull BookRepository bookRepository
     ) {
 
         this.bookId = bookId;
@@ -104,10 +116,14 @@ public class BookImpl implements Book, Cloneable {
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
-        this.readingRecords = readingRecords;
+        this.readingRecords = new ArrayList<>(readingRecords);
+        this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
-        this.tags = tags;
+        this.tags = new ArrayList<>(tags);
+        this.dateFactory = dateFactory;
+        this.readingRecordFactory = readingRecordFactory;
+        this.bookRepository = bookRepository;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -136,8 +152,8 @@ public class BookImpl implements Book, Cloneable {
         obj.put("readListId", readListId);
         obj.put("title", title);
         JSONObject bookStatusJson = new JSONObject();
-        bookStatusJson.put("statusId", bookStatus.statusId());
-        bookStatusJson.put("statusName", bookStatus.statusName());
+//        bookStatusJson.put("statusId", bookStatus.statusId());
+//        bookStatusJson.put("statusName", bookStatus.statusName());
         obj.put("bookStatus", bookStatusJson);
         obj.put(
                 "insertDate",
@@ -185,6 +201,15 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
+    public boolean currentStatusEquals(Long statusId) {
+        ReadingRecord readingRecord = readingRecords.stream()
+                .max(Comparable::compareTo)
+                .orElseThrow(() -> new ServerException("Error while processing records"));
+
+        return readingRecord.statusEquals(statusId);
+    }
+
+    @Override
     public LocalDateTime getUpdateDate() {
         return getLastUpdateDate_V2();
     }
@@ -212,6 +237,28 @@ public class BookImpl implements Book, Cloneable {
 
         readingRecords.add(readingRecord);
 
+    }
+
+    @Override
+    public void addReadingRecord(@NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+        // Find status
+        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
+
+        // Create record
+        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+                bookId,
+                bookStatusRecord,
+                startDate,
+                endDate,
+                lastChapter
+        );
+
+        // TODO: Remove
+        if (readingRecords == null){
+            readingRecords = new ArrayList<>();
+        }
+
+        readingRecords.add(readingRecord);
     }
 
     @Override
@@ -335,6 +382,18 @@ public class BookImpl implements Book, Cloneable {
         return readingRecord;
     }
 
+    @Override
+    public void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep) {
+        List<ReadingRecord> readingRecordsToDelete = readingRecords.stream()
+                .filter(readingRecord -> !readingRecordIdsToKeep.contains(readingRecord.getId()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (ReadingRecord readingRecord: readingRecordsToDelete) {
+            readingRecords.remove(readingRecord);
+            readingRecord.delete();
+        }
+    }
+
     public void updateReadingRecord(
             @NonNull Long readingRecordId,
             @NonNull BookStatusRecord bookStatusRecord,
@@ -358,6 +417,50 @@ public class BookImpl implements Book, Cloneable {
         save();
     }
 
+    @Override
+    public void updateReadingRecord(@NonNull Long readingRecordId, @NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
+        updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
+    }
+
+    /**
+     * Update reading records according to passed list of records
+     */
+    @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
+    public void updateReadingRecords(List<RecordDTO> records) {
+
+        // Collect records to keep from dto
+        List<Long> readingRecordIdsToKeep = records.stream()
+                .map(RecordDTO::getRecordId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Delete other reading records
+        deleteOtherReadingRecords(readingRecordIdsToKeep);
+
+        for (RecordDTO recordDTO: records) {
+            if (recordDTO.getRecordId() == null) {
+                // Add record
+                addReadingRecord(
+                        recordDTO.getStatusId(),
+                        recordDTO.getStartDate(),
+                        recordDTO.getEndDate(),
+                        recordDTO.getLastChapter()
+                );
+            } else {
+                // Update record
+                updateReadingRecord(
+                        recordDTO.getRecordId(),
+                        recordDTO.getStatusId(),
+                        recordDTO.getStartDate(),
+                        recordDTO.getEndDate(),
+                        recordDTO.getLastChapter()
+                );
+            }
+        }
+    }
 
     @Override
     public String toString() {
@@ -371,23 +474,23 @@ public class BookImpl implements Book, Cloneable {
             bookId,
             readListId,
             title,
-            bookStatus.statusId(),
+            bookStatus != null ? bookStatus.statusId() : null,
             insertDate,
             lastUpdateDate,
             lastChapter,
-            bookType.getId(),
+            bookType != null ? bookType.getId() : null,
             note,
-            bookType.toDTO(),
+            bookType != null ? bookType.toDTO() : null,
             bookStatus,
-            previousBooks != null ? previousBooks.toDTO() : null,
-            previousBooks != null ?readingRecords.stream()
+            previousBooks != null ? previousBooks.toDTO() : new ArrayList<>(),
+            readingRecords != null ? readingRecords.stream()
                     .map(ReadingRecord::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : null,
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
             URL,
             user != null ? user.userId() : null,
             tags != null ? tags.stream()
                     .map(Tag::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : null
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>()
         );
 
         return bookDTO;

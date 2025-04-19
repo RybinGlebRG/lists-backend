@@ -1,11 +1,11 @@
 package ru.rerumu.lists.services.user;
 
-import ru.rerumu.lists.exception.EntityNotFoundException;
-import ru.rerumu.lists.exception.IncorrectPasswordException;
-import ru.rerumu.lists.exception.UserIsNotOwnerException;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
+import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.TokenRequest;
 import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.views.BookAddView;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
