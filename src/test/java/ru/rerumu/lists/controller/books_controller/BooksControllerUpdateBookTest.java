@@ -92,7 +92,6 @@ class BooksControllerUpdateBookTest {
                         3L,
                         "Title",
                         6L,
-                        1,
                         5L,
                         7L,
                         4,
