@@ -34,7 +34,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getReadListId(),
                 book.getBookId(),
                 book.getTitle(),
-                book.getBookStatus().statusId(),
+                book.getBookStatus() != null ? book.getBookStatus().statusId() : null,
                 book.getInsertDate(),
                 book.getLastUpdateDate(),
                 book.getLastChapter().isPresent() ? book.getLastChapter().get() : null,

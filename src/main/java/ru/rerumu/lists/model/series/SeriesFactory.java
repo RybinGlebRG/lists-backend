@@ -1,6 +1,7 @@
 package ru.rerumu.lists.model.series;
 
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -28,6 +29,8 @@ public class SeriesFactory {
                 .map(seriesItemDTO -> {
                     if (seriesItemDTO instanceof BookDTO){
                         return bookFactory.fromDTO((BookDTO) seriesItemDTO);
+                    } else if (seriesItemDTO instanceof BookDtoDao bookDtoDao) {
+                        return bookFactory.fromDTO(bookDtoDao);
                     } else {
                         return seriesItemDTO.toDomain();
                     }

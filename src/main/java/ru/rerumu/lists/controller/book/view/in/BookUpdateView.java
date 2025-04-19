@@ -16,7 +16,6 @@ public class BookUpdateView {
     private final Long readListId;
     private final String title;
     private final Long authorId;
-    private final Integer status;
     private final Long seriesId;
     private final Long order;
     private final Integer lastChapter;
@@ -56,7 +55,6 @@ public class BookUpdateView {
             @NonNull Long readListId,
             @NonNull String title,
             Long authorId,
-            @NonNull Integer status,
             Long seriesId,
             Long order,
             Integer lastChapter,
@@ -70,7 +68,6 @@ public class BookUpdateView {
         this.readListId = readListId;
         this.title = title;
         this.authorId = authorId;
-        this.status = status;
         this.seriesId = seriesId;
         this.order = order;
         this.lastChapter = lastChapter;

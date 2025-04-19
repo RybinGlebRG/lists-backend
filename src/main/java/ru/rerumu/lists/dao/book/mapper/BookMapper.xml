@@ -267,7 +267,6 @@
     <update id="update">
         update books
         set title=#{title},
-            status_status_id=#{statusId},
             insert_date=#{insertDate},
             last_update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
