@@ -1,8 +1,8 @@
-package ru.rerumu.lists.views;
+package ru.rerumu.lists.controller.author.out;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.author.Author;
 
 import java.util.List;
 
@@ -18,7 +18,8 @@ public class AuthorsListView {
         JSONObject obj = new JSONObject();
         JSONArray authorArray = new JSONArray();
         for (Author item: this.authorList){
-            authorArray.put(item.toJSONObject());
+            AuthorView authorView = new AuthorView(item);
+            authorArray.put(authorView.toJSONObject());
         }
         obj.put("items",authorArray);
         return obj;

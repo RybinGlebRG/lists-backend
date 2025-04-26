@@ -10,6 +10,7 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -77,6 +78,8 @@ public class BookImpl implements Book, Cloneable {
     @Getter
     private List<Tag> tags;
 
+    private final List<AuthorImpl> textAuthors;
+
     private final ReadingRecordFactory readingRecordFactory;
     private final BookRepository bookRepository;
     private final DateFactory dateFactory;
@@ -101,6 +104,7 @@ public class BookImpl implements Book, Cloneable {
             String URL,
             @NonNull User user,
             @NonNull List<Tag> tags,
+            @NonNull List<AuthorImpl> textAuthors,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
             @NonNull BookRepository bookRepository
@@ -121,6 +125,7 @@ public class BookImpl implements Book, Cloneable {
         this.URL = URL;
         this.user = user;
         this.tags = new ArrayList<>(tags);
+        this.textAuthors = textAuthors;
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.bookRepository = bookRepository;

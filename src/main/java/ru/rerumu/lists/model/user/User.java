@@ -10,4 +10,8 @@ public record User(Long userId, String name, String password) {
     public String getName() {
         return name;
     }
+
+    public UserDTO toDTO() {
+        return new UserDTO(userId, name, password);
+    }
 }

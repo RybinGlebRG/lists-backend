@@ -28,7 +28,7 @@ public class AuthorsBooksRelationService {
     public void add(AuthorBookRelation authorBookRelation){
         authorsBooksRepository.add(
                 authorBookRelation.getBook().getId(),
-                authorBookRelation.getAuthor().getAuthorId(),
+                authorBookRelation.getAuthor().getId(),
                 authorBookRelation.getBook().getListId()
         );
     }

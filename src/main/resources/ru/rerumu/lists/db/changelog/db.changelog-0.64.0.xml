@@ -1,0 +1,93 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet author="gleb" id="6c940d3b-9099-4a7d-a739-19d02d758775">
+        <addColumn tableName="authors">
+            <column name="user_user_id"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="ca8127b5-feed-4967-8c55-0965de435b1e" >
+        <sql>
+            update authors a
+            set user_user_id = s.user_user_id
+            from (
+                select
+                    a.author_id,
+                    l.user_user_id
+                from authors a
+                    inner join lists l
+                        on l.list_id = a.list_list_id
+            ) s
+            where a.author_id = s.author_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="235e5cf2-d1a0-471d-aeca-120b5b7423f5">
+        <addNotNullConstraint
+                tableName="authors"
+                columnName="user_user_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="6f482cf6-6958-491d-8c35-532bf7669f2b">
+        <addUniqueConstraint
+                tableName="authors"
+                columnNames="user_user_id, name"
+                constraintName="authors_user_name_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="9d825a27-2d1c-4dbf-8810-284629b63af2">
+        <addForeignKeyConstraint
+                baseTableName="authors"
+                baseColumnNames="user_user_id"
+                referencedTableName="users"
+                referencedColumnNames="user_id"
+                constraintName="authors_users_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="2fc20c0f-f12f-43c4-aae8-668efe078570">
+        <dropUniqueConstraint
+                constraintName="authors_list_list_id_name_key"
+                tableName="authors"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="9c104707-f552-42fa-b36d-df3ea84c2dd2" >
+        <dropNotNullConstraint
+                tableName="authors"
+                columnName="list_list_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb"  id="a59ff195-74f2-4a01-909e-15d82ef44fac">
+        <createSequence cacheSize="1"
+                        cycle="false"
+                        incrementBy="1"
+                        maxValue="9223372036854775807"
+                        minValue="0"
+                        sequenceName="authors_id_seq"
+                        startValue="0"/>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="5befe84b-2843-4c6a-8e88-671b787bca72">
+        <tagDatabase  tag="0.64.0"/>
+    </changeSet>
+
+</databaseChangeLog>

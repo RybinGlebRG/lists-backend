@@ -15,7 +15,9 @@ import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
-import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.author.Author;
+import ru.rerumu.lists.model.author.AuthorFactory;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
@@ -62,6 +64,7 @@ public class ReadListService {
     private final BookFactoryImpl bookFactory;
     private final TagFactory tagFactory;
     private final UserFactory userFactory;
+    private final AuthorFactory authorFactory;
 
     @Autowired
     public ReadListService(
@@ -78,7 +81,8 @@ public class ReadListService {
             ReadingRecordService readingRecordService,
             BookFactoryImpl bookFactory,
             TagFactory tagFactory,
-            UserFactory userFactory
+            UserFactory userFactory,
+            AuthorFactory authorFactory
     ) {
         this.bookRepository = bookRepository;
         this.authorsService = authorsService;
@@ -94,13 +98,14 @@ public class ReadListService {
         this.bookFactory = bookFactory;
         this.tagFactory = tagFactory;
         this.userFactory = userFactory;
+        this.authorFactory = authorFactory;
     }
 
     private void updateAuthor(long bookId, Long authorId, long readListId) {
         List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId, readListId);
 
         Optional<Author> optionalAuthor = authorId != null ?
-                authorsService.getAuthor(readListId, authorId) :
+                Optional.of(authorFactory.findById(authorId)) :
                 Optional.empty();
 
         authorsBooksRepositoryList.stream()
@@ -110,7 +115,7 @@ public class ReadListService {
                 )
                 .forEach(item -> authorsBooksRelationService.delete(
                         item.getBook().getId(),
-                        item.getAuthor().getAuthorId(),
+                        item.getAuthor().getId(),
                         item.getBook().getListId()
                 ));
 
@@ -120,7 +125,7 @@ public class ReadListService {
                         item.getBook().getId().equals(bookId) &&
                         item.getBook().getListId().equals(readListId))
         ) {
-            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, author.getAuthorId(), author.getReadListId()));
+            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, ((AuthorImpl)author).getAuthorId(), ((AuthorImpl)author).getReadListId()));
         }
     }
 
@@ -236,11 +241,6 @@ public class ReadListService {
         return bookList;
     }
 
-    @Deprecated
-    public List<Author> getAuthors(Long readListId) {
-        return authorsService.getAuthors(readListId);
-    }
-
     @Transactional(rollbackFor = Exception.class)
     public void addBook(Long readListId, BookAddView bookAddView, User user) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
@@ -269,10 +269,7 @@ public class ReadListService {
         if (bookAddView.getAuthorId() != null) {
             authorsBooksRepository.add(
                     newBook.getId(),
-                    authorsService.getAuthor(
-                            readListId,
-                            bookAddView.getAuthorId()
-                    ).orElseThrow().getAuthorId(),
+                    authorFactory.findById(bookAddView.getAuthorId()).getId(),
                     readListId
             );
         }
@@ -309,7 +306,7 @@ public class ReadListService {
                 )
                 .forEach(item -> authorsBooksRelationService.delete(
                         item.getBook().getId(),
-                        item.getAuthor().getAuthorId(),
+                        item.getAuthor().getId(),
                         item.getBook().getListId()
                 ));
 

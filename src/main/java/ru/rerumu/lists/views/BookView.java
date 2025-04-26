@@ -3,7 +3,8 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.controller.author.out.AuthorView;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.SeriesBookRelation;
@@ -15,7 +16,7 @@ import java.util.List;
 public class BookView {
     private BookImpl book;
     private BookStatus bookStatus;
-    private Author author;
+    private AuthorImpl author;
     private Series series;
     private List<AuthorBookRelation> authorBookRelationList;
     private List<SeriesBookRelation> seriesBookRelationList;
@@ -24,7 +25,7 @@ public class BookView {
     private BookView(
             BookImpl book,
             BookStatus bookStatus,
-            Author author,
+            AuthorImpl author,
             Series series,
             List<AuthorBookRelation> authorBookRelationList,
             List<SeriesBookRelation> seriesBookRelationList,
@@ -53,7 +54,7 @@ public class BookView {
         JSONArray authors = new JSONArray();
         if (authorBookRelationList != null) {
             for (AuthorBookRelation authorBookRelation : authorBookRelationList) {
-                authors.put(authorBookRelation.getAuthor().toJSONObject());
+                authors.put(new AuthorView(authorBookRelation.getAuthor()).toJSONObject());
             }
         }
 //        obj.put("author", author != null ? author.toJSONObject() : null);
@@ -81,7 +82,7 @@ public class BookView {
 
         private BookImpl book;
         private BookStatus bookStatus;
-        private Author author;
+        private AuthorImpl author;
         private Series series;
         private List<AuthorBookRelation> authorBookRelationList;
 
@@ -99,7 +100,7 @@ public class BookView {
             return this;
         }
 
-        public Builder author(Author author) {
+        public Builder author(AuthorImpl author) {
             this.author = author;
             return this;
         }

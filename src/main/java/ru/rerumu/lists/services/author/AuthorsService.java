@@ -1,63 +1,55 @@
 package ru.rerumu.lists.services.author;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.model.author.Author;
+import ru.rerumu.lists.model.author.AuthorFactory;
+import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.views.AddAuthorView;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 public class AuthorsService {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final AuthorsRepository authorsRepository;
     private final AuthorsBooksRepository authorsBooksRepository;
+    private final AuthorFactory authorFactory;
 
+    @Autowired
     public AuthorsService(
-            AuthorsRepository authorsRepository,
-            AuthorsBooksRepository authorsBooksRepository
-            ){
+            @NonNull AuthorsRepository authorsRepository,
+            @NonNull AuthorsBooksRepository authorsBooksRepository,
+            @NonNull AuthorFactory authorFactory
+    ){
         this.authorsRepository = authorsRepository;
         this.authorsBooksRepository = authorsBooksRepository;
+        this.authorFactory = authorFactory;
     }
 
-    public Optional<Author> getAuthor(Long readListId, Long authorId) {
-        if (authorId == null || readListId == null){
-            throw new IllegalArgumentException();
-        }
-        return authorsRepository.getOne(readListId, authorId);
+    public Author getAuthor(@NonNull Long authorId) {
+        return authorFactory.findById(authorId);
     }
 
-    public List<Author> getAuthors(Long readListId) {
-        return authorsRepository.getAll(readListId);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Author addAuthor(Long readListId, AddAuthorView addAuthorView) throws EntityNotFoundException {
-        Long nextId = authorsRepository.getNextId();
-        Author newAuthor = new Author.Builder()
-                .name(addAuthorView.getName())
-                .authorId(nextId)
-                .readListId(readListId)
-                .build();
-        authorsRepository.addOne(newAuthor);
-        Optional<Author> author = getAuthor(readListId,nextId);
-        if (author.isEmpty()){
-            throw new EntityNotFoundException();
-        }
-        return author.get();
+    public List<Author> getAuthors(@NonNull User user) {
+        return authorFactory.findAll(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteAuthor(Long authorId) {
+    public Author addAuthor(@NonNull AddAuthorView addAuthorView, @NonNull User user) throws EntityNotFoundException {
+        Author author = authorFactory.create(addAuthorView.getName(), user);
+        return author;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAuthor(@NonNull Long authorId) {
         authorsBooksRepository.deleteByAuthor(authorId);
         authorsRepository.deleteOne(authorId);
     }

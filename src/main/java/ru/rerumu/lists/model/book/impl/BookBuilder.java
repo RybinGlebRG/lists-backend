@@ -4,6 +4,7 @@ import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
@@ -37,6 +38,7 @@ public class BookBuilder {
     private String URL;
     private User user;
     private List<Tag> tags = new ArrayList<>();
+    private List<AuthorImpl> textAuthors = new ArrayList<>();
 
     private final StatusFactory statusFactory;
     private final DateFactory dateFactory;
@@ -135,6 +137,11 @@ public class BookBuilder {
         return this;
     }
 
+    public BookBuilder textAuthors(@NonNull List<AuthorImpl> textAuthors){
+        this.textAuthors = textAuthors;
+        return this;
+    }
+
 
     public BookImpl build() throws EmptyMandatoryParameterException {
         return new BookImpl(
@@ -153,6 +160,7 @@ public class BookBuilder {
                 URL,
                 user,
                 tags,
+                textAuthors,
                 dateFactory,
                 readingRecordFactory,
                 bookRepository

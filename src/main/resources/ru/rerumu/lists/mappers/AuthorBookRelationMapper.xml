@@ -8,14 +8,14 @@
 
 <!--    </resultMap>-->
 
-<!--    <resultMap id="author" type="ru.rerumu.lists.model.Author">-->
+<!--    <resultMap id="author" type="ru.rerumu.lists.model.author.impl.AuthorImpl">-->
 
 <!--    </resultMap>-->
 
 <!--    <resultMap id="AuthorBookResultMap" type="ru.rerumu.lists.model.AuthorBookRelation">-->
 <!--        <constructor>-->
 <!--            <arg resultMap="book" javaType="ru.rerumu.lists.model.book.impl.BookImpl"/>-->
-<!--            <arg resultMap="author" javaType="ru.rerumu.lists.model.Author"/>-->
+<!--            <arg resultMap="author" javaType="ru.rerumu.lists.model.author.impl.AuthorImpl"/>-->
 
 <!--        </constructor>-->
 <!--&lt;!&ndash;        <association property="book"&ndash;&gt;-->
@@ -24,9 +24,9 @@
 <!--&lt;!&ndash;                     select="ru.rerumu.lists.dao.book.BookMapper.getOne"&ndash;&gt;-->
 <!--&lt;!&ndash;        />&ndash;&gt;-->
 <!--&lt;!&ndash;        <association property="author"&ndash;&gt;-->
-<!--&lt;!&ndash;                     javaType="ru.rerumu.lists.model.Author"&ndash;&gt;-->
+<!--&lt;!&ndash;                     javaType="ru.rerumu.lists.model.author.impl.AuthorImpl"&ndash;&gt;-->
 <!--&lt;!&ndash;                     column="{authorId=author_author_id,readListId=readListId}"&ndash;&gt;-->
-<!--&lt;!&ndash;                     select="ru.rerumu.lists.dao.author.AuthorMapper.getOne"&ndash;&gt;-->
+<!--&lt;!&ndash;                     select="ru.rerumu.lists.dao.author.mapper.AuthorMapper.getOne"&ndash;&gt;-->
 <!--&lt;!&ndash;        />&ndash;&gt;-->
 <!--    </resultMap>-->
 
