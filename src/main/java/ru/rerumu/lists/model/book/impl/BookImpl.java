@@ -10,6 +10,8 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.model.author.Author;
 import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.BookChain;
 import ru.rerumu.lists.model.book.Book;
@@ -85,6 +87,7 @@ public class BookImpl implements Book, Cloneable {
     private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final StatusFactory statusFactory;
+    private final AuthorsBooksRepository authorsBooksRepository;
 
 
 
@@ -107,7 +110,8 @@ public class BookImpl implements Book, Cloneable {
             @NonNull List<AuthorImpl> textAuthors,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
-            @NonNull BookRepository bookRepository
+            @NonNull BookRepository bookRepository,
+            @NonNull AuthorsBooksRepository authorsBooksRepository
     ) {
 
         this.bookId = bookId;
@@ -129,6 +133,7 @@ public class BookImpl implements Book, Cloneable {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.bookRepository = bookRepository;
+        this.authorsBooksRepository = authorsBooksRepository;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -342,6 +347,11 @@ public class BookImpl implements Book, Cloneable {
             this.tags.remove(tag);
             tag.removeFromBook(bookId);
         }
+    }
+
+    @Override
+    public void updateTextAuthors(List<Author> authors) {
+
     }
 
     @Override

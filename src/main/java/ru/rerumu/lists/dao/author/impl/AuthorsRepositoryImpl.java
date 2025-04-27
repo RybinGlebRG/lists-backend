@@ -19,16 +19,6 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     private AuthorMapper authorMapper;
 
     @Override
-    public Optional<AuthorImpl> getOne(Long readListId, Long authorId) {
-        AuthorImpl author = authorMapper.getOne(readListId, authorId);
-        if (author != null){
-            return Optional.of(author);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    @Override
     public AuthorDtoDao getOne(Long authorId) {
         AuthorDtoDao dto = authorMapper.findById(authorId);
         if (dto == null) {
@@ -55,5 +45,10 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     @Override
     public void deleteOne(Long authorId) {
         authorMapper.delete(authorId);
+    }
+
+    @Override
+    public void addToBook(Long authorId, Long bookId) {
+
     }
 }

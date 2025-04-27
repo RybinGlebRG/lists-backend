@@ -7,5 +7,4 @@ import ru.rerumu.lists.model.author.impl.AuthorImpl;
 
 @Mapper
 public interface AuthorMapper extends CrudMapper<AuthorDtoDao, Long, AuthorDtoDao> {
-    AuthorImpl getOne(Long readListId, Long authorId);
 }
