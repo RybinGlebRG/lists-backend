@@ -72,7 +72,12 @@ public interface Book extends SeriesItem {
     void updateType(BookType bookType);
     void updateURL(String URL);
     void updateTags(List<Tag> tags);
+
+    /**
+     * Updates text authors.
+     */
     void updateTextAuthors(List<Author> authors);
+
     void save();
 
     boolean filterByStatusIds(List<Integer> statusIds);

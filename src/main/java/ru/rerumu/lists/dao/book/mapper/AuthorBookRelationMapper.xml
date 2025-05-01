@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.dao.mappers.AuthorBookRelationMapper">
+<mapper namespace="ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper">
 
 <!--    <resultMap id="book" type="ru.rerumu.lists.model.book.impl.BookImpl">-->
 
@@ -38,13 +38,12 @@
     <delete id="delete">
         delete from books_authors
         where author_author_id=#{authorId}
-        and book_book_id = #{bookId}
-        and book_list_id = #{readListId}
+            and book_book_id = #{bookId}
     </delete>
 
     <insert id="add">
-        insert into books_authors(book_book_id, book_list_id, author_author_id, author_list_id)
-        values(#{bookId},#{readListId},#{authorId},#{readListId})
+        insert into books_authors(book_book_id, book_user_id, author_author_id, author_user_id, roleId)
+        values(#{bookId},#{userId},#{authorId},#{userId}, #{roleId})
     </insert>
 
 <!--    <select id="getByBookId" resultMap="AuthorBookResultMap">-->
@@ -56,9 +55,12 @@
 <!--    </select>-->
 
     <select id="getAuthorsByBookId" resultType="Long">
-        select  ba.author_author_id
-        from books_authors ba
-        where ba.book_book_id = #{bookId}
+        select
+            ba.author_author_id
+        from
+            books_authors ba
+        where
+            ba.book_book_id = #{bookId}
     </select>
 
 </mapper>

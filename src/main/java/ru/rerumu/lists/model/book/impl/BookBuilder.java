@@ -3,16 +3,18 @@ package ru.rerumu.lists.model.book.impl;
 import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.BookChain;
+import ru.rerumu.lists.model.author.Author;
+import ru.rerumu.lists.model.author.AuthorFactory;
+import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.book.readingrecords.status.StatusFactory;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.type.BookType;
 import ru.rerumu.lists.model.tag.Tag;
+import ru.rerumu.lists.model.user.User;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -38,23 +40,29 @@ public class BookBuilder {
     private String URL;
     private User user;
     private List<Tag> tags = new ArrayList<>();
-    private List<AuthorImpl> textAuthors = new ArrayList<>();
+    private List<Author> textAuthors = new ArrayList<>();
 
     private final StatusFactory statusFactory;
     private final DateFactory dateFactory;
     private final ReadingRecordFactory readingRecordFactory;
     private final BookRepository bookRepository;
+    private final AuthorsBooksRepository authorsBooksRepository;
+    private final AuthorFactory authorFactory;
 
     public BookBuilder(
             @NonNull StatusFactory statusFactory,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
-            @NonNull BookRepository bookRepository
+            @NonNull BookRepository bookRepository,
+            @NonNull AuthorsBooksRepository authorsBooksRepository,
+            @NonNull AuthorFactory authorFactory
     ) {
         this.statusFactory = statusFactory;
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.bookRepository = bookRepository;
+        this.authorsBooksRepository = authorsBooksRepository;
+        this.authorFactory = authorFactory;
     }
 
     public BookBuilder bookId(@NonNull Long bookId) {
@@ -137,7 +145,7 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder textAuthors(@NonNull List<AuthorImpl> textAuthors){
+    public BookBuilder textAuthors(@NonNull List<Author> textAuthors){
         this.textAuthors = textAuthors;
         return this;
     }
@@ -163,7 +171,9 @@ public class BookBuilder {
                 textAuthors,
                 dateFactory,
                 readingRecordFactory,
-                bookRepository
+                bookRepository,
+                authorsBooksRepository,
+                authorFactory
         );
     }
 }

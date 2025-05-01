@@ -1,12 +1,13 @@
-package ru.rerumu.lists.dao.repository.impl;
+package ru.rerumu.lists.dao.book.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.mappers.AuthorBookRelationMapper;
-import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
+import ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper;
 import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.author.AuthorFactory;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
@@ -45,12 +46,12 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     }
 
     @Override
-    public void add(Long bookId, Long authorId, Long readListId) {
-        authorBookRelationMapper.add(bookId, authorId, readListId);
+    public void add(Long bookId, Long authorId, Long userId, Long roleId) {
+        authorBookRelationMapper.add(bookId, authorId, userId, roleId);
     }
 
     @Override
-    public List<AuthorBookRelation> getByBookId(Long bookId, Long readListId) {
+    public List<AuthorBookRelation> getByBookId(Long bookId) {
         List<AuthorBookRelation> authorBookRelationList = new ArrayList<>();
         List<Long> authorIdList = authorBookRelationMapper.getAuthorsByBookId(bookId);
         BookImpl book = (BookImpl) bookFactory.getBook(bookId);
@@ -62,7 +63,19 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     }
 
     @Override
-    public void delete(long bookId, long authorId, long readListId) {
-        authorBookRelationMapper.delete(bookId, authorId, readListId);
+    @NonNull
+    public List<AuthorDtoDao> getAuthorsByBookId(@NonNull Long bookId) {
+        List<Long> authorIdList = authorBookRelationMapper.getAuthorsByBookId(bookId);
+        List<AuthorDtoDao> authors = new ArrayList<>();
+        for (Long authorId: authorIdList){
+            AuthorDtoDao authorDtoDao = authorsRepository.getOne(authorId);
+            authors.add(authorDtoDao);
+        }
+        return authors;
+    }
+
+    @Override
+    public void delete(long bookId, long authorId) {
+        authorBookRelationMapper.delete(bookId, authorId);
     }
 }

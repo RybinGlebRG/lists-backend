@@ -13,4 +13,6 @@ public interface AuthorsRepository {
     void deleteOne(Long authorId);
 
     void addToBook(Long authorId, Long bookId);
+
+    List<AuthorDtoDao> findByIds(List<Long> ids);
 }

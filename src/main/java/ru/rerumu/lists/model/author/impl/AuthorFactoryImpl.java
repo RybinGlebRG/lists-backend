@@ -54,6 +54,11 @@ public class AuthorFactoryImpl implements AuthorFactory {
     }
 
     @Override
+    public List<Author> findByIds(List<Long> authorIds) {
+        return fromDTO(authorsRepository.findByIds(authorIds));
+    }
+
+    @Override
     public List<Author> findAll(User user) {
         return fromDTO(authorsRepository.getAll(user));
     }

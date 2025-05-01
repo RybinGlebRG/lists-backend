@@ -25,11 +25,12 @@
 			<json.version>20231013</json.version>
 			<jjwt.version>0.12.5</jjwt.version>
 			<jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
-			<liquibase-core.version>4.27.0</liquibase-core.version>
+			<liquibase-core.version>4.31.1</liquibase-core.version>
 			<bcpkix-jdk15on.version>1.69</bcpkix-jdk15on.version>
 			<jolokia-core.version>1.7.2</jolokia-core.version>
 			<checkstyle.version>10.17.0</checkstyle.version>
 			<commons-lang3.version>3.14.0</commons-lang3.version>
+			<commons-text.version>1.12.0</commons-text.version>
 			<lombok.version>1.18.36</lombok.version>
 			<jackson.version>2.17.3</jackson.version>
 			<jcabi-aspects.version>0.26.0</jcabi-aspects.version>
@@ -162,6 +163,13 @@
 			<version>${commons-lang3.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -202,6 +210,13 @@
 	<build>
 		<plugins>
 
+			<!--
+				We compile project in two steps:
+					1. We compile *.java using "maven-compiler-plugin" as store result in "./unwoven-classes"
+					2. We weave aspects into compiled files from "./unwoven-classes" using "aspectj-maven-plugin" and store everything in "./classes"
+
+				This way we avoid overwriting of step 1 result with result of step 2.
+			-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<executions>
@@ -214,6 +229,50 @@
 							<outputDirectory>${project.build.directory}/unwoven-classes</outputDirectory>
 						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.15.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectjrt.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<complianceLevel>${java.version}</complianceLevel>
+					<showWeaveInfo>true</showWeaveInfo>
+
+					<sources/>
+					<forceAjcCompile>true</forceAjcCompile>
+
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>com.jcabi</groupId>
+							<artifactId>jcabi-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+
+				</configuration>
+				<executions>
+
+					<execution>
+						<!-- Compile and weave aspects after all classes compiled by javac -->
+						<phase>process-classes</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<weaveDirectories>
+								<weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
+							</weaveDirectories>
+						</configuration>
+					</execution>
+
 				</executions>
 			</plugin>
 
@@ -267,62 +326,6 @@
 				</executions>
 			</plugin>
 
-<!--			<plugin>-->
-<!--				<groupId>com.jcabi</groupId>-->
-<!--				<artifactId>jcabi-maven-plugin</artifactId>-->
-<!--				<version>0.17.0</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<goals>-->
-<!--							<goal>ajc</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.15.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-						<version>${aspectjrt.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<complianceLevel>${java.version}</complianceLevel>
-					<showWeaveInfo>true</showWeaveInfo>
-
-					<sources/>
-					<forceAjcCompile>true</forceAjcCompile>
-
-					<aspectLibraries>
-						<aspectLibrary>
-							<groupId>com.jcabi</groupId>
-							<artifactId>jcabi-aspects</artifactId>
-						</aspectLibrary>
-					</aspectLibraries>
-
-				</configuration>
-				<executions>
-
-					<execution>
-						<!-- Compile and weave aspects after all classes compiled by javac -->
-						<phase>process-classes</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<weaveDirectories>
-								<weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
-							</weaveDirectories>
-						</configuration>
-					</execution>
-
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -342,6 +345,15 @@
 					</execution>
 				</executions>
 
+			</plugin>
+
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase-core.version}</version>
+				<configuration>
+					<changeLogFile>src/main/resources/liquibase-changeLog.xml</changeLogFile>
+				</configuration>
 			</plugin>
 
 		</plugins>

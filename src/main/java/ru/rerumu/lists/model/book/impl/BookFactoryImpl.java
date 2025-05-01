@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.author.AuthorDtoDao;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
+import ru.rerumu.lists.model.author.AuthorFactory;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.BookFactory;
@@ -46,6 +49,8 @@ public class BookFactoryImpl implements BookFactory {
     private final UserFactory userFactory;
     private final TagFactory tagFactory;
     private final StatusFactory statusFactory;
+    private final AuthorsBooksRepository authorsBooksRepository;
+    private final AuthorFactory authorFactory;
 
     @Autowired
     public BookFactoryImpl(
@@ -55,7 +60,9 @@ public class BookFactoryImpl implements BookFactory {
             BookTypeFactory bookTypeFactory,
             UserFactory userFactory,
             TagFactory tagFactory,
-            StatusFactory statusFactory
+            StatusFactory statusFactory,
+            AuthorsBooksRepository authorsBooksRepository,
+            @NonNull AuthorFactory authorFactory
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -64,6 +71,8 @@ public class BookFactoryImpl implements BookFactory {
         this.userFactory = userFactory;
         this.tagFactory = tagFactory;
         this.statusFactory = statusFactory;
+        this.authorsBooksRepository = authorsBooksRepository;
+        this.authorFactory = authorFactory;
     }
 
     public Book createBook(
@@ -79,7 +88,7 @@ public class BookFactoryImpl implements BookFactory {
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
-        BookBuilder bookBuilder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
+        BookBuilder bookBuilder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
                 .bookId(bookId)
                 .readListId(readListId)
                 .title(title)
@@ -113,6 +122,8 @@ public class BookFactoryImpl implements BookFactory {
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
         BookDtoDao bookDTO = bookRepository.findById(bookId);
+        List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
+        bookDTO.setTextAuthors(authorsDTOs);
         Book book = fromDTO(bookDTO);
         return book;
     }
@@ -207,7 +218,7 @@ public class BookFactoryImpl implements BookFactory {
 
         log.debug("bookDTO: {}", bookDTO);
 
-        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
                 .bookId(bookDTO.bookId)
                 .readListId(bookDTO.readListId)
                 .title(bookDTO.title)
@@ -266,7 +277,7 @@ public class BookFactoryImpl implements BookFactory {
     @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     public Book fromDTO(@NonNull BookDtoDao bookDTO) throws EmptyMandatoryParameterException {
 
-        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository)
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
                 .bookId(bookDTO.getBookId())
                 .readListId(bookDTO.getReadListId())
                 .title(bookDTO.getTitle())
@@ -276,7 +287,8 @@ public class BookFactoryImpl implements BookFactory {
                 .lastChapter(bookDTO.getLastChapter())
                 .note(bookDTO.getNote())
                 .URL(bookDTO.getURL())
-                .user(userFactory.fromDTO(bookDTO.getUser()));
+                .user(userFactory.fromDTO(bookDTO.getUser()))
+                .textAuthors(authorFactory.fromDTO(bookDTO.getTextAuthors()));
 
         if (bookDTO.getBookTypeObj() != null) {
             builder.bookType(bookDTO.getBookTypeObj().toDomain());

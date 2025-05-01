@@ -7,7 +7,7 @@
 //import org.mockito.Mockito;
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import ru.rerumu.lists.dao.author.AuthorsRepository;
-//import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
+//import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 //import ru.rerumu.lists.model.author.impl.AuthorImpl;
 //import ru.rerumu.lists.services.author.AuthorsService;
 //

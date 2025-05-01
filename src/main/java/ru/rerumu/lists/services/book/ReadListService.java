@@ -7,18 +7,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
+import ru.rerumu.lists.dao.book.AuthorRole;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.repository.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.model.author.Author;
 import ru.rerumu.lists.model.author.AuthorFactory;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
-import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
@@ -36,7 +36,6 @@ import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
@@ -101,37 +100,9 @@ public class ReadListService {
         this.authorFactory = authorFactory;
     }
 
-    private void updateAuthor(long bookId, Long authorId, long readListId) {
-        List<AuthorBookRelation> authorsBooksRepositoryList = authorsBooksRepository.getByBookId(bookId, readListId);
-
-        Optional<Author> optionalAuthor = authorId != null ?
-                Optional.of(authorFactory.findById(authorId)) :
-                Optional.empty();
-
-        authorsBooksRepositoryList.stream()
-                .filter(item -> item.getBook().getId().equals(bookId) &&
-                        item.getBook().getListId().equals(readListId) &&
-                        (optionalAuthor.isEmpty() || !optionalAuthor.get().equals(item.getAuthor()))
-                )
-                .forEach(item -> authorsBooksRelationService.delete(
-                        item.getBook().getId(),
-                        item.getAuthor().getId(),
-                        item.getBook().getListId()
-                ));
-
-        if (authorsBooksRepositoryList.stream()
-                .noneMatch(item -> optionalAuthor.isPresent() &&
-                        item.getAuthor().equals(optionalAuthor.get()) &&
-                        item.getBook().getId().equals(bookId) &&
-                        item.getBook().getListId().equals(readListId))
-        ) {
-            optionalAuthor.ifPresent(author -> authorsBooksRepository.add(bookId, ((AuthorImpl)author).getAuthorId(), ((AuthorImpl)author).getReadListId()));
-        }
-    }
-
     @Transactional(rollbackFor = Exception.class)
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public void updateBook(Long bookId, BookUpdateView bookUpdateView) throws EmptyMandatoryParameterException, CloneNotSupportedException {
+    public void updateBook(Long bookId, BookUpdateView bookUpdateView) {
         if (
                 bookUpdateView == null
                         || bookUpdateView.getReadListId() == null
@@ -185,14 +156,15 @@ public class ReadListService {
                 .collect(Collectors.toCollection(ArrayList::new));
         book.updateReadingRecords(records);
 
+        // Update author
+        logger.info("Updating text authors...");
+        Author author = authorFactory.findById(bookUpdateView.getAuthorId());
+        book.updateTextAuthors(List.of(author));
+
         // Save book
         logger.info("Saving book...");
         book.save();
-
         logger.debug(String.format("Updated book: %s", book));
-
-        // Update author
-        updateAuthor(bookId, bookUpdateView.getAuthorId(), bookUpdateView.getReadListId());
     }
 
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
@@ -270,7 +242,8 @@ public class ReadListService {
             authorsBooksRepository.add(
                     newBook.getId(),
                     authorFactory.findById(bookAddView.getAuthorId()).getId(),
-                    readListId
+                    readListId,
+                    AuthorRole.TEXT_AUTHOR.getId()
             );
         }
 
@@ -301,13 +274,11 @@ public class ReadListService {
                 ));
 
         authorsBooksRepository.getByBookId(
-                        book.getId(),
-                        book.getListId()
+                        book.getId()
                 )
                 .forEach(item -> authorsBooksRelationService.delete(
                         item.getBook().getId(),
-                        item.getAuthor().getId(),
-                        item.getBook().getListId()
+                        item.getAuthor().getId()
                 ));
 
         bookRepository.delete(book.getId());

@@ -7,6 +7,9 @@
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+    <changeSet  author="gleb"  id="5befe84b-2843-4c6a-8e88-671b787bca72">
+        <tagDatabase  tag="0.64.0"/>
+    </changeSet>
 
     <changeSet author="gleb" id="6c940d3b-9099-4a7d-a739-19d02d758775">
         <addColumn tableName="authors">
@@ -62,11 +65,195 @@
         />
     </changeSet>
 
+    <changeSet author="gleb" id="ADD-FK-authors.authors_id_user_uk">
+        <addUniqueConstraint
+                tableName="authors"
+                columnNames="author_id, user_user_id"
+                constraintName="authors_id_user_uk"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-COLUMN-books_authors.book_user_id">
+        <addColumn tableName="books_authors">
+            <column name="book_user_id"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="FILL-COLUMN-books_authors.book_user_id" >
+        <sql>
+            update books_authors ba
+            set book_user_id = s.user_user_id
+            from (
+                select
+                    b.book_id,
+                    b.user_user_id
+                from books b
+            ) s
+            where ba.book_book_id = s.book_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-NOT-NULL-books_authors.book_user_id">
+        <addNotNullConstraint
+                tableName="books_authors"
+                columnName="book_user_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-COLUMN-books_authors.author_user_id">
+        <addColumn tableName="books_authors">
+            <column name="author_user_id"
+                    type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="FILL-COLUMN-books_authors.author_user_id" >
+        <sql>
+            update books_authors ba
+            set author_user_id = s.user_user_id
+            from (
+                select
+                    a.author_id,
+                    a.user_user_id
+                from authors a
+            ) s
+            where ba.author_author_id = s.author_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-NOT-NULL-books_authors.author_user_id">
+        <addNotNullConstraint
+                tableName="books_authors"
+                columnName="author_user_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-FK-books_authors.ba_books_fk">
+        <addForeignKeyConstraint
+                baseTableName="books_authors"
+                baseColumnNames="book_book_id, book_user_id"
+                referencedTableName="books"
+                referencedColumnNames="book_id, user_user_id"
+                constraintName="ba_books_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-FK-books_authors.ba_authors_fk">
+        <addForeignKeyConstraint
+                baseTableName="books_authors"
+                baseColumnNames="author_author_id, author_user_id"
+                referencedTableName="authors"
+                referencedColumnNames="author_id, user_user_id"
+                constraintName="ba_authors_fk"
+                deferrable="false"
+                initiallyDeferred="false"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-CHECK-CONSTRAINTS-books_authors.books_authors_user_check">
+        <sql>
+            alter table books_authors
+            add constraint books_authors_user_check check (book_user_id = author_user_id);
+        </sql>
+        <rollback>
+            <sql>
+                alter table books_authors
+                drop constraint books_authors_user_check;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="DROP-FK-books_authors.books_authors_author_author_id_author_list_id_fkey">
+        <dropForeignKeyConstraint
+                baseTableName="books_authors"
+                constraintName="books_authors_author_author_id_author_list_id_fkey"
+        />
+        <rollback>
+            <addForeignKeyConstraint
+                     baseColumnNames="author_author_id,author_list_id"
+                     baseTableName="books_authors"
+                     constraintName="books_authors_author_author_id_author_list_id_fkey"
+                     deferrable="false"
+                     initiallyDeferred="false"
+                     onDelete="NO ACTION"
+                     onUpdate="NO ACTION"
+                     referencedColumnNames="author_id,list_list_id"
+                     referencedTableName="authors"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="DROP-FK-books_authors.books_authors_book_book_id_book_list_id_fkey">
+        <dropForeignKeyConstraint
+                baseTableName="books_authors"
+                constraintName="books_authors_book_book_id_book_list_id_fkey"
+        />
+        <rollback>
+            <addForeignKeyConstraint
+                     baseColumnNames="book_book_id,book_list_id"
+                     baseTableName="books_authors"
+                     constraintName="books_authors_book_book_id_book_list_id_fkey"
+                     deferrable="false"
+                     initiallyDeferred="false"
+                     onDelete="NO ACTION"
+                     onUpdate="NO ACTION"
+                     referencedColumnNames="book_id,list_list_id"
+                     referencedTableName="books"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="ca3775f2-cdde-4161-ab64-3e3b8ed2c414">
+        <dropPrimaryKey
+                constraintName="authors_pkey"
+                tableName="authors"
+        />
+        <rollback>
+            <addPrimaryKey
+                    tableName="authors"
+                    constraintName="authors_pkey"
+                    columnNames="author_id, list_list_id"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="b9168e25-1981-4ec7-894e-c6b9f65d9ba6">
+        <addPrimaryKey
+                tableName="authors"
+                constraintName="authors_pk"
+                columnNames="author_id"
+        />
+        <rollback>
+            <dropPrimaryKey
+                    tableName="authors"
+                    constraintName="authors_pk"
+            />
+        </rollback>
+    </changeSet>
+
     <changeSet author="gleb" id="2fc20c0f-f12f-43c4-aae8-668efe078570">
         <dropUniqueConstraint
                 constraintName="authors_list_list_id_name_key"
                 tableName="authors"
         />
+        <rollback>
+            <addUniqueConstraint
+                    columnNames="list_list_id, name"
+                    constraintName="authors_list_list_id_name_key"
+                    tableName="authors"
+            />
+        </rollback>
     </changeSet>
 
     <changeSet author="gleb" id="9c104707-f552-42fa-b36d-df3ea84c2dd2" >
@@ -86,8 +273,18 @@
                         startValue="0"/>
     </changeSet>
 
-    <changeSet  author="gleb"  id="5befe84b-2843-4c6a-8e88-671b787bca72">
-        <tagDatabase  tag="0.64.0"/>
+    <changeSet author="gleb" id="INSERT-roles.roleId=1">
+        <insert tableName="roles">
+            <column  name="role_id"  value="1"/>
+            <column  name="name"  value="Text author"/>
+        </insert>
+        <rollback>
+            <delete
+                tableName="roles"
+            >
+                <where>role_id=1</where>
+            </delete>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

@@ -9,9 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.user.UserDtoDao;
+import ru.rerumu.lists.model.author.AuthorFactory;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookFactory;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
@@ -57,6 +59,12 @@ public class BookFactoryImplTest {
     @Mock
     private StatusFactory statusFactory;
 
+    @Mock
+    private AuthorsBooksRepository authorsBooksRepository;
+
+    @Mock
+    private AuthorFactory authorFactory;
+
 
     @BeforeEach
     public void beforeEach() {
@@ -67,7 +75,9 @@ public class BookFactoryImplTest {
                 bookTypeFactory,
                 userFactory,
                 tagFactory,
-                statusFactory
+                statusFactory,
+                authorsBooksRepository,
+                authorFactory
         );
     }
 
@@ -102,7 +112,8 @@ public class BookFactoryImplTest {
                 "Test URL",
                 1L,
                 new ArrayList<>(),
-                userDtoDao
+                userDtoDao,
+                new ArrayList<>()
         );
 
         User user = mock(User.class);

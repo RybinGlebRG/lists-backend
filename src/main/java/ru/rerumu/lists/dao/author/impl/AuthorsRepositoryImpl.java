@@ -6,11 +6,9 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.author.mapper.AuthorMapper;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.user.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class AuthorsRepositoryImpl implements AuthorsRepository {
@@ -50,5 +48,10 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     @Override
     public void addToBook(Long authorId, Long bookId) {
 
+    }
+
+    @Override
+    public List<AuthorDtoDao> findByIds(List<Long> ids) {
+        return authorMapper.findByIds(ids);
     }
 }

@@ -104,7 +104,7 @@ public class BooksController {
         if (book == null) {
             throw new EntityNotFoundException();
         }
-        List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getId(), readListId);
+        List<AuthorBookRelation> authorBookRelationList = authorsBooksRelationService.getByBookId(book.getId());
         List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getByBookId(book.getId(), readListId);
         List<Series> seriesList = seriesService.findByBook((BookImpl) book);
 
