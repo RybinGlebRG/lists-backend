@@ -8,10 +8,7 @@ import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper;
-import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.author.AuthorFactory;
-import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.model.book.impl.BookImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +21,19 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     private final BookRepository bookRepository;
     private final AuthorsRepository authorsRepository;
 
-    private final BookFactoryImpl bookFactory;
     private final AuthorFactory authorFactory;
 
     @Autowired
     public AuthorsBooksRepositoryImpl(
             AuthorBookRelationMapper authorBookRelationMapper,
             BookRepository bookRepository,
-            AuthorsRepository authorsRepository, BookFactoryImpl bookFactory, AuthorFactory authorFactory
+            AuthorsRepository authorsRepository,
+            AuthorFactory authorFactory
     ){
 
         this.authorBookRelationMapper = authorBookRelationMapper;
         this.bookRepository = bookRepository;
         this.authorsRepository = authorsRepository;
-        this.bookFactory = bookFactory;
         this.authorFactory = authorFactory;
     }
     @Override
@@ -48,18 +44,6 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     @Override
     public void add(Long bookId, Long authorId, Long userId, Long roleId) {
         authorBookRelationMapper.add(bookId, authorId, userId, roleId);
-    }
-
-    @Override
-    public List<AuthorBookRelation> getByBookId(Long bookId) {
-        List<AuthorBookRelation> authorBookRelationList = new ArrayList<>();
-        List<Long> authorIdList = authorBookRelationMapper.getAuthorsByBookId(bookId);
-        BookImpl book = (BookImpl) bookFactory.getBook(bookId);
-        for (Long authorId: authorIdList){
-            AuthorDtoDao authorDtoDao = authorsRepository.getOne(authorId);
-            authorBookRelationList.add(new AuthorBookRelation(book, authorFactory.fromDTO(authorDtoDao)));
-        }
-        return authorBookRelationList;
     }
 
     @Override

@@ -38,11 +38,6 @@
             a.user_user_id = #{userId}
     </select>
 
-    <select id="getNextId" resultType="Long">
-        select max(author_id)+1 as res
-        from authors
-    </select>
-
     <delete id="delete">
         delete from authors
         where author_id=#{authorId}

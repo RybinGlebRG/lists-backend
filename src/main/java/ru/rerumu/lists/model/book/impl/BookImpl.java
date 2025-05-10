@@ -224,6 +224,17 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
+    public void delete() {
+        authorsBooksRepository.getAuthorsByBookId(bookId)
+                        .forEach(authorDtoDao -> authorsBooksRepository.delete(
+                                bookId,
+                                authorDtoDao.getAuthorId()
+                        ));
+
+        bookRepository.delete(bookId);
+    }
+
+    @Override
     public LocalDateTime getUpdateDate() {
         return getLastUpdateDate_V2();
     }

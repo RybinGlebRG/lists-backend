@@ -273,15 +273,7 @@ public class ReadListService {
                         item.book().getListId()
                 ));
 
-        authorsBooksRepository.getByBookId(
-                        book.getId()
-                )
-                .forEach(item -> authorsBooksRelationService.delete(
-                        item.getBook().getId(),
-                        item.getAuthor().getId()
-                ));
-
-        bookRepository.delete(book.getId());
+        book.delete();
     }
 
     public Optional<User> getBookUser(Long bookId) {

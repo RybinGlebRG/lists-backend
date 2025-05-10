@@ -2,10 +2,8 @@ package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.dao.book.AuthorRole;
-import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-
-import java.util.List;
+import ru.rerumu.lists.model.AuthorBookRelation;
 
 @Service
 public class AuthorsBooksRelationService {
@@ -16,10 +14,6 @@ public class AuthorsBooksRelationService {
             AuthorsBooksRepository authorsBooksRepository
     ){
         this.authorsBooksRepository = authorsBooksRepository;
-    }
-
-    public List<AuthorBookRelation> getByBookId(Long bookId){
-        return authorsBooksRepository.getByBookId(bookId);
     }
 
     public void delete(long bookId, long authorId){

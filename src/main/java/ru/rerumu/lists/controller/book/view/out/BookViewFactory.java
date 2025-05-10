@@ -13,6 +13,7 @@ import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
 import ru.rerumu.lists.model.dto.BookOrderedDTO;
+import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
 import ru.rerumu.lists.model.tag.TagDTO;
 
@@ -26,12 +27,12 @@ import java.util.stream.Collectors;
 public class BookViewFactory {
 
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public BookView buildBookView(@NonNull BookDTO bookDTO, @NonNull Search search) {
+    public BookView buildBookView(@NonNull BookDTO bookDTO) {
 
         List<BookView> chain = bookDTO.getPreviousBooks().stream()
                 .sorted(Comparator.comparing(BookOrderedDTO::getOrder))
                 .map(BookOrderedDTO::getBookDTO)
-                .map(item -> buildBookView(item, search))
+                .map(this::buildBookView)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         List<ReadingRecordView> readingRecordViews = bookDTO.getReadingRecords().stream()
@@ -70,7 +71,7 @@ public class BookViewFactory {
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        BookView bookView = new BookView(
+        return new BookView(
                 bookDTO.getBookId(),
                 bookDTO.getReadListId(),
                 bookDTO.getTitle(),
@@ -86,8 +87,6 @@ public class BookViewFactory {
                 bookDTO.getURL(),
                 tagViews
         );
-
-        return bookView;
     }
 
     public BookListView buildBookListView(List<BookDTO> bookDTOList, Search search) {
@@ -111,8 +110,21 @@ public class BookViewFactory {
          return new BookListView(
                  bookDTOList.stream()
                     .sorted(comparator)
-                    .map(bookDTO -> buildBookView(bookDTO, search))
+                    .map(this::buildBookView)
                     .collect(Collectors.toCollection(ArrayList::new))
          );
+    }
+
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
+    public BookView buildBookView(@NonNull BookDTO bookDTO, List<Series> seriesList) {
+        BookView bookView = buildBookView(bookDTO);
+
+        List<SeriesView> seriesViews = seriesList.stream()
+                        .map(series -> new SeriesView(series.seriesId(), series.title()))
+                                .collect(Collectors.toCollection(ArrayList::new));
+
+        bookView.setSeriesList(seriesViews);
+
+        return bookView;
     }
 }

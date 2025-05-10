@@ -3,11 +3,9 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.controller.author.out.AuthorView;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
-import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.Series;
 
@@ -18,7 +16,6 @@ public class BookView {
     private BookStatus bookStatus;
     private AuthorImpl author;
     private Series series;
-    private List<AuthorBookRelation> authorBookRelationList;
     private List<SeriesBookRelation> seriesBookRelationList;
     private List<Series> seriesList;
 
@@ -27,7 +24,6 @@ public class BookView {
             BookStatus bookStatus,
             AuthorImpl author,
             Series series,
-            List<AuthorBookRelation> authorBookRelationList,
             List<SeriesBookRelation> seriesBookRelationList,
             List<Series> seriesList
     ) {
@@ -35,7 +31,6 @@ public class BookView {
         this.bookStatus = bookStatus;
         this.author = author;
         this.series = series;
-        this.authorBookRelationList = authorBookRelationList;
         this.seriesBookRelationList = seriesBookRelationList;
         this.seriesList = seriesList;
     }
@@ -50,15 +45,6 @@ public class BookView {
 
     public JSONObject toJSONObject() {
         JSONObject obj = book.toJSONObject();
-
-        JSONArray authors = new JSONArray();
-        if (authorBookRelationList != null) {
-            for (AuthorBookRelation authorBookRelation : authorBookRelationList) {
-                authors.put(new AuthorView(authorBookRelation.getAuthor()).toJSONObject());
-            }
-        }
-//        obj.put("author", author != null ? author.toJSONObject() : null);
-        obj.put("authors",authors);
 
 //        JSONArray seriesList = new JSONArray();
 //        if (seriesBookRelationList != null){
@@ -84,7 +70,6 @@ public class BookView {
         private BookStatus bookStatus;
         private AuthorImpl author;
         private Series series;
-        private List<AuthorBookRelation> authorBookRelationList;
 
         private List<SeriesBookRelation> seriesBookRelationList;
         private List<Series> seriesList;
@@ -110,11 +95,6 @@ public class BookView {
             return this;
         }
 
-        public Builder authorBookRelation(List<AuthorBookRelation> authorBookRelationList){
-            this.authorBookRelationList = authorBookRelationList;
-            return this;
-        }
-
         public Builder seriesBookRelation(List<SeriesBookRelation> seriesBookRelationList){
             this.seriesBookRelationList = seriesBookRelationList;
             return this;
@@ -131,7 +111,6 @@ public class BookView {
                     bookStatus,
                     author,
                     series,
-                    authorBookRelationList,
                     seriesBookRelationList,
                     seriesList
             );

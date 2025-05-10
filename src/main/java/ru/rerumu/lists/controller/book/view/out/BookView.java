@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.controller.DeepCopyable;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @ToString
-@Builder(toBuilder = true, access = AccessLevel.PACKAGE)
 public class BookView implements DeepCopyable<BookView>{
 
     @Getter
@@ -46,6 +46,7 @@ public class BookView implements DeepCopyable<BookView>{
 
     @Getter
     private final BookType bookType;
+
     @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
     @Getter
     public static class BookType implements DeepCopyable<BookType> {
@@ -79,7 +80,11 @@ public class BookView implements DeepCopyable<BookView>{
     @Getter
     private final List<TagView> tags;
 
-    public BookView(
+    @Setter
+    private List<SeriesView> seriesList;
+
+    @Builder(toBuilder = true, access = AccessLevel.PACKAGE)
+    BookView(
             @NonNull Long bookId,
             @NonNull Long readListId,
             @NonNull String title,

@@ -88,4 +88,7 @@ public interface Book extends SeriesItem {
     JSONObject toJSONObject();
 
     boolean currentStatusEquals(Long statusId);
+
+
+    void delete();
 }
