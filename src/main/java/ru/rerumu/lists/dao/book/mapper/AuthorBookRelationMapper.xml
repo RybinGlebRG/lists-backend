@@ -42,7 +42,7 @@
     </delete>
 
     <insert id="add">
-        insert into books_authors(book_book_id, book_user_id, author_author_id, author_user_id, roleId)
+        insert into books_authors(book_book_id, book_user_id, author_author_id, author_user_id, role_role_id)
         values(#{bookId},#{userId},#{authorId},#{userId}, #{roleId})
     </insert>
 

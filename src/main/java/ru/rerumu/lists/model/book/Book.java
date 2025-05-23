@@ -83,7 +83,6 @@ public interface Book extends SeriesItem {
     boolean filterByStatusIds(List<Integer> statusIds);
     Float getTitleFuzzyMatchScore(String value);
 
-    String toString();
     BookDTO toDTO();
     JSONObject toJSONObject();
 

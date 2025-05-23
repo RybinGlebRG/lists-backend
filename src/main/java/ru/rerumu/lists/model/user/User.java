@@ -12,6 +12,6 @@ public record User(Long userId, String name, String password) {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(userId, name, password);
+        return new UserDTO(userId, name, null);
     }
 }

@@ -3,6 +3,7 @@ package ru.rerumu.lists.model.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@ToString
 public class BookImpl implements Book, Cloneable {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
@@ -90,7 +92,6 @@ public class BookImpl implements Book, Cloneable {
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final AuthorFactory authorFactory;
-
 
 
     BookImpl(
@@ -508,10 +509,10 @@ public class BookImpl implements Book, Cloneable {
         }
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
+//    @Override
+//    public String toString() {
+//        return this.toJSONObject().toString();
+//    }
 
     @Override
     public BookDTO toDTO() {
@@ -536,7 +537,10 @@ public class BookImpl implements Book, Cloneable {
             user != null ? user.userId() : null,
             tags != null ? tags.stream()
                     .map(Tag::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>()
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
+            textAuthors.stream()
+                    .map(Author::toDTO)
+                    .collect(Collectors.toCollection(ArrayList::new))
         );
 
         return bookDTO;

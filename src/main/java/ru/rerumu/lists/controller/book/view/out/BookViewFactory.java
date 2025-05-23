@@ -4,9 +4,11 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.controller.author.out.AuthorView2;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
+import ru.rerumu.lists.model.author.AuthorDTO;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.books.Search;
@@ -71,6 +73,11 @@ public class BookViewFactory {
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        List<AuthorView2> textAuthors = bookDTO.getTextAuthors().stream()
+                .sorted(Comparator.comparing(AuthorDTO::getName))
+                .map(authorDTO -> new AuthorView2(authorDTO))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         return new BookView(
                 bookDTO.getBookId(),
                 bookDTO.getReadListId(),
@@ -85,7 +92,8 @@ public class BookViewFactory {
                 chain,
                 readingRecordViews,
                 bookDTO.getURL(),
-                tagViews
+                tagViews,
+                textAuthors
         );
     }
 

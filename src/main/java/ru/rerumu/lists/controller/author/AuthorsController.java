@@ -1,7 +1,6 @@
 package ru.rerumu.lists.controller.author;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class AuthorsController {
     @Autowired
     public AuthorsController(
             AuthorsService authorsService,
-            @Qualifier("UserServiceProtectionProxy") UserService userService
+            UserService userService
     ) {
         this.authorsService = authorsService;
         this.userService = userService;

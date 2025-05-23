@@ -287,8 +287,13 @@ public class BookFactoryImpl implements BookFactory {
                 .lastChapter(bookDTO.getLastChapter())
                 .note(bookDTO.getNote())
                 .URL(bookDTO.getURL())
-                .user(userFactory.fromDTO(bookDTO.getUser()))
-                .textAuthors(authorFactory.fromDTO(bookDTO.getTextAuthors()));
+                .user(userFactory.fromDTO(bookDTO.getUser()));
+
+        if (bookDTO.getTextAuthors() != null) {
+            builder.textAuthors(authorFactory.fromDTO(bookDTO.getTextAuthors()));
+        } else {
+            builder.textAuthors(new ArrayList<>());
+        }
 
         if (bookDTO.getBookTypeObj() != null) {
             builder.bookType(bookDTO.getBookTypeObj().toDomain());

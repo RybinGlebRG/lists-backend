@@ -287,4 +287,46 @@
         </rollback>
     </changeSet>
 
+    <changeSet author="gleb" id="DROP-PRIMARY-KEY-books_authors(author_author_id,author_list_id,book_book_id,book_list_id)">
+        <dropPrimaryKey
+                constraintName="books_authors_pkey"
+                tableName="books_authors"
+        />
+        <rollback>
+            <addPrimaryKey
+                    tableName="books_authors"
+                    constraintName="books_authors_pkey"
+                    columnNames="author_author_id,author_list_id,book_book_id,book_list_id"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="ADD-PRIMARY-KEY-books_authors(author_author_id,author_user_id,book_book_id,book_user_id)">
+        <addPrimaryKey
+                tableName="books_authors"
+                constraintName="books_authors_pk"
+                columnNames="author_author_id,author_user_id,book_book_id,book_user_id"
+        />
+        <rollback>
+            <dropPrimaryKey
+                    tableName="books_authors"
+                    constraintName="books_authors_pk"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-books_authors.book_list_id" >
+        <dropNotNullConstraint
+                tableName="books_authors"
+                columnName="book_list_id"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-books_authors.author_list_id" >
+        <dropNotNullConstraint
+                tableName="books_authors"
+                columnName="author_list_id"
+        />
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.book.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,7 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
 
     @Override
     @NonNull
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false)
     public List<AuthorDtoDao> getAuthorsByBookId(@NonNull Long bookId) {
         List<Long> authorIdList = authorBookRelationMapper.getAuthorsByBookId(bookId);
         List<AuthorDtoDao> authors = new ArrayList<>();

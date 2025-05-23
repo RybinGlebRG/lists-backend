@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.controller.DeepCopyable;
+import ru.rerumu.lists.controller.author.out.AuthorView2;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
@@ -80,6 +81,9 @@ public class BookView implements DeepCopyable<BookView>{
     @Getter
     private final List<TagView> tags;
 
+    @Getter
+    private final List<AuthorView2> textAuthors;
+
     @Setter
     private List<SeriesView> seriesList;
 
@@ -98,11 +102,13 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull List<BookView> chain,
             @NonNull List<ReadingRecordView> readingRecords,
             String URL,
-            @NonNull List<TagView> tags
+            @NonNull List<TagView> tags,
+            List<AuthorView2> textAuthors
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
         this.title = title;
+        this.textAuthors = textAuthors;
         if (bookStatus != null) {
             this.bookStatus = bookStatus.deepCopy();
         } else {
