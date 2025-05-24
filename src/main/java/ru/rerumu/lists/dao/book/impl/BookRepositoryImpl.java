@@ -3,6 +3,9 @@ package ru.rerumu.lists.dao.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.dao.author.AuthorDtoDao;
+import ru.rerumu.lists.dao.book.AuthorBookDto;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
@@ -10,19 +13,26 @@ import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.user.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // TODO: Refactor class
 @Slf4j
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
+    private final AuthorsBooksRepository authorsBooksRepository;
 
     public BookRepositoryImpl(
-            BookMapper bookMapper
+            BookMapper bookMapper,
+            AuthorsBooksRepository authorsBooksRepository
     ) {
         this.bookMapper = bookMapper;
+        this.authorsBooksRepository = authorsBooksRepository;
     }
 
 
@@ -44,10 +54,38 @@ public class BookRepositoryImpl implements BookRepository {
         );
     }
 
+    /**
+     * Find books by user and chain then by series. Last book in series is the head of a chain.
+     */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public List<BookDtoDao> findByUserChained(Long userId) {
+
+        // Load all books by user
         List<BookDtoDao> bookDtoList = bookMapper.findByUserChained(userId);
+
+        // Load all relations between books and authors by user
+        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(userId);
+        Map<Long, List<AuthorBookDto>> authorsMap = authorBookDtoList.stream()
+                .collect(Collectors.groupingBy(
+                        AuthorBookDto::getBookId,
+                        HashMap::new,
+                        Collectors.toCollection(ArrayList::new)
+                ));
+
+        // Add authors to corresponding books
+        for (BookDtoDao item: bookDtoList) {
+            List<AuthorBookDto> dtoList = authorsMap.get(item.getBookId());
+
+            List<AuthorDtoDao> authorDtoDaoList = new ArrayList<>();
+            if (dtoList != null) {
+                authorDtoDaoList = dtoList.stream()
+                        .map(AuthorBookDto::getAuthorDtoDao)
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
+            item.setTextAuthors(authorDtoDaoList);
+        }
+
         return bookDtoList;
     }
 

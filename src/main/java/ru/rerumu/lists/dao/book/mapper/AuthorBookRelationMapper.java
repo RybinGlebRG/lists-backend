@@ -1,6 +1,7 @@
 package ru.rerumu.lists.dao.book.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import ru.rerumu.lists.dao.book.AuthorBookDto;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface AuthorBookRelationMapper {
     void delete(long bookId, long authorId);
 
     List<Long> getAuthorsByBookId(long bookId);
+
+    List<AuthorBookDto> getByUserId(Long userId);
 }
