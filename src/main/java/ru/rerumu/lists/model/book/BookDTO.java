@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import ru.rerumu.lists.model.author.AuthorDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.base.EntityDTO;
 import ru.rerumu.lists.model.book.impl.BookImpl;
@@ -55,6 +56,9 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
     public Long userId;
     public List<TagDTO> tags;
 
+    @Getter
+    private List<AuthorDTO> textAuthors;
+
     public BookDTO() {
     }
 
@@ -74,7 +78,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
             @NonNull List<BookOrderedDTO> previousBooks,
             @NonNull List<ReadingRecordDTO> readingRecords,
             String URL, Long userId,
-            @NonNull List<TagDTO> tags
+            @NonNull List<TagDTO> tags,
+            List<AuthorDTO> textAuthors
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
@@ -92,6 +97,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO {
         this.URL = URL;
         this.userId = userId;
         this.tags = tags;
+        this.textAuthors = textAuthors;
     }
 
     public BookDTO(

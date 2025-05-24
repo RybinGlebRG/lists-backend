@@ -3,6 +3,7 @@ package ru.rerumu.lists.dao.book.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.model.author.Author;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.user.User;
 
@@ -46,4 +47,6 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
     void delete (long bookId);
 
     User getBookUser(Long bookId);
+
+    List<Author> getAuthors(Long bookId, Long roleId);
 }

@@ -1,5 +1,6 @@
 package ru.rerumu.lists.model;
 
+import ru.rerumu.lists.model.author.Author;
 import ru.rerumu.lists.model.book.Book;
 
 public final class AuthorBookRelation {
@@ -9,11 +10,11 @@ public final class AuthorBookRelation {
 
     public AuthorBookRelation(Book book, Author author)  {
         this.book = book;
-        this.author = author.clone();
+        this.author = author;
     }
 
     public Author getAuthor() {
-        return author.clone();
+        return author;
     }
 
     public Book getBook() {

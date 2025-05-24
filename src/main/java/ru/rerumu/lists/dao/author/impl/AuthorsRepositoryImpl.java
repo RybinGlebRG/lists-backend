@@ -2,12 +2,13 @@ package ru.rerumu.lists.dao.author.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.author.AuthorMapper;
-import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.author.mapper.AuthorMapper;
+import ru.rerumu.lists.model.user.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class AuthorsRepositoryImpl implements AuthorsRepository {
@@ -16,23 +17,22 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     private AuthorMapper authorMapper;
 
     @Override
-    public Optional<Author> getOne(Long readListId, Long authorId) {
-        Author author = authorMapper.getOne(readListId, authorId);
-        if (author != null){
-            return Optional.of(author);
-        } else {
-            return Optional.empty();
+    public AuthorDtoDao getOne(Long authorId) {
+        AuthorDtoDao dto = authorMapper.findById(authorId);
+        if (dto == null) {
+            throw new EntityNotFoundException();
         }
+        return dto;
     }
 
     @Override
-    public List<Author> getAll(Long readListId) {
-        return authorMapper.getAll(readListId);
+    public List<AuthorDtoDao> getAll(User user) {
+        return authorMapper.findByUser(user);
     }
 
     @Override
-    public void addOne(Author author) {
-        authorMapper.addOne(author.getReadListId(), author.getAuthorId(), author.getName());
+    public void addOne(AuthorDtoDao author) {
+        authorMapper.create(author);
     }
 
     @Override
@@ -42,6 +42,16 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
 
     @Override
     public void deleteOne(Long authorId) {
-        authorMapper.deleteOne(authorId);
+        authorMapper.delete(authorId);
+    }
+
+    @Override
+    public void addToBook(Long authorId, Long bookId) {
+
+    }
+
+    @Override
+    public List<AuthorDtoDao> findByIds(List<Long> ids) {
+        return authorMapper.findByIds(ids);
     }
 }

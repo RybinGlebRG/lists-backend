@@ -3,10 +3,9 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.Author;
-import ru.rerumu.lists.model.AuthorBookRelation;
 import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.Series;
 
@@ -15,18 +14,16 @@ import java.util.List;
 public class BookView {
     private BookImpl book;
     private BookStatus bookStatus;
-    private Author author;
+    private AuthorImpl author;
     private Series series;
-    private List<AuthorBookRelation> authorBookRelationList;
     private List<SeriesBookRelation> seriesBookRelationList;
     private List<Series> seriesList;
 
     private BookView(
             BookImpl book,
             BookStatus bookStatus,
-            Author author,
+            AuthorImpl author,
             Series series,
-            List<AuthorBookRelation> authorBookRelationList,
             List<SeriesBookRelation> seriesBookRelationList,
             List<Series> seriesList
     ) {
@@ -34,7 +31,6 @@ public class BookView {
         this.bookStatus = bookStatus;
         this.author = author;
         this.series = series;
-        this.authorBookRelationList = authorBookRelationList;
         this.seriesBookRelationList = seriesBookRelationList;
         this.seriesList = seriesList;
     }
@@ -49,15 +45,6 @@ public class BookView {
 
     public JSONObject toJSONObject() {
         JSONObject obj = book.toJSONObject();
-
-        JSONArray authors = new JSONArray();
-        if (authorBookRelationList != null) {
-            for (AuthorBookRelation authorBookRelation : authorBookRelationList) {
-                authors.put(authorBookRelation.getAuthor().toJSONObject());
-            }
-        }
-//        obj.put("author", author != null ? author.toJSONObject() : null);
-        obj.put("authors",authors);
 
 //        JSONArray seriesList = new JSONArray();
 //        if (seriesBookRelationList != null){
@@ -81,9 +68,8 @@ public class BookView {
 
         private BookImpl book;
         private BookStatus bookStatus;
-        private Author author;
+        private AuthorImpl author;
         private Series series;
-        private List<AuthorBookRelation> authorBookRelationList;
 
         private List<SeriesBookRelation> seriesBookRelationList;
         private List<Series> seriesList;
@@ -99,18 +85,13 @@ public class BookView {
             return this;
         }
 
-        public Builder author(Author author) {
+        public Builder author(AuthorImpl author) {
             this.author = author;
             return this;
         }
 
         public Builder series(Series series) {
             this.series = series;
-            return this;
-        }
-
-        public Builder authorBookRelation(List<AuthorBookRelation> authorBookRelationList){
-            this.authorBookRelationList = authorBookRelationList;
             return this;
         }
 
@@ -130,7 +111,6 @@ public class BookView {
                     bookStatus,
                     author,
                     series,
-                    authorBookRelationList,
                     seriesBookRelationList,
                     seriesList
             );

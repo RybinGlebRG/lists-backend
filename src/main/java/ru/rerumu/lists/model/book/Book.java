@@ -2,6 +2,7 @@ package ru.rerumu.lists.model.book;
 
 import lombok.NonNull;
 import org.json.JSONObject;
+import ru.rerumu.lists.model.author.Author;
 import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
@@ -71,14 +72,22 @@ public interface Book extends SeriesItem {
     void updateType(BookType bookType);
     void updateURL(String URL);
     void updateTags(List<Tag> tags);
+
+    /**
+     * Updates text authors.
+     */
+    void updateTextAuthors(List<Author> authors);
+
     void save();
 
     boolean filterByStatusIds(List<Integer> statusIds);
     Float getTitleFuzzyMatchScore(String value);
 
-    String toString();
     BookDTO toDTO();
     JSONObject toJSONObject();
 
     boolean currentStatusEquals(Long statusId);
+
+
+    void delete();
 }

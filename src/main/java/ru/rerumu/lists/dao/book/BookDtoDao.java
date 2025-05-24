@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
@@ -41,6 +43,9 @@ public class BookDtoDao implements SeriesItemDTO {
     private Long userId;
     private List<TagDTO> tags;
     private UserDtoDao user;
+
+    @Setter
+    private List<AuthorDtoDao> textAuthors;
 
     @Override
     public SeriesItem toDomain() {

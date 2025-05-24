@@ -277,6 +277,7 @@
         and list_list_id=#{readListId}
     </update>
 
+    <!--  TODO: fix  -->
     <select id="getNextId" resultType="Long">
         select max(book_id)+1 as res
         from books

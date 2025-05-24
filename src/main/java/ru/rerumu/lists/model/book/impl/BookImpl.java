@@ -3,14 +3,19 @@ package ru.rerumu.lists.model.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.AuthorRole;
+import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.model.BookChain;
+import ru.rerumu.lists.model.author.Author;
+import ru.rerumu.lists.model.author.AuthorFactory;
 import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
@@ -35,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@ToString
 public class BookImpl implements Book, Cloneable {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
@@ -77,12 +83,15 @@ public class BookImpl implements Book, Cloneable {
     @Getter
     private List<Tag> tags;
 
+    private final List<Author> textAuthors;
+
     private final ReadingRecordFactory readingRecordFactory;
     private final BookRepository bookRepository;
     private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final StatusFactory statusFactory;
-
+    private final AuthorsBooksRepository authorsBooksRepository;
+    private final AuthorFactory authorFactory;
 
 
     BookImpl(
@@ -101,9 +110,12 @@ public class BookImpl implements Book, Cloneable {
             String URL,
             @NonNull User user,
             @NonNull List<Tag> tags,
+            @NonNull List<Author> textAuthors,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
-            @NonNull BookRepository bookRepository
+            @NonNull BookRepository bookRepository,
+            @NonNull AuthorsBooksRepository authorsBooksRepository,
+            @NonNull AuthorFactory authorFactory
     ) {
 
         this.bookId = bookId;
@@ -121,9 +133,12 @@ public class BookImpl implements Book, Cloneable {
         this.URL = URL;
         this.user = user;
         this.tags = new ArrayList<>(tags);
+        this.textAuthors = textAuthors;
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.bookRepository = bookRepository;
+        this.authorsBooksRepository = authorsBooksRepository;
+        this.authorFactory = authorFactory;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -207,6 +222,17 @@ public class BookImpl implements Book, Cloneable {
                 .orElseThrow(() -> new ServerException("Error while processing records"));
 
         return readingRecord.statusEquals(statusId);
+    }
+
+    @Override
+    public void delete() {
+        authorsBooksRepository.getAuthorsByBookId(bookId)
+                        .forEach(authorDtoDao -> authorsBooksRepository.delete(
+                                bookId,
+                                authorDtoDao.getAuthorId()
+                        ));
+
+        bookRepository.delete(bookId);
     }
 
     @Override
@@ -340,6 +366,27 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
+    public void updateTextAuthors(List<Author> authors) {
+        // Add new authors
+        List<Author> authorsToAdd = authors.stream()
+                .filter(author -> !textAuthors.contains(author))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Author author: authorsToAdd) {
+            textAuthors.add(author);
+            authorsBooksRepository.add(bookId, author.getId(), user.userId(), AuthorRole.TEXT_AUTHOR.getId());
+        }
+
+        // Remove existing authors
+        List<Author> authorsToRemove = textAuthors.stream()
+                .filter(author -> !authors.contains(author))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Author author: authorsToRemove) {
+            textAuthors.remove(author);
+            authorsBooksRepository.deleteByAuthor(author.getId());
+        }
+    }
+
+    @Override
     public void save() {
         bookRepository.update(this);
     }
@@ -462,10 +509,10 @@ public class BookImpl implements Book, Cloneable {
         }
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
+//    @Override
+//    public String toString() {
+//        return this.toJSONObject().toString();
+//    }
 
     @Override
     public BookDTO toDTO() {
@@ -490,7 +537,10 @@ public class BookImpl implements Book, Cloneable {
             user != null ? user.userId() : null,
             tags != null ? tags.stream()
                     .map(Tag::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>()
+                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
+            textAuthors.stream()
+                    .map(Author::toDTO)
+                    .collect(Collectors.toCollection(ArrayList::new))
         );
 
         return bookDTO;

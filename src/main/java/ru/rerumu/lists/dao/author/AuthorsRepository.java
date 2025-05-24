@@ -1,18 +1,18 @@
 package ru.rerumu.lists.dao.author;
 
-import ru.rerumu.lists.model.Author;
+import ru.rerumu.lists.model.user.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AuthorsRepository {
 
-    Optional<Author> getOne(Long readListId, Long authorId);
-    List<Author> getAll(Long readListId);
-
-    void addOne(Author author);
-
+    AuthorDtoDao getOne(Long authorId);
+    List<AuthorDtoDao> getAll(User user);
+    void addOne(AuthorDtoDao author);
     Long getNextId();
-
     void deleteOne(Long authorId);
+
+    void addToBook(Long authorId, Long bookId);
+
+    List<AuthorDtoDao> findByIds(List<Long> ids);
 }

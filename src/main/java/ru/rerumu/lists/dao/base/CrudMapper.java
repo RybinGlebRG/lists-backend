@@ -23,7 +23,10 @@ public interface CrudMapper<T,ID, R> {
 
     void update(T entity);
 
+    @Deprecated
     ID nextval();
+
+    ID getNextId();
 
     void delete(ID id);
 }
