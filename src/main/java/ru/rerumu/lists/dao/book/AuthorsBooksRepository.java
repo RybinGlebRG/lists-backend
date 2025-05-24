@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.book;
 
+import lombok.NonNull;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface AuthorsBooksRepository {
     List<AuthorDtoDao> getAuthorsByBookId(Long bookId);
 
     void delete(long bookId, long authorId);
+
+    List<AuthorBookDto> getAllByUserId(@NonNull Long userId);
 }

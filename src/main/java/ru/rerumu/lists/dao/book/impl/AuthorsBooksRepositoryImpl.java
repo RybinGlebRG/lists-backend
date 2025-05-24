@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.book.AuthorBookDto;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper;
-import ru.rerumu.lists.model.author.AuthorFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,23 +18,16 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
 
     private final AuthorBookRelationMapper authorBookRelationMapper;
 
-    private final BookRepository bookRepository;
     private final AuthorsRepository authorsRepository;
-
-    private final AuthorFactory authorFactory;
 
     @Autowired
     public AuthorsBooksRepositoryImpl(
             AuthorBookRelationMapper authorBookRelationMapper,
-            BookRepository bookRepository,
-            AuthorsRepository authorsRepository,
-            AuthorFactory authorFactory
+            AuthorsRepository authorsRepository
     ){
 
         this.authorBookRelationMapper = authorBookRelationMapper;
-        this.bookRepository = bookRepository;
         this.authorsRepository = authorsRepository;
-        this.authorFactory = authorFactory;
     }
     @Override
     public void deleteByAuthor(Long authorId) {
@@ -58,6 +50,10 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
             authors.add(authorDtoDao);
         }
         return authors;
+    }
+
+    public List<AuthorBookDto> getAllByUserId(@NonNull Long userId) {
+        return authorBookRelationMapper.getByUserId(userId);
     }
 
     @Override

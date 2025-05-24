@@ -4,31 +4,23 @@
 
 <mapper namespace="ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper">
 
-<!--    <resultMap id="book" type="ru.rerumu.lists.model.book.impl.BookImpl">-->
+    <resultMap id="AuthorBookResultMap" type="ru.rerumu.lists.dao.book.AuthorBookDto">
+        <result column="book_book_id" property="bookId"/>
+        <result column="user_id" property="userId"/>
+        <result column="role_role_id" property="roleId"/>
+        <association property="authorDtoDao" resultMap="AuthorDtoResultMap"/>
+    </resultMap>
 
-<!--    </resultMap>-->
+    <resultMap id="AuthorDtoResultMap" type="ru.rerumu.lists.dao.author.AuthorDtoDao">
+        <id property="authorId" column="author_id"/>
+        <result property="name" column="author_name"/>
+        <association property="user" resultMap="UserDtoResultMap"/>
+    </resultMap>
 
-<!--    <resultMap id="author" type="ru.rerumu.lists.model.author.impl.AuthorImpl">-->
-
-<!--    </resultMap>-->
-
-<!--    <resultMap id="AuthorBookResultMap" type="ru.rerumu.lists.model.AuthorBookRelation">-->
-<!--        <constructor>-->
-<!--            <arg resultMap="book" javaType="ru.rerumu.lists.model.book.impl.BookImpl"/>-->
-<!--            <arg resultMap="author" javaType="ru.rerumu.lists.model.author.impl.AuthorImpl"/>-->
-
-<!--        </constructor>-->
-<!--&lt;!&ndash;        <association property="book"&ndash;&gt;-->
-<!--&lt;!&ndash;                     javaType="ru.rerumu.lists.model.book.impl.BookImpl"&ndash;&gt;-->
-<!--&lt;!&ndash;                     column="{bookId=book_book_id,readListId=readListId}"&ndash;&gt;-->
-<!--&lt;!&ndash;                     select="ru.rerumu.lists.dao.book.BookMapper.getOne"&ndash;&gt;-->
-<!--&lt;!&ndash;        />&ndash;&gt;-->
-<!--&lt;!&ndash;        <association property="author"&ndash;&gt;-->
-<!--&lt;!&ndash;                     javaType="ru.rerumu.lists.model.author.impl.AuthorImpl"&ndash;&gt;-->
-<!--&lt;!&ndash;                     column="{authorId=author_author_id,readListId=readListId}"&ndash;&gt;-->
-<!--&lt;!&ndash;                     select="ru.rerumu.lists.dao.author.mapper.AuthorMapper.getOne"&ndash;&gt;-->
-<!--&lt;!&ndash;        />&ndash;&gt;-->
-<!--    </resultMap>-->
+    <resultMap id="UserDtoResultMap" type="ru.rerumu.lists.dao.user.UserDtoDao">
+        <id property="userId" column="author_user_id"/>
+        <result property="name" column="author_user_name"/>
+    </resultMap>
 
     <delete id="deleteByAuthor">
         delete from books_authors
@@ -46,14 +38,6 @@
         values(#{bookId},#{userId},#{authorId},#{userId}, #{roleId})
     </insert>
 
-<!--    <select id="getByBookId" resultMap="AuthorBookResultMap">-->
-<!--        select  ba.book_book_id,-->
-<!--                ba.book_list_id as readListId,-->
-<!--                ba.author_author_id-->
-<!--        from books_authors ba-->
-<!--        where ba.book_book_id = #{bookId}-->
-<!--    </select>-->
-
     <select id="getAuthorsByBookId" resultType="Long">
         select
             ba.author_author_id
@@ -61,6 +45,25 @@
             books_authors ba
         where
             ba.book_book_id = #{bookId}
+    </select>
+
+    <select id="getByUserId" resultMap="AuthorBookResultMap">
+        select
+            ba.book_book_id,
+            ba.role_role_id,
+            ba.book_user_id as user_id,
+            a.author_id,
+            a.name as  author_name,
+            u.user_id as author_user_id,
+            u.name as author_user_name
+        from
+            books_authors ba
+                inner join authors a
+                    on a.author_id = ba.author_author_id
+                inner join users u
+                    on u.user_id = a.user_user_id
+        where
+            ba.book_user_id = #{userId}
     </select>
 
 </mapper>
