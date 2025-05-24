@@ -1,5 +1,7 @@
 package ru.rerumu.lists.controller.author;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.author.out.AuthorViewFactory;
 import ru.rerumu.lists.controller.author.out.AuthorView;
 import ru.rerumu.lists.controller.author.out.AuthorsListView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
@@ -28,14 +31,20 @@ public class AuthorsController {
 
     private final AuthorsService authorsService;
     private final UserService userService;
+    private final AuthorViewFactory authorViewFactory;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public AuthorsController(
             AuthorsService authorsService,
-            UserService userService
+            UserService userService,
+            AuthorViewFactory authorViewFactory,
+            ObjectMapper objectMapper
     ) {
         this.authorsService = authorsService;
         this.userService = userService;
+        this.authorViewFactory = authorViewFactory;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping(value = "/api/v1/authors/{authorId}",
@@ -51,12 +60,12 @@ public class AuthorsController {
 
     @GetMapping(value = "/api/v1/users/{userId}/authors",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getAll(@PathVariable Long userId) {
+    ResponseEntity<String> getAll(@PathVariable Long userId) throws JsonProcessingException {
         User user = userService.getOne(userId).orElseThrow(EntityNotFoundException::new);
         List<Author> authors = authorsService.getAuthors(user);
-        AuthorsListView authorsListView = new AuthorsListView(authors);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(authorsListView.toString(), HttpStatus.OK);
-        return resEnt;
+        AuthorsListView authorsListView = authorViewFactory.buildAuthorsListView(authors);
+        String result = objectMapper.writeValueAsString(authorsListView);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(
