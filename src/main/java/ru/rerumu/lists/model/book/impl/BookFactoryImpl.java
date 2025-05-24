@@ -122,7 +122,10 @@ public class BookFactoryImpl implements BookFactory {
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
         BookDtoDao bookDTO = bookRepository.findById(bookId);
+
+        // TODO: Details of data retrieval should be encapsulated in DAO layer
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
+
         bookDTO.setTextAuthors(authorsDTOs);
         Book book = fromDTO(bookDTO);
         return book;

@@ -226,6 +226,8 @@ public class BookImpl implements Book, Cloneable {
 
     @Override
     public void delete() {
+
+        // TODO: Details of data storage should be encapsulated in DAO layer
         authorsBooksRepository.getAuthorsByBookId(bookId)
                         .forEach(authorDtoDao -> authorsBooksRepository.delete(
                                 bookId,
@@ -373,6 +375,8 @@ public class BookImpl implements Book, Cloneable {
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Author author: authorsToAdd) {
             textAuthors.add(author);
+
+            // TODO: Probably better to move to DAO layer. Should be behind BookRepository???
             authorsBooksRepository.add(bookId, author.getId(), user.userId(), AuthorRole.TEXT_AUTHOR.getId());
         }
 
@@ -382,6 +386,8 @@ public class BookImpl implements Book, Cloneable {
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Author author: authorsToRemove) {
             textAuthors.remove(author);
+
+            // TODO: Same as previous
             authorsBooksRepository.deleteByAuthor(author.getId());
         }
     }
