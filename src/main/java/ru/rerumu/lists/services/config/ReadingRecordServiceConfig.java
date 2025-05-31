@@ -13,7 +13,7 @@ import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.readingrecord.impl.ReadingRecordServiceImpl;
 import ru.rerumu.lists.services.book.status.BookStatusesService;

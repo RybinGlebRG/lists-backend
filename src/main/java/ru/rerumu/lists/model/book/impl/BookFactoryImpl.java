@@ -76,7 +76,6 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     public Book createBook(
-            Long readListId,
             String title,
             Integer lastChapter,
             String note,
@@ -88,9 +87,15 @@ public class BookFactoryImpl implements BookFactory {
     ) throws EmptyMandatoryParameterException {
 
         Long bookId = bookRepository.getNextId();
-        BookBuilder bookBuilder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
+        BookBuilder bookBuilder = new BookBuilder(
+                statusFactory,
+                dateFactory,
+                readingRecordFactory,
+                bookRepository,
+                authorsBooksRepository,
+                authorFactory
+        )
                 .bookId(bookId)
-                .readListId(readListId)
                 .title(title)
                 .lastChapter(lastChapter)
                 .note(note)
@@ -120,8 +125,10 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public Book getBook(Long bookId) throws EmptyMandatoryParameterException {
-        BookDtoDao bookDTO = bookRepository.findById(bookId);
+    @NonNull
+    @Override
+    public Book getBook(Long bookId, Long userId) {
+        BookDtoDao bookDTO = bookRepository.findById(bookId, userId);
 
         // TODO: Details of data retrieval should be encapsulated in DAO layer
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
@@ -223,7 +230,6 @@ public class BookFactoryImpl implements BookFactory {
 
         BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
                 .bookId(bookDTO.bookId)
-                .readListId(bookDTO.readListId)
                 .title(bookDTO.title)
                 .bookStatus(bookDTO.bookStatusObj)
                 .insertDate(bookDTO.insertDate)
@@ -278,11 +284,18 @@ public class BookFactoryImpl implements BookFactory {
 
     @Override
     @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
+    @NonNull
     public Book fromDTO(@NonNull BookDtoDao bookDTO) throws EmptyMandatoryParameterException {
 
-        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
+        BookBuilder builder = new BookBuilder(
+                statusFactory,
+                dateFactory,
+                readingRecordFactory,
+                bookRepository,
+                authorsBooksRepository,
+                authorFactory
+        )
                 .bookId(bookDTO.getBookId())
-                .readListId(bookDTO.getReadListId())
                 .title(bookDTO.getTitle())
                 .bookStatus(bookDTO.getBookStatusObj())
                 .insertDate(bookDTO.getInsertDate())
