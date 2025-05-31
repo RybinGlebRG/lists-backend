@@ -1,6 +1,7 @@
 package ru.rerumu.lists.dao.book.impl;
 
 import com.jcabi.aspects.Loggable;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
@@ -91,8 +92,9 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public BookDtoDao findById(Long id) {
-        BookDtoDao book = bookMapper.findById(id);
+    @NonNull
+    public BookDtoDao findById(Long id, Long userId) {
+        BookDtoDao book = bookMapper.findById(id, userId);
 
         if (book == null) {
             throw new EntityNotFoundException();

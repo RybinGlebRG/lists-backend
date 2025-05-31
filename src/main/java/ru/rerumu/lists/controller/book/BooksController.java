@@ -2,10 +2,8 @@ package ru.rerumu.lists.controller.book;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +27,8 @@ import ru.rerumu.lists.model.book.Book;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.series.Series;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.services.AuthorsBooksRelationService;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.author.AuthorsService;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
-import ru.rerumu.lists.services.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,126 +36,105 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
+@Slf4j
 public class BooksController {
-    private final Logger logger = LoggerFactory.getLogger(BooksController.class);
-    private final ReadListService readListService;
-    private final UserService userService;
-    private final AuthorsService authorsService;
+
     private final SeriesServiceImpl seriesService;
-    private final AuthorsBooksRelationService authorsBooksRelationService;
-    private final BookSeriesRelationService bookSeriesRelationService;
     private final BookViewFactory bookViewFactory;
     private final ObjectMapper objectMapper;
+    private final BookService bookService;
 
     @Autowired
     public BooksController(
-            ReadListService readListService,
-            @Qualifier("UserServiceProtectionProxy") UserService userService,
-            AuthorsService authorsService,
             SeriesServiceImpl seriesService,
-            AuthorsBooksRelationService authorsBooksRelationService,
-            BookSeriesRelationService bookSeriesRelationService, BookViewFactory bookViewFactory, ObjectMapper objectMapper
+            BookViewFactory bookViewFactory,
+            ObjectMapper objectMapper,
+            BookService bookService
     ) {
-        this.readListService = readListService;
-        this.userService = userService;
-        this.authorsService = authorsService;
         this.seriesService = seriesService;
-        this.authorsBooksRelationService = authorsBooksRelationService;
-        this.bookSeriesRelationService = bookSeriesRelationService;
         this.bookViewFactory = bookViewFactory;
         this.objectMapper = objectMapper;
+        this.bookService = bookService;
     }
 
-    @PutMapping(value = "/api/v0.2/books/{bookId}",
+    /**
+     * Update book
+     */
+    @PutMapping(value = "/api/v1/users/{userId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> updateOne(@PathVariable Long bookId,
-                                     @RequestBody BookUpdateView bookUpdateView,
-                                     @RequestAttribute("username") String username)
-            throws EmptyMandatoryParameterException, CloneNotSupportedException {
-
-        readListService.updateBook(bookId, bookUpdateView);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return resEnt;
+    ResponseEntity<String> updateOne(
+            @PathVariable Long userId,
+            @PathVariable Long bookId,
+            @RequestBody BookUpdateView bookUpdateView
+    ) throws EmptyMandatoryParameterException {
+        bookService.updateBook(bookId, userId, bookUpdateView);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
-    @GetMapping(value = "/api/v0.2/readLists/{readListId}/books/{bookId}",
+    /**
+     * Get book
+     */
+    @GetMapping(value = "/api/v1/users/{userId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getOne(@PathVariable Long readListId,
-                                  @PathVariable Long bookId,
-                                  @RequestAttribute("username") String username)
-            throws UserIsNotOwnerException, EntityNotFoundException, EmptyMandatoryParameterException, JsonProcessingException {
-        userService.checkOwnershipList(username, readListId);
-        // TODO: Check book ownership
+    ResponseEntity<String> getOne(
+            @PathVariable Long userId,
+            @PathVariable Long bookId,
+            @RequestAttribute("username") String username
+    ) throws UserIsNotOwnerException, JsonProcessingException {
 
-        Book book = readListService.getBook(bookId);
-
-        if (book == null) {
-            throw new EntityNotFoundException();
-        }
+        Book book = bookService.getBook(bookId, userId);
         List<Series> seriesList = seriesService.findByBook((BookImpl) book);
 
         ru.rerumu.lists.controller.book.view.out.BookView bookView = bookViewFactory.buildBookView(book.toDTO(), seriesList);
         String result = objectMapper.writeValueAsString(bookView);
 
-        ResponseEntity<String> resEnt = new ResponseEntity<>(result, HttpStatus.OK);
-        return resEnt;
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/api/v0.2/readLists/{readListId}/books",
+    /**
+     * Create book
+     */
+    @PostMapping(value = "/api/v1/users/{userId}/books",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> addOne(
-            @PathVariable Long readListId,
+            @PathVariable Long userId,
             @RequestBody BookAddView bookAddView,
-            @RequestAttribute("username") String username,
-            @RequestAttribute("authUserId") Long authUserId
-    ) throws UserIsNotOwnerException, EmptyMandatoryParameterException, EntityNotFoundException {
-
-        userService.checkOwnershipList(username, readListId);
-        userService.checkOwnership(username,bookAddView);
-
-        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
-
-        readListService.addBook(readListId, bookAddView, user);
-
+            @RequestAttribute("username") String username
+    ) throws EmptyMandatoryParameterException, EntityNotFoundException {
+        bookService.addBook(bookAddView, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "/api/v0.2/books/{bookId}",
+    /**
+     * Delete book
+     */
+    @DeleteMapping(value = "/api/v1/users/{userId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> deleteOne(
-            @PathVariable Long bookId,
-            @RequestAttribute("username") String username
-    )
-            throws UserIsNotOwnerException,
-            EntityNotFoundException, EmptyMandatoryParameterException {
-
-        userService.checkOwnershipBook(username, bookId);
-
-        readListService.deleteBook(bookId);
-
+            @PathVariable Long userId,
+            @PathVariable Long bookId
+    ){
+        bookService.deleteBook(bookId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-    @PostMapping(value = "/api/v0.2/readLists/{readListId}/books/search",
+    /**
+     * Search books
+     */
+    @PostMapping(value = "/api/v1/users/{userId}/books/search",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> searchBooks(
-            @PathVariable Long readListId,
             @RequestBody Search search,
             @RequestAttribute("username") String username,
             @RequestAttribute("authUserId") Long authUserId
 
     ) throws JsonProcessingException {
-        // TODO: rewrite
-//        userService.checkOwnershipList(username, readListId);
-//        User user = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
 
-        List<Book> books = readListService.getAllBooks(search, authUserId);
-
+        List<Book> books = bookService.getAllBooks(search, authUserId);
         BookListView bookListView = bookViewFactory.buildBookListView(
                 books.stream()
                         .map(Book::toDTO)

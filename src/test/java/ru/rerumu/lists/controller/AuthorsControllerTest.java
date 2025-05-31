@@ -2,7 +2,6 @@ package ru.rerumu.lists.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,16 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.author.AuthorsController;
-import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.services.author.AuthorsService;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.AddAuthorView;
 
-import java.util.List;
-
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @WebMvcTest(AuthorsController.class)

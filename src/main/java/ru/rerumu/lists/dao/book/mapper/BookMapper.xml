@@ -139,14 +139,19 @@
     </sql>
 
     <select id="getBookStatus">
-        select s.key_name
-        from statuses
-        where STATUS_ID=#{statusId}
+        select
+            s.key_name
+        from
+            statuses
+        where
+            STATUS_ID=#{statusId}
     </select>
 
     <select id="findById" resultMap="BookResultMap">
         <include refid="selectBooks"/>
-        where b.book_id=#{bookId}
+        where
+            b.book_id=#{bookId}
+            and u.userId = #{userId}
     </select>
 
     <select id="findByUser" resultMap="BookResultMap">
@@ -265,22 +270,23 @@
     </select>
 
     <update id="update">
-        update books
-        set title=#{title},
+        update
+            books
+        set
+            title=#{title},
             insert_date=#{insertDate},
             last_update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
             type_type_id = #{bookTypeId},
             note = #{note},
             url = #{URL}
-        where book_id=#{bookId}
-        and list_list_id=#{readListId}
+        where
+            book_id=#{bookId}
+            and user_user_id = #{userId}
     </update>
 
-    <!--  TODO: fix  -->
     <select id="getNextId" resultType="Long">
-        select max(book_id)+1 as res
-        from books
+        SELECT nextval('book_id_seq');
     </select>
 
     <insert id="addOne">
@@ -289,8 +295,12 @@
     </insert>
 
     <delete id="delete">
-        delete from books
-        where book_id=#{bookId}
+        delete
+        from
+            books
+        where
+            book_id = #{bookId}
+            and user_user_id = #{userId}
     </delete>
 
     <select id="getBookUser" resultMap="UserResultMap">
@@ -303,7 +313,8 @@
                 on l.list_id = b.list_list_id
             inner join users u
                 on u.user_id = l.USER_USER_ID
-        where b.book_id=#{bookId}
+        where
+            b.book_id=#{bookId}
     </select>
 
 </mapper>

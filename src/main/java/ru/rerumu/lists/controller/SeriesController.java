@@ -21,7 +21,7 @@ import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.MonitoringService;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;

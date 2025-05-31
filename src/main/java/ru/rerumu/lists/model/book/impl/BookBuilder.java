@@ -70,11 +70,6 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder readListId(Long readListId) {
-        this.readListId = readListId;
-        return this;
-    }
-
     public BookBuilder title(String title) {
         this.title = title;
         return this;

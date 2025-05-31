@@ -8,14 +8,15 @@ import java.util.List;
 @Component("CrudMapper")
 public interface CrudMapper<T,ID, R> {
 
-    R findById(ID id);
-
+    R findById(ID id, Long userId);
 
     List<R> findAll();
 
     List<R> findByUser(User user);
 
-    List<R> findByIds(List<ID> ids);
+    List<R> findByUserId(Long userId);
+
+    List<R> findByIds(List<ID> ids, Long userId);
 
     void save(T entity);
 
@@ -28,5 +29,5 @@ public interface CrudMapper<T,ID, R> {
 
     ID getNextId();
 
-    void delete(ID id);
+    void delete(ID id, Long userId);
 }

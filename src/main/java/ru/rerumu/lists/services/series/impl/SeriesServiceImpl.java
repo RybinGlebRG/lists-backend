@@ -15,7 +15,7 @@ import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.views.seriesupdate.SeriesUpdateItem;

@@ -14,7 +14,7 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.series.impl.SeriesServiceProtectionProxy;
