@@ -6,7 +6,7 @@ import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.mappers.SeriesBookMapper;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.series.SeriesFactory;
@@ -61,13 +61,14 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
         seriesBookMapper.deleteBySeries(seriesId);
     }
 
+    // TODO: Account for userId
     @Override
-    public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId) {
+    public List<SeriesBookRelation> getByBookId(Long bookId, Long readListId, Long userId) {
         List<SeriesBookRelation> seriesBookRelationList = new ArrayList<>();
         List<Long> seriesIdList = seriesBookMapper.getSeriesIdsByBookId(bookId, readListId);
-        BookImpl book = (BookImpl) bookFactory.getBook(bookId);
+        BookImpl book = (BookImpl) bookFactory.getBook(bookId, userId);
         for (Long seriesId : seriesIdList) {
-            Series series = seriesFactory.fromDTO(seriesRepository.getOne(readListId, seriesId));
+            SeriesImpl series = seriesFactory.fromDTO(seriesRepository.getOne(readListId, seriesId));
             Long order = seriesBookMapper.getOrder(bookId, seriesId, readListId);
             seriesBookRelationList.add(new SeriesBookRelation(book, series, order));
         }
@@ -76,7 +77,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException {
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
+        Optional<SeriesImpl> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
         optionalSeries.orElseThrow(EntityNotFoundException::new);
 
 
@@ -163,7 +164,7 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     @Override
     public Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException {
-        Optional<Series> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
+        Optional<SeriesImpl> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
         optionalSeries.orElseThrow(EntityNotFoundException::new);
 
         //

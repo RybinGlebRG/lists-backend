@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.model.author.Author;
-import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.user.User;
 
 import java.util.Date;

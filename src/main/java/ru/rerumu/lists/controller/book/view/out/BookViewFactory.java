@@ -128,7 +128,7 @@ public class BookViewFactory {
         BookView bookView = buildBookView(bookDTO);
 
         List<SeriesView> seriesViews = seriesList.stream()
-                        .map(series -> new SeriesView(series.seriesId(), series.title()))
+                        .map(series -> new SeriesView(series.getId(), series.getTitle()))
                                 .collect(Collectors.toCollection(ArrayList::new));
 
         bookView.setSeriesList(seriesViews);

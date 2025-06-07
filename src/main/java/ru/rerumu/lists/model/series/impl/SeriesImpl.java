@@ -1,0 +1,218 @@
+package ru.rerumu.lists.model.series.impl;
+
+import lombok.NonNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.SeriesDTO;
+import ru.rerumu.lists.model.series.item.SeriesItem;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class SeriesImpl implements Series, Cloneable {
+
+    private final Long seriesId;
+    private final Long seriesListId;
+    private final String title;
+    private Integer bookCount;
+    private final List<?> itemsList;
+
+//    private LocalDateTime lastUpdateDate;
+
+    public SeriesImpl(
+            Long seriesId,
+            Long seriesListId,
+            String title,
+            @NonNull List<?> itemsList
+    ) {
+        this.seriesId = seriesId;
+        this.seriesListId = seriesListId;
+        this.title = title;
+        this.itemsList = new ArrayList<>(itemsList);
+    }
+
+//    private Series(Long seriesId, Long seriesListId, String title, int bookCount, List<?> itemsList){
+//        this.seriesId = seriesId;
+//        this.seriesListId = seriesListId;
+//        this.title = title;
+//        this.bookCount = bookCount;
+//        this.itemsList = new ArrayList<>(itemsList);
+////        this.lastUpdateDate = lastUpdateDate;
+//    }
+
+    @Deprecated
+    public Long getSeriesId() {
+        return seriesId;
+    }
+
+    @Deprecated
+    public String getTitle() {
+        return title;
+    }
+
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+
+    @Deprecated
+    public Long getSeriesListId() {
+        return seriesListId;
+    }
+
+//    public LocalDateTime getLastUpdateDate() {
+//        return lastUpdateDate;
+//    }
+
+    @Deprecated
+    public Integer getBookCount() {
+        return bookCount;
+    }
+
+//    public void setBookCount(Integer bookCount) {
+//        this.bookCount = bookCount;
+//    }
+
+    @Deprecated
+    public List<?> getItemsList() {
+        return new ArrayList<>(itemsList);
+    }
+
+    @Override
+    public List<SeriesItem> itemsList() {
+        return new ArrayList<>(itemsList);
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+
+        obj.put("seriesId", seriesId);
+        obj.put("readListId", seriesListId);
+        obj.put("title", title);
+        JSONArray jsonArray = new JSONArray();
+
+        itemsList.stream()
+                .map(SeriesItem::toJSONObject)
+                .forEach(jsonArray::put);
+
+        obj.put("items", jsonArray);
+
+        return obj;
+    }
+
+    public JSONObject toJSONObject(String... fields) {
+        JSONObject obj = new JSONObject();
+        for (String field : fields) {
+            switch (field) {
+                case "seriesId" -> obj.put("seriesId", seriesId);
+                case "readListId" -> obj.put("readListId", seriesListId);
+                case "title" -> obj.put("title", title);
+                case "items" -> {
+                    JSONArray jsonArray = new JSONArray();
+                    itemsList.stream()
+                            .map(SeriesItem::toJSONObject)
+                            .forEach(jsonArray::put);
+                    obj.put("items", jsonArray);
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+        return obj;
+    }
+
+    public SeriesDTO toDTO(){
+        SeriesDTO seriesDTO = new SeriesDTO(
+                seriesId,
+                seriesListId,
+                title,
+                null,
+                null
+        );
+
+        return seriesDTO;
+    }
+
+    @Override
+    public String toString() {
+        return this.toJSONObject().toString();
+    }
+
+    @Override
+    public SeriesImpl clone() {
+        try {
+            SeriesImpl clone = (SeriesImpl) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Series series = (Series) o;
+//        return Objects.equals(seriesId, series.seriesId) && Objects.equals(seriesListId, series.seriesListId) && Objects.equals(title, series.title) && Objects.equals(bookCount, series.bookCount);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(seriesId, seriesListId, title, bookCount);
+//    }
+
+    public final static class Builder {
+        private long seriesId;
+        private String title;
+        private long readListId;
+
+        private int bookCount;
+
+        private LocalDateTime lastUpdateDate;
+
+        private List<SeriesItem> itemList = new ArrayList<>();
+
+        public Builder() {
+        }
+
+        ;
+
+        public Builder(SeriesImpl series) {
+            this.seriesId = series.getSeriesId();
+            this.title = series.getTitle();
+            this.readListId = series.getSeriesListId();
+            this.bookCount = series.getBookCount() != null ? series.getBookCount() : 0;
+//            this.lastUpdateDate = series.getLastUpdateDate();
+        }
+
+        public Builder seriesId(long seriesId) {
+            this.seriesId = seriesId;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder readListId(long readListId) {
+            this.readListId = readListId;
+            return this;
+        }
+
+        public Builder bookCount(int bookCount) {
+            this.bookCount = bookCount;
+            return this;
+        }
+
+        public Builder itemList(List<SeriesItem> itemList) {
+            this.itemList = itemList;
+            return this;
+        }
+
+        public SeriesImpl build() {
+            return new SeriesImpl(seriesId, readListId, title, bookCount, itemList);
+        }
+    }
+}

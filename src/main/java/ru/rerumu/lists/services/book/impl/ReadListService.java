@@ -4,8 +4,6 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
@@ -37,8 +35,6 @@ import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.views.ReadingRecordAddView;
-import ru.rerumu.lists.views.ReadingRecordUpdateView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -280,7 +276,8 @@ public class ReadListService implements BookService {
 
         seriesBooksRespository.getByBookId(
                         book.getId(),
-                        book.getListId()
+                        book.getListId(),
+                        userId
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
                         item.book().getId(),

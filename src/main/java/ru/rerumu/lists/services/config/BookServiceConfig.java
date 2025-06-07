@@ -22,13 +22,11 @@ import ru.rerumu.lists.services.AuthorsBooksRelationService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.BookService;
-import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.book.impl.BookServiceProtectionProxy;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
-import ru.rerumu.lists.services.tag.TagService;
-import ru.rerumu.lists.services.tag.impl.TagServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 
 @Configuration

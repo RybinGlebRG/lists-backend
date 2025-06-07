@@ -8,7 +8,7 @@ import ru.rerumu.lists.model.books.Filter;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.books.SearchOrder;
 import ru.rerumu.lists.model.books.SortItem;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class BookListView {
 
     private final List<Book> bookList;
-    private final Map<BookImpl, List<Series>> bookSeriesMap;
+    private final Map<BookImpl, List<SeriesImpl>> bookSeriesMap;
 
     private final Boolean isChainBySeries;
 
@@ -25,7 +25,7 @@ public class BookListView {
 
     private final Search search;
 
-    public BookListView(List<Book> bookList, Map<BookImpl, List<Series>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList, Search search) {
+    public BookListView(List<Book> bookList, Map<BookImpl, List<SeriesImpl>> bookSeriesMap, Boolean isChainBySeries, List<SortItem> sortItemList, Search search) {
         this.bookList = bookList;
         this.bookSeriesMap = bookSeriesMap;
         this.isChainBySeries = isChainBySeries;
@@ -90,7 +90,7 @@ public class BookListView {
     }
 
     public static class Builder {
-        private Map<BookImpl, List<Series>> bookSeriesMap;
+        private Map<BookImpl, List<SeriesImpl>> bookSeriesMap;
         private List<Book> bookList;
 
         private Boolean isChainBySeries;
@@ -99,7 +99,7 @@ public class BookListView {
 
         private Search search;
 
-        public Builder bookSeriesMap(Map<BookImpl, List<Series>> bookSeriesMap) {
+        public Builder bookSeriesMap(Map<BookImpl, List<SeriesImpl>> bookSeriesMap) {
             this.bookSeriesMap = bookSeriesMap;
             return this;
         }

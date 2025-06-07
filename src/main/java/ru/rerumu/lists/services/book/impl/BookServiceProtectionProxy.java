@@ -2,6 +2,7 @@ package ru.rerumu.lists.services.book.impl;
 
 import lombok.NonNull;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
+import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
@@ -10,7 +11,6 @@ import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.services.book.BookService;
-import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
         
-        readListService.addBook(bookAddView, user);
+        readListService.addBook(bookAddView, userId);
     }
 
     @Override

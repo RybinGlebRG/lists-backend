@@ -2,7 +2,7 @@ package ru.rerumu.lists.services.series.impl;
 
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.services.series.SeriesService;
@@ -22,7 +22,7 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     }
 
     @Override
-    public List<Series> getAll(Long readListId) {
+    public List<SeriesImpl> getAll(Long readListId) {
         try {
             userService.checkOwnershipList(authUser.name(), readListId);
         } catch (UserIsNotOwnerException e){

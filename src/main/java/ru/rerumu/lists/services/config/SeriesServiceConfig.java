@@ -26,7 +26,7 @@ import java.util.Optional;
 @Slf4j
 public class SeriesServiceConfig {
 
-    @Bean("seriesService")
+    @Bean("seriesServiceImpl")
     public SeriesService seriesService(
             SeriesServiceImpl seriesServiceImpl
     ){
@@ -54,7 +54,7 @@ public class SeriesServiceConfig {
     @Primary
     @RequestScope
     public SeriesService seriesServiceProtectionProxy(
-            @Qualifier("seriesService") SeriesService seriesService,
+            @Qualifier("seriesServiceImpl") SeriesService seriesService,
             UserService userService
     ) throws EntityNotFoundException {
         Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);

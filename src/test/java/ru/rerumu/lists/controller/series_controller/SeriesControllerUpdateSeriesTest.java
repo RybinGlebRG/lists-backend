@@ -12,14 +12,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.controller.SeriesController;
+import ru.rerumu.lists.controller.series.SeriesController;
 import ru.rerumu.lists.model.series.item.SeriesItemType;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.seriesupdate.SeriesUpdateItem;
-import ru.rerumu.lists.views.seriesupdate.SeriesUpdateView;
+import ru.rerumu.lists.controller.series.view.in.SeriesUpdateItem;
+import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 
 import java.util.*;
 

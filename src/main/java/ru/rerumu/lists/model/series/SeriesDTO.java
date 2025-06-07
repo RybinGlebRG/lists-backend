@@ -3,6 +3,7 @@ package ru.rerumu.lists.model.series;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.base.EntityDTO;
 import ru.rerumu.lists.model.series.item.SeriesItemDTO;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class SeriesDTO implements EntityDTO<Series> {
+public class SeriesDTO implements EntityDTO<SeriesImpl> {
 
     public  Long seriesId;
     public  Long seriesListId;
@@ -28,7 +29,7 @@ public class SeriesDTO implements EntityDTO<Series> {
     public Integer bookCount=0;
     public List<SeriesItemOrderDTO> seriesItemOrderDTOList;
 
-    public Series toSeries(){
+    public SeriesImpl toSeries(){
         List<SeriesItem> tmp = seriesItemOrderDTOList.stream()
                 .sorted(Comparator.comparing(SeriesItemOrderDTO::getOrder))
                 .map(SeriesItemOrderDTO::getItemDTO)
@@ -36,7 +37,7 @@ public class SeriesDTO implements EntityDTO<Series> {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        return new Series.Builder()
+        return new SeriesImpl.Builder()
                 .seriesId(seriesId)
                 .title(title)
                 .readListId(seriesListId)
@@ -46,7 +47,7 @@ public class SeriesDTO implements EntityDTO<Series> {
     }
 
     @Override
-    public Series toDomain() {
+    public SeriesImpl toDomain() {
         return toSeries();
     }
 

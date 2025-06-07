@@ -7,7 +7,7 @@ import ru.rerumu.lists.model.BookStatus;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.author.impl.AuthorImpl;
 import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ public class BookView {
     private BookImpl book;
     private BookStatus bookStatus;
     private AuthorImpl author;
-    private Series series;
+    private SeriesImpl series;
     private List<SeriesBookRelation> seriesBookRelationList;
-    private List<Series> seriesList;
+    private List<SeriesImpl> seriesList;
 
     private BookView(
             BookImpl book,
             BookStatus bookStatus,
             AuthorImpl author,
-            Series series,
+            SeriesImpl series,
             List<SeriesBookRelation> seriesBookRelationList,
-            List<Series> seriesList
+            List<SeriesImpl> seriesList
     ) {
         this.book = book;
         this.bookStatus = bookStatus;
@@ -37,7 +37,7 @@ public class BookView {
 
     private JSONArray formatSeriesList(){
         JSONArray arr = new JSONArray();
-        for(Series series: seriesList){
+        for(SeriesImpl series: seriesList){
             arr.put(series.toJSONObject("seriesId","title"));
         }
         return arr;
@@ -69,10 +69,10 @@ public class BookView {
         private BookImpl book;
         private BookStatus bookStatus;
         private AuthorImpl author;
-        private Series series;
+        private SeriesImpl series;
 
         private List<SeriesBookRelation> seriesBookRelationList;
-        private List<Series> seriesList;
+        private List<SeriesImpl> seriesList;
 
 
         public Builder bookStatus(BookImpl book) {
@@ -90,7 +90,7 @@ public class BookView {
             return this;
         }
 
-        public Builder series(Series series) {
+        public Builder series(SeriesImpl series) {
             this.series = series;
             return this;
         }
@@ -100,7 +100,7 @@ public class BookView {
             return this;
         }
 
-        public Builder seriesList(List<Series> seriesList){
+        public Builder seriesList(List<SeriesImpl> seriesList){
             this.seriesList = seriesList;
             return this;
         }
