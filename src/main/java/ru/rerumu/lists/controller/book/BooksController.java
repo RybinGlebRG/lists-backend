@@ -28,7 +28,7 @@ import ru.rerumu.lists.model.book.impl.BookImpl;
 import ru.rerumu.lists.model.books.Search;
 import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.services.book.BookService;
-import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
+import ru.rerumu.lists.services.series.SeriesService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +39,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BooksController {
 
-    private final SeriesServiceImpl seriesService;
+    private final SeriesService seriesService;
     private final BookViewFactory bookViewFactory;
     private final ObjectMapper objectMapper;
     private final BookService bookService;
 
     @Autowired
     public BooksController(
-            SeriesServiceImpl seriesService,
+            SeriesService seriesService,
             BookViewFactory bookViewFactory,
             ObjectMapper objectMapper,
             BookService bookService
@@ -84,7 +84,7 @@ public class BooksController {
     ) throws UserIsNotOwnerException, JsonProcessingException {
 
         Book book = bookService.getBook(bookId, userId);
-        List<Series> seriesList = seriesService.findByBook((BookImpl) book);
+        List<Series> seriesList = seriesService.findByBook((BookImpl) book, userId);
 
         ru.rerumu.lists.controller.book.view.out.BookView bookView = bookViewFactory.buildBookView(book.toDTO(), seriesList);
         String result = objectMapper.writeValueAsString(bookView);

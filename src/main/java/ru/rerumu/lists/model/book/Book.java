@@ -3,6 +3,7 @@ package ru.rerumu.lists.model.book;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.model.author.Author;
+import ru.rerumu.lists.model.base.Entity;
 import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.model.user.User;
@@ -14,7 +15,7 @@ import ru.rerumu.lists.model.tag.Tag;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface Book extends SeriesItem {
+public interface Book extends SeriesItem, Entity {
 
     void addReadingRecord(
             @NonNull BookStatusRecord bookStatusRecord,
@@ -56,7 +57,6 @@ public interface Book extends SeriesItem {
      */
     void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep);
 
-    Long getId();
     Long getListId();
     User getUser();
 

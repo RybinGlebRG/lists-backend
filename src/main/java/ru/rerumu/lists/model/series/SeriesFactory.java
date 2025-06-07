@@ -2,6 +2,7 @@ package ru.rerumu.lists.model.series;
 
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.series.item.SeriesItem;
 import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.book.BookDTO;
@@ -22,7 +23,7 @@ public class SeriesFactory {
         this.bookFactory = bookFactory;
     }
 
-    public Series fromDTO(SeriesDTO seriesDTO){
+    public SeriesImpl fromDTO(SeriesDTO seriesDTO){
         List<SeriesItem> tmp = seriesDTO.seriesItemOrderDTOList.stream()
                 .sorted(Comparator.comparing(SeriesItemOrderDTO::getOrder))
                 .map(SeriesItemOrderDTO::getItemDTO)
@@ -38,7 +39,7 @@ public class SeriesFactory {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        return new Series.Builder()
+        return new SeriesImpl.Builder()
                 .seriesId(seriesDTO.seriesId)
                 .title(seriesDTO.title)
                 .readListId(seriesDTO.seriesListId)
