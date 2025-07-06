@@ -22,12 +22,12 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     }
 
     @Override
-    public List<SeriesImpl> getAll(Long readListId) {
+    public List<SeriesImpl> findAll(Long readListId) {
         try {
             userService.checkOwnershipList(authUser.name(), readListId);
         } catch (UserIsNotOwnerException e){
             throw new UserPermissionException();
         }
-        return seriesService.getAll(readListId);
+        return seriesService.findAll(readListId);
     }
 }

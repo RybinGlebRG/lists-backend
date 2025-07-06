@@ -9,7 +9,6 @@ public record SeriesDTOv2(
         Long seriesId,
         Long userId,
         String title,
-        Integer bookCount,
         List<SeriesItemDTOv2> items
 ) {
 

@@ -9,7 +9,7 @@ import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.SeriesBookRelation;
 import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.series.SeriesFactory;
+import ru.rerumu.lists.model.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 
@@ -25,14 +25,14 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
     private final SeriesBookMapper seriesBookMapper;
     private final BookRepository bookRepository;
     private final SeriesRepository seriesRepository;
-    private final SeriesFactory seriesFactory;
+    private final SeriesFactoryImpl seriesFactory;
     private final BookFactoryImpl bookFactory;
 
     @Autowired
     public SeriesBooksRespositoryImpl(
             SeriesBookMapper seriesBookMapper,
             BookRepository bookRepository,
-            SeriesRepository seriesRepository, SeriesFactory seriesFactory, BookFactoryImpl bookFactory
+            SeriesRepository seriesRepository, SeriesFactoryImpl seriesFactory, BookFactoryImpl bookFactory
     ) {
         this.seriesBookMapper = seriesBookMapper;
         this.bookRepository = bookRepository;

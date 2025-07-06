@@ -10,7 +10,7 @@ import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.model.book.BookDTO;
 import ru.rerumu.lists.model.series.SeriesDTO;
-import ru.rerumu.lists.model.series.SeriesFactory;
+import ru.rerumu.lists.model.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 
 import java.util.ArrayList;
@@ -24,12 +24,12 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;
-    private final SeriesFactory seriesFactory;
+    private final SeriesFactoryImpl seriesFactory;
     private final ReadingRecordFactory readingRecordFactory;
 
     @Autowired
     public SeriesRepositoryImpl(
-            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactory seriesFactory, ReadingRecordFactory readingRecordFactory) {
+            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactoryImpl seriesFactory, ReadingRecordFactory readingRecordFactory) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.readingRecordMapper = readingRecordMapper;

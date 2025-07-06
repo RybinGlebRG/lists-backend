@@ -54,7 +54,7 @@ public class SeriesController {
             @PathVariable Long seriesId
 
     ) throws JsonProcessingException {
-        Series series = seriesService.getSeries(seriesId, userId);
+        Series series = seriesService.findById(seriesId, userId);
         SeriesView seriesView = seriesViewFactory.buildSeriesView(series.toDTO());
         String res = objectMapper.writeValueAsString(seriesView);
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -65,7 +65,7 @@ public class SeriesController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<String> getAll(@PathVariable Long userId) throws JsonProcessingException {
-        List<Series> series = seriesService.getAll(userId);
+        List<Series> series = seriesService.findAll(userId);
 
         SeriesListView seriesListView = seriesViewFactory.buildSeriesListView(
                 series.stream()

@@ -1,50 +1,20 @@
 package ru.rerumu.lists.model.series;
 
-import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.book.BookDtoDao;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
+import lombok.NonNull;
 import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.dto.SeriesItemOrderDTO;
+import ru.rerumu.lists.model.user.User;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-@Component
-public class SeriesFactory {
+public interface SeriesFactory {
 
-    private final BookFactoryImpl bookFactory;
+    List<Series> findAll(@NonNull User user);
 
-    public SeriesFactory(BookFactoryImpl bookFactory) {
-        this.bookFactory = bookFactory;
-    }
+    Series findById(@NonNull User user, @NonNull Long seriesId);
 
-    public SeriesImpl fromDTO(SeriesDTO seriesDTO){
-        List<SeriesItem> tmp = seriesDTO.seriesItemOrderDTOList.stream()
-                .sorted(Comparator.comparing(SeriesItemOrderDTO::getOrder))
-                .map(SeriesItemOrderDTO::getItemDTO)
-                .map(seriesItemDTO -> {
-                    if (seriesItemDTO instanceof BookDTO){
-                        return bookFactory.fromDTO((BookDTO) seriesItemDTO);
-                    } else if (seriesItemDTO instanceof BookDtoDao bookDtoDao) {
-                        return bookFactory.fromDTO(bookDtoDao);
-                    } else {
-                        return seriesItemDTO.toDomain();
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return new SeriesImpl.Builder()
-                .seriesId(seriesDTO.seriesId)
-                .title(seriesDTO.title)
-                .readListId(seriesDTO.seriesListId)
-                .bookCount(seriesDTO.bookCount)
-                .itemList(tmp)
-                .build();
-    }
+    Series createSeries(
+            @NonNull String title,
+            @NonNull List<SeriesItem> itemsList,
+            @NonNull User user
+    );
 }

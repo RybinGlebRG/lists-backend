@@ -11,7 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.series.SeriesFactory;
+import ru.rerumu.lists.model.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.model.user.User;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.book.impl.ReadListService;
@@ -39,7 +39,7 @@ public class SeriesServiceConfig {
             BookSeriesRelationService bookSeriesRelationService,
             SeriesBooksRespository seriesBooksRespository,
             ReadListService readListService,
-            SeriesFactory seriesFactory
+            SeriesFactoryImpl seriesFactory
     ){
         return new SeriesServiceImpl(
                 seriesRepository,

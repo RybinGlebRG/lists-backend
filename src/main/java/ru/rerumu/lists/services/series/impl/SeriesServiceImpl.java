@@ -1,5 +1,6 @@
 package ru.rerumu.lists.services.series.impl;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateItem;
@@ -15,6 +16,8 @@ import ru.rerumu.lists.model.series.Series;
 import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.model.series.impl.SeriesImpl;
 import ru.rerumu.lists.model.series.item.SeriesItem;
+import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.model.user.UserFactory;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
@@ -38,29 +41,33 @@ public class SeriesServiceImpl implements SeriesService {
 
     private final ReadListService readListService;
     private final SeriesFactory seriesFactory;
+    private final UserFactory userFactory;
 
     public SeriesServiceImpl(
             SeriesRepository seriesRepository,
             BookSeriesRelationService bookSeriesRelationService,
             SeriesBooksRespository seriesBooksRespository,
-            ReadListService readListService, SeriesFactory seriesFactory
+            ReadListService readListService,
+            SeriesFactory seriesFactory, UserFactory userFactory
     ) {
         this.seriesRepository = seriesRepository;
         this.bookSeriesRelationService = bookSeriesRelationService;
         this.seriesBooksRespository = seriesBooksRespository;
         this.readListService = readListService;
         this.seriesFactory = seriesFactory;
-    }
-
-    public List<SeriesImpl> getAll(Long readListId) {
-        return seriesRepository.getAll(readListId).stream()
-                .map(seriesFactory::fromDTO)
-                .collect(Collectors.toCollection(ArrayList::new));
+        this.userFactory = userFactory;
     }
 
     @Override
-    public Series getSeries(Long seriesId, Long userId) {
-        return seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
+    public List<Series> findAll(@NonNull Long userId) {
+        User user = userFactory.findById(userId);
+        return seriesFactory.findAll(user);
+    }
+
+    @Override
+    public Series findById(@NonNull Long seriesId, @NonNull Long userId) {
+        User user = userFactory.findById(userId);
+        return seriesFactory.findById(user, seriesId);
     }
 
     @Override
@@ -99,7 +106,7 @@ public class SeriesServiceImpl implements SeriesService {
     public void updateSeries(Long seriesId, Long userId, SeriesUpdateView seriesUpdateView) {
         log.debug(seriesUpdateView.toString());
 
-        Optional<SeriesImpl> series = getSeries(seriesId);
+        Optional<SeriesImpl> series = findById(seriesId);
         series.orElseThrow(EntityNotFoundException::new);
 
         List<SeriesItem> updatedItems = new ArrayList<>();
