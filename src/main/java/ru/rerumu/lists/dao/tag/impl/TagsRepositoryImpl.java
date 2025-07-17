@@ -6,10 +6,10 @@ import ru.rerumu.lists.dao.tag.BookTagDTO;
 import ru.rerumu.lists.dao.tag.BookTagMapper;
 import ru.rerumu.lists.dao.tag.mapper.TagsMapper;
 import ru.rerumu.lists.dao.tag.TagsRepository;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.model.tag.TagDTO;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.tag.Tag;
+import ru.rerumu.lists.domain.tag.TagDTO;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 

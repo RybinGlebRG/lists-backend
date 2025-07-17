@@ -1,6 +1,6 @@
 package ru.rerumu.lists.dao.title;
 
-import ru.rerumu.lists.model.title.Title;
+import ru.rerumu.lists.domain.title.Title;
 import ru.rerumu.lists.views.TitleCreateView;
 
 import java.util.List;

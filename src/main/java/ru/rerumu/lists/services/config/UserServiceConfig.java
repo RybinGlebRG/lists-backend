@@ -12,7 +12,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.user.UserMapper;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
 import ru.rerumu.lists.services.user.UserService;

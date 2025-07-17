@@ -6,11 +6,12 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.series.SeriesDTO;
-import ru.rerumu.lists.model.series.impl.SeriesFactoryImpl;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.book.BookDTO;
+import ru.rerumu.lists.domain.series.SeriesDTO;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.domain.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;

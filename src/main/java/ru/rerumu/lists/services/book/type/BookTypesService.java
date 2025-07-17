@@ -1,7 +1,7 @@
 package ru.rerumu.lists.services.book.type;
 
-import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.model.book.type.BookTypeDTO;
+import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.book.type.BookTypeDTO;
 import ru.rerumu.lists.dao.base.CrudRepository;
 
 import java.util.ArrayList;
@@ -24,6 +24,6 @@ public class BookTypesService {
     }
 
     public Optional<BookType> findById(int bookTypeId){
-        return crudRepository.findById(bookTypeId).map(BookTypeDTO::toDomain);
+        return crudRepository.findById(bookTypeId, null).map(BookTypeDTO::toDomain);
     }
 }

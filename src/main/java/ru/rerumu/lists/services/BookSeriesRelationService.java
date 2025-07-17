@@ -2,8 +2,8 @@ package ru.rerumu.lists.services;
 
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
-import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.impl.SeriesImpl;
+import ru.rerumu.lists.domain.SeriesBookRelation;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class BookSeriesRelationService {
     }
 
     public List<SeriesBookRelation> getBySeries(SeriesImpl series) throws EntityNotFoundException {
-        return seriesBooksRespository.getBySeriesId(series.getSeriesId());
+        return seriesBooksRespository.getBySeriesId(series.getId());
     }
 
     public HashMap<SeriesImpl, List<SeriesBookRelation>> get(List<SeriesImpl> seriesList) {

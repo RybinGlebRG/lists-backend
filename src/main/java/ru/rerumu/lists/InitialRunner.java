@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.util.Optional;

@@ -5,19 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateItem;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
-import ru.rerumu.lists.crosscut.exception.EntityHasChildrenException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
-import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.series.Series;
-import ru.rerumu.lists.model.series.SeriesFactory;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
-import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.user.UserFactory;
+import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
+import ru.rerumu.lists.domain.series.impl.SeriesImpl;
+import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
@@ -75,19 +76,21 @@ public class SeriesServiceImpl implements SeriesService {
     public void add(Long userId, BookSeriesAddView bookSeriesAddView) {
         long nextId = seriesRepository.getNextId();
 
-        SeriesImpl series = new SeriesImpl.Builder()
-                .seriesId(nextId)
-                .title(bookSeriesAddView.getTitle())
-                .readListId(readListId)
-                .build();
-
-        seriesRepository.add(series.toDTO());
+        throw new NotImplementedException();
+//        SeriesImpl series = new SeriesImpl.Builder()
+//                .seriesId(nextId)
+//                .title(bookSeriesAddView.getTitle())
+//                .readListId(readListId)
+//                .build();
+//
+//        seriesRepository.add(series.toDTO());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long seriesId, Long userId) {
-        Optional<SeriesImpl> optionalSeries = seriesRepository.findById(seriesId).map(seriesFactory::fromDTO);
+        User user = userFactory.findById(userId);
+        Optional<SeriesImpl> optionalSeries = seriesRepository.findById(seriesId, user).map(seriesFactory::fromDTOv2);
 
         if (optionalSeries.isEmpty()) {
             throw new EntityNotFoundException();
@@ -95,7 +98,8 @@ public class SeriesServiceImpl implements SeriesService {
 
         List<SeriesBookRelation> seriesBookRelationList = bookSeriesRelationService.getBySeries(seriesId);
         if (seriesBookRelationList.size() > 0) {
-            throw new EntityHasChildrenException();
+            throw new ServerException("EntityHasChildrenException");
+//            throw new EntityHasChildrenException();
         }
 
         seriesRepository.delete(seriesId);
@@ -106,14 +110,13 @@ public class SeriesServiceImpl implements SeriesService {
     public void updateSeries(Long seriesId, Long userId, SeriesUpdateView seriesUpdateView) {
         log.debug(seriesUpdateView.toString());
 
-        Optional<SeriesImpl> series = findById(seriesId);
-        series.orElseThrow(EntityNotFoundException::new);
+        Series series = findById(seriesId, userId);
 
         List<SeriesItem> updatedItems = new ArrayList<>();
         for (SeriesUpdateItem seriesUpdateItem : seriesUpdateView.itemList()) {
             switch (seriesUpdateItem.itemType()) {
                 case BOOK -> {
-                    Book book = readListService.getBook(seriesUpdateItem.itemId());
+                    Book book = readListService.getBook(seriesUpdateItem.itemId(), userId);
                     updatedItems.add(book);
                 }
                 default -> throw new IllegalArgumentException();
@@ -121,12 +124,15 @@ public class SeriesServiceImpl implements SeriesService {
         }
         log.debug("updatedItems: " + updatedItems);
 
-        SeriesImpl updatedSeries = new SeriesImpl.Builder(series.get())
-                .itemList(updatedItems)
-                .build();
+        Series updatedSeries = new SeriesImpl(
+                series.getId(),
+                series.getTitle(),
+                series.getItemsList(),
+                series.getUser()
+        );
 
-        removeBookRelations(series.get(), updatedSeries);
-        saveBookRelations(updatedSeries);
+        removeBookRelations((SeriesImpl) series, (SeriesImpl) updatedSeries);
+        saveBookRelations((SeriesImpl) updatedSeries);
     }
 
     @Deprecated
@@ -142,47 +148,49 @@ public class SeriesServiceImpl implements SeriesService {
         return bookSeriesMap;
     }
 
+    // TODO: fix null
     @Override
     public List<Series> findByBook(Book book, Long userId) {
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getId(), book.getReadListId(), userId);
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getId(), null, userId);
         return seriesBookRelationList.stream()
                 .map(SeriesBookRelation::series)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void removeBookRelations(SeriesImpl source, SeriesImpl target) {
-        List<SeriesBookRelation> relationsToRemove = source.getItemsList().stream()
-                .filter(o1 -> o1 instanceof BookImpl)
-                .map(o1 -> (BookImpl) o1)
-                .filter(b1 -> {
-                    for (Object o2 : target.getItemsList()) {
-                        if (o2 instanceof BookImpl b2 && b1.equals(b2)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-                .map(b1 -> {
-                    try {
-                        return seriesBooksRespository.getByIds(source.getSeriesId(), b1.getBookId());
-                    } catch (EntityNotFoundException e) {
-                        // Supposed to be present
-                        throw new AssertionError(e);
-                    }
-                })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        log.debug("Relations to remove: " + relationsToRemove);
-
-        for (SeriesBookRelation seriesBookRelation : relationsToRemove) {
-            seriesBooksRespository.delete(
-                    seriesBookRelation.book().getId(),
-                    seriesBookRelation.series().getSeriesId(),
-                    seriesBookRelation.series().getSeriesListId()
-            );
-        }
+        throw new NotImplementedException();
+//        List<SeriesBookRelation> relationsToRemove = source.getItemsList().stream()
+//                .filter(o1 -> o1 instanceof BookImpl)
+//                .map(o1 -> (BookImpl) o1)
+//                .filter(b1 -> {
+//                    for (Object o2 : target.getItemsList()) {
+//                        if (o2 instanceof BookImpl b2 && b1.equals(b2)) {
+//                            return false;
+//                        }
+//                    }
+//                    return true;
+//                })
+//                .map(b1 -> {
+//                    try {
+//                        return seriesBooksRespository.getByIds(source.getSeriesId(), b1.getBookId());
+//                    } catch (EntityNotFoundException e) {
+//                        // Supposed to be present
+//                        throw new AssertionError(e);
+//                    }
+//                })
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .collect(Collectors.toCollection(ArrayList::new));
+//
+//        log.debug("Relations to remove: " + relationsToRemove);
+//
+//        for (SeriesBookRelation seriesBookRelation : relationsToRemove) {
+//            seriesBooksRespository.delete(
+//                    seriesBookRelation.book().getId(),
+//                    seriesBookRelation.series().getSeriesId(),
+//                    seriesBookRelation.series().getSeriesListId()
+//            );
+//        }
     }
 
     private void saveBookRelations(SeriesImpl series) {

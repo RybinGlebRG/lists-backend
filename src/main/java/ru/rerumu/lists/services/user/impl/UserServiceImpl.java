@@ -11,8 +11,8 @@ import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.TokenRequest;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.TokenRequest;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
@@ -121,9 +121,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // TODO: fix null
     @Override
     public Optional<User> getOne(Long userId){
-        return crudRepository.findById(userId);
+        return crudRepository.findById(userId, null);
     }
 
     private String createJWT(String username){

@@ -1,7 +1,7 @@
 package ru.rerumu.lists.services.book.readingrecord;
 
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;
 import ru.rerumu.lists.views.ReadingRecordAddView;
 import ru.rerumu.lists.views.ReadingRecordUpdateView;
 

@@ -2,13 +2,13 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.books.Filter;
-import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.books.SearchOrder;
-import ru.rerumu.lists.model.books.SortItem;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.books.Filter;
+import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.books.SearchOrder;
+import ru.rerumu.lists.domain.books.SortItem;
+import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 
 import java.util.Comparator;
 import java.util.List;

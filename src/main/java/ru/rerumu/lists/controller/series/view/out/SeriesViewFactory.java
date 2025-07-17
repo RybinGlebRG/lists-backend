@@ -1,8 +1,8 @@
 package ru.rerumu.lists.controller.series.view.out;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.series.SeriesDTOv2;
-import ru.rerumu.lists.model.series.item.SeriesItemDTOv2;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

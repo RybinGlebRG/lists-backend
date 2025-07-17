@@ -3,7 +3,7 @@ package ru.rerumu.lists.services.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.rerumu.lists.dao.book.type.BookTypeMapper;
-import ru.rerumu.lists.model.book.type.BookTypeDTO;
+import ru.rerumu.lists.domain.book.type.BookTypeDTO;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 

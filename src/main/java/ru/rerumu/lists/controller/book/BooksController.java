@@ -23,10 +23,10 @@ import ru.rerumu.lists.controller.book.view.out.BookViewFactory;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.series.SeriesService;
 

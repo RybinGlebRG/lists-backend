@@ -2,7 +2,7 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.game.Game;
+import ru.rerumu.lists.domain.game.Game;
 
 import java.util.Comparator;
 import java.util.List;
@@ -28,8 +28,8 @@ public record GameListView(List<Game> gamesList) {
 
     private void sort(){
         Comparator<Game> gameComparator = Comparator
-                .comparing(Game::createDateUTC).reversed()
-                .thenComparing(Game::title);
+                .comparing(Game::getCreateDateUTC).reversed()
+                .thenComparing(Game::getTitle);
         this.gamesList.sort(gameComparator);
     }
 

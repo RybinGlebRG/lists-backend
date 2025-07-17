@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.book.readingrecord.status.StatusRepository;
 import ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 
+// TODO: fix null
 @Component
 public class StatusRepositoryImpl implements StatusRepository {
 
@@ -21,7 +22,7 @@ public class StatusRepositoryImpl implements StatusRepository {
     @Override
     @NonNull
     public BookStatusRecord findById(@NonNull Long statusId) {
-        BookStatusRecord bookStatusRecord = statusMapper.findById(statusId.intValue());
+        BookStatusRecord bookStatusRecord = statusMapper.findById(statusId.intValue(), null);
         if (bookStatusRecord == null) {
             throw new EntityNotFoundException();
         }

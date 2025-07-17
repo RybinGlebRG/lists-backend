@@ -4,17 +4,17 @@
 
 <mapper namespace="ru.rerumu.lists.dao.game.GameMapper">
 
-    <resultMap id="GameResultMap" type="ru.rerumu.lists.model.game.Game">
+    <resultMap id="GameResultMap" type="ru.rerumu.lists.domain.game.Game">
         <constructor>
             <idArg column="gameId" javaType="Integer"/>
             <arg column="title" javaType="String"/>
-            <arg resultMap="UserResultMap" javaType="ru.rerumu.lists.model.user.User"/>
+            <arg resultMap="UserResultMap" javaType="ru.rerumu.lists.domain.user.User"/>
             <arg column="createDateUTC" javaType="java.time.LocalDateTime"/>
             <arg column="note" javaType="String"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.user.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.User">
         <constructor>
             <idArg column="userId" javaType="Long"/>
             <arg column="name" javaType="String"/>
@@ -22,7 +22,7 @@
         </constructor>
     </resultMap>
 
-    <select id="findByUser" parameterType="ru.rerumu.lists.model.user.User" resultMap="GameResultMap">
+    <select id="findByUser" parameterType="ru.rerumu.lists.domain.user.User" resultMap="GameResultMap">
         select  g.game_id as gameId,
                 g.title,
                 u.USER_ID as userId,
@@ -36,7 +36,7 @@
         where u.USER_ID=#{userId}
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.model.game.Game">
+    <insert id="create" parameterType="ru.rerumu.lists.domain.game.Game">
         insert into games(game_id, user_user_id, title, insert_date, note)
         values(#{gameId},#{user.userId},#{title},#{createDateUTC}, #{note})
     </insert>

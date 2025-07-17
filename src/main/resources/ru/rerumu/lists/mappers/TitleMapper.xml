@@ -4,18 +4,18 @@
 
 <mapper namespace="ru.rerumu.lists.dao.title.TitleMapper">
 
-    <resultMap id="TitleResultMap" type="ru.rerumu.lists.model.title.Title">
+    <resultMap id="TitleResultMap" type="ru.rerumu.lists.domain.title.Title">
         <constructor>
             <idArg column="title_id" name="titleId"/>
             <arg column="list_list_id" name="watchListId"/>
             <arg column="name" name="name"/>
             <arg column="create_date_utc" name="createDateUTC"/>
             <arg column="status_status_id" name="statusId"/>
-            <arg resultMap="VideoTypeResultMap" name="videoType" javaType="ru.rerumu.lists.model.VideoType"/>
+            <arg resultMap="VideoTypeResultMap" name="videoType" javaType="ru.rerumu.lists.domain.VideoType"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.model.VideoType">
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.VideoType">
         <result column="type_id" property="typeId" />
         <result column="type_name" property="name" />
     </resultMap>

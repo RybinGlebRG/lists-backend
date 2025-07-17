@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
-import ru.rerumu.lists.model.series.SeriesDTO;
+import ru.rerumu.lists.domain.series.SeriesDTO;
 
 import java.util.List;
 

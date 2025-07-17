@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.user;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 @Mapper
 public interface UserMapper extends CrudMapper<User,Long,User> {

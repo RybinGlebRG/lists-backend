@@ -15,19 +15,19 @@ import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
-import ru.rerumu.lists.model.author.Author;
-import ru.rerumu.lists.model.author.AuthorFactory;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.model.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.model.book.type.BookType;
-import ru.rerumu.lists.model.books.Filter;
-import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.model.tag.TagFactory;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.user.UserFactory;
+import ru.rerumu.lists.domain.author.Author;
+import ru.rerumu.lists.domain.author.AuthorFactory;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
+import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.books.Filter;
+import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.tag.Tag;
+import ru.rerumu.lists.domain.tag.TagFactory;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.AuthorsBooksRelationService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.author.AuthorsService;
@@ -281,7 +281,7 @@ public class ReadListService implements BookService {
                 )
                 .forEach(item -> bookSeriesRelationService.delete(
                         item.book().getId(),
-                        item.series().getSeriesId(),
+                        item.series().getId(),
                         item.book().getListId()
                 ));
 

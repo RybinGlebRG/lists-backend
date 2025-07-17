@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.series.view.out.SeriesListView;
 import ru.rerumu.lists.controller.series.view.out.SeriesView;
 import ru.rerumu.lists.controller.series.view.out.SeriesViewFactory;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;

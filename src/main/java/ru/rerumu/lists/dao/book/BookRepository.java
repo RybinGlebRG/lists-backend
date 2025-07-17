@@ -1,8 +1,8 @@
 package ru.rerumu.lists.dao.book;
 
 import lombok.NonNull;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 import java.util.Optional;

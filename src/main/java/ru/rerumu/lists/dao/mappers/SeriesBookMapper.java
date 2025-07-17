@@ -1,9 +1,9 @@
 package ru.rerumu.lists.dao.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
-import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.dto.SeriesBookRelationDTO;
+import ru.rerumu.lists.domain.series.impl.SeriesImpl;
+import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
 
 import java.util.List;
 

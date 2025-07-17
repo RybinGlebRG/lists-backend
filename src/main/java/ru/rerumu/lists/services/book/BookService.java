@@ -5,8 +5,8 @@ import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.books.Search;
 
 import java.util.List;
 

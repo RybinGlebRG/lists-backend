@@ -9,12 +9,12 @@ import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.user.UserDtoDao;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.model.book.type.BookTypeDTO;
-import ru.rerumu.lists.model.series.item.SeriesItem;
-import ru.rerumu.lists.model.series.item.SeriesItemDTO;
-import ru.rerumu.lists.model.tag.TagDTO;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.type.BookTypeDTO;
+import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
+import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.util.Date;
 import java.util.List;

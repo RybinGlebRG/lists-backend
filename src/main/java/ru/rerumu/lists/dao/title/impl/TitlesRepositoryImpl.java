@@ -3,7 +3,7 @@ package ru.rerumu.lists.dao.title.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.title.TitleMapper;
-import ru.rerumu.lists.model.title.Title;
+import ru.rerumu.lists.domain.title.Title;
 import ru.rerumu.lists.dao.title.TitlesRepository;
 import ru.rerumu.lists.views.TitleCreateView;
 

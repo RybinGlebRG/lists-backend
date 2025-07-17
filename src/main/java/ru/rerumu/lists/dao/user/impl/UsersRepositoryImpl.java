@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.user.UserMapper;
 import ru.rerumu.lists.dao.user.UsersRepository;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 
@@ -42,13 +42,15 @@ public class UsersRepositoryImpl implements UsersRepository {
         return userMapper.countSeries(name, seriesId) > 0;
     }
 
+    // TODO: fix null
     @Override
     public User findById(Long userId) {
-        return userMapper.findById(userId);
+        return userMapper.findById(userId, null);
     }
 
+    // TODO: fix null
     @Override
     public List<User> findByIds(List<Long> userIds) {
-        return userMapper.findByIds(userIds);
+        return userMapper.findByIds(userIds, null);
     }
 }

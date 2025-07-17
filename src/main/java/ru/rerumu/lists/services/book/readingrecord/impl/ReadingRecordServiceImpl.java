@@ -3,10 +3,10 @@ package ru.rerumu.lists.services.book.readingrecord.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordImpl;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
@@ -77,6 +77,7 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
 //        return readingRecord;
 //    }
 
+    // TODO: fix null
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false)
@@ -84,7 +85,7 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
         Objects.requireNonNull(recordId, "recordId cannot be null");
         Objects.requireNonNull(readingRecordUpdateView, "readingRecordUpdateView cannot be null");
 
-        ReadingRecord readingRecord = crudRepository.findById(recordId).map(readingRecordFactory::fromDTO).orElseThrow();
+        ReadingRecord readingRecord = crudRepository.findById(recordId, null).map(readingRecordFactory::fromDTO).orElseThrow();
 
         BookStatusRecord bookStatusRecord = bookStatusesService.findById(readingRecordUpdateView.statusId()).orElseThrow();
 
@@ -103,10 +104,11 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
         return readingRecord;
     }
 
+    // TODO: fix null
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteRecord(Long recordId) {
-        crudRepository.delete(recordId);
+        crudRepository.delete(recordId, null);
     }
 
     @Override
@@ -118,8 +120,9 @@ public class ReadingRecordServiceImpl implements ReadingRecordService {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    // TODO: fix null
     @Override
     public Optional<ReadingRecord> getReadingRecord(Long readingRecordId) {
-        return crudRepository.findById(readingRecordId).map(readingRecordFactory::fromDTO);
+        return crudRepository.findById(readingRecordId, null).map(readingRecordFactory::fromDTO);
     }
 }

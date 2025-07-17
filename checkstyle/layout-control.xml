@@ -16,7 +16,7 @@
         <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
 
         <!-- TODO: fix -->
-            <allow class="ru.rerumu.lists.model.factories.UserServiceProxyFactory"/>
+            <allow class="ru.rerumu.lists.domain.factories.UserServiceProxyFactory"/>
         <!-- -->
 
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>

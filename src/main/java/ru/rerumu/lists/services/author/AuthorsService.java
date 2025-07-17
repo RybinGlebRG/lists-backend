@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.model.author.Author;
-import ru.rerumu.lists.model.author.AuthorFactory;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.author.Author;
+import ru.rerumu.lists.domain.author.AuthorFactory;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.views.AddAuthorView;
 
 import java.util.List;

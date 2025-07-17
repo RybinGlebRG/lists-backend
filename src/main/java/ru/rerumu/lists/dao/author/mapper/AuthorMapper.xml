@@ -4,7 +4,7 @@
 
 <mapper namespace="ru.rerumu.lists.dao.author.mapper.AuthorMapper">
 
-    <resultMap id="AuthorResultMap" type="ru.rerumu.lists.model.author.impl.AuthorImpl">
+    <resultMap id="AuthorResultMap" type="ru.rerumu.lists.domain.author.impl.AuthorImpl">
         <result column="author_id" property="authorId" />
         <result column="author_list_id" property="readListId" />
         <result column="author_name" property="name"/>

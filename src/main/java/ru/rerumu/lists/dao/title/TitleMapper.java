@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.title;
 
 import org.apache.ibatis.annotations.Mapper;
-import ru.rerumu.lists.model.title.Title;
+import ru.rerumu.lists.domain.title.Title;
 
 import java.util.Date;
 import java.util.List;

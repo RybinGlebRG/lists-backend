@@ -2,7 +2,7 @@ package ru.rerumu.lists.views.tag;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.tag.Tag;
+import ru.rerumu.lists.domain.tag.Tag;
 
 import java.util.Comparator;
 import java.util.List;

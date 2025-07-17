@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.base;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 

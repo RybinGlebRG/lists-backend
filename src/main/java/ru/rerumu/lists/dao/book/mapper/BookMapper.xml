@@ -43,11 +43,11 @@
         <collection property="readingRecords" resultMap="ReadingRecordResultMap"/>
     </resultMap>
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO">
         <constructor>
             <idArg column="rr_id" name="recordId" javaType="java.lang.Long"/>
             <arg column="book_id" name="bookId" javaType="java.lang.Long"/>
-            <arg name="bookStatus" resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord"/>
+            <arg name="bookStatus" resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord"/>
             <arg column="rr_start_date" name="startDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_end_date" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_is_migrated" name="isMigrated" javaType="java.lang.Boolean"/>
@@ -55,7 +55,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord">
+    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord">
         <constructor>
             <idArg column="rr_status_id" name="statusId" javaType="java.lang.Integer"/>
             <arg column="rr_status_name" name="statusName" javaType="java.lang.String"/>
@@ -70,7 +70,7 @@
         />
     </resultMap>
 
-    <resultMap id="TagResultMap" type="ru.rerumu.lists.model.tag.TagDTO">
+    <resultMap id="TagResultMap" type="ru.rerumu.lists.domain.tag.TagDTO">
         <constructor>
             <idArg name="tagId" column="tag_id"/>
             <arg name="name" column="tag_name"/>
@@ -78,7 +78,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.user.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.User">
         <constructor>
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>

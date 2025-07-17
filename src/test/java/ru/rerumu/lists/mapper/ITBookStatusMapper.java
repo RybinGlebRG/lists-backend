@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper;
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 
 import java.util.List;
 

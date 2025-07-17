@@ -10,9 +10,9 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.book.BookDTO;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

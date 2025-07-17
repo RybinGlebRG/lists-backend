@@ -3,11 +3,12 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.model.BookStatus;
-import ru.rerumu.lists.model.SeriesBookRelation;
-import ru.rerumu.lists.model.author.impl.AuthorImpl;
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.series.impl.SeriesImpl;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.domain.BookStatus;
+import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.author.impl.AuthorImpl;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 
 import java.util.List;
 
@@ -36,11 +37,12 @@ public class BookView {
     }
 
     private JSONArray formatSeriesList(){
-        JSONArray arr = new JSONArray();
-        for(SeriesImpl series: seriesList){
-            arr.put(series.toJSONObject("seriesId","title"));
-        }
-        return arr;
+        throw new NotImplementedException();
+//        JSONArray arr = new JSONArray();
+//        for(SeriesImpl series: seriesList){
+//            arr.put(series.toJSONObject("seriesId","title"));
+//        }
+//        return arr;
     }
 
     public JSONObject toJSONObject() {

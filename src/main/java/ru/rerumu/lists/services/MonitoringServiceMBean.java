@@ -3,8 +3,8 @@ package ru.rerumu.lists.services;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.model.Metric;
-import ru.rerumu.lists.model.MetricType;
+import ru.rerumu.lists.domain.Metric;
+import ru.rerumu.lists.domain.MetricType;
 
 import java.time.Duration;
 import java.util.OptionalDouble;

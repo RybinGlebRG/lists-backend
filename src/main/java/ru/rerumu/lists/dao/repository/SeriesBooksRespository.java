@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.repository;
 
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.SeriesBookRelation;
+import ru.rerumu.lists.domain.SeriesBookRelation;
 
 import java.util.List;
 import java.util.Optional;

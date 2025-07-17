@@ -4,20 +4,20 @@
 
 <mapper namespace="ru.rerumu.lists.dao.mappers.SeriesBookMapper">
 
-<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.model.SeriesBookRelation">-->
+<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.domain.SeriesBookRelation">-->
 <!--        <association property="book"-->
-<!--                     javaType="ru.rerumu.lists.model.book.impl.BookImpl"-->
+<!--                     javaType="ru.rerumu.lists.domain.book.impl.BookImpl"-->
 <!--                     column="{bookId=book_book_id,readListId=readListId}"-->
 <!--                     select="ru.rerumu.lists.dao.book.BookMapper.getOne"-->
 <!--        />-->
 <!--        <association property="series"-->
-<!--                     javaType="ru.rerumu.lists.model.series.impl.SeriesImpl"-->
+<!--                     javaType="ru.rerumu.lists.domain.series.impl.SeriesImpl"-->
 <!--                     column="{seriesId=series_series_id,seriesListId=readListId}"-->
 <!--                     select="ru.rerumu.lists.dao.series.mapper.SeriesMapper.getOne"-->
 <!--        />-->
 <!--    </resultMap>-->
 
-    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.model.dto.SeriesBookRelationDTO">
+    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.domain.dto.SeriesBookRelationDTO">
         <constructor>
             <arg column="series_series_id" javaType="Long"/>
             <arg column="series_list_id" javaType="Long"/>
@@ -25,15 +25,15 @@
             <arg column="book_id" javaType="Long"/>
             <arg column="list_list_id" javaType="Long"/>
             <arg column="title" javaType="String"/>
-            <arg column="status_key_name" javaType="ru.rerumu.lists.model.BookStatus"/>
+            <arg column="status_key_name" javaType="ru.rerumu.lists.domain.BookStatus"/>
             <arg column="insert_date" javaType="Date"/>
             <arg column="last_update_date" javaType="Date"/>
             <arg column="last_chapter" javaType="Integer"/>
-            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.model.book.type.BookType"/>
+            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.domain.book.type.BookType"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.model.book.type.BookType">
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.domain.book.type.BookType">
         <constructor>
             <idArg column="type_id" javaType="Integer"/>
             <arg column="type_name" javaType="String"/>

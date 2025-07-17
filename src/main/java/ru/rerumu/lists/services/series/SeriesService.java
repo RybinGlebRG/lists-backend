@@ -1,7 +1,7 @@
 package ru.rerumu.lists.services.series;
 
-import ru.rerumu.lists.model.book.Book;
-import ru.rerumu.lists.model.series.Series;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.views.BookSeriesAddView;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 
