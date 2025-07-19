@@ -7,6 +7,8 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.impl.BookRepositoryImpl;
+import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 
 @Configuration
 public class BookRepositoryConfig {
@@ -14,11 +16,15 @@ public class BookRepositoryConfig {
     @Bean
     public BookRepository getBookRepository(
             BookMapper bookMapper,
-            AuthorsBooksRepository authorsBooksRepository
+            AuthorsBooksRepository authorsBooksRepository,
+            SeriesMapper seriesMapper,
+            SeriesBookMapper seriesBookMapper
     ) {
         return new BookRepositoryImpl(
                 bookMapper,
-                 authorsBooksRepository
+                authorsBooksRepository,
+                seriesMapper,
+                seriesBookMapper
         );
     }
 }

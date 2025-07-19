@@ -12,4 +12,6 @@ public interface Series extends Entity {
     SeriesDTOv2 toDTO();
 
     List<SeriesItem> getItemsList();
+
+    Long getItemsCountAsLong();
 }

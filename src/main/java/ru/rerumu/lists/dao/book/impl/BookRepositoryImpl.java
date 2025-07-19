@@ -10,8 +10,12 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
@@ -27,13 +31,19 @@ public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
     private final AuthorsBooksRepository authorsBooksRepository;
+    private final SeriesMapper seriesMapper;
+    private final SeriesBookMapper seriesBookMapper;
 
     public BookRepositoryImpl(
             BookMapper bookMapper,
-            AuthorsBooksRepository authorsBooksRepository
+            AuthorsBooksRepository authorsBooksRepository,
+            SeriesMapper seriesMapper,
+            SeriesBookMapper seriesBookMapper
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
+        this.seriesMapper = seriesMapper;
+        this.seriesBookMapper = seriesBookMapper;
     }
 
 
@@ -53,6 +63,31 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getNote(),
                 bookDTO.URL
         );
+
+        // TODO: update series
+        // Add missing series relations
+        for (Series series: book.getSeriesList()) {
+            // Get series relations with books
+            List<SeriesBookRelationDTO> seriesBookRelationDTOList = seriesBookMapper.findBySeriesId(series.getId());
+
+            // Check if book already related to series
+            SeriesBookRelationDTO bookRelation = seriesBookRelationDTOList.stream()
+                    .filter(item -> book.getBookId().equals(item.bookId()))
+                    .findAny()
+                    .orElse(null);
+
+            // If book is not related to series
+            if (bookRelation == null) {
+
+                // Add relation
+                seriesBookMapper.add4User(
+                        book.getBookId(),
+                        series.getId(),
+                        book.getUser().userId(),
+                        series.getItemsCountAsLong()
+                );
+            }
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.mappers;
+package ru.rerumu.lists.dao.series.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
@@ -11,6 +11,7 @@ import java.util.List;
 public interface SeriesBookMapper {
 
     void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
+    void add4User(Long bookId, Long seriesId, Long userId, Long seriesOrder);
 
     void deleteBySeries(Long seriesId);
 
@@ -31,4 +32,5 @@ public interface SeriesBookMapper {
     void merge(SeriesBookRelation seriesBookRelation);
 
     List<SeriesBookRelationDTO> findBySeries(SeriesImpl series);
+    List<SeriesBookRelationDTO> findBySeriesId(Long seriesId);
 }

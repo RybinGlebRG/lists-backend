@@ -6,6 +6,7 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.type.BookType;
@@ -72,6 +73,7 @@ public interface Book extends SeriesItem, Entity {
     void updateType(BookType bookType);
     void updateURL(String URL);
     void updateTags(List<Tag> tags);
+    void updateSeries(@NonNull List<Series> seriesList);
 
     /**
      * Updates text authors.

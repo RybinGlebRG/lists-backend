@@ -15,6 +15,7 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
+import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
@@ -49,7 +50,8 @@ public class BookServiceConfig {
             BookFactoryImpl bookFactory,
             TagFactory tagFactory,
             UserFactory userFactory,
-            AuthorFactory authorFactory
+            AuthorFactory authorFactory,
+            SeriesFactory seriesFactory
     ) {
         return new ReadListService(
                 bookRepository,
@@ -66,7 +68,8 @@ public class BookServiceConfig {
                 bookFactory,
                 tagFactory,
                 userFactory,
-                authorFactory
+                authorFactory,
+                seriesFactory
         );
     }
 

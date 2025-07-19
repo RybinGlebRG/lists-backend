@@ -164,6 +164,7 @@ public class BookBuilder {
                 user,
                 tags,
                 textAuthors,
+                new ArrayList<>(),
                 dateFactory,
                 readingRecordFactory,
                 bookRepository,

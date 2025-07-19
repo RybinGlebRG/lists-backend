@@ -18,6 +18,7 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
+import ru.rerumu.lists.domain.book.OrderedSeries;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
@@ -25,6 +26,7 @@ import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
@@ -85,6 +87,10 @@ public class BookImpl implements Book, Cloneable {
 
     private final List<Author> textAuthors;
 
+    @Getter
+    private final List<Series> seriesList;
+
+
     private final ReadingRecordFactory readingRecordFactory;
     private final BookRepository bookRepository;
     private final DateFactory dateFactory;
@@ -111,6 +117,7 @@ public class BookImpl implements Book, Cloneable {
             @NonNull User user,
             @NonNull List<Tag> tags,
             @NonNull List<Author> textAuthors,
+            @NonNull List<Series> seriesList,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
             @NonNull BookRepository bookRepository,
@@ -129,6 +136,7 @@ public class BookImpl implements Book, Cloneable {
         this.previousBooks = previousBooks;
         this.note = note;
         this.readingRecords = new ArrayList<>(readingRecords);
+        this.seriesList = seriesList;
         this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
@@ -365,6 +373,11 @@ public class BookImpl implements Book, Cloneable {
             this.tags.remove(tag);
             tag.removeFromBook(bookId);
         }
+    }
+
+    @Override
+    public void updateSeries(@NonNull List<Series> seriesList) {
+        this.seriesList.addAll(seriesList);
     }
 
     @Override

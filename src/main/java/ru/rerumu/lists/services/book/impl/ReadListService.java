@@ -24,6 +24,8 @@ import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
@@ -37,6 +39,7 @@ import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,6 +63,7 @@ public class ReadListService implements BookService {
     private final TagFactory tagFactory;
     private final UserFactory userFactory;
     private final AuthorFactory authorFactory;
+    private final SeriesFactory seriesFactory;
 
     public ReadListService(
             BookRepository bookRepository,
@@ -76,7 +80,8 @@ public class ReadListService implements BookService {
             BookFactoryImpl bookFactory,
             TagFactory tagFactory,
             UserFactory userFactory,
-            AuthorFactory authorFactory
+            AuthorFactory authorFactory,
+            SeriesFactory seriesFactory
     ) {
         this.bookRepository = bookRepository;
         this.authorsService = authorsService;
@@ -93,6 +98,7 @@ public class ReadListService implements BookService {
         this.tagFactory = tagFactory;
         this.userFactory = userFactory;
         this.authorFactory = authorFactory;
+        this.seriesFactory = seriesFactory;
     }
 
     /**
@@ -102,6 +108,9 @@ public class ReadListService implements BookService {
     @Transactional(rollbackFor = Exception.class)
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public void updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
+
+        logger.info("Getting user with id='{}'...", userId);
+        User user = userFactory.findById(userId);
 
         logger.info("Getting book with id='{}'...", bookId);
         Book book = bookFactory.getBook(bookId, userId);
@@ -152,6 +161,13 @@ public class ReadListService implements BookService {
         logger.info("Updating text authors...");
         Author author = authorFactory.findById(bookUpdateView.getAuthorId());
         book.updateTextAuthors(List.of(author));
+
+        // Update series
+        logger.info("Updating series...");
+        if (bookUpdateView.getSeriesId() != null) {
+            Series series = seriesFactory.findById(user, bookUpdateView.getSeriesId());
+            book.updateSeries(List.of(series));
+        }
 
         // Save book
         logger.info("Saving book...");

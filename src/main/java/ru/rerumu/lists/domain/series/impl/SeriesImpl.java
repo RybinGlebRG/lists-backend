@@ -54,6 +54,11 @@ public class SeriesImpl implements Series {
     }
 
     @Override
+    public Long getItemsCountAsLong() {
+        return (long) itemsList.size();
+    }
+
+    @Override
     public SeriesImpl clone() {
         throw new UnsupportedMethodException();
     }
