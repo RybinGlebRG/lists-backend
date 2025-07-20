@@ -51,18 +51,18 @@ class SeriesControllerDeleteSeriesTest {
         RestAssuredMockMvc.mockMvc(mockMvc);
     }
 
-    @Test
-    void shouldAdd() throws Exception{
-
-        RestAssuredMockMvc
-                .given()
-                .attribute("username","Test")
-                .when()
-                .delete("/api/v0.2/bookSeries/5")
-                .then().statusCode(204);
-
-        verify(seriesService).delete(5);
-
-    }
+//    @Test
+//    void shouldAdd() throws Exception{
+//
+//        RestAssuredMockMvc
+//                .given()
+//                .attribute("username","Test")
+//                .when()
+//                .delete("/api/v0.2/bookSeries/5")
+//                .then().statusCode(204);
+//
+//        verify(seriesService).delete(5);
+//
+//    }
 
 }

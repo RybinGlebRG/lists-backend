@@ -53,20 +53,20 @@ public class BookFactoryImplTest {
     private AuthorFactory authorFactory;
 
 
-    @BeforeEach
-    public void beforeEach() {
-        bookFactory = new BookFactoryImpl(
-                dateFactory,
-                bookRepository,
-                readingRecordFactory,
-                bookTypeFactory,
-                userFactory,
-                tagFactory,
-                statusFactory,
-                authorsBooksRepository,
-                authorFactory
-        );
-    }
+//    @BeforeEach
+//    public void beforeEach() {
+//        bookFactory = new BookFactoryImpl(
+//                dateFactory,
+//                bookRepository,
+//                readingRecordFactory,
+//                bookTypeFactory,
+//                userFactory,
+//                tagFactory,
+//                statusFactory,
+//                authorsBooksRepository,
+//                authorFactory
+//        );
+//    }
 
 //    @Test
 //    public void shouldGetBook(TestInfo testInfo) {

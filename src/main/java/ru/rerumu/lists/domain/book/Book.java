@@ -80,8 +80,6 @@ public interface Book extends SeriesItem, Entity {
      */
     void updateTextAuthors(List<Author> authors);
 
-    void save();
-
     boolean filterByStatusIds(List<Integer> statusIds);
     Float getTitleFuzzyMatchScore(String value);
 

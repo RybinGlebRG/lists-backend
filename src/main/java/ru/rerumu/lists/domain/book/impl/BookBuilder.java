@@ -13,6 +13,8 @@ import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
@@ -41,6 +43,7 @@ public class BookBuilder {
     private User user;
     private List<Tag> tags = new ArrayList<>();
     private List<Author> textAuthors = new ArrayList<>();
+    private List<Series> seriesList = new ArrayList<>();
 
     private final StatusFactory statusFactory;
     private final DateFactory dateFactory;
@@ -48,6 +51,7 @@ public class BookBuilder {
     private final BookRepository bookRepository;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final AuthorFactory authorFactory;
+    private final SeriesFactory seriesFactory;
 
     public BookBuilder(
             @NonNull StatusFactory statusFactory,
@@ -55,7 +59,8 @@ public class BookBuilder {
             @NonNull ReadingRecordFactory readingRecordFactory,
             @NonNull BookRepository bookRepository,
             @NonNull AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory
+            @NonNull AuthorFactory authorFactory,
+            @NonNull SeriesFactory seriesFactory
     ) {
         this.statusFactory = statusFactory;
         this.dateFactory = dateFactory;
@@ -63,6 +68,7 @@ public class BookBuilder {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
+        this.seriesFactory = seriesFactory;
     }
 
     public BookBuilder bookId(@NonNull Long bookId) {
@@ -145,6 +151,11 @@ public class BookBuilder {
         return this;
     }
 
+    public BookBuilder seriesList(@NonNull List<Series> seriesList) {
+        this.seriesList = seriesList;
+        return this;
+    }
+
 
     public BookImpl build() throws EmptyMandatoryParameterException {
         return new BookImpl(
@@ -164,12 +175,13 @@ public class BookBuilder {
                 user,
                 tags,
                 textAuthors,
-                new ArrayList<>(),
+                seriesList,
                 dateFactory,
                 readingRecordFactory,
                 bookRepository,
                 authorsBooksRepository,
-                authorFactory
+                authorFactory,
+                seriesFactory
         );
     }
 }

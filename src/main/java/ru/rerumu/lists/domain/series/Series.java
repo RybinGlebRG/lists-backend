@@ -14,4 +14,7 @@ public interface Series extends Entity {
     List<SeriesItem> getItemsList();
 
     Long getItemsCountAsLong();
+
+    void addBookRelation(Long bookId);
+    void removeBookRelation(Long bookId);
 }

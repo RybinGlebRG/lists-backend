@@ -18,7 +18,6 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.book.OrderedSeries;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
@@ -27,6 +26,7 @@ import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
@@ -98,6 +98,7 @@ public class BookImpl implements Book, Cloneable {
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final AuthorFactory authorFactory;
+    private final SeriesFactory seriesFactory;
 
 
     BookImpl(
@@ -122,7 +123,8 @@ public class BookImpl implements Book, Cloneable {
             @NonNull ReadingRecordFactory readingRecordFactory,
             @NonNull BookRepository bookRepository,
             @NonNull AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory
+            @NonNull AuthorFactory authorFactory,
+            @NonNull SeriesFactory seriesFactory
     ) {
 
         this.bookId = bookId;
@@ -131,12 +133,11 @@ public class BookImpl implements Book, Cloneable {
         this.bookStatus = bookStatus;
         this.insertDate = insertDate;
         this.lastUpdateDate = lastUpdateDate;
-//        this.lastChapter = lastChapter;
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
         this.readingRecords = new ArrayList<>(readingRecords);
-        this.seriesList = seriesList;
+        this.seriesList = new ArrayList<>(seriesList);
         this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
@@ -147,6 +148,7 @@ public class BookImpl implements Book, Cloneable {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
+        this.seriesFactory = seriesFactory;
     }
 
     public LocalDateTime getLastUpdateDate_V2() {
@@ -235,12 +237,16 @@ public class BookImpl implements Book, Cloneable {
     @Override
     public void delete() {
 
-        // TODO: Details of data storage should be encapsulated in DAO layer
+        // TODO: Details of data storage should be encapsulated in DAO layer (probably)
         authorsBooksRepository.getAuthorsByBookId(bookId)
                         .forEach(authorDtoDao -> authorsBooksRepository.delete(
                                 bookId,
                                 authorDtoDao.getAuthorId()
                         ));
+
+        for (Series series: seriesList) {
+            series.removeBookRelation(bookId);
+        }
 
         bookRepository.delete(bookId);
     }
@@ -375,9 +381,29 @@ public class BookImpl implements Book, Cloneable {
         }
     }
 
+    /**
+     * Updates series list
+     */
     @Override
     public void updateSeries(@NonNull List<Series> seriesList) {
-        this.seriesList.addAll(seriesList);
+        // Add
+        List<Series> seriesToAdd = seriesList.stream()
+                .filter(item -> !seriesList.contains(item))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Series series: seriesToAdd) {
+            series.addBookRelation(bookId);
+            seriesList.add(series);
+        }
+
+        // Remove
+        List<Series> seriesToRemove = seriesList.stream()
+                .filter(item -> !seriesList.contains(item))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (Series series: seriesToRemove) {
+            series.removeBookRelation(bookId);
+            seriesList.remove(series);
+        }
     }
 
     @Override
@@ -408,6 +434,11 @@ public class BookImpl implements Book, Cloneable {
     @Override
     public void save() {
         bookRepository.update(this);
+
+        for (Series series: seriesList) {
+            series.save();
+        }
+
     }
 
     @Override

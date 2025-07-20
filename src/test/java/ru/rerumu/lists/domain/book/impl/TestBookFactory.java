@@ -22,22 +22,24 @@ public class TestBookFactory {
             Long bookId,
             List<Tag> tags
     ) {
-        BookImpl bookImpl = new BookBuilder(
-                mock(StatusFactory.class),
-                mock(DateFactory.class),
-                mock(ReadingRecordFactory.class),
-                mock(BookRepository.class),
-                mock(AuthorsBooksRepository.class),
-                mock(AuthorFactory.class)
-        )
-                .bookId(bookId)
-                .title("Test book")
-                .insertDate(new Date())
-                .lastUpdateDate(LocalDateTime.now())
-                .tags(tags)
-                .user(mock(User.class))
-                .build();
 
-        return bookImpl;
+        return null;
+//        BookImpl bookImpl = new BookBuilder(
+//                mock(StatusFactory.class),
+//                mock(DateFactory.class),
+//                mock(ReadingRecordFactory.class),
+//                mock(BookRepository.class),
+//                mock(AuthorsBooksRepository.class),
+//                mock(AuthorFactory.class)
+//        )
+//                .bookId(bookId)
+//                .title("Test book")
+//                .insertDate(new Date())
+//                .lastUpdateDate(LocalDateTime.now())
+//                .tags(tags)
+//                .user(mock(User.class))
+//                .build();
+//
+//        return bookImpl;
     }
 }

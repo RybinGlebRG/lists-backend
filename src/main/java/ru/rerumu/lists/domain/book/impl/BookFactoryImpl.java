@@ -23,6 +23,8 @@ import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.book.type.BookTypeFactory;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
@@ -51,6 +53,7 @@ public class BookFactoryImpl implements BookFactory {
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final AuthorFactory authorFactory;
+    private final SeriesFactory seriesFactory;
 
     @Autowired
     public BookFactoryImpl(
@@ -62,7 +65,8 @@ public class BookFactoryImpl implements BookFactory {
             TagFactory tagFactory,
             StatusFactory statusFactory,
             AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory
+            @NonNull AuthorFactory authorFactory,
+            @NonNull SeriesFactory seriesFactory
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -73,6 +77,7 @@ public class BookFactoryImpl implements BookFactory {
         this.statusFactory = statusFactory;
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
+        this.seriesFactory = seriesFactory;
     }
 
     public Book createBook(
@@ -93,7 +98,8 @@ public class BookFactoryImpl implements BookFactory {
                 readingRecordFactory,
                 bookRepository,
                 authorsBooksRepository,
-                authorFactory
+                authorFactory,
+                seriesFactory
         )
                 .bookId(bookId)
                 .title(title)
@@ -132,6 +138,10 @@ public class BookFactoryImpl implements BookFactory {
 
         // TODO: Details of data retrieval should be encapsulated in DAO layer
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
+
+        // TODO: and same here
+        List<Series> seriesList = seriesFactory.findByBook(bookId, userId);
+        bookDTO.setSeriesList(seriesList);
 
         bookDTO.setTextAuthors(authorsDTOs);
         Book book = fromDTO(bookDTO);
@@ -228,7 +238,7 @@ public class BookFactoryImpl implements BookFactory {
 
         log.debug("bookDTO: {}", bookDTO);
 
-        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory)
+        BookBuilder builder = new BookBuilder(statusFactory, dateFactory, readingRecordFactory, bookRepository, authorsBooksRepository, authorFactory, seriesFactory)
                 .bookId(bookDTO.bookId)
                 .title(bookDTO.title)
                 .bookStatus(bookDTO.bookStatusObj)
@@ -293,7 +303,8 @@ public class BookFactoryImpl implements BookFactory {
                 readingRecordFactory,
                 bookRepository,
                 authorsBooksRepository,
-                authorFactory
+                authorFactory,
+                seriesFactory
         )
                 .bookId(bookDTO.getBookId())
                 .title(bookDTO.getTitle())
@@ -356,6 +367,12 @@ public class BookFactoryImpl implements BookFactory {
             tags = new ArrayList<>();
         }
         builder.tags(tags);
+
+
+        // Set series list
+        if (!bookDTO.getSeriesList().isEmpty()) {
+            builder.seriesList(bookDTO.getSeriesList());
+        }
 
         BookImpl book = builder.build();
 

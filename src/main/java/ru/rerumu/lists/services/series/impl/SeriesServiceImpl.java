@@ -124,15 +124,16 @@ public class SeriesServiceImpl implements SeriesService {
         }
         log.debug("updatedItems: " + updatedItems);
 
-        Series updatedSeries = new SeriesImpl(
-                series.getId(),
-                series.getTitle(),
-                series.getItemsList(),
-                series.getUser()
-        );
-
-        removeBookRelations((SeriesImpl) series, (SeriesImpl) updatedSeries);
-        saveBookRelations((SeriesImpl) updatedSeries);
+        throw new NotImplementedException();
+//        Series updatedSeries = new SeriesImpl(
+//                series.getId(),
+//                series.getTitle(),
+//                series.getItemsList(),
+//                series.getUser(),
+//        );
+//
+//        removeBookRelations((SeriesImpl) series, (SeriesImpl) updatedSeries);
+//        saveBookRelations((SeriesImpl) updatedSeries);
     }
 
     @Deprecated

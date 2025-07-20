@@ -55,16 +55,23 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
 
+
+        throw new NotImplementedException();
         // TODO: fix null
-        return new SeriesImpl(
-                seriesDTO.seriesId,
-                seriesDTO.title,
-                tmp,
-                null
-        );
+//        return new SeriesImpl(
+//                seriesDTO.seriesId,
+//                seriesDTO.title,
+//                tmp,
+//                null
+//        );
     }
 
     public SeriesImpl fromDTOv2(SeriesDTOv2 seriesDTO){
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
         throw new NotImplementedException();
     }
 
@@ -84,15 +91,14 @@ public class SeriesFactoryImpl implements SeriesFactory {
             @NonNull List<SeriesItem> itemsList,
             @NonNull User user
     ) {
-        SeriesImpl series = new SeriesImpl(
-                null,
-                title,
-                itemsList,
-                user
-        );
-
-        seriesRepository.create(series.toDTO());
-
         throw new NotImplementedException();
+//        SeriesImpl series = new SeriesImpl(
+//                null,
+//                title,
+//                itemsList,
+//                user
+//        );
+//
+//        seriesRepository.create(series.toDTO());
     }
 }

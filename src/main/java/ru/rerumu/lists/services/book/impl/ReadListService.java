@@ -4,6 +4,7 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
@@ -39,7 +40,6 @@ import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,7 +105,7 @@ public class ReadListService implements BookService {
      * Update book
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public void updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
 
@@ -240,15 +240,23 @@ public class ReadListService implements BookService {
     @Transactional(rollbackFor = Exception.class)
     public void addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
+        // Find status
+        logger.info("Find status...");
         BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
 
+        // Find type
+        logger.info("Find type...");
         BookType bookType = null;
         if (bookAddView.getBookTypeId() != null) {
             bookType = bookTypesService.findById(bookAddView.getBookTypeId()).orElseThrow();
         }
 
+        // Find user
+        logger.info("Find user...");
         User user = userFactory.findById(userId);
 
+        // Create book
+        logger.info("Create book...");
         Book newBook = bookFactory.createBook(
                 bookAddView.getTitle(),
                 bookAddView.getLastChapter(),
@@ -260,8 +268,8 @@ public class ReadListService implements BookService {
                 user
         );
 
-
-        // Connect with author
+        // Add author
+        logger.info("Add author...");
         if (bookAddView.getAuthorId() != null) {
             authorsBooksRepository.add(
                     newBook.getId(),
@@ -271,7 +279,8 @@ public class ReadListService implements BookService {
             );
         }
 
-        // Create reading record
+        // Add reading record
+        logger.info("Add reading record...");
         newBook.addReadingRecord(
                 bookStatus,
                 bookAddView.insertDate(),
@@ -279,6 +288,19 @@ public class ReadListService implements BookService {
                 bookAddView.getLastChapter() != null ? bookAddView.getLastChapter().longValue() : null
         );
 
+        // Add series
+        logger.info("Add series...");
+        if (bookAddView.getSeriesId() != null) {
+            Series series = seriesFactory.findById(user, bookAddView.getSeriesId());
+            newBook.updateSeries(List.of(series));
+        }
+
+
+        // Save book
+        logger.info("Saving book...");
+        newBook.save();
+
+        // ???
         getBook(newBook.getId(), user.userId());
     }
 
@@ -287,20 +309,7 @@ public class ReadListService implements BookService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
-
         Book book = bookFactory.getBook(bookId, userId);
-
-        seriesBooksRespository.getByBookId(
-                        book.getId(),
-                        book.getListId(),
-                        userId
-                )
-                .forEach(item -> bookSeriesRelationService.delete(
-                        item.book().getId(),
-                        item.series().getId(),
-                        item.book().getListId()
-                ));
-
         book.delete();
     }
 

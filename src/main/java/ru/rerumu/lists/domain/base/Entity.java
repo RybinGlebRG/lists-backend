@@ -14,4 +14,9 @@ public interface Entity {
      */
     User getUser();
 
+    /**
+     * Save entity
+     */
+    void save();
+
 }
