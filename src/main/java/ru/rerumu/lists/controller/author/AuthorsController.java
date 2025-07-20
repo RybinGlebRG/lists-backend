@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.rerumu.lists.controller.author.out.AuthorViewFactory;
 import ru.rerumu.lists.controller.author.out.AuthorView;
+import ru.rerumu.lists.controller.author.out.AuthorViewFactory;
 import ru.rerumu.lists.controller.author.out.AuthorsListView;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.author.AuthorsService;
@@ -61,7 +60,7 @@ public class AuthorsController {
     @GetMapping(value = "/api/v1/users/{userId}/authors",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long userId) throws JsonProcessingException {
-        User user = userService.getOne(userId).orElseThrow(EntityNotFoundException::new);
+        User user = userService.getOne(userId);
         List<Author> authors = authorsService.getAuthors(user);
         AuthorsListView authorsListView = authorViewFactory.buildAuthorsListView(authors);
         String result = objectMapper.writeValueAsString(authorsListView);
@@ -77,7 +76,7 @@ public class AuthorsController {
             @PathVariable Long userId,
             @RequestBody AddAuthorView addAuthorView
     ) {
-        User user = userService.getOne(userId).orElseThrow(EntityNotFoundException::new);
+        User user = userService.getOne(userId);
         authorsService.addAuthor(addAuthorView, user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -2,17 +2,24 @@ package ru.rerumu.lists.dao.user.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.user.UserMapper;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
 import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.dao.user.mapper.UserMapper;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 
 @Component
-public class UsersRepositoryImpl implements UsersRepository {
+public class UsersRepositoryImpl extends CrudRepositoryEntityImpl<User,Long>  implements UsersRepository {
+
+
+    private UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    public UsersRepositoryImpl(UserMapper userMapper) {
+        super(userMapper);
+    }
 
     @Override
     public User getOne(String name) {
@@ -42,10 +49,13 @@ public class UsersRepositoryImpl implements UsersRepository {
         return userMapper.countSeries(name, seriesId) > 0;
     }
 
-    // TODO: fix null
     @Override
     public User findById(Long userId) {
-        return userMapper.findById(userId, null);
+        User user =  userMapper.findById(userId);
+        if (user == null) {
+            throw new EntityNotFoundException();
+        }
+        return user;
     }
 
     // TODO: fix null

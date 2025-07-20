@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.dao.user.UserMapper;
+import ru.rerumu.lists.dao.user.mapper.UserMapper;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.services.user.UserService;
 

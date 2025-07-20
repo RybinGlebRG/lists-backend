@@ -2,17 +2,15 @@ package ru.rerumu.lists.dao.series.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
+import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.series.SeriesDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
-import ru.rerumu.lists.domain.series.impl.SeriesFactoryImpl;
-import ru.rerumu.lists.dao.series.SeriesRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,16 +23,14 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;
-    private final SeriesFactoryImpl seriesFactory;
     private final ReadingRecordFactory readingRecordFactory;
 
     @Autowired
     public SeriesRepositoryImpl(
-            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactoryImpl seriesFactory, ReadingRecordFactory readingRecordFactory) {
+            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, ReadingRecordFactory readingRecordFactory) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.readingRecordMapper = readingRecordMapper;
-        this.seriesFactory = seriesFactory;
         this.readingRecordFactory = readingRecordFactory;
     }
 

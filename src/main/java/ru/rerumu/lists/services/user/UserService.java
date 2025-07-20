@@ -1,18 +1,17 @@
 package ru.rerumu.lists.services.user;
 
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.domain.TokenRequest;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Optional;
 
 public interface UserService {
-    Optional<User> getOne(Long userId) throws EntityNotFoundException;
+    User getOne(Long userId) throws EntityNotFoundException;
 
     @Deprecated
     void checkOwnershipList(String username, Long listId) throws UserIsNotOwnerException;

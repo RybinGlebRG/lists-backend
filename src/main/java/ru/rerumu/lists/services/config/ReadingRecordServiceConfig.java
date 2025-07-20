@@ -9,18 +9,16 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
-import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.readingrecord.impl.ReadingRecordServiceImpl;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.protectionproxies.ReadingRecordProtectionProxy;
 import ru.rerumu.lists.services.user.UserService;
-
-import java.util.Optional;
 
 @Configuration
 @Slf4j
@@ -49,8 +47,8 @@ public class ReadingRecordServiceConfig {
             ReadListService readListService
     ) throws EntityNotFoundException {
         Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
-        Optional<User> authUser = userService.getOne(authUserId);
-        log.info("GOT USER {}", authUser.orElseThrow().userId());
-        return new ReadingRecordProtectionProxy(readingRecordService, authUser.orElseThrow(), readListService);
+        User authUser = userService.getOne(authUserId);
+        log.info("GOT USER {}", authUser.userId());
+        return new ReadingRecordProtectionProxy(readingRecordService, authUser, readListService);
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
@@ -82,7 +81,7 @@ public class BookServiceConfig {
             UserFactory userFactory
     ) {
         Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
-        User authUser = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
+        User authUser = userService.getOne(authUserId);
         log .info(String.format("GOT USER %d", authUser.userId()));
         return new BookServiceProtectionProxy(readListService, authUser, userFactory);
     }

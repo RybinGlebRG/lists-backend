@@ -8,14 +8,13 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.tag.TagFactory;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.tag.TagService;
-import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.services.tag.impl.TagServiceImpl;
 import ru.rerumu.lists.services.tag.impl.TagServiceProtectionProxy;
+import ru.rerumu.lists.services.user.UserService;
 
 @Configuration
 @Slf4j
@@ -38,7 +37,7 @@ public class TagServiceConfig {
         UserFactory userFactory
     ) {
         Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
-        User authUser = userService.getOne(authUserId).orElseThrow(EntityNotFoundException::new);
+        User authUser = userService.getOne(authUserId);
         log .info(String.format("GOT USER %d", authUser.userId()));
         return new TagServiceProtectionProxy(tagService, authUser, userFactory);
     }

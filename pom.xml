@@ -37,6 +37,8 @@
 			<aspectjrt.version>1.9.23</aspectjrt.version>
 		<!---->
 
+		<skip.surefire.tests>false</skip.surefire.tests>
+
 	</properties>
 	<dependencies>
 
@@ -59,19 +61,6 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-web</artifactId>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-test</artifactId>
-				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.skyscreamer</groupId>
-						<artifactId>jsonassert</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 
 			<dependency>
@@ -203,7 +192,32 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!--  TEST  -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.skyscreamer</groupId>
+						<artifactId>jsonassert</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>1.19.8</version>
+				<scope>test</scope>
+			</dependency>
+		<!---->
 
 	</dependencies>
 
@@ -306,6 +320,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -354,6 +369,21 @@
 				<configuration>
 					<changeLogFile>src/main/resources/liquibase-changeLog.xml</changeLogFile>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skip.surefire.tests}</skipTests>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.5.2</version>
 			</plugin>
 
 		</plugins>

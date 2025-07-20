@@ -11,15 +11,13 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.user.UserMapper;
-import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.dao.user.mapper.UserMapper;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.services.user.impl.UserServiceImpl;
 import ru.rerumu.lists.services.user.impl.UserServiceProtectionProxyImpl;
-
-import java.util.Optional;
 
 @Configuration
 public class UserServiceConfig {
@@ -48,11 +46,11 @@ public class UserServiceConfig {
             @Qualifier("UserService") UserService userService
     ) throws EntityNotFoundException {
         Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
-        Optional<User> authUser = userService.getOne(authUserId);
+        User authUser = userService.getOne(authUserId);
         logger.info(String.format("GOT USER %d",authUserId));
         UserServiceProtectionProxyImpl protectionProxy = new UserServiceProtectionProxyImpl(
                 userService,
-                authUser.orElseThrow()
+                authUser
         );
         return protectionProxy;
 

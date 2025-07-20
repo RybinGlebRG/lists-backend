@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -28,8 +27,8 @@ public class InitialRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Optional<User> user = userService.getOne(0L);
-        if (user.isPresent()){
+        User user = userService.getOne(0L);
+        if (user != null){
             return;
         }
         String defaultPassword = UUID.randomUUID().toString();

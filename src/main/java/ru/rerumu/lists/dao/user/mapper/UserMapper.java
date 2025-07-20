@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.user;
+package ru.rerumu.lists.dao.user.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
@@ -17,7 +17,7 @@ public interface UserMapper extends CrudMapper<User,Long,User> {
     int countBooks(String name, long bookId);
 
 //    @Override
-//    User findById(Long id);
+    User findById(Long id);
 
 //    @Override
 //    default List<User> findAll(User user){

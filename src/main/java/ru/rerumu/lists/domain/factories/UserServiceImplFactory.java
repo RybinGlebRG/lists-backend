@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.factories;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.user.UserMapper;
+import ru.rerumu.lists.dao.user.mapper.UserMapper;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;

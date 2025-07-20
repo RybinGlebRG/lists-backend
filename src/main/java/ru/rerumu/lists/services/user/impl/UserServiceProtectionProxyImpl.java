@@ -2,6 +2,7 @@ package ru.rerumu.lists.services.user.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
@@ -9,11 +10,9 @@ import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.domain.TokenRequest;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Optional;
 
 
 public class UserServiceProtectionProxyImpl implements UserService {
@@ -32,7 +31,7 @@ public class UserServiceProtectionProxyImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getOne(Long userId) throws EntityNotFoundException {
+    public User getOne(Long userId) throws EntityNotFoundException {
         if (!authUser.userId().equals(userId)){
             throw new UserPermissionException();
         }
