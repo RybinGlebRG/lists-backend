@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -27,15 +28,18 @@ public class InitialRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User user = userService.getOne(0L);
-        if (user != null){
-            return;
-        }
-        String defaultPassword = UUID.randomUUID().toString();
-        logger.error(String.format("Initial username = '%s'", DEFAULT_USERNAME));
-        logger.error(String.format("Initial password = '%s'", defaultPassword));
+        try {
+            userService.getOne(0L);
+        } catch (EntityNotFoundException e) {
+            // If failed to find default user
+            // TODO: Maybe more specific exception?
+            String defaultPassword = UUID.randomUUID().toString();
+            logger.error(String.format("Initial username = '%s'", DEFAULT_USERNAME));
+            logger.error(String.format("Initial password = '%s'", defaultPassword));
 
-        userService.add(new User(0L, DEFAULT_USERNAME, defaultPassword));
+            userService.add(new User(0L, DEFAULT_USERNAME, defaultPassword));
+        }
+
 
     }
 }

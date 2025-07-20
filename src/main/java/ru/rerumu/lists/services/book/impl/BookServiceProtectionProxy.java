@@ -1,6 +1,7 @@
 package ru.rerumu.lists.services.book.impl;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
@@ -14,6 +15,7 @@ import ru.rerumu.lists.services.book.BookService;
 
 import java.util.List;
 
+@Slf4j
 public class BookServiceProtectionProxy implements BookService {
 
     private final ReadListService readListService;
@@ -27,16 +29,20 @@ public class BookServiceProtectionProxy implements BookService {
     }
 
     @Override
-    public void addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
+    @NonNull
+    public Book addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
         // Get passed user
         User user = userFactory.findById(userId);
+        log.debug("user: {}", user);
+
 
         // Check if actual user has access
-        if (user.userId().equals(authUser.userId())) {
+        log.debug("authUser: {}", authUser);
+        if (!user.equals(authUser)) {
             throw new UserPermissionException();
         }
         
-        readListService.addBook(bookAddView, userId);
+        return readListService.addBook(bookAddView, userId);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class BookServiceProtectionProxy implements BookService {
         User user = userFactory.findById(userId);
         
         // Check if actual user has access
-        if (user.equals(authUser)) {
+        if (!user.equals(authUser)) {
             throw new UserPermissionException();
         }
         
@@ -58,7 +64,7 @@ public class BookServiceProtectionProxy implements BookService {
         User user = userFactory.findById(userId);
 
         // Check if actual user has access
-        if (user.equals(authUser)) {
+        if (!user.equals(authUser)) {
             throw new UserPermissionException();
         }
         
@@ -71,7 +77,7 @@ public class BookServiceProtectionProxy implements BookService {
         User user = userFactory.findById(userId);
 
         // Check if actual user has access
-        if (user.equals(authUser)) {
+        if (!user.equals(authUser)) {
             throw new UserPermissionException();
         }
 
@@ -84,7 +90,7 @@ public class BookServiceProtectionProxy implements BookService {
         User user = userFactory.findById(userId);
 
         // Check if actual user has access
-        if (user.equals(authUser)) {
+        if (!user.equals(authUser)) {
             throw new UserPermissionException();
         }
         

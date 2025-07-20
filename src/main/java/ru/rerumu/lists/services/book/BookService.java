@@ -15,7 +15,8 @@ public interface BookService {
     /**
      * Create book for user
      */
-    void addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException;
+    @NonNull
+    Book addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException;
 
     /**
      * Get book of user

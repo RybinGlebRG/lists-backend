@@ -217,6 +217,13 @@
 				<version>1.19.8</version>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.skyscreamer</groupId>
+				<artifactId>jsonassert</artifactId>
+				<version>1.5.3</version>
+				<scope>test</scope>
+			</dependency>
 		<!---->
 
 	</dependencies>
@@ -259,7 +266,7 @@
 				</dependencies>
 				<configuration>
 					<complianceLevel>${java.version}</complianceLevel>
-					<showWeaveInfo>true</showWeaveInfo>
+					<showWeaveInfo>false</showWeaveInfo>
 
 					<sources/>
 					<forceAjcCompile>true</forceAjcCompile>
@@ -270,6 +277,9 @@
 							<artifactId>jcabi-aspects</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>
+
+					<!-- Ignore adviceDidNotMatch -->
+					<Xlint>adviceDidNotMatch=ignore</Xlint>
 
 				</configuration>
 				<executions>

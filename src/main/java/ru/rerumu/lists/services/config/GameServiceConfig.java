@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
 import ru.rerumu.lists.dao.game.GameMapper;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.services.game.impl.GameServiceImpl;
 import ru.rerumu.lists.services.game.impl.GameServiceProtectionProxy;
@@ -38,7 +38,7 @@ public class GameServiceConfig {
             @Qualifier("GameService") GameService gameService,
             UserService userService
     ) throws EntityNotFoundException {
-        Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
+        Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
         logger.info(String.format("GOT USER %d", authUser.userId()));
         var gameServiceProtectionProxy = new GameServiceProtectionProxy(

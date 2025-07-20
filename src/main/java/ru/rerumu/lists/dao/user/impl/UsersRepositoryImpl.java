@@ -14,11 +14,12 @@ import java.util.List;
 public class UsersRepositoryImpl extends CrudRepositoryEntityImpl<User,Long>  implements UsersRepository {
 
 
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
     @Autowired
     public UsersRepositoryImpl(UserMapper userMapper) {
         super(userMapper);
+        this.userMapper = userMapper;
     }
 
     @Override

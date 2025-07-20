@@ -237,8 +237,9 @@ public class ReadListService implements BookService {
      * Add book
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    @NonNull
+    public Book addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
         // Find status
         logger.info("Find status...");
@@ -301,7 +302,7 @@ public class ReadListService implements BookService {
         newBook.save();
 
         // ???
-        getBook(newBook.getId(), user.userId());
+        return getBook(newBook.getId(), user.userId());
     }
 
     /**

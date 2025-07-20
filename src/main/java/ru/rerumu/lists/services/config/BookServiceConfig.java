@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
@@ -18,6 +17,7 @@ import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
+import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.AuthorsBooksRelationService;
 import ru.rerumu.lists.services.BookSeriesRelationService;
 import ru.rerumu.lists.services.author.AuthorsService;
@@ -80,7 +80,7 @@ public class BookServiceConfig {
             ReadListService readListService,
             UserFactory userFactory
     ) {
-        Long authUserId = (Long) RequestContextHolder.currentRequestAttributes().getAttribute("authUserId", RequestAttributes.SCOPE_REQUEST);
+        Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
         log .info(String.format("GOT USER %d", authUser.userId()));
         return new BookServiceProtectionProxy(readListService, authUser, userFactory);

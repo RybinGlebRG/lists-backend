@@ -22,6 +22,7 @@ import ru.rerumu.lists.controller.book.view.out.BookListView;
 import ru.rerumu.lists.controller.book.view.out.BookViewFactory;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
@@ -100,11 +101,18 @@ public class BooksController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> addOne(
             @PathVariable Long userId,
-            @RequestBody BookAddView bookAddView,
-            @RequestAttribute("username") String username
+            @RequestBody BookAddView bookAddView
     ) throws EmptyMandatoryParameterException, EntityNotFoundException {
-        bookService.addBook(bookAddView, userId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        try {
+            Book book = bookService.addBook(bookAddView, userId);
+            ru.rerumu.lists.controller.book.view.out.BookView bookView = bookViewFactory.buildBookView(book.toDTO(), new ArrayList<>());
+            String result = objectMapper.writeValueAsString(bookView);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
+
     }
 
     /**

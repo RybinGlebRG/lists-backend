@@ -1,0 +1,63 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  author="gleb"  id="TAG-STATE-0.65.0">
+        <tagDatabase  tag="0.65.0"/>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-PRIMARY-KEY-books(book_id,list_list_id)">
+        <dropPrimaryKey
+                constraintName="books_pkey"
+                tableName="books"
+        />
+        <rollback>
+            <addPrimaryKey
+                    tableName="books"
+                    constraintName="books_pkey"
+                    columnNames="list_list_id, book_id"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="ADD-PRIMARY-KEY-books(book_id)">
+        <addPrimaryKey
+                tableName="books"
+                constraintName="books_pk"
+                columnNames="book_id"
+        />
+        <rollback>
+            <dropPrimaryKey
+                    tableName="books"
+                    constraintName="books_pk"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-UNIQUE-CONSTRAINT-books.books_list_list_id_book_id_key">
+        <dropUniqueConstraint
+                constraintName="books_list_list_id_book_id_key"
+                tableName="books"
+        />
+        <rollback>
+            <addUniqueConstraint
+                    columnNames="list_list_id, book_id"
+                    constraintName="books_list_list_id_book_id_key"
+                    tableName="books"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-books.list_list_id" >
+        <dropNotNullConstraint
+                tableName="books"
+                columnName="list_list_id"
+        />
+    </changeSet>
+
+</databaseChangeLog>

@@ -31,4 +31,5 @@
         <appender-ref ref="Console" />
     </root>
 
+    <logger name="ru.rerumu.lists" level="TRACE"/>
 </configuration>
