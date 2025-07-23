@@ -150,8 +150,8 @@
     <select id="findById" resultMap="BookResultMap">
         <include refid="selectBooks"/>
         where
-            b.book_id=#{bookId}
-            and u.userId = #{userId}
+            b.book_id=#{id}
+            and u.user_id = #{userId}
     </select>
 
     <select id="findByUser" resultMap="BookResultMap">

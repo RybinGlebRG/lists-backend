@@ -12,7 +12,9 @@ import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO
 @Component
@@ -63,7 +65,11 @@ public class SeriesFactoryImpl implements SeriesFactory {
 
     @Override
     public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
-        throw new NotImplementedException();
+        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(bookId, userId);
+
+        return seriesDTOList.stream()
+                .map(this::fromDTOv2)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

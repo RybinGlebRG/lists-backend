@@ -1,5 +1,8 @@
 package ru.rerumu.lists.domain.series;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
@@ -8,16 +11,15 @@ import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SeriesDTOv2(
-        Long seriesId,
-        Long userId,
-        String title,
-        List<SeriesItemDTOv2> items
-) implements EntityDTO<SeriesImpl> {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class SeriesDTOv2 implements EntityDTO<SeriesImpl> {
 
-    public SeriesDTOv2 {
-        items = new ArrayList<>(items);
-    }
+    private Long seriesId;
+    private Long userId;
+    private String title;
+    private List<SeriesItemDTOv2> items = new ArrayList<>();
 
     @Override
     public SeriesImpl toDomain() {

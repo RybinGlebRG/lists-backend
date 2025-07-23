@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.series;
 
+import lombok.NonNull;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.domain.series.SeriesDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
@@ -17,4 +18,6 @@ public interface SeriesRepository extends CrudRepository<SeriesDTOv2,Long> {
     void add(SeriesDTO series);
 
     void delete(long seriesId);
+
+    List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId);
 }

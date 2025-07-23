@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.series.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
@@ -150,5 +151,10 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
     @Override
     public void delete(long seriesId) {
         seriesMapper.delete(seriesId);
+    }
+
+    @Override
+    public List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId) {
+        return seriesMapper.findByBook(bookId, userId);
     }
 }

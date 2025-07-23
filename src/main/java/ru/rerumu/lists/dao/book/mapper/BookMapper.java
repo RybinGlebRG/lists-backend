@@ -22,7 +22,8 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             Integer lastChapter,
             Integer bookTypeId,
             String note,
-            String URL
+            String URL,
+            Long userId
     );
 
     List<BookDtoDao> findByUserChained(Long userId);

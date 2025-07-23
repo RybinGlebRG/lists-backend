@@ -90,7 +90,7 @@ public class BookView implements DeepCopyable<BookView>{
     @Builder(toBuilder = true, access = AccessLevel.PACKAGE)
     BookView(
             @NonNull Long bookId,
-            @NonNull Long readListId,
+            Long readListId,
             @NonNull String title,
             BookStatusView bookStatus,
             @NonNull LocalDateTime insertDate,

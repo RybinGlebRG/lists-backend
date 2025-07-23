@@ -52,6 +52,12 @@
         </constructor>
     </resultMap>
 
+    <resultMap id="SeriesResultMapV2" type="ru.rerumu.lists.domain.series.SeriesDTOv2">
+        <id column="series_id" property="seriesId"/>
+        <result column="title" property="title"/>
+        <result column="user_user_id" property="userId"/>
+    </resultMap>
+
     <sql id="titles">
         <![CDATA[
         select  t.title_id,
@@ -340,7 +346,19 @@
 <!--        where s.list_list_id=#{readListId}-->
 <!--    </select>-->
 
-
+    <select id="findByBook" resultMap="SeriesResultMapV2">
+        select
+            s.series_id,
+            s.title,
+            s.user_user_id
+        from
+            series s
+            inner join series_books sb
+                on sb.series_series_id = s.series_id
+        where
+            sb.book_book_id = #{bookId}
+            and s.user_user_id = #{userId}
+    </select>
 
     <select id="getBookCount" resultType="int">
         select count(*)

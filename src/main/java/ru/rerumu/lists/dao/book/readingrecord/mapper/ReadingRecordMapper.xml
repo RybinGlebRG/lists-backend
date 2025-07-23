@@ -73,7 +73,7 @@
     </select>
 
     <select id="getNextId" resultType="long">
-        select nextval('series_id_seq')
+        select nextval('reading_record_id_seq')
     </select>
 
     <insert id="create" parameterType="ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl">
