@@ -1,17 +1,15 @@
-package ru.rerumu.lists.integration;
+package ru.rerumu.lists.integration.book;
 
-import ch.qos.logback.classic.Level;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,10 +19,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
-import ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
-
-import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -75,21 +69,47 @@ public class ITBookStatusGetAll{
         postgres.stop();
     }
 
-    @Autowired
-    BookStatusMapper bookStatusMapper;
-
-
     @Test
-    void shouldFindAll(){
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.INFO);
+    void shouldFindAll(TestInfo testInfo){
+        log.info("Test: {}", testInfo.getDisplayName());
 
-        List<BookStatusRecord> res = bookStatusMapper.findAll();
+        String responseBody = RestAssuredMockMvc
+                .given()
+                .attribute("authUserId", 0L)
+                .when()
+                .get("/api/v0.2/bookStatuses")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+        log.info("responseBody: {}", responseBody);
 
-        Assertions.assertEquals(4,res.size());
-        Assertions.assertTrue(res.contains(new BookStatusRecord(1,"In progress")));
-        Assertions.assertTrue(res.contains(new BookStatusRecord(2,"Completed")));
-        Assertions.assertTrue(res.contains(new BookStatusRecord(3,"Expecting")));
-        Assertions.assertTrue(res.contains(new BookStatusRecord(4,"Dropped")));
+        String expectedResponse = """
+                {
+                    "items": [
+                        {
+                            "statusId": 1,
+                            "statusName": "In progress"
+                        }, {
+                            "statusId": 2,
+                            "statusName": "Completed"
+                        }, {
+                            "statusId": 3,
+                            "statusName": "Expecting"
+                        }, {
+                            "statusId": 4,
+                            "statusName": "Dropped"
+                        }
+                    ]
+                }
+                """;
+
+        JSONAssert.assertEquals(
+                "Incorrect response",
+                expectedResponse,
+                responseBody,
+                false
+        );
     }
 }

@@ -370,7 +370,7 @@ public class BookFactoryImpl implements BookFactory {
 
 
         // Set series list
-        if (!bookDTO.getSeriesList().isEmpty()) {
+        if (bookDTO.getSeriesList() != null && !bookDTO.getSeriesList().isEmpty()) {
             builder.seriesList(bookDTO.getSeriesList());
         }
 

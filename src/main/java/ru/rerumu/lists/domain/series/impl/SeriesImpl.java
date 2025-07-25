@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
+import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.domain.base.EntityBaseImpl;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
@@ -18,7 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ToString
-public class SeriesImpl implements Series {
+public class SeriesImpl extends EntityBaseImpl implements Series {
 
     private final Long seriesId;
 
@@ -33,19 +37,25 @@ public class SeriesImpl implements Series {
 
     private final List<SeriesBookRelationDTO> seriesBookRelationDTOList;
 
+    private final SeriesRepository seriesRepository;
+
 
     public SeriesImpl(
             Long seriesId,
             @NonNull String title,
             @NonNull List<SeriesItem> itemsList,
             @NonNull User user,
-            @NonNull List<SeriesBookRelationDTO> seriesBookRelationDTOList
+            @NonNull List<SeriesBookRelationDTO> seriesBookRelationDTOList,
+            @NonNull SeriesRepository seriesRepository,
+            @NonNull EntityState entityState
     ) {
+        super(entityState);
         this.seriesId = seriesId;
         this.user = user;
         this.title = title;
         this.itemsList = new ArrayList<>(itemsList);
         this.seriesBookRelationDTOList = seriesBookRelationDTOList;
+        this.seriesRepository = seriesRepository;
     }
 
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
@@ -87,7 +97,13 @@ public class SeriesImpl implements Series {
 
     @Override
     public void save() {
-        throw new NotImplementedException();
+        if (entityState.equals(EntityState.NEW)) {
+            seriesRepository.create(toDTO());
+        } else if (entityState.equals(EntityState.PERSISTED)) {
+            seriesRepository.update(toDTO());
+        } else {
+            throw new ServerException("Incorrect entity state");
+        }
     }
 
     @Override

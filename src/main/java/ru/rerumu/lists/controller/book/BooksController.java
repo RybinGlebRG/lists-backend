@@ -137,7 +137,6 @@ public class BooksController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> searchBooks(
             @RequestBody Search search,
-            @RequestAttribute("username") String username,
             @RequestAttribute("authUserId") Long authUserId
 
     ) throws JsonProcessingException {

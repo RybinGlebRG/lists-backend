@@ -13,7 +13,7 @@ public interface SeriesService {
 
     Series findById(Long seriesId, Long userId);
 
-    void add(Long userId, BookSeriesAddView bookSeriesAddView);
+    Series add(Long userId, BookSeriesAddView bookSeriesAddView);
 
     void delete(Long seriesId, Long userId);
 

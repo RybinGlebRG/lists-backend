@@ -376,6 +376,11 @@
         values(#{seriesId}, #{readListId}, #{title})
     </insert>
 
+    <insert id="create">
+        insert into series(series_id, user_user_id, title)
+        values(#{seriesId}, #{userId}, #{title})
+    </insert>
+
     <delete id="delete">
         delete from series
         where series_id=#{seriesId}

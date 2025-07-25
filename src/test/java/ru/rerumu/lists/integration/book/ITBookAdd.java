@@ -1,4 +1,4 @@
-package ru.rerumu.lists.integration;
+package ru.rerumu.lists.integration.book;
 
 import io.restassured.RestAssured;
 import io.restassured.module.jsv.JsonSchemaValidator;

@@ -56,7 +56,8 @@ public class SeriesServiceConfig {
     @RequestScope
     public SeriesService seriesServiceProtectionProxy(
             @Qualifier("seriesServiceImpl") SeriesService seriesService,
-            UserService userService
+            UserService userService,
+            UserFactory userFactory
     ) throws EntityNotFoundException {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
@@ -64,7 +65,8 @@ public class SeriesServiceConfig {
         var seriesServiceProtectionProxy = new SeriesServiceProtectionProxy(
                 seriesService,
                 userService,
-                authUser
+                authUser,
+                userFactory
         );
         return seriesServiceProtectionProxy;
     }

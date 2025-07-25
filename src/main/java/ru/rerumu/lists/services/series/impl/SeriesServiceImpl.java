@@ -73,17 +73,14 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(Long userId, BookSeriesAddView bookSeriesAddView) {
-        long nextId = seriesRepository.getNextId();
+    public Series add(Long userId, BookSeriesAddView bookSeriesAddView) {
+        User user = userFactory.findById(userId);
+        Long nextId = seriesRepository.getNextId();
+        Series series = seriesFactory.createSeries(nextId, bookSeriesAddView.getTitle(), user);
 
-        throw new NotImplementedException();
-//        SeriesImpl series = new SeriesImpl.Builder()
-//                .seriesId(nextId)
-//                .title(bookSeriesAddView.getTitle())
-//                .readListId(readListId)
-//                .build();
-//
-//        seriesRepository.add(series.toDTO());
+        series.save();
+
+        return series;
     }
 
     @Override

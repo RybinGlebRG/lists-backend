@@ -1,15 +1,16 @@
 package ru.rerumu.lists.domain.series.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
@@ -83,19 +84,21 @@ public class SeriesFactoryImpl implements SeriesFactory {
     }
 
     @Override
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public Series createSeries(
+            @NonNull Long id,
             @NonNull String title,
-            @NonNull List<SeriesItem> itemsList,
             @NonNull User user
     ) {
-        throw new NotImplementedException();
-//        SeriesImpl series = new SeriesImpl(
-//                null,
-//                title,
-//                itemsList,
-//                user
-//        );
-//
-//        seriesRepository.create(series.toDTO());
+        SeriesImpl series = new SeriesImpl(
+                id,
+                title,
+                new ArrayList<>(),
+                user,
+                new ArrayList<>(),
+                seriesRepository,
+                EntityState.NEW
+        );
+        return series;
     }
 }
