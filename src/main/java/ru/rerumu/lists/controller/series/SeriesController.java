@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.series.view.out.SeriesListView;
 import ru.rerumu.lists.controller.series.view.out.SeriesView;
 import ru.rerumu.lists.controller.series.view.out.SeriesViewFactory;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -86,8 +87,14 @@ public class SeriesController {
             @PathVariable Long userId,
             @RequestBody BookSeriesAddView bookSeriesAddView
     ) {
-        seriesService.add(userId, bookSeriesAddView);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Series series = seriesService.add(userId, bookSeriesAddView);
+            SeriesView seriesView = seriesViewFactory.buildSeriesView(series.toDTO());
+            String result = objectMapper.writeValueAsString(seriesView);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
 
