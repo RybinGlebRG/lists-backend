@@ -95,7 +95,6 @@ public class ITBooksGetAll {
                                 }
                             ]
                         }
-                        
                         """)
                 .header("Content-Type", "application/json")
                 .attribute("authUserId", 0L)
@@ -108,33 +107,5 @@ public class ITBooksGetAll {
                 .asString();
         log.info("responseBody: {}", responseBody);
 
-    }
-
-
-    private void addBook(@NonNull String title) {
-        String responseBody = RestAssuredMockMvc
-                .given()
-                .body(String.format("""
-                        {
-                            "title": "%s",
-                            "authorId": null,
-                            "status": 1,
-                            "seriesId": null,
-                            "lastChapter": 123,
-                            "bookTypeId": null,
-                            "insertDate": null,
-                            "note": "test note",
-                            "URL": null
-                        }
-                        """, title))
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
-                .when()
-                .post("/api/v1/users/0/books")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
     }
 }

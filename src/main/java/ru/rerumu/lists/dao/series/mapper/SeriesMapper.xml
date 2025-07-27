@@ -336,9 +336,16 @@
         and s_data.series_id=#{seriesId}
     </select>
 
-    <select id="findById" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.series_id=#{seriesId}
+    <select id="findById" resultMap="SeriesResultMapV2">
+        select
+            s.series_id,
+            s.title,
+            s.user_user_id
+        from
+            series s
+        where
+            s.series_id=#{id}
+            and s.user_user_id = #{userId}
     </select>
 
 <!--    <select id="getAll" resultMap="SeriesResultMap">-->

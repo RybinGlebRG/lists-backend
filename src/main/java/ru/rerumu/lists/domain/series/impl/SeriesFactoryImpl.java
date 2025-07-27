@@ -4,6 +4,7 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -80,7 +81,13 @@ public class SeriesFactoryImpl implements SeriesFactory {
 
     @Override
     public Series findById(@NonNull User user, @NonNull Long seriesId) {
-        throw new NotImplementedException();
+       SeriesDTOv2 seriesDTOv2 = seriesRepository.findById(seriesId, user).orElse(null);
+
+       if (seriesDTOv2 != null) {
+           return fromDTOv2(seriesDTOv2);
+       } else {
+           throw new EntityNotFoundException();
+       }
     }
 
     @Override

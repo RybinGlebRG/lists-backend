@@ -74,13 +74,14 @@ class ITBookAdd {
     public void shouldAddBook(TestInfo testInfo) {
         log.info("Test: {}", testInfo.getDisplayName());
 
+        TestCommon.addSeries("TestSeries 1");
 
         String addBookRequestBody = """
                 {
                     "title": "TestBook",
                     "authorId": null,
                     "status": 1,
-                    "seriesId": null,
+                    "seriesId": 1,
                     "lastChapter": 123,
                     "bookTypeId": null,
                     "insertDate": null,
