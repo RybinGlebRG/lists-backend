@@ -247,8 +247,8 @@ public class ReadListService implements BookService {
         );
 
         // Add author
-        logger.info("Add author...");
         if (bookAddView.getAuthorId() != null) {
+            logger.info("Add author...");
             authorsBooksRepository.add(
                     newBook.getId(),
                     authorFactory.findById(bookAddView.getAuthorId()).getId(),
@@ -267,8 +267,8 @@ public class ReadListService implements BookService {
         );
 
         // Add series
-        logger.info("Add series...");
         if (bookAddView.getSeriesId() != null) {
+            logger.info("Add series...");
             Series series = seriesFactory.findById(user, bookAddView.getSeriesId());
             newBook.updateSeries(List.of(series));
         }

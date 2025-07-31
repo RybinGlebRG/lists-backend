@@ -74,8 +74,8 @@ public class ITBooksGetAll {
         log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");
-        TestCommon.addBook("TestBook 1");
-        TestCommon.addBook("TestBook 2");
+        TestCommon.addBook("TestBook 1", 1L);
+        TestCommon.addBook("TestBook 2", 1L);
 
         String responseBody = RestAssuredMockMvc
                 .given()

@@ -12,7 +12,6 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
-import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
@@ -22,11 +21,9 @@ import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // TODO: Refactor class
@@ -104,25 +101,23 @@ public class BookRepositoryImpl implements BookRepository {
             item.setTextAuthors(authorDtoDaoList);
         }
 
-        // Load all series
+        // Loading all series
         List<SeriesDTOv2> seriesDTOList = seriesRepository.findByUser(user);
         for (BookDtoDao bookDtoDao: bookDtoList) {
-            seriesDTOList.stream()
-                    .filter(item -> item.getSeriesBookRelationDtoList().)
-        }
 
-
-        for (SeriesDTOv2 seriesDTO: seriesDTOList) {
-            List<Long> bookIds = seriesDTO.getSeriesBookRelationDtoList().stream()
-                    .map(SeriesBookRelationDto::bookId)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            for (BookDtoDao bookDtoDao: bookDtoList) {
-                if (bookIds.contains(bookDtoDao.getBookId())) {
-
+            // Getting list of series that contain book
+            List<SeriesDTOv2> containsBook = new ArrayList<>();
+            for (SeriesDTOv2 seriesDTO: seriesDTOList) {
+                for (SeriesBookRelationDto seriesBookRelationDto: seriesDTO.getSeriesBookRelationDtoList()) {
+                    if (seriesBookRelationDto.getBookId().equals(bookDtoDao.getBookId())) {
+                        containsBook.add(seriesDTO);
+                        break;
+                    }
                 }
             }
-        }
 
+            bookDtoDao.setSeriesList(containsBook);
+        }
 
         return bookDtoList;
     }
@@ -136,6 +131,9 @@ public class BookRepositoryImpl implements BookRepository {
         if (book == null) {
             throw new EntityNotFoundException();
         }
+
+        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(id, userId);
+        book.setSeriesList(seriesDTOList);
 
         return book;
     }

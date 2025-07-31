@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TestCommon {
 
     public static void addBook(
-            @NonNull String title
+            @NonNull String title,
+            Long seriesId
     ) {
         String responseBody = RestAssuredMockMvc
                 .given()
@@ -17,14 +18,17 @@ public class TestCommon {
                             "title": "%s",
                             "authorId": null,
                             "status": 1,
-                            "seriesId": null,
+                            "seriesId": %d,
                             "lastChapter": 123,
                             "bookTypeId": null,
                             "insertDate": null,
                             "note": "test note",
                             "URL": null
                         }
-                        """, title))
+                        """,
+                        title,
+                        seriesId
+                ))
                 .header("Content-Type", "application/json")
                 .attribute("authUserId", 0L)
                 .when()

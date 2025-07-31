@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.base.impl;
 
+import com.jcabi.aspects.Loggable;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.base.EntityDTO;
@@ -34,6 +35,7 @@ public class CrudRepositoryDtoImpl<T extends EntityDTO<?>,ID> implements CrudRep
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false)
     public List<T> findByUser(User user){
         List<T> entityDTOList = mapper.findByUser(user);
         return entityDTOList.stream()

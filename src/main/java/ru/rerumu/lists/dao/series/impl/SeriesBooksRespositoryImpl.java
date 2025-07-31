@@ -9,7 +9,6 @@ import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
 
 import java.util.List;
 import java.util.Optional;

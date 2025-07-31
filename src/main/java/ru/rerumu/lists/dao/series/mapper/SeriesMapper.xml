@@ -56,6 +56,16 @@
         <id column="series_id" property="seriesId"/>
         <result column="title" property="title"/>
         <result column="user_user_id" property="userId"/>
+        <collection property="seriesBookRelationDtoList" resultMap="SeriesBookRelationDtoResultMapV2"/>
+    </resultMap>
+
+    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.domain.series.SeriesBookRelationDto">
+        <constructor>
+            <arg column="series_series_id" name="seriesId"/>
+            <arg column="book_book_id" name="bookId"/>
+            <arg column="series_user_id" name="userId"/>
+            <arg column="series_order" name="seriesOrder"/>
+        </constructor>
     </resultMap>
 
     <sql id="titles">
@@ -340,12 +350,37 @@
         select
             s.series_id,
             s.title,
-            s.user_user_id
+            s.user_user_id,
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
         from
             series s
+            left outer join series_books sb
+                on sb.series_series_id  = s.series_id
+                and sb.series_user_id = s.user_user_id
         where
             s.series_id=#{id}
             and s.user_user_id = #{userId}
+    </select>
+
+    <select id="findByUser" resultMap="SeriesResultMapV2">
+        select
+            s.series_id,
+            s.title,
+            s.user_user_id,
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
+        from
+            series s
+            left outer join series_books sb
+                on sb.series_series_id  = s.series_id
+                and sb.series_user_id = s.user_user_id
+        where
+            s.user_user_id = #{userId}
     </select>
 
 <!--    <select id="getAll" resultMap="SeriesResultMap">-->
@@ -357,7 +392,11 @@
         select
             s.series_id,
             s.title,
-            s.user_user_id
+            s.user_user_id,
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
         from
             series s
             inner join series_books sb

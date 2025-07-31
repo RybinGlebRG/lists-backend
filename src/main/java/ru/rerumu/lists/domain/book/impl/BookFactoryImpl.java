@@ -13,6 +13,7 @@ import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.AuthorFactory;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.BookFactory;
@@ -24,7 +25,10 @@ import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.book.type.BookTypeFactory;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
 import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.SeriesFactory;
+import ru.rerumu.lists.domain.series.SeriesItemRelationDTO;
+import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
@@ -33,6 +37,7 @@ import ru.rerumu.lists.domain.user.UserFactory;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +59,7 @@ public class BookFactoryImpl implements BookFactory {
     private final AuthorsBooksRepository authorsBooksRepository;
     private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
+    private final SeriesItemRelationFactory seriesItemRelationFactory;
 
     @Autowired
     public BookFactoryImpl(
@@ -66,7 +72,8 @@ public class BookFactoryImpl implements BookFactory {
             StatusFactory statusFactory,
             AuthorsBooksRepository authorsBooksRepository,
             @NonNull AuthorFactory authorFactory,
-            @NonNull SeriesFactory seriesFactory
+            @NonNull SeriesFactory seriesFactory,
+            @NonNull SeriesItemRelationFactory seriesItemRelationFactory
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -78,6 +85,7 @@ public class BookFactoryImpl implements BookFactory {
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
+        this.seriesItemRelationFactory = seriesItemRelationFactory;
     }
 
     public Book createBook(
@@ -138,10 +146,6 @@ public class BookFactoryImpl implements BookFactory {
 
         // TODO: Details of data retrieval should be encapsulated in DAO layer
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
-
-        // TODO: and same here
-        List<Series> seriesList = seriesFactory.findByBook(bookId, userId);
-        bookDTO.setSeriesList(seriesList);
 
         bookDTO.setTextAuthors(authorsDTOs);
         Book book = fromDTO(bookDTO);
@@ -371,7 +375,32 @@ public class BookFactoryImpl implements BookFactory {
 
         // Set series list
         if (bookDTO.getSeriesList() != null && !bookDTO.getSeriesList().isEmpty()) {
-            builder.seriesList(bookDTO.getSeriesList());
+
+            List<SeriesDTOv2> seriesDTOList = bookDTO.getSeriesList();
+
+            // Converting Series DTO to domain entity
+            // TODO: Refactoring required?
+            List<Series> seriesList = new ArrayList<>();
+            for (SeriesDTOv2 seriesDTO: seriesDTOList) {
+
+                // Getting list of relations to book for each series
+                List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesDTO.getSeriesBookRelationDtoList().stream()
+                        .map(item -> (SeriesItemRelationDTO)item)
+                        .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                Series series = seriesFactory.buildSeries(
+                        seriesDTO.getSeriesId(),
+                        seriesDTO.getTitle(),
+                        userFactory.findById(seriesDTO.getUserId()),
+                        EntityState.PERSISTED,
+                        seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
+                );
+
+                seriesList.add(series);
+            }
+            
+            builder.seriesList(seriesList);
         }
 
         BookImpl book = builder.build();

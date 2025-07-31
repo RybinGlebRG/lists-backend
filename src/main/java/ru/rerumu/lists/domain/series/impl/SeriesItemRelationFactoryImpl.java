@@ -24,9 +24,9 @@ public class SeriesItemRelationFactoryImpl implements SeriesItemRelationFactory 
             if (item instanceof SeriesBookRelationDto seriesBookRelationDto) {
                 seriesItemRelations.add(
                         new SeriesBookRelation(
-                                seriesBookRelationDto.bookId(),
-                                seriesBookRelationDto.seriesId(),
-                                seriesBookRelationDto.userId()
+                                seriesBookRelationDto.getBookId(),
+                                seriesBookRelationDto.getSeriesId(),
+                                seriesBookRelationDto.getUserId()
                         )
                 );
             } else {
