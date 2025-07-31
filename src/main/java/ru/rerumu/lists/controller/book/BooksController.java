@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.controller.book.view.out.BookListView;
+import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.book.view.out.BookViewFactory;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
@@ -87,7 +88,7 @@ public class BooksController {
         Book book = bookService.getBook(bookId, userId);
         List<Series> seriesList = seriesService.findByBook((BookImpl) book, userId);
 
-        ru.rerumu.lists.controller.book.view.out.BookView bookView = bookViewFactory.buildBookView(book.toDTO(), seriesList);
+        BookView bookView = bookViewFactory.buildBookView(book.toDTO(), seriesList);
         String result = objectMapper.writeValueAsString(bookView);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -106,9 +107,9 @@ public class BooksController {
 
         try {
             Book book = bookService.addBook(bookAddView, userId);
-            ru.rerumu.lists.controller.book.view.out.BookView bookView = bookViewFactory.buildBookView(book.toDTO(), new ArrayList<>());
-            String result = objectMapper.writeValueAsString(bookView);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            BookView bookView = bookViewFactory.buildBookView(book.toDTO());
+
+            return new ResponseEntity<>(objectMapper.writeValueAsString(bookView), HttpStatus.OK);
         } catch (JsonProcessingException e) {
             throw new ServerException(e.getMessage(), e);
         }

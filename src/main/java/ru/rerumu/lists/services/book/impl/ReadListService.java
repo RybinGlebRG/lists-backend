@@ -15,7 +15,7 @@ import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -239,6 +239,7 @@ public class ReadListService implements BookService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @NonNull
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public Book addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
 
         // Find status
@@ -296,12 +297,12 @@ public class ReadListService implements BookService {
             newBook.updateSeries(List.of(series));
         }
 
-
         // Save book
         logger.info("Saving book...");
         newBook.save();
 
-        // ???
+        // Getting created book from DB
+        logger.info("Loading book...");
         return getBook(newBook.getId(), user.userId());
     }
 

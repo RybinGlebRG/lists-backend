@@ -68,6 +68,11 @@
         values(#{seriesId}, #{readListId}, #{bookId},#{readListId}, #{seriesOrder})
     </insert>
 
+    <insert id="create">
+        insert into series_books(series_series_id, book_book_id, series_order, book_user_id, series_user_id)
+        values(#{seriesId}, #{bookId}, #{order}, #{userId}, #{userId})
+    </insert>
+
     <delete id="deleteBySeries">
         delete from series_books
         where series_series_id=#{seriesId}

@@ -10,7 +10,7 @@ import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.series.SeriesFactory;

@@ -7,7 +7,9 @@ import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.domain.SeriesBookRelation;
 import ru.rerumu.lists.domain.base.EntityBaseImpl;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
@@ -39,6 +41,8 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
 
     private final SeriesRepository seriesRepository;
 
+    private final SeriesBooksRespository seriesBooksRespository;
+
 
     public SeriesImpl(
             Long seriesId,
@@ -47,7 +51,8 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
             @NonNull User user,
             @NonNull List<SeriesBookRelationDTO> seriesBookRelationDTOList,
             @NonNull SeriesRepository seriesRepository,
-            @NonNull EntityState entityState
+            @NonNull EntityState entityState,
+            @NonNull SeriesBooksRespository seriesBooksRespository
     ) {
         super(entityState);
         this.seriesId = seriesId;
@@ -56,6 +61,7 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
         this.itemsList = new ArrayList<>(itemsList);
         this.seriesBookRelationDTOList = seriesBookRelationDTOList;
         this.seriesRepository = seriesRepository;
+        this.seriesBooksRespository = seriesBooksRespository;
     }
 
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
@@ -78,6 +84,15 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     @Override
     public void addBookRelation(Long bookId) {
         throw new NotImplementedException();
+
+        seriesBooksRespository.create(
+                new SeriesBookRelation(
+                        seriesId,
+                        bookId,
+                        null,
+                        user.userId()
+                )
+        );
     }
 
     @Override
@@ -96,6 +111,7 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
         if (entityState.equals(EntityState.NEW)) {
             seriesRepository.create(toDTO());

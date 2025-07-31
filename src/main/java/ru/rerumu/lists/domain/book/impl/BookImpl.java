@@ -4,6 +4,7 @@ import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +44,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ToString
+@Slf4j
 public class BookImpl implements Book, Cloneable {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
@@ -385,21 +387,23 @@ public class BookImpl implements Book, Cloneable {
      * Updates series list
      */
     @Override
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void updateSeries(@NonNull List<Series> seriesList) {
         // Add
         List<Series> seriesToAdd = seriesList.stream()
-                .filter(item -> !seriesList.contains(item))
+                .filter(item -> !this.seriesList.contains(item))
                 .collect(Collectors.toCollection(ArrayList::new));
+        log.debug("seriesToAdd: {}", seriesToAdd);
         for (Series series: seriesToAdd) {
             series.addBookRelation(bookId);
             seriesList.add(series);
         }
 
         // Remove
-        List<Series> seriesToRemove = seriesList.stream()
+        List<Series> seriesToRemove = this.seriesList.stream()
                 .filter(item -> !seriesList.contains(item))
                 .collect(Collectors.toCollection(ArrayList::new));
-
+        log.debug("seriesToRemove: {}", seriesToRemove);
         for (Series series: seriesToRemove) {
             series.removeBookRelation(bookId);
             seriesList.remove(series);
@@ -432,6 +436,7 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
         bookRepository.update(this);
 
@@ -590,6 +595,9 @@ public class BookImpl implements Book, Cloneable {
                     .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
             textAuthors.stream()
                     .map(Author::toDTO)
+                    .collect(Collectors.toCollection(ArrayList::new)),
+            seriesList.stream()
+                    .map(Series::toDTO)
                     .collect(Collectors.toCollection(ArrayList::new))
         );
 

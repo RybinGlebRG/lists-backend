@@ -16,6 +16,7 @@ import ru.rerumu.lists.domain.books.SearchOrder;
 import ru.rerumu.lists.domain.books.SortItem;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
 import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
@@ -78,6 +79,11 @@ public class BookViewFactory {
                 .map(authorDTO -> new AuthorView2(authorDTO))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        List<SeriesView> seriesViewList = bookDTO.getSeriesList().stream()
+                .sorted(Comparator.comparing(SeriesDTOv2::getTitle))
+                .map(seriesDTOv2 -> new SeriesView(seriesDTOv2.getSeriesId(), seriesDTOv2.getTitle()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         return new BookView(
                 bookDTO.getBookId(),
                 bookDTO.getReadListId(),
@@ -93,7 +99,8 @@ public class BookViewFactory {
                 readingRecordViews,
                 bookDTO.getURL(),
                 tagViews,
-                textAuthors
+                textAuthors,
+                seriesViewList
         );
     }
 

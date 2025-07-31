@@ -1,22 +1,8 @@
 package ru.rerumu.lists.domain;
 
-import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.series.impl.SeriesImpl;
-
-public record SeriesBookRelation(Book book, SeriesImpl series, Long order) {
-
-    public SeriesBookRelation {
-        book = book;
-        series = series.clone();
-    }
-
-    @Override
-    public SeriesImpl series() {
-        return series.clone();
-    }
-
-    @Override
-    public Book book() {
-        return book;
-    }
-}
+public record SeriesBookRelation(
+        Long bookId,
+        Long seriesId,
+        Long order,
+        Long userId
+) {}

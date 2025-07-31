@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.domain.user.User;

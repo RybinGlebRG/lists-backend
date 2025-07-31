@@ -8,7 +8,7 @@ import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.SeriesBookRelation;
 import ru.rerumu.lists.domain.book.Book;
@@ -76,7 +76,7 @@ public class SeriesServiceImpl implements SeriesService {
     public Series add(Long userId, BookSeriesAddView bookSeriesAddView) {
         User user = userFactory.findById(userId);
         Long nextId = seriesRepository.getNextId();
-        Series series = seriesFactory.createSeries(nextId, bookSeriesAddView.getTitle(), user);
+        Series series = seriesFactory.buildSeries(nextId, bookSeriesAddView.getTitle(), user);
 
         series.save();
 

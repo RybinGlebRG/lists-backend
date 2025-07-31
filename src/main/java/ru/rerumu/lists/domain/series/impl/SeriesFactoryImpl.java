@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
@@ -23,12 +24,15 @@ import java.util.stream.Collectors;
 public class SeriesFactoryImpl implements SeriesFactory {
 
     private final SeriesRepository seriesRepository;
+    private final SeriesBooksRespository seriesBooksRespository;
 
     @Autowired
     public SeriesFactoryImpl(
-            SeriesRepository seriesRepository
+            SeriesRepository seriesRepository,
+            SeriesBooksRespository seriesBooksRespository
     ) {
         this.seriesRepository = seriesRepository;
+        this.seriesBooksRespository = seriesBooksRespository;
     }
 
     @Deprecated
@@ -66,6 +70,7 @@ public class SeriesFactoryImpl implements SeriesFactory {
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
         List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(bookId, userId);
 
@@ -80,19 +85,26 @@ public class SeriesFactoryImpl implements SeriesFactory {
     }
 
     @Override
+    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false)
     public Series findById(@NonNull User user, @NonNull Long seriesId) {
        SeriesDTOv2 seriesDTOv2 = seriesRepository.findById(seriesId, user).orElse(null);
 
        if (seriesDTOv2 != null) {
-           return fromDTOv2(seriesDTOv2);
+           return buildSeries(
+                   seriesDTOv2.getSeriesId(),
+                   seriesDTOv2.getTitle(),
+                   user,
+                   EntityState.PERSISTED
+           );
        } else {
            throw new EntityNotFoundException();
        }
     }
 
     @Override
+    @NonNull
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
-    public Series createSeries(
+    public Series buildSeries(
             @NonNull Long id,
             @NonNull String title,
             @NonNull User user
@@ -104,7 +116,30 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 user,
                 new ArrayList<>(),
                 seriesRepository,
-                EntityState.NEW
+                EntityState.NEW,
+                seriesBooksRespository
+        );
+        return series;
+    }
+
+    @Override
+    @NonNull
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    public Series buildSeries(
+            @NonNull Long id,
+            @NonNull String title,
+            @NonNull User user,
+            @NonNull EntityState entityState
+    ) {
+        SeriesImpl series = new SeriesImpl(
+                id,
+                title,
+                new ArrayList<>(),
+                user,
+                new ArrayList<>(),
+                seriesRepository,
+                entityState,
+                seriesBooksRespository
         );
         return series;
     }

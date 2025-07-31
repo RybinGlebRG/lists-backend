@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.series;
 
 import lombok.NonNull;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 import ru.rerumu.lists.domain.user.User;
 
@@ -12,11 +13,19 @@ public interface SeriesFactory {
 
     Series findById(@NonNull User user, @NonNull Long seriesId);
 
-    Series createSeries(
+    Series buildSeries(
             @NonNull Long id,
             @NonNull String title,
             @NonNull User user
     );
+
+    @NonNull
+    Series buildSeries(
+            @NonNull Long id,
+            @NonNull String title,
+            @NonNull User user,
+            @NonNull EntityState entityState
+            );
 
     SeriesImpl fromDTOv2(SeriesDTOv2 seriesDTO);
 

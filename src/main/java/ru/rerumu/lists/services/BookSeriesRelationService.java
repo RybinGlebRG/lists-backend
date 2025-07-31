@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 import ru.rerumu.lists.domain.SeriesBookRelation;
-import ru.rerumu.lists.dao.repository.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class BookSeriesRelationService {
     }
 
     public void add(SeriesBookRelation seriesBookRelation) {
-        seriesBooksRespository.add(seriesBookRelation);
+        seriesBooksRespository.create(seriesBookRelation);
     }
 
     public void delete(Long bookId, Long seriesId, Long readListId) {

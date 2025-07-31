@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.repository;
+package ru.rerumu.lists.dao.series;
 
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.SeriesBookRelation;
@@ -8,12 +8,14 @@ import java.util.Optional;
 
 public interface SeriesBooksRespository {
 
-    @Deprecated
-    void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
+//    @Deprecated
+//    void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
 
-    void add(SeriesBookRelation seriesBookRelation);
+//    void create(Long seriesId, Long bookId, Long itemPosition, Long userId);
 
-    void deleteBySeries(Long seriesId);
+    void create(SeriesBookRelation seriesBookRelation);
+
+//    void deleteBySeries(Long seriesId);
 
     List<SeriesBookRelation> getByBookId(Long bookId, Long readListId, Long userId);
     List<SeriesBookRelation> getBySeriesId(Long seriesId) throws EntityNotFoundException;

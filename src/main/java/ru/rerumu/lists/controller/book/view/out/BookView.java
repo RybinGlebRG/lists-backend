@@ -85,6 +85,7 @@ public class BookView implements DeepCopyable<BookView>{
     private final List<AuthorView2> textAuthors;
 
     @Setter
+    @Getter
     private List<SeriesView> seriesList;
 
     @Builder(toBuilder = true, access = AccessLevel.PACKAGE)
@@ -103,7 +104,8 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull List<ReadingRecordView> readingRecords,
             String URL,
             @NonNull List<TagView> tags,
-            List<AuthorView2> textAuthors
+            List<AuthorView2> textAuthors,
+            List<SeriesView> seriesList
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
@@ -139,6 +141,10 @@ public class BookView implements DeepCopyable<BookView>{
 
         this.tags = tags.stream()
                 .map(TagView::deepCopy)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        this.seriesList = seriesList.stream()
+                .map(SeriesView::deepCopy)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

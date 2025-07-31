@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.book;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.book.type.BookTypeDTO;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 import ru.rerumu.lists.domain.tag.TagDTO;
@@ -27,6 +29,8 @@ import java.util.Optional;
 
 @Builder(toBuilder = true)
 @ToString
+@EqualsAndHashCode
+@Getter
 public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDTOv2 {
     @Getter
     public Long bookId;
@@ -60,6 +64,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
     @Getter
     private List<AuthorDTO> textAuthors;
 
+    private List<SeriesDTOv2> seriesList;
+
     public BookDTO() {
     }
 
@@ -80,7 +86,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             @NonNull List<ReadingRecordDTO> readingRecords,
             String URL, Long userId,
             @NonNull List<TagDTO> tags,
-            List<AuthorDTO> textAuthors
+            List<AuthorDTO> textAuthors,
+            @NonNull List<SeriesDTOv2> seriesList
     ) {
         this.bookId = bookId;
         this.readListId = readListId;
@@ -99,6 +106,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
         this.userId = userId;
         this.tags = tags;
         this.textAuthors = textAuthors;
+        this.seriesList = seriesList;
     }
 
     public BookDTO(

@@ -15,6 +15,8 @@ public interface SeriesBookMapper {
 
     void deleteBySeries(Long seriesId);
 
+    void create(SeriesBookRelation seriesBookRelation);
+
 //    @Deprecated
 //    List<SeriesBookRelation> getByBookId(Long bookId);
     List<Long> getSeriesIdsByBookId(Long bookId, Long readListId);
