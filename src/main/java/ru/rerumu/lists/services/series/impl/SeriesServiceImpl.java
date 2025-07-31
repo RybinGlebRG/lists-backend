@@ -10,9 +10,8 @@ import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
-import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
@@ -25,12 +24,8 @@ import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Slf4j
 public class SeriesServiceImpl implements SeriesService {
@@ -133,27 +128,27 @@ public class SeriesServiceImpl implements SeriesService {
 //        saveBookRelations((SeriesImpl) updatedSeries);
     }
 
-    @Deprecated
-    public Map<BookImpl, List<SeriesImpl>> findByBook(List<BookImpl> bookList, Long userId) {
-        Map<BookImpl, List<SeriesImpl>> bookSeriesMap = new HashMap<>();
-        for (BookImpl book : bookList) {
-            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId(), userId);
-            List<SeriesImpl> seriesList = seriesBookRelationList.stream()
-                    .map(SeriesBookRelation::series)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            bookSeriesMap.put(book, seriesList);
-        }
-        return bookSeriesMap;
-    }
+//    @Deprecated
+//    public Map<BookImpl, List<SeriesImpl>> findByBook(List<BookImpl> bookList, Long userId) {
+//        Map<BookImpl, List<SeriesImpl>> bookSeriesMap = new HashMap<>();
+//        for (BookImpl book : bookList) {
+//            List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getBookId(), book.getReadListId(), userId);
+//            List<SeriesImpl> seriesList = seriesBookRelationList.stream()
+//                    .map(SeriesBookRelation::series)
+//                    .collect(Collectors.toCollection(ArrayList::new));
+//            bookSeriesMap.put(book, seriesList);
+//        }
+//        return bookSeriesMap;
+//    }
 
-    // TODO: fix null
-    @Override
-    public List<Series> findByBook(Book book, Long userId) {
-        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getId(), null, userId);
-        return seriesBookRelationList.stream()
-                .map(SeriesBookRelation::series)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
+//    // TODO: fix null
+//    @Override
+//    public List<Series> findByBook(Book book, Long userId) {
+//        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRespository.getByBookId(book.getId(), null, userId);
+//        return seriesBookRelationList.stream()
+//                .map(SeriesBookRelation::series)
+//                .collect(Collectors.toCollection(ArrayList::new));
+//    }
 
     private void removeBookRelations(SeriesImpl source, SeriesImpl target) {
         throw new NotImplementedException();
@@ -191,15 +186,15 @@ public class SeriesServiceImpl implements SeriesService {
 //        }
     }
 
-    private void saveBookRelations(SeriesImpl series) {
-        List<BookImpl> booksList = series.getItemsList().stream()
-                .filter(item -> item instanceof BookImpl)
-                .map(item -> (BookImpl) item)
-                .collect(Collectors.toCollection(ArrayList::new));
-        List<SeriesBookRelation> bookRelations = IntStream.range(0, booksList.size())
-                .mapToObj(i -> new SeriesBookRelation(booksList.get(i), series, (long) i + 1))
-                .collect(Collectors.toCollection(ArrayList::new));
-        log.debug("saveBookRelations: " + bookRelations);
-        seriesBooksRespository.save(bookRelations);
-    }
+//    private void saveBookRelations(SeriesImpl series) {
+//        List<BookImpl> booksList = series.getItemsList().stream()
+//                .filter(item -> item instanceof BookImpl)
+//                .map(item -> (BookImpl) item)
+//                .collect(Collectors.toCollection(ArrayList::new));
+//        List<SeriesBookRelation> bookRelations = IntStream.range(0, booksList.size())
+//                .mapToObj(i -> new SeriesBookRelation(booksList.get(i), series, (long) i + 1))
+//                .collect(Collectors.toCollection(ArrayList::new));
+//        log.debug("saveBookRelations: " + bookRelations);
+//        seriesBooksRespository.save(bookRelations);
+//    }
 }

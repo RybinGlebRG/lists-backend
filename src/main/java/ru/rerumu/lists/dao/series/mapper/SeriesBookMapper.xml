@@ -4,7 +4,7 @@
 
 <mapper namespace="ru.rerumu.lists.dao.series.mapper.SeriesBookMapper">
 
-<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.domain.SeriesBookRelation">-->
+<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.domain.series.SeriesBookRelation">-->
 <!--        <association property="book"-->
 <!--                     javaType="ru.rerumu.lists.domain.book.impl.BookImpl"-->
 <!--                     column="{bookId=book_book_id,readListId=readListId}"-->
@@ -141,16 +141,20 @@
         MERGE INTO series_books sb
         USING
         (
-            select #{series.seriesId} as series_series_id,
-                   #{book.bookId} as  book_book_id
+            select
+                #{seriesId} as series_series_id,
+                #{bookId} as  book_book_id,
+                #{userId} as user_user_id
         ) sb2
             on sb2.series_series_id = sb.series_series_id
             and sb2.book_book_id = sb.book_book_id
+            and sb2.user_user_id = sb.book_user_id
+            and sb2.user_user_id = sb.series_user_id
         when matched then
-            update set series_order=#{order}
+            update set series_order=#{seriesOrder}
         when not matched then
-            insert (series_series_id, series_list_id, book_book_id, book_list_id, series_order)
-            values(#{series.seriesId}, #{series.seriesListId}, #{book.bookId},#{book.readListId}, #{order})
+            insert (series_series_id, book_book_id, series_order, book_user_id, series_user_id)
+            values(#{seriesId}, #{bookId}, #{seriesOrder}, #{userId}, #{userId})
     </update>
 
 

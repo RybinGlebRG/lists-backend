@@ -396,7 +396,7 @@ public class BookImpl implements Book, Cloneable {
         log.debug("seriesToAdd: {}", seriesToAdd);
         for (Series series: seriesToAdd) {
             series.addBookRelation(bookId);
-            seriesList.add(series);
+            this.seriesList.add(series);
         }
 
         // Remove
@@ -406,7 +406,7 @@ public class BookImpl implements Book, Cloneable {
         log.debug("seriesToRemove: {}", seriesToRemove);
         for (Series series: seriesToRemove) {
             series.removeBookRelation(bookId);
-            seriesList.remove(series);
+            this.seriesList.remove(series);
         }
     }
 

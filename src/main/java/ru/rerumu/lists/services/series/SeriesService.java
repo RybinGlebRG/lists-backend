@@ -1,9 +1,8 @@
 package ru.rerumu.lists.services.series;
 
-import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.views.BookSeriesAddView;
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 
 import java.util.List;
 
@@ -19,5 +18,5 @@ public interface SeriesService {
 
     void updateSeries(Long seriesId, Long userId, SeriesUpdateView seriesUpdateView);
 
-    List<Series> findByBook(Book book, Long userId);
+//    List<Series> findByBook(Book book, Long userId);
 }

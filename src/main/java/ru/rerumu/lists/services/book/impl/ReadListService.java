@@ -10,12 +10,10 @@ import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -31,11 +29,7 @@ import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
-import ru.rerumu.lists.services.AuthorsBooksRelationService;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.book.BookService;
-import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
@@ -49,16 +43,10 @@ public class ReadListService implements BookService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BookRepository bookRepository;
-    private final AuthorsService authorsService;
     private final AuthorsBooksRepository authorsBooksRepository;
-    private final SeriesBooksRespository seriesBooksRespository;
-    private final DateFactory dateFactory;
-    private final BookSeriesRelationService bookSeriesRelationService;
-    private final AuthorsBooksRelationService authorsBooksRelationService;
     private final BookTypesService bookTypesService;
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
-    private final ReadingRecordService readingRecordService;
     private final BookFactoryImpl bookFactory;
     private final TagFactory tagFactory;
     private final UserFactory userFactory;
@@ -67,16 +55,10 @@ public class ReadListService implements BookService {
 
     public ReadListService(
             BookRepository bookRepository,
-            AuthorsService authorsService,
             AuthorsBooksRepository authorsBooksRepository,
-            SeriesBooksRespository seriesBooksRespository,
-            DateFactory dateFactory,
-            BookSeriesRelationService bookSeriesRelationService,
-            AuthorsBooksRelationService authorsBooksRelationService,
             BookTypesService bookTypesService,
             BookStatusesService bookStatusesService,
             FuzzyMatchingService fuzzyMatchingService,
-            ReadingRecordService readingRecordService,
             BookFactoryImpl bookFactory,
             TagFactory tagFactory,
             UserFactory userFactory,
@@ -84,16 +66,10 @@ public class ReadListService implements BookService {
             SeriesFactory seriesFactory
     ) {
         this.bookRepository = bookRepository;
-        this.authorsService = authorsService;
         this.authorsBooksRepository = authorsBooksRepository;
-        this.seriesBooksRespository = seriesBooksRespository;
-        this.dateFactory = dateFactory;
-        this.bookSeriesRelationService = bookSeriesRelationService;
-        this.authorsBooksRelationService = authorsBooksRelationService;
         this.bookTypesService = bookTypesService;
         this.bookStatusesService = bookStatusesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
-        this.readingRecordService = readingRecordService;
         this.bookFactory = bookFactory;
         this.tagFactory = tagFactory;
         this.userFactory = userFactory;

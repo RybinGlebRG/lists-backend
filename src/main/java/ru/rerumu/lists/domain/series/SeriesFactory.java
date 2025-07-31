@@ -24,8 +24,9 @@ public interface SeriesFactory {
             @NonNull Long id,
             @NonNull String title,
             @NonNull User user,
-            @NonNull EntityState entityState
-            );
+            @NonNull EntityState entityState,
+            @NonNull List<SeriesItemRelation> seriesItemRelation
+    );
 
     SeriesImpl fromDTOv2(SeriesDTOv2 seriesDTO);
 

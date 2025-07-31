@@ -388,6 +388,13 @@
         values(#{seriesId}, #{userId}, #{title})
     </insert>
 
+    <insert id="update">
+        update
+            series
+        set
+            title = #{title}
+    </insert>
+
     <delete id="delete">
         delete from series
         where series_id=#{seriesId}

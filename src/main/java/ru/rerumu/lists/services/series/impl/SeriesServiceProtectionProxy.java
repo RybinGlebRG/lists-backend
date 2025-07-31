@@ -3,7 +3,6 @@ package ru.rerumu.lists.services.series.impl;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
-import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
@@ -66,8 +65,8 @@ public class SeriesServiceProtectionProxy implements SeriesService {
         throw new NotImplementedException();
     }
 
-    @Override
-    public List<Series> findByBook(Book book, Long userId) {
-        throw new NotImplementedException();
-    }
+//    @Override
+//    public List<Series> findByBook(Book book, Long userId) {
+//        throw new NotImplementedException();
+//    }
 }

@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.BookStatus;
-import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.author.impl.AuthorImpl;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;

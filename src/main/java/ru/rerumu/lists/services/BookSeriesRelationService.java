@@ -3,7 +3,7 @@ package ru.rerumu.lists.services;
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
-import ru.rerumu.lists.domain.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 
 import java.util.ArrayList;

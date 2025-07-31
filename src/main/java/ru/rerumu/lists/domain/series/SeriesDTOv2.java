@@ -20,6 +20,7 @@ public class SeriesDTOv2 implements EntityDTO<SeriesImpl> {
     private Long userId;
     private String title;
     private List<SeriesItemDTOv2> items = new ArrayList<>();
+    private List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
 
     @Override
     public SeriesImpl toDomain() {

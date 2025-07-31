@@ -1,8 +1,7 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.domain.series;
 
 public record SeriesBookRelation(
         Long bookId,
         Long seriesId,
-        Long order,
         Long userId
-) {}
+) implements SeriesItemRelation {}

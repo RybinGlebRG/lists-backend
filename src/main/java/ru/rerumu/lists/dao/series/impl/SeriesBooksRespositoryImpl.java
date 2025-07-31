@@ -2,44 +2,25 @@ package ru.rerumu.lists.dao.series.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
-import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.domain.series.impl.SeriesImpl;
-import ru.rerumu.lists.domain.SeriesBookRelation;
-import ru.rerumu.lists.domain.book.impl.BookImpl;
-import ru.rerumu.lists.domain.series.impl.SeriesFactoryImpl;
-import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 
     private final SeriesBookMapper seriesBookMapper;
-    private final BookRepository bookRepository;
-    private final SeriesRepository seriesRepository;
-    private final SeriesFactoryImpl seriesFactory;
-    private final BookFactoryImpl bookFactory;
 
     @Autowired
     public SeriesBooksRespositoryImpl(
-            SeriesBookMapper seriesBookMapper,
-            BookRepository bookRepository,
-            SeriesRepository seriesRepository, SeriesFactoryImpl seriesFactory, BookFactoryImpl bookFactory
+            SeriesBookMapper seriesBookMapper
     ) {
         this.seriesBookMapper = seriesBookMapper;
-        this.bookRepository = bookRepository;
-        this.seriesRepository = seriesRepository;
-        this.seriesFactory = seriesFactory;
-        this.bookFactory = bookFactory;
     }
 
 //    @Override

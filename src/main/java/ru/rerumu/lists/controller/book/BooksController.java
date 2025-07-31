@@ -26,9 +26,7 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.books.Search;
-import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.series.SeriesService;
 
@@ -86,9 +84,9 @@ public class BooksController {
     ) throws UserIsNotOwnerException, JsonProcessingException {
 
         Book book = bookService.getBook(bookId, userId);
-        List<Series> seriesList = seriesService.findByBook((BookImpl) book, userId);
+//        List<Series> seriesList = seriesService.findByBook((BookImpl) book, userId);
 
-        BookView bookView = bookViewFactory.buildBookView(book.toDTO(), seriesList);
+        BookView bookView = bookViewFactory.buildBookView(book.toDTO());
         String result = objectMapper.writeValueAsString(bookView);
 
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -9,12 +9,14 @@ import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
-import ru.rerumu.lists.domain.SeriesBookRelation;
 import ru.rerumu.lists.domain.base.EntityBaseImpl;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
@@ -37,11 +39,14 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     @Getter
     private final User user;
 
+    @Deprecated
     private final List<SeriesBookRelationDTO> seriesBookRelationDTOList;
 
     private final SeriesRepository seriesRepository;
 
     private final SeriesBooksRespository seriesBooksRespository;
+
+    private final List<SeriesItemRelation> seriesItemRelations;
 
 
     public SeriesImpl(
@@ -52,7 +57,8 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
             @NonNull List<SeriesBookRelationDTO> seriesBookRelationDTOList,
             @NonNull SeriesRepository seriesRepository,
             @NonNull EntityState entityState,
-            @NonNull SeriesBooksRespository seriesBooksRespository
+            @NonNull SeriesBooksRespository seriesBooksRespository,
+            @NonNull List<SeriesItemRelation> seriesItemRelations
     ) {
         super(entityState);
         this.seriesId = seriesId;
@@ -62,17 +68,36 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
         this.seriesBookRelationDTOList = seriesBookRelationDTOList;
         this.seriesRepository = seriesRepository;
         this.seriesBooksRespository = seriesBooksRespository;
+        this.seriesItemRelations = new ArrayList<>(seriesItemRelations);
     }
 
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public SeriesDTOv2 toDTO(){
+
+        List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
+        for (SeriesItemRelation seriesItemRelation: seriesItemRelations) {
+            if (seriesItemRelation instanceof SeriesBookRelation seriesBookRelation) {
+                seriesBookRelationDtoList.add(
+                        new SeriesBookRelationDto(
+                                seriesBookRelation.seriesId(),
+                                seriesBookRelation.bookId(),
+                                seriesBookRelation.userId(),
+                                (long) seriesItemRelations.indexOf(seriesBookRelation)
+                        )
+                );
+            } else {
+                throw new ServerException();
+            }
+        }
+
         return new SeriesDTOv2(
                 seriesId,
                 user.userId(),
                 title,
                 itemsList.stream()
                         .map(SeriesItem::toDTO)
-                        .collect(Collectors.toCollection(ArrayList::new))
+                        .collect(Collectors.toCollection(ArrayList::new)),
+                seriesBookRelationDtoList
         );
     }
 
@@ -83,13 +108,10 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
 
     @Override
     public void addBookRelation(Long bookId) {
-        throw new NotImplementedException();
-
-        seriesBooksRespository.create(
+        seriesItemRelations.add(
                 new SeriesBookRelation(
-                        seriesId,
                         bookId,
-                        null,
+                        seriesId,
                         user.userId()
                 )
         );
