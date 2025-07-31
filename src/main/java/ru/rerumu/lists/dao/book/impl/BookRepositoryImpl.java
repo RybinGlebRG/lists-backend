@@ -10,17 +10,23 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
+import ru.rerumu.lists.dao.series.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // TODO: Refactor class
@@ -30,18 +36,20 @@ public class BookRepositoryImpl implements BookRepository {
     private final BookMapper bookMapper;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesMapper seriesMapper;
-    private final SeriesBookMapper seriesBookMapper;
+    private final SeriesBooksRespository seriesBooksRespository;
+    private final SeriesRepository seriesRepository;
 
     public BookRepositoryImpl(
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesMapper seriesMapper,
-            SeriesBookMapper seriesBookMapper
+            SeriesBooksRespository seriesBooksRespository, SeriesRepository seriesRepository
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesMapper = seriesMapper;
-        this.seriesBookMapper = seriesBookMapper;
+        this.seriesBooksRespository = seriesBooksRespository;
+        this.seriesRepository = seriesRepository;
     }
 
 
@@ -69,13 +77,13 @@ public class BookRepositoryImpl implements BookRepository {
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public List<BookDtoDao> findByUserChained(Long userId) {
+    public List<BookDtoDao> findByUserChained(User user) {
 
         // Load all books by user
-        List<BookDtoDao> bookDtoList = bookMapper.findByUserChained(userId);
+        List<BookDtoDao> bookDtoList = bookMapper.findByUserChained(user.userId());
 
         // Load all relations between books and authors by user
-        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(userId);
+        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.userId());
         Map<Long, List<AuthorBookDto>> authorsMap = authorBookDtoList.stream()
                 .collect(Collectors.groupingBy(
                         AuthorBookDto::getBookId,
@@ -95,6 +103,26 @@ public class BookRepositoryImpl implements BookRepository {
             }
             item.setTextAuthors(authorDtoDaoList);
         }
+
+        // Load all series
+        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByUser(user);
+        for (BookDtoDao bookDtoDao: bookDtoList) {
+            seriesDTOList.stream()
+                    .filter(item -> item.getSeriesBookRelationDtoList().)
+        }
+
+
+        for (SeriesDTOv2 seriesDTO: seriesDTOList) {
+            List<Long> bookIds = seriesDTO.getSeriesBookRelationDtoList().stream()
+                    .map(SeriesBookRelationDto::bookId)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            for (BookDtoDao bookDtoDao: bookDtoList) {
+                if (bookIds.contains(bookDtoDao.getBookId())) {
+
+                }
+            }
+        }
+
 
         return bookDtoList;
     }

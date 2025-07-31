@@ -202,6 +202,22 @@ class ITBookAdd {
                     },
                     "url": {
                       "type": "null"
+                    },
+                    "seriesList": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "seriesId": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        ]
                     }
                   },
                   "required": [
@@ -219,7 +235,8 @@ class ITBookAdd {
                     "readingRecords",
                     "tags",
                     "textAuthors",
-                    "url"
+                    "url",
+                    "seriesList"
                   ]
                 }
                 """;
@@ -268,6 +285,12 @@ class ITBookAdd {
                     ],
                     "tags": [],
                     "textAuthors": [],
+                    "seriesList": [
+                        {
+                            "seriesId": 1,
+                            "title": "TestSeries 1"
+                        }
+                    ],
                     "url": null
                 }
                 """;

@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.series.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
@@ -7,6 +8,8 @@ import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 
 import java.util.List;
 import java.util.Optional;
@@ -183,5 +186,10 @@ public class SeriesBooksRespositoryImpl implements SeriesBooksRespository {
 ////
 ////            return Optional.of(new SeriesBookRelation(optionalBook.get(), optionalSeries.get(), order));
 ////        }
+    }
+
+    @Override
+    public List<SeriesBookRelationDto> getAllByUserId(@NonNull Long userId) {
+        return seriesBookMapper.getByUserId(userId);
     }
 }

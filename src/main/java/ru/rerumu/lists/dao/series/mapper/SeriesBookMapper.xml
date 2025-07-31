@@ -40,6 +40,15 @@
         </constructor>
     </resultMap>
 
+    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.domain.series.SeriesBookRelationDto">
+        <constructor>
+            <arg column="series_series_id" name="seriesId"/>
+            <arg column="book_book_id" name="bookId"/>
+            <arg column="series_user_id" name="userId"/>
+            <arg column="series_order" name="seriesOrder"/>
+        </constructor>
+    </resultMap>
+
     <select id="findBySeries" resultMap="SeriesBookRelationDTOResultMap">
         select  sb.series_series_id,
                 sb.series_list_id,
@@ -120,6 +129,19 @@
         from series_books sb
         where sb.book_book_id = #{bookId}
         and sb.series_series_id = #{seriesId}
+    </select>
+
+    <select id="getByUserId" resultMap="SeriesBookRelationDtoResultMapV2">
+        select
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
+        from
+            series_books sb
+        where
+            sb.series_user_id = #{userId}
+            and sb.book_user_id = #{userId}
     </select>
 
     <update id="update">

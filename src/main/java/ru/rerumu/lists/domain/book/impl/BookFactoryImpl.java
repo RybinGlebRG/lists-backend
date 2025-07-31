@@ -154,7 +154,7 @@ public class BookFactoryImpl implements BookFactory {
     @Override
     public List<Book> findAll(User user, Boolean isChained) {
         if (isChained) {
-            List<BookDtoDao> bookDtoList = bookRepository.findByUserChained(user.userId());
+            List<BookDtoDao> bookDtoList = bookRepository.findByUserChained(user);
             return fromDTO(bookDtoList);
         } else {
             return bookRepository.findByUser(user).stream()

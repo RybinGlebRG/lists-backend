@@ -52,6 +52,8 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
         return authors;
     }
 
+    @Override
+    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     public List<AuthorBookDto> getAllByUserId(@NonNull Long userId) {
         return authorBookRelationMapper.getByUserId(userId);
     }

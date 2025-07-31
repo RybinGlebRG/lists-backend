@@ -18,7 +18,7 @@ public interface BookRepository {
     BookDtoDao findById(Long id, Long userId);
 
     List<BookDtoDao> findByUser(User user);
-    List<BookDtoDao> findByUserChained(Long userId);
+    List<BookDtoDao> findByUserChained(User user);
 
     Long getNextId();
 

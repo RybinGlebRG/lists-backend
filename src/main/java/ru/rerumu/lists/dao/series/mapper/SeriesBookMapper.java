@@ -36,4 +36,6 @@ public interface SeriesBookMapper {
 
     List<SeriesBookRelationDTO> findBySeries(SeriesImpl series);
     List<SeriesBookRelationDTO> findBySeriesId(Long seriesId);
+
+    List<SeriesBookRelationDto> getByUserId(Long userId);
 }
