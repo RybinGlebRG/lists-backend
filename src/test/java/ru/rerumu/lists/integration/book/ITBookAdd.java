@@ -20,6 +20,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
+import ru.rerumu.lists.integration.TestCommon;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

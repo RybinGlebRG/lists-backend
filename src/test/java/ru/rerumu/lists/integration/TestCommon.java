@@ -1,4 +1,4 @@
-package ru.rerumu.lists.integration.book;
+package ru.rerumu.lists.integration;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.NonNull;
