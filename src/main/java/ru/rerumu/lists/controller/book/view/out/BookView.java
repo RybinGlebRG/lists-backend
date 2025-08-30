@@ -52,10 +52,10 @@ public class BookView implements DeepCopyable<BookView>{
     @Getter
     public static class BookType implements DeepCopyable<BookType> {
 
-        private final Integer typeId;
+        private final Long typeId;
         private final String typeName;
 
-        public BookType(@NonNull Integer typeId, @NonNull String typeName) {
+        public BookType(@NonNull Long typeId, @NonNull String typeName) {
             this.typeId = typeId;
             this.typeName = typeName;
         }

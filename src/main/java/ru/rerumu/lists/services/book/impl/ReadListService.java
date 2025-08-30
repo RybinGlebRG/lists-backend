@@ -14,15 +14,16 @@ import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -52,6 +53,7 @@ public class ReadListService implements BookService {
     private final UserFactory userFactory;
     private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
+    private final BookTypeRepository bookTypeRepository;
 
     public ReadListService(
             BookRepository bookRepository,
@@ -63,7 +65,8 @@ public class ReadListService implements BookService {
             TagFactory tagFactory,
             UserFactory userFactory,
             AuthorFactory authorFactory,
-            SeriesFactory seriesFactory
+            SeriesFactory seriesFactory,
+            BookTypeRepository bookTypeRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -75,6 +78,7 @@ public class ReadListService implements BookService {
         this.userFactory = userFactory;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
+        this.bookTypeRepository = bookTypeRepository;
     }
 
     /**
@@ -106,7 +110,7 @@ public class ReadListService implements BookService {
         // Update book type
         logger.info("Updating book type...");
         if (bookUpdateView.getBookTypeId() != null) {
-            BookType optionalBookType = bookTypesService.findById(bookUpdateView.getBookTypeId()).orElseThrow(EntityNotFoundException::new);
+            BookType optionalBookType = bookTypesService.findById(Long.valueOf(bookUpdateView.getBookTypeId()));
             book.updateType(optionalBookType);
         }
 
@@ -230,7 +234,7 @@ public class ReadListService implements BookService {
         logger.info("Find type...");
         BookType bookType = null;
         if (bookAddView.getBookTypeId() != null) {
-            bookType = bookTypesService.findById(bookAddView.getBookTypeId()).orElseThrow();
+            bookType = bookTypeRepository.findById(bookAddView.getBookTypeId().longValue());
         }
 
         // Find user

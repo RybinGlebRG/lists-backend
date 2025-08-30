@@ -1,7 +1,7 @@
 package ru.rerumu.lists.domain.dto;
 
 import ru.rerumu.lists.domain.BookStatus;
-import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.booktype.impl.BookTypeImpl;
 
 import java.util.Date;
 
@@ -17,5 +17,5 @@ public record SeriesBookRelationDTO(
         Date insertDate,
         Date lastUpdateDate,
         Integer lastChapter,
-        BookType bookType
+        BookTypeImpl bookType
 ) {}

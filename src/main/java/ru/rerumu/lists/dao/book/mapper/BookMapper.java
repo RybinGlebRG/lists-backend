@@ -20,7 +20,7 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             Date insertDate,
             Date lastUpdateDate,
             Integer lastChapter,
-            Integer bookTypeId,
+            Long bookTypeId,
             String note,
             String URL,
             Long userId
@@ -35,7 +35,7 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
                 Date insertDate,
                 Date lastUpdateDate,
                 Integer lastChapter,
-                Integer bookTypeId,
+                Long bookTypeId,
                 String note,
                 String URL,
                 Long userId

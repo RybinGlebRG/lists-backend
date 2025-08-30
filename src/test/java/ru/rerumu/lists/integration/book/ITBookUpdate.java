@@ -73,6 +73,7 @@ class ITBookUpdate {
 
 
         TestCommon.addSeries("TestSeries");
+        TestCommon.addSeries("TestSeries 2");
         TestCommon.addBook("TestBook", null);
 
         String requestBody = """
@@ -83,7 +84,7 @@ class ITBookUpdate {
                     "seriesId": 1,
                     "order": null,
                     "lastChapter": null,
-                    "bookTypeId": null,
+                    "bookTypeId": 1,
                     "insertDateUTC": "2025-08-27T05:12:00.000Z",
                     "note": "123123",
                     "URL": null,
@@ -126,7 +127,10 @@ class ITBookUpdate {
                     },
                     "lastChapter": null,
                     "note": "123123",
-                    "bookType": null,
+                    "bookType": {
+                        "typeId": 1,
+                        "typeName": "Book"
+                    },
                     "itemType": "BOOK",
                     "chain": [],
                     "readingRecords": [

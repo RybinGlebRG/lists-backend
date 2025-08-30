@@ -1,14 +1,15 @@
-package ru.rerumu.lists.domain.book.type;
+package ru.rerumu.lists.domain.booktype;
 
 import lombok.NonNull;
 import ru.rerumu.lists.domain.base.EntityDTO;
+import ru.rerumu.lists.domain.booktype.impl.BookTypeImpl;
 
-public class BookTypeDTO implements EntityDTO<BookType> {
-    public Integer id;
+public class BookTypeDTO implements EntityDTO<BookTypeImpl> {
+    public Long id;
     public String name;
 
     public BookTypeDTO(
-            @NonNull Integer id,
+            @NonNull Long id,
             @NonNull String name
     ) {
         this.id = id;
@@ -16,11 +17,11 @@ public class BookTypeDTO implements EntityDTO<BookType> {
     }
 
     @Override
-    public BookType toDomain() {
+    public BookTypeImpl toDomain() {
         if (id == null || name == null){
             return null;
         }
-        BookType bookType = new BookType(id,name);
+        BookTypeImpl bookType = new BookTypeImpl(id,name);
         return bookType;
     }
 }

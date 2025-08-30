@@ -84,7 +84,7 @@ class ITBookAdd {
                     "status": 1,
                     "seriesId": 1,
                     "lastChapter": 123,
-                    "bookTypeId": null,
+                    "bookTypeId": 1,
                     "insertDate": null,
                     "note": "test note",
                     "URL": null
@@ -132,7 +132,15 @@ class ITBookAdd {
                       "type": "string"
                     },
                     "bookType": {
-                      "type": "null"
+                      "type": "object",
+                      "properties": {
+                        "typeId": {
+                            "type": "number"
+                        },
+                        "typeName": {
+                            "type": "string"
+                        }
+                      }
                     },
                     "itemType": {
                       "type": "string"
@@ -269,7 +277,10 @@ class ITBookAdd {
                     },
                     "lastChapter": null,
                     "note": "test note",
-                    "bookType": null,
+                    "bookType": {
+                        "typeId": 1,
+                        "typeName": "Book"
+                    },
                     "itemType": "BOOK",
                     "chain": [],
                     "readingRecords": [{

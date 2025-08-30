@@ -4,14 +4,14 @@ import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.type.BookType;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.tag.Tag;
+import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
