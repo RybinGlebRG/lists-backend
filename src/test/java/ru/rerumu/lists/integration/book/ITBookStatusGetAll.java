@@ -70,7 +70,7 @@ public class ITBookStatusGetAll{
     }
 
     @Test
-    void shouldFindAll(TestInfo testInfo){
+    void shouldFindAll(TestInfo testInfo) throws Exception{
         log.info("Test: {}", testInfo.getDisplayName());
 
         String responseBody = RestAssuredMockMvc

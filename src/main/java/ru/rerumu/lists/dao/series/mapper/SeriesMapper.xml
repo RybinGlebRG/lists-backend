@@ -432,6 +432,8 @@
             series
         set
             title = #{title}
+        where
+            series_id = #{seriesId}
     </insert>
 
     <delete id="delete">

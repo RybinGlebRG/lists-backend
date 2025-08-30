@@ -72,7 +72,7 @@ class ITBookAdd {
     }
 
     @Test
-    public void shouldAddBook(TestInfo testInfo) {
+    public void shouldAddBook(TestInfo testInfo) throws Exception{
         log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");

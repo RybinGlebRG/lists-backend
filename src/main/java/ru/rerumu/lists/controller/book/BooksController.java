@@ -67,9 +67,11 @@ public class BooksController {
             @PathVariable Long userId,
             @PathVariable Long bookId,
             @RequestBody BookUpdateView bookUpdateView
-    ) throws EmptyMandatoryParameterException {
-        bookService.updateBook(bookId, userId, bookUpdateView);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    ) throws EmptyMandatoryParameterException, JsonProcessingException {
+        Book book = bookService.updateBook(bookId, userId, bookUpdateView);
+        BookView bookView = bookViewFactory.buildBookView(book.toDTO());
+        String result = objectMapper.writeValueAsString(bookView);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

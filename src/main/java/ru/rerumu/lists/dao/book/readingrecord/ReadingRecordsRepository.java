@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReadingRecordsRepository extends CrudRepository<ReadingRecordDTO,Long> {
     List<ReadingRecordDTO> findByBookId(Long bookId);
     List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
+    void delete(Long readingRecordId);
 }

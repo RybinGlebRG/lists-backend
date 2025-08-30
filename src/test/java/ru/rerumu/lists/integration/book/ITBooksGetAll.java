@@ -71,7 +71,7 @@ public class ITBooksGetAll {
     }
 
     @Test
-    public void shouldGetAll(TestInfo testInfo) {
+    public void shouldGetAll(TestInfo testInfo) throws Exception {
         log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");

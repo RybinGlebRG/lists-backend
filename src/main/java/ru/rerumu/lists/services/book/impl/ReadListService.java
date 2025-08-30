@@ -83,7 +83,7 @@ public class ReadListService implements BookService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public void updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
+    public Book updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
 
         logger.info("Getting user with id='{}'...", userId);
         User user = userFactory.findById(userId);
@@ -135,8 +135,10 @@ public class ReadListService implements BookService {
 
         // Update author
         logger.info("Updating text authors...");
-        Author author = authorFactory.findById(bookUpdateView.getAuthorId());
-        book.updateTextAuthors(List.of(author));
+        if (bookUpdateView.getAuthorId() != null) {
+            Author author = authorFactory.findById(bookUpdateView.getAuthorId());
+            book.updateTextAuthors(List.of(author));
+        }
 
         // Update series
         logger.info("Updating series...");
@@ -149,6 +151,8 @@ public class ReadListService implements BookService {
         logger.info("Saving book...");
         book.save();
         logger.debug(String.format("Updated book: %s", book));
+
+        return book;
     }
 
     /**

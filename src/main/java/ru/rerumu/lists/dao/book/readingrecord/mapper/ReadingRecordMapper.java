@@ -13,4 +13,6 @@ public interface ReadingRecordMapper extends CrudMapper<ReadingRecordDTO,Long, R
     List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
 
     Long getNextId();
+
+    void delete(Long readingRecordId);
 }

@@ -31,7 +31,7 @@ public interface BookService {
     /**
      * Update book of user
      */
-    void updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView);
+    Book updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView);
 
     /**
      * Delete book of user

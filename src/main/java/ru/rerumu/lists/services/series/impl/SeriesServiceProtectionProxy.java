@@ -27,14 +27,16 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     }
 
     @Override
-    public List<Series> findAll(Long readListId) {
-        throw new NotImplementedException();
-//        try {
-//            userService.checkOwnershipList(authUser.name(), readListId);
-//        } catch (UserIsNotOwnerException e){
-//            throw new UserPermissionException();
-//        }
-//        return seriesService.findAll(readListId);
+    public List<Series> findAll(Long userId) {
+        // Get passed user
+        User user = userFactory.findById(userId);
+
+        // Check if actual user has access
+        if (!user.equals(authUser)) {
+            throw new UserPermissionException();
+        }
+
+        return seriesService.findAll(userId);
     }
 
     @Override

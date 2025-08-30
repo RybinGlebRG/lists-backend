@@ -71,7 +71,7 @@ public class ITSeriesAdd {
     }
 
     @Test
-    public void shouldAdd(TestInfo testInfo) {
+    public void shouldAdd(TestInfo testInfo) throws Exception{
         log.info("Test: {}", testInfo.getDisplayName());
 
         String responseBody = RestAssuredMockMvc

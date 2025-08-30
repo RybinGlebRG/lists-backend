@@ -110,10 +110,9 @@ public class ReadingRecordImpl implements ReadingRecord {
         readingRecordsRepository.update(this.toDTO());
     }
 
-    // TODO: fix null
     @Override
     public void delete() {
-        readingRecordsRepository.delete(recordId, null);
+        readingRecordsRepository.delete(recordId);
     }
 
     @Override

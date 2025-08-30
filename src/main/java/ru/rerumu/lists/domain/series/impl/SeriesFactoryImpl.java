@@ -101,7 +101,27 @@ public class SeriesFactoryImpl implements SeriesFactory {
 
     @Override
     public List<Series> findAll(@NonNull User user) {
-        throw new NotImplementedException();
+        List<SeriesDTOv2> seriesDTOv2List = seriesRepository.findByUser(user);
+
+        List<Series> seriesList = new ArrayList<>();
+        for (SeriesDTOv2 seriesDTO: seriesDTOv2List) {
+            List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesDTO.getSeriesBookRelationDtoList().stream()
+                    .map(item -> (SeriesItemRelationDTO)item)
+                    .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            Series series = buildSeries(
+                    seriesDTO.getSeriesId(),
+                    seriesDTO.getTitle(),
+                    user,
+                    EntityState.PERSISTED,
+                    seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
+            );
+
+            seriesList.add(series);
+        }
+
+        return seriesList;
     }
 
     @Override

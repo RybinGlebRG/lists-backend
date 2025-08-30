@@ -72,7 +72,7 @@ public class BookServiceProtectionProxy implements BookService {
     }
 
     @Override
-    public void updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
+    public Book updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
         // Get passed user
         User user = userFactory.findById(userId);
 
@@ -81,7 +81,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
 
-        readListService.updateBook(bookId, userId, bookUpdateView);
+        return readListService.updateBook(bookId, userId, bookUpdateView);
     }
 
     @Override
