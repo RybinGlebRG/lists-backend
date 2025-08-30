@@ -1,29 +1,25 @@
 package ru.rerumu.lists.services.book.type;
 
-import ru.rerumu.lists.domain.book.type.BookType;
-import ru.rerumu.lists.domain.book.type.BookTypeDTO;
-import ru.rerumu.lists.dao.base.CrudRepository;
+import org.springframework.stereotype.Service;
+import ru.rerumu.lists.dao.booktype.BookTypeRepository;
+import ru.rerumu.lists.domain.booktype.BookType;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Service
 public class BookTypesService {
 
-    private final CrudRepository<BookTypeDTO,Integer> crudRepository;
+    private final BookTypeRepository bookTypeRepository;
 
-    public BookTypesService(CrudRepository<BookTypeDTO,Integer> crudRepository){
-        this.crudRepository = crudRepository;
+    public BookTypesService(BookTypeRepository bookTypeRepository){
+        this.bookTypeRepository = bookTypeRepository;
     }
 
     public List<BookType> findAll(){
-        return crudRepository.findAll().stream()
-                .map(BookTypeDTO::toDomain)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return bookTypeRepository.findAll();
     }
 
-    public Optional<BookType> findById(int bookTypeId){
-        return crudRepository.findById(bookTypeId, null).map(BookTypeDTO::toDomain);
+    public BookType findById(Long bookTypeId){
+        return bookTypeRepository.findById(bookTypeId);
     }
 }

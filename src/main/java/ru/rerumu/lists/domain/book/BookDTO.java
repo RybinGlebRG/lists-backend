@@ -8,11 +8,11 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.author.AuthorDTO;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.domain.book.type.BookTypeDTO;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.booktype.BookTypeDTO;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
@@ -45,7 +45,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
     public Date lastUpdateDate;
     public Integer lastChapter;
     @Getter
-    public Integer bookType;
+    public Long bookType;
     @Getter
     public String note;
     @Getter
@@ -78,7 +78,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             Date insertDate,
             Date lastUpdateDate,
             Integer lastChapter,
-            Integer bookType,
+            Long bookType,
             String note,
             BookTypeDTO bookTypeObj,
             BookStatusRecord bookStatusObj,

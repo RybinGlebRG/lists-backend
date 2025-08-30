@@ -11,7 +11,7 @@ import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.domain.book.type.BookTypeDTO;
+import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
@@ -36,7 +36,7 @@ public class BookDtoDao implements SeriesItemDTO {
     private Integer lastChapter;
     private Integer bookType;
     private String note;
-    private BookTypeDTO bookTypeObj;
+    private BookType bookTypeObj;
     private BookStatusRecord bookStatusObj;
     private List<BookOrderedDtoDao> previousBooks;
     private List<ReadingRecordDTO> readingRecords;

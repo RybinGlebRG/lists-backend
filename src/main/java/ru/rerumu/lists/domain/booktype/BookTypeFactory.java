@@ -1,12 +1,10 @@
-package ru.rerumu.lists.domain.book.type;
+package ru.rerumu.lists.domain.booktype;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.book.type.BookTypeMapper;
+import ru.rerumu.lists.dao.booktype.mapper.BookTypeMapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class BookTypeFactory {
@@ -19,8 +17,6 @@ public class BookTypeFactory {
     }
 
     public List<BookType> getAll() {
-        return bookTypeMapper.findAll().stream()
-                .map(BookTypeDTO::toDomain)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return bookTypeMapper.findAll();
     }
 }

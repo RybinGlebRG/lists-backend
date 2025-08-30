@@ -1,15 +1,17 @@
-package ru.rerumu.lists.domain.book.type;
+package ru.rerumu.lists.domain.booktype.impl;
 
 import org.json.JSONObject;
+import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.booktype.BookTypeDTO;
 
 import java.util.Objects;
 
-public class BookType {
+public class BookTypeImpl implements BookType {
 
-    private final int id;
+    private final Long id;
     private final String name;
 
-    public BookType(Integer id, String name){
+    public BookTypeImpl(Long id, String name){
         this.name = name;
         this.id = id;
     }
@@ -18,7 +20,7 @@ public class BookType {
         return name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -47,7 +49,7 @@ public class BookType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BookType bookType = (BookType) o;
+        BookTypeImpl bookType = (BookTypeImpl) o;
         return id == bookType.id && Objects.equals(name, bookType.name);
     }
 

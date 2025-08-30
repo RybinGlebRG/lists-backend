@@ -29,11 +29,11 @@
             <arg column="insert_date" javaType="Date"/>
             <arg column="last_update_date" javaType="Date"/>
             <arg column="last_chapter" javaType="Integer"/>
-            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.domain.book.type.BookType"/>
+            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.domain.booktype.impl.BookTypeImpl"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.domain.book.type.BookType">
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.domain.booktype.impl.BookTypeImpl">
         <constructor>
             <idArg column="type_id" javaType="Integer"/>
             <arg column="type_name" javaType="String"/>

@@ -2,7 +2,7 @@ package ru.rerumu.lists.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.domain.book.type.BookType;
+import ru.rerumu.lists.domain.booktype.BookType;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package ru.rerumu.lists.domain.book.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,7 +11,7 @@ import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
-import ru.rerumu.lists.domain.book.type.BookTypeFactory;
+import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.UserFactory;
 

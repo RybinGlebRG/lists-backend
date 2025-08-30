@@ -21,8 +21,8 @@ import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
-import ru.rerumu.lists.domain.book.type.BookType;
-import ru.rerumu.lists.domain.book.type.BookTypeFactory;
+import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
@@ -327,7 +327,7 @@ public class BookFactoryImpl implements BookFactory {
         }
 
         if (bookDTO.getBookTypeObj() != null) {
-            builder.bookType(bookDTO.getBookTypeObj().toDomain());
+            builder.bookType(bookDTO.getBookTypeObj());
         }
 
 //        if (bookId2ReadingRecordsMap.get(bookDTO.getBookId()) != null) {

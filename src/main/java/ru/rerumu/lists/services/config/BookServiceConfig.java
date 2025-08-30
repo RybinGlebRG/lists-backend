@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.series.SeriesFactory;
@@ -38,7 +39,8 @@ public class BookServiceConfig {
             TagFactory tagFactory,
             UserFactory userFactory,
             AuthorFactory authorFactory,
-            SeriesFactory seriesFactory
+            SeriesFactory seriesFactory,
+            BookTypeRepository bookTypeRepository
     ) {
         return new ReadListService(
                 bookRepository,
@@ -50,7 +52,8 @@ public class BookServiceConfig {
                 tagFactory,
                 userFactory,
                 authorFactory,
-                seriesFactory
+                seriesFactory,
+                bookTypeRepository
         );
     }
 
