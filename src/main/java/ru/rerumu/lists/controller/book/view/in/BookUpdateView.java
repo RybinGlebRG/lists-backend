@@ -52,7 +52,7 @@ public class BookUpdateView {
 
     @JsonCreator
     public BookUpdateView(
-            @NonNull Long readListId,
+            Long readListId,
             @NonNull String title,
             Long authorId,
             Long seriesId,

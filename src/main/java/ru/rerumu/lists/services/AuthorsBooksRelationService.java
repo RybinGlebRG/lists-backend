@@ -3,7 +3,7 @@ package ru.rerumu.lists.services;
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.model.AuthorBookRelation;
+import ru.rerumu.lists.domain.AuthorBookRelation;
 
 @Service
 public class AuthorsBooksRelationService {

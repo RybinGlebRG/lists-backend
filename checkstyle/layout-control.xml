@@ -13,10 +13,10 @@
         <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
-        <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
 
         <!-- TODO: fix -->
-            <allow class="ru.rerumu.lists.model.factories.UserServiceProxyFactory"/>
+            <allow class="ru.rerumu.lists.domain.factories.UserServiceProxyFactory"/>
         <!-- -->
 
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
@@ -32,9 +32,9 @@
         <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
     </subpackage>
 
-    <!--  model  -->
-    <subpackage name="model(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.model(\..*)?" regex="true"/>
+    <!--  domain  -->
+    <subpackage name="domain(\..*)?" regex="true" strategyOnMismatch="allowed">
+        <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
 
         <!-- TODO: fix -->

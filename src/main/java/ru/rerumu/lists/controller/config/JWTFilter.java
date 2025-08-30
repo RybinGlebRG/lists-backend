@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.rerumu.lists.crosscut.exception.NoJWTException;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.io.IOException;

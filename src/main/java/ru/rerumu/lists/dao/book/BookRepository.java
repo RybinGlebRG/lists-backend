@@ -1,7 +1,8 @@
 package ru.rerumu.lists.dao.book;
 
-import ru.rerumu.lists.model.book.impl.BookImpl;
-import ru.rerumu.lists.model.user.User;
+import lombok.NonNull;
+import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +11,14 @@ public interface BookRepository {
 
     void update(BookImpl book);
 
-    BookDtoDao findById(Long id);
+    /**
+     * Find book by id
+     */
+    @NonNull
+    BookDtoDao findById(Long id, Long userId);
+
     List<BookDtoDao> findByUser(User user);
-    List<BookDtoDao> findByUserChained(Long userId);
+    List<BookDtoDao> findByUserChained(User user);
 
     Long getNextId();
 

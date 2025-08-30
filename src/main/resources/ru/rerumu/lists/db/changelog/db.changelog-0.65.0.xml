@@ -1,0 +1,431 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  author="gleb"  id="TAG-STATE-0.65.0">
+        <tagDatabase  tag="0.65.0"/>
+    </changeSet>
+
+    <!-- series.user_user_id -->
+        <changeSet author="gleb" id="ADD-COLUMN-series.user_user_id">
+            <addColumn tableName="series">
+                <column name="user_user_id"
+                        type="INTEGER"/>
+            </addColumn>
+        </changeSet>
+
+        <changeSet author="gleb" id="FILL-COLUMN-series.user_user_id" >
+            <sql>
+                update series s
+                set user_user_id = s1.user_user_id
+                from (
+                    select
+                        s.series_id,
+                        l.user_user_id
+                    from series s
+                        inner join lists l
+                            on l.list_id = s.list_list_id
+                ) s1
+                where s1.series_id = s.series_id
+                ;
+            </sql>
+            <rollback/>
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-NOT-NULL-series.user_user_id">
+            <addNotNullConstraint
+                    tableName="series"
+                    columnName="user_user_id"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-UNIQUE-series(user_user_id, title)">
+            <addUniqueConstraint
+                    tableName="series"
+                    columnNames="user_user_id, title"
+                    constraintName="series_user_title_uk"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-FK-series(user_user_id)->users(user_id)">
+            <addForeignKeyConstraint
+                    baseTableName="series"
+                    baseColumnNames="user_user_id"
+                    referencedTableName="users"
+                    referencedColumnNames="user_id"
+                    constraintName="series_users_fk"
+                    deferrable="false"
+                    initiallyDeferred="false"
+                    onDelete="NO ACTION"
+                    onUpdate="NO ACTION"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-FK-series.series_id_user_uk">
+            <addUniqueConstraint
+                    tableName="series"
+                    columnNames="series_id, user_user_id"
+                    constraintName="series_id_user_uk"
+            />
+        </changeSet>
+    <!---->
+
+    <!--  series_books.book_user_id  -->
+        <changeSet author="gleb" id="ADD-COLUMN-series_books.book_user_id">
+            <addColumn tableName="series_books">
+                <column name="book_user_id"
+                        type="INTEGER"/>
+            </addColumn>
+        </changeSet>
+
+        <changeSet author="gleb" id="FILL-COLUMN-series_books.book_user_id" >
+            <sql>
+                update series_books ba
+                set book_user_id = s.user_user_id
+                from (
+                    select
+                        b.book_id,
+                        b.user_user_id
+                    from
+                        books b
+                ) s
+                where ba.book_book_id = s.book_id
+                ;
+            </sql>
+            <rollback/>
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-NOT-NULL-series_books.book_user_id">
+            <addNotNullConstraint
+                    tableName="series_books"
+                    columnName="book_user_id"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-FK-series_books(book_book_id, book_user_id)->books(book_id, user_user_id)">
+            <addForeignKeyConstraint
+                    baseTableName="series_books"
+                    baseColumnNames="book_book_id, book_user_id"
+                    referencedTableName="books"
+                    referencedColumnNames="book_id, user_user_id"
+                    constraintName="sb_books_fk"
+                    deferrable="false"
+                    initiallyDeferred="false"
+                    onDelete="NO ACTION"
+                    onUpdate="NO ACTION"
+            />
+        </changeSet>
+    <!---->
+
+    <!-- series_books.series_user_id -->
+        <changeSet author="gleb" id="ADD-COLUMN-series_books.series_user_id">
+            <addColumn tableName="series_books">
+                <column name="series_user_id"
+                        type="INTEGER"/>
+            </addColumn>
+        </changeSet>
+
+        <changeSet author="gleb" id="FILL-COLUMN-series_books.series_user_id" >
+            <sql>
+                update series_books sb
+                set series_user_id = s1.user_user_id
+                from (
+                    select
+                        s.series_id,
+                        s.user_user_id
+                    from
+                        series s
+                ) s1
+                where sb.series_series_id = s1.series_id
+                ;
+            </sql>
+            <rollback/>
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-NOT-NULL-series_books.series_user_id">
+            <addNotNullConstraint
+                    tableName="series_books"
+                    columnName="series_user_id"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-FK-series_books(series_series_id, series_user_id)->series(series_id, user_user_id)">
+            <addForeignKeyConstraint
+                    baseTableName="series_books"
+                    baseColumnNames="series_series_id, series_user_id"
+                    referencedTableName="series"
+                    referencedColumnNames="series_id, user_user_id"
+                    constraintName="sb_series_fk"
+                    deferrable="false"
+                    initiallyDeferred="false"
+                    onDelete="NO ACTION"
+                    onUpdate="NO ACTION"
+            />
+        </changeSet>
+    <!---->
+
+    <!-- series -->
+        <changeSet author="gleb" id="ADD-CHECK-CONSTRAINTS-series_books.series_books_user_check">
+            <sql>
+                alter table series_books
+                add constraint series_books_user_check check (series_user_id = book_user_id);
+            </sql>
+            <rollback>
+                <sql>
+                    alter table books_authors
+                    drop constraint series_books_user_check;
+                </sql>
+            </rollback>
+        </changeSet>
+
+        <changeSet  author="gleb"  id="DROP-FK-series_books.books_authors_author_author_id_author_list_id_fkey">
+            <dropForeignKeyConstraint
+                    baseTableName="series_books"
+                    constraintName="series_books_book_book_id_book_list_id_fkey"
+            />
+            <rollback>
+                <addForeignKeyConstraint
+                        baseColumnNames="book_book_id,book_list_id"
+                        baseTableName="series_books"
+                        referencedColumnNames="book_id,list_list_id"
+                        referencedTableName="books"
+                        constraintName="series_books_book_book_id_book_list_id_fkey"
+                        deferrable="false"
+                        initiallyDeferred="false"
+                        onDelete="NO ACTION"
+                        onUpdate="NO ACTION"
+
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet  author="gleb"  id="DROP-FK-series_books.series_books_series_series_id_series_list_id_fkey">
+            <dropForeignKeyConstraint
+                    baseTableName="series_books"
+                    constraintName="series_books_series_series_id_series_list_id_fkey"
+            />
+            <rollback>
+                <addForeignKeyConstraint
+                        baseColumnNames="series_series_id,series_list_id"
+                        baseTableName="series_books"
+                        referencedColumnNames="series_id,list_list_id"
+                        referencedTableName="series"
+                        constraintName="series_books_series_series_id_series_list_id_fkey"
+                        deferrable="false"
+                        initiallyDeferred="false"
+                        onDelete="NO ACTION"
+                        onUpdate="NO ACTION"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet author="gleb" id="DROP-PK-series_books(book_book_id, book_list_id, series_list_id, series_series_id)">
+            <dropPrimaryKey
+                    constraintName="series_books_pkey"
+                    tableName="series_books"
+            />
+            <rollback>
+                <addPrimaryKey
+                        tableName="series_books"
+                        constraintName="series_books_pkey"
+                        columnNames="book_book_id, book_list_id, series_list_id, series_series_id"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet  author="gleb"  id="ADD-PK-series_books(book_book_id, book_user_id, series_series_id, series_user_id)">
+            <addPrimaryKey
+                    tableName="series_books"
+                    constraintName="series_books_pk"
+                    columnNames="book_book_id, book_user_id, series_series_id, series_user_id"
+            />
+            <rollback>
+                <dropPrimaryKey
+                        tableName="series_books"
+                        constraintName="series_books_pk"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-series_books.book_list_id" >
+            <dropNotNullConstraint
+                    tableName="series_books"
+                    columnName="book_list_id"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-series_books.series_list_id" >
+            <dropNotNullConstraint
+                    tableName="series_books"
+                    columnName="series_list_id"
+            />
+        </changeSet>
+    <!---->
+
+    <changeSet author="gleb" id="DROP-PRIMARY-KEY-books(book_id,list_list_id)">
+        <dropPrimaryKey
+                constraintName="books_pkey"
+                tableName="books"
+        />
+        <rollback>
+            <addPrimaryKey
+                    tableName="books"
+                    constraintName="books_pkey"
+                    columnNames="list_list_id, book_id"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet  author="gleb"  id="ADD-PRIMARY-KEY-books(book_id)">
+        <addPrimaryKey
+                tableName="books"
+                constraintName="books_pk"
+                columnNames="book_id"
+        />
+        <rollback>
+            <dropPrimaryKey
+                    tableName="books"
+                    constraintName="books_pk"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-UNIQUE-CONSTRAINT-books.books_list_list_id_book_id_key">
+        <dropUniqueConstraint
+                constraintName="books_list_list_id_book_id_key"
+                tableName="books"
+        />
+        <rollback>
+            <addUniqueConstraint
+                    columnNames="list_list_id, book_id"
+                    constraintName="books_list_list_id_book_id_key"
+                    tableName="books"
+            />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-books.list_list_id" >
+        <dropNotNullConstraint
+                tableName="books"
+                columnName="list_list_id"
+        />
+    </changeSet>
+
+    <!-- series_titles.series_user_id -->
+        <changeSet author="gleb" id="ADD-COLUMN-series_titles.series_user_id">
+            <addColumn tableName="series_titles">
+                <column name="series_user_id"
+                        type="INTEGER"/>
+            </addColumn>
+        </changeSet>
+
+        <changeSet author="gleb" id="FILL-COLUMN-series_titles.series_user_id" >
+            <sql>
+                update series_titles sb
+                set series_user_id = s1.user_user_id
+                from (
+                    select
+                        s.series_id,
+                        s.user_user_id
+                    from
+                        series s
+                ) s1
+                where sb.series_series_id = s1.series_id
+                ;
+            </sql>
+            <rollback/>
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-NOT-NULL-series_titles.series_user_id">
+            <addNotNullConstraint
+                    tableName="series_titles"
+                    columnName="series_user_id"
+            />
+        </changeSet>
+
+        <changeSet author="gleb" id="ADD-FK-series_titles(series_series_id, series_user_id)->series(series_id, user_user_id)">
+            <addForeignKeyConstraint
+                    baseTableName="series_titles"
+                    baseColumnNames="series_series_id, series_user_id"
+                    referencedTableName="series"
+                    referencedColumnNames="series_id, user_user_id"
+                    constraintName="sb_series_fk"
+                    deferrable="false"
+                    initiallyDeferred="false"
+                    onDelete="NO ACTION"
+                    onUpdate="NO ACTION"
+            />
+        </changeSet>
+
+        <changeSet  author="gleb"  id="DROP-FK-series_titles.series_titles_series_series_id_series_list_id_fkey">
+            <dropForeignKeyConstraint
+                    baseTableName="series_titles"
+                    constraintName="series_titles_series_series_id_series_list_id_fkey"
+            />
+            <rollback>
+                <addForeignKeyConstraint
+                        baseColumnNames="series_series_id,series_list_id"
+                        baseTableName="series_titles"
+                        constraintName="series_titles_series_series_id_series_list_id_fkey"
+                        deferrable="false"
+                        initiallyDeferred="false"
+                        onDelete="NO ACTION"
+                        onUpdate="NO ACTION"
+                        referencedColumnNames="series_id,list_list_id"
+                        referencedTableName="series"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-series_titles.series_list_id" >
+            <dropNotNullConstraint
+                    tableName="series_titles"
+                    columnName="series_list_id"
+            />
+        </changeSet>
+    <!---->
+
+
+    <!-- series -->
+        <changeSet author="gleb" id="DROP-PRIMARY-KEY-series(series_id,list_list_id)">
+            <dropPrimaryKey
+                    constraintName="series_pkey1"
+                    tableName="series"
+            />
+            <rollback>
+                <addPrimaryKey
+                        tableName="series"
+                        constraintName="series_pkey1"
+                        columnNames="list_list_id, series_id"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet  author="gleb"  id="ADD-PRIMARY-KEY-series(series_id)">
+            <addPrimaryKey
+                    tableName="series"
+                    constraintName="series_pk"
+                    columnNames="series_id"
+            />
+            <rollback>
+                <dropPrimaryKey
+                        tableName="series"
+                        constraintName="series_pk"
+                />
+            </rollback>
+        </changeSet>
+
+        <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-series.list_list_id" >
+            <dropNotNullConstraint
+                    tableName="series"
+                    columnName="list_list_id"
+            />
+        </changeSet>
+    <!---->
+
+</databaseChangeLog>

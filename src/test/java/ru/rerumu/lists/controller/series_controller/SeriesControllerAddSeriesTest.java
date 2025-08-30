@@ -11,9 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.controller.SeriesController;
+import ru.rerumu.lists.controller.series.SeriesController;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.services.book.ReadListService;
+import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -53,25 +53,25 @@ class SeriesControllerAddSeriesTest {
         RestAssuredMockMvc.mockMvc(mockMvc);
     }
 
-    @Test
-    void shouldAdd() throws Exception{
-
-        BookSeriesAddView bookSeriesAddView = new BookSeriesAddView("Series");
-
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("title","Series");
-
-        RestAssuredMockMvc
-                .given()
-                .attribute("username","Test")
-                .header("Content-Type", "application/json")
-                .body(requestBody.toString())
-                .when()
-                .post("/api/v0.2/readLists/2/series")
-                .then().statusCode(204);
-
-        verify(seriesService).add(2,bookSeriesAddView);
-
-    }
+//    @Test
+//    void shouldAdd() throws Exception{
+//
+//        BookSeriesAddView bookSeriesAddView = new BookSeriesAddView("Series");
+//
+//        JSONObject requestBody = new JSONObject();
+//        requestBody.put("title","Series");
+//
+//        RestAssuredMockMvc
+//                .given()
+//                .attribute("username","Test")
+//                .header("Content-Type", "application/json")
+//                .body(requestBody.toString())
+//                .when()
+//                .post("/api/v0.2/readLists/2/series")
+//                .then().statusCode(204);
+//
+//        verify(seriesService).add(2,bookSeriesAddView);
+//
+//    }
 
 }

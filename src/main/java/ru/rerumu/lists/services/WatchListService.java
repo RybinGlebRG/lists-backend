@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.model.title.Title;
-import ru.rerumu.lists.model.TitlesList;
+import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.TitlesList;
 import ru.rerumu.lists.dao.title.TitlesRepository;
 import ru.rerumu.lists.views.TitleCreateView;
 

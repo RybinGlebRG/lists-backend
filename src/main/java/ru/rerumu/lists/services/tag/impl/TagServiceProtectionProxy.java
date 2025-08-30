@@ -2,9 +2,9 @@ package ru.rerumu.lists.services.tag.impl;
 
 import ru.rerumu.lists.controller.tag.view.in.TagAddView;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
-import ru.rerumu.lists.model.tag.Tag;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.user.UserFactory;
+import ru.rerumu.lists.domain.tag.Tag;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.tag.TagService;
 
 import java.util.List;

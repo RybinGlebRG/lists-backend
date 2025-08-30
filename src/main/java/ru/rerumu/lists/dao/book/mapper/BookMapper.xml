@@ -43,11 +43,11 @@
         <collection property="readingRecords" resultMap="ReadingRecordResultMap"/>
     </resultMap>
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO">
         <constructor>
             <idArg column="rr_id" name="recordId" javaType="java.lang.Long"/>
             <arg column="book_id" name="bookId" javaType="java.lang.Long"/>
-            <arg name="bookStatus" resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord"/>
+            <arg name="bookStatus" resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord"/>
             <arg column="rr_start_date" name="startDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_end_date" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_is_migrated" name="isMigrated" javaType="java.lang.Boolean"/>
@@ -55,7 +55,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord">
+    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord">
         <constructor>
             <idArg column="rr_status_id" name="statusId" javaType="java.lang.Integer"/>
             <arg column="rr_status_name" name="statusName" javaType="java.lang.String"/>
@@ -70,7 +70,7 @@
         />
     </resultMap>
 
-    <resultMap id="TagResultMap" type="ru.rerumu.lists.model.tag.TagDTO">
+    <resultMap id="TagResultMap" type="ru.rerumu.lists.domain.tag.TagDTO">
         <constructor>
             <idArg name="tagId" column="tag_id"/>
             <arg name="name" column="tag_name"/>
@@ -78,7 +78,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.model.user.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.User">
         <constructor>
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
@@ -139,14 +139,19 @@
     </sql>
 
     <select id="getBookStatus">
-        select s.key_name
-        from statuses
-        where STATUS_ID=#{statusId}
+        select
+            s.key_name
+        from
+            statuses
+        where
+            STATUS_ID=#{statusId}
     </select>
 
     <select id="findById" resultMap="BookResultMap">
         <include refid="selectBooks"/>
-        where b.book_id=#{bookId}
+        where
+            b.book_id=#{id}
+            and u.user_id = #{userId}
     </select>
 
     <select id="findByUser" resultMap="BookResultMap">
@@ -265,22 +270,23 @@
     </select>
 
     <update id="update">
-        update books
-        set title=#{title},
+        update
+            books
+        set
+            title=#{title},
             insert_date=#{insertDate},
             last_update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
             type_type_id = #{bookTypeId},
             note = #{note},
             url = #{URL}
-        where book_id=#{bookId}
-        and list_list_id=#{readListId}
+        where
+            book_id=#{bookId}
+            and user_user_id = #{userId}
     </update>
 
-    <!--  TODO: fix  -->
     <select id="getNextId" resultType="Long">
-        select max(book_id)+1 as res
-        from books
+        SELECT nextval('book_id_seq');
     </select>
 
     <insert id="addOne">
@@ -289,8 +295,12 @@
     </insert>
 
     <delete id="delete">
-        delete from books
-        where book_id=#{bookId}
+        delete
+        from
+            books
+        where
+            book_id = #{bookId}
+            and user_user_id = #{userId}
     </delete>
 
     <select id="getBookUser" resultMap="UserResultMap">
@@ -303,7 +313,8 @@
                 on l.list_id = b.list_list_id
             inner join users u
                 on u.user_id = l.USER_USER_ID
-        where b.book_id=#{bookId}
+        where
+            b.book_id=#{bookId}
     </select>
 
 </mapper>

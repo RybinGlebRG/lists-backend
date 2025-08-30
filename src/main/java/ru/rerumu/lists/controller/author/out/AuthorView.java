@@ -1,8 +1,8 @@
 package ru.rerumu.lists.controller.author.out;
 
 import org.json.JSONObject;
-import ru.rerumu.lists.model.author.Author;
-import ru.rerumu.lists.model.author.AuthorDTO;
+import ru.rerumu.lists.domain.author.Author;
+import ru.rerumu.lists.domain.author.AuthorDTO;
 
 public class AuthorView {
 

@@ -5,16 +5,17 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.NonNull;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.dao.base.CrudRepository;
-import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.model.TokenRequest;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.dao.base.CrudRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.domain.TokenRequest;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.controller.book.view.in.BookAddView;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -31,13 +32,11 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 
 public class UserServiceImpl implements UserService {
 
-    @Deprecated
     private final UsersRepository usersRepository;
     private final CrudRepository<User,Long> crudRepository;
     private final byte[] jwtSecret;
@@ -121,9 +120,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // TODO: fix null
     @Override
-    public Optional<User> getOne(Long userId){
-        return crudRepository.findById(userId);
+    public User getOne(@NonNull Long userId){
+        return usersRepository.findById(userId);
     }
 
     private String createJWT(String username){

@@ -8,16 +8,17 @@ import ru.rerumu.lists.controller.author.out.AuthorView2;
 import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
-import ru.rerumu.lists.model.author.AuthorDTO;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.books.SearchOrder;
-import ru.rerumu.lists.model.books.SortItem;
-import ru.rerumu.lists.model.dto.BookOrderedDTO;
-import ru.rerumu.lists.model.series.Series;
-import ru.rerumu.lists.model.series.item.SeriesItemType;
-import ru.rerumu.lists.model.tag.TagDTO;
+import ru.rerumu.lists.domain.author.AuthorDTO;
+import ru.rerumu.lists.domain.book.BookDTO;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.books.SearchOrder;
+import ru.rerumu.lists.domain.books.SortItem;
+import ru.rerumu.lists.domain.dto.BookOrderedDTO;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -78,6 +79,11 @@ public class BookViewFactory {
                 .map(authorDTO -> new AuthorView2(authorDTO))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+        List<SeriesView> seriesViewList = bookDTO.getSeriesList().stream()
+                .sorted(Comparator.comparing(SeriesDTOv2::getTitle))
+                .map(seriesDTOv2 -> new SeriesView(seriesDTOv2.getSeriesId(), seriesDTOv2.getTitle()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         return new BookView(
                 bookDTO.getBookId(),
                 bookDTO.getReadListId(),
@@ -93,7 +99,8 @@ public class BookViewFactory {
                 readingRecordViews,
                 bookDTO.getURL(),
                 tagViews,
-                textAuthors
+                textAuthors,
+                seriesViewList
         );
     }
 
@@ -128,7 +135,7 @@ public class BookViewFactory {
         BookView bookView = buildBookView(bookDTO);
 
         List<SeriesView> seriesViews = seriesList.stream()
-                        .map(series -> new SeriesView(series.seriesId(), series.title()))
+                        .map(series -> new SeriesView(series.getId(), series.getTitle()))
                                 .collect(Collectors.toCollection(ArrayList::new));
 
         bookView.setSeriesList(seriesViews);

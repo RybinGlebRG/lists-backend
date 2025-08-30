@@ -1,6 +1,6 @@
 package ru.rerumu.lists.dao.author;
 
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 

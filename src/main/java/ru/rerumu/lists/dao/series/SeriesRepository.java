@@ -1,11 +1,13 @@
 package ru.rerumu.lists.dao.series;
 
+import lombok.NonNull;
 import ru.rerumu.lists.dao.base.CrudRepository;
-import ru.rerumu.lists.model.series.SeriesDTO;
+import ru.rerumu.lists.domain.series.SeriesDTO;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 
 import java.util.List;
 
-public interface SeriesRepository extends CrudRepository<SeriesDTO,Long> {
+public interface SeriesRepository extends CrudRepository<SeriesDTOv2,Long> {
 
     @Deprecated
     SeriesDTO getOne(Long seriesListId, Long seriesId);
@@ -16,4 +18,6 @@ public interface SeriesRepository extends CrudRepository<SeriesDTO,Long> {
     void add(SeriesDTO series);
 
     void delete(long seriesId);
+
+    List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId);
 }

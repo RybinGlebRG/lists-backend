@@ -3,9 +3,9 @@ package ru.rerumu.lists.services.game.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
-import ru.rerumu.lists.model.game.Game;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.domain.game.Game;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.views.GameAddView;
 
@@ -43,7 +43,7 @@ public class GameServiceProtectionProxy implements GameService {
         Optional<Game> optionalGame = gameService.findById(gameId);
         logger.debug(String.format("Got optional game: %s",optionalGame));
         logger.debug(String.format("Comparing owner with authUser='%s'",authUser));
-        if (!optionalGame.orElseThrow().user().equals(authUser)){
+        if (!optionalGame.orElseThrow().getUser().equals(authUser)){
             throw new UserPermissionException();
         } else {
             gameService.deleteGame(gameId);
@@ -54,7 +54,7 @@ public class GameServiceProtectionProxy implements GameService {
     @Override
     public Optional<Game> findById(Integer gameId) {
         Optional<Game> optionalGame = gameService.findById(gameId);
-        if (!optionalGame.orElseThrow().user().equals(authUser)){
+        if (!optionalGame.orElseThrow().getUser().equals(authUser)){
             throw new UserPermissionException();
         } else {
             return optionalGame;

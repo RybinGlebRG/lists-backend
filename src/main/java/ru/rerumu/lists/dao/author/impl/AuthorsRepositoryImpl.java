@@ -6,10 +6,11 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.author.mapper.AuthorMapper;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 
+// TODO: fix null
 @Component
 public class AuthorsRepositoryImpl implements AuthorsRepository {
 
@@ -18,7 +19,7 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
 
     @Override
     public AuthorDtoDao getOne(Long authorId) {
-        AuthorDtoDao dto = authorMapper.findById(authorId);
+        AuthorDtoDao dto = authorMapper.findById(authorId, null);
         if (dto == null) {
             throw new EntityNotFoundException();
         }
@@ -42,7 +43,7 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
 
     @Override
     public void deleteOne(Long authorId) {
-        authorMapper.delete(authorId);
+        authorMapper.delete(authorId, null);
     }
 
     @Override
@@ -52,6 +53,6 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
 
     @Override
     public List<AuthorDtoDao> findByIds(List<Long> ids) {
-        return authorMapper.findByIds(ids);
+        return authorMapper.findByIds(ids, null);
     }
 }

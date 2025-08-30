@@ -1,8 +1,8 @@
 package ru.rerumu.lists.services.game;
 
-import ru.rerumu.lists.model.game.Game;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.domain.game.Game;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.views.GameAddView;
 
 import java.util.List;

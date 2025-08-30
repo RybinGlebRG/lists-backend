@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.base.impl;
 
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.dao.base.CrudRepository;
 
 import java.util.List;
@@ -21,8 +21,8 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     }
 
     @Override
-    public Optional<T> findById(ID id) {
-        return Optional.ofNullable(mapper.findById(id));
+    public Optional<T> findById(ID id, User user) {
+        return Optional.ofNullable(mapper.findById(id, user.userId()));
     }
 
 
@@ -57,7 +57,7 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     }
 
     @Override
-    public void delete(ID id) {
-        mapper.delete(id);
+    public void delete(ID id, User user) {
+        mapper.delete(id, user.userId());
     }
 }

@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.book.readingrecord.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ public interface ReadingRecordMapper extends CrudMapper<ReadingRecordDTO,Long, R
     List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
 
     Long getNextId();
+
+    void delete(Long readingRecordId);
 }

@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.book.status;
 
-import ru.rerumu.lists.model.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
 import ru.rerumu.lists.dao.base.CrudRepository;
 
 import java.util.List;
@@ -19,6 +19,6 @@ public class BookStatusesService {
     }
 
     public Optional<BookStatusRecord> findById(int bookTypeId){
-        return crudRepository.findById(bookTypeId);
+        return crudRepository.findById(bookTypeId, null);
     }
 }

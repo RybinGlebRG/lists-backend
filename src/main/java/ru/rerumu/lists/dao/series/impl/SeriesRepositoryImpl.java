@@ -1,17 +1,19 @@
 package ru.rerumu.lists.dao.series.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
-import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
-import ru.rerumu.lists.model.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.model.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.series.SeriesDTO;
-import ru.rerumu.lists.model.series.SeriesFactory;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.domain.book.BookDTO;
+import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesDTO;
+import ru.rerumu.lists.domain.series.SeriesDTOv2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,21 +22,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final ReadingRecordMapper readingRecordMapper;
-    private final SeriesFactory seriesFactory;
     private final ReadingRecordFactory readingRecordFactory;
+    private final SeriesBookMapper seriesBookMapper;
 
     @Autowired
     public SeriesRepositoryImpl(
-            SeriesMapper seriesMapper, ReadingRecordMapper readingRecordMapper, SeriesFactory seriesFactory, ReadingRecordFactory readingRecordFactory) {
+            SeriesMapper seriesMapper,
+            ReadingRecordMapper readingRecordMapper,
+            ReadingRecordFactory readingRecordFactory,
+            SeriesBookMapper seriesBookMapper
+    ) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.readingRecordMapper = readingRecordMapper;
-        this.seriesFactory = seriesFactory;
         this.readingRecordFactory = readingRecordFactory;
+        this.seriesBookMapper = seriesBookMapper;
     }
 
     @Deprecated
@@ -153,5 +159,19 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTO,Long> 
     @Override
     public void delete(long seriesId) {
         seriesMapper.delete(seriesId);
+    }
+
+    @Override
+    public List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId) {
+        return seriesMapper.findByBook(bookId, userId);
+    }
+
+    @Override
+    public void update(SeriesDTOv2 entity) {
+        seriesMapper.update(entity);
+
+        for (SeriesBookRelationDto seriesBookRelationDto: entity.getSeriesBookRelationDtoList()) {
+            seriesBookMapper.merge(seriesBookRelationDto);
+        }
     }
 }

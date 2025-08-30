@@ -1,7 +1,7 @@
 package ru.rerumu.lists.crosscut.utils;
 
 import org.springframework.stereotype.Service;
-import ru.rerumu.lists.model.book.Book;
+import ru.rerumu.lists.domain.book.Book;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.tag.view.in.TagAddView;
-import ru.rerumu.lists.model.tag.Tag;
+import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.services.tag.TagService;
 import ru.rerumu.lists.views.tag.TagListView;
 

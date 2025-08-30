@@ -3,9 +3,8 @@ package ru.rerumu.lists.dao.book.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.book.BookDtoDao;
-import ru.rerumu.lists.model.author.Author;
-import ru.rerumu.lists.model.book.BookDTO;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.author.Author;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.Date;
 import java.util.List;
@@ -23,13 +22,11 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             Integer lastChapter,
             Integer bookTypeId,
             String note,
-            String URL
+            String URL,
+            Long userId
     );
 
-    List<BookDTO> findByUser(Long userId);
     List<BookDtoDao> findByUserChained(Long userId);
-
-    Long getNextId();
 
     void addOne(Long bookId,
                 Long readListId,

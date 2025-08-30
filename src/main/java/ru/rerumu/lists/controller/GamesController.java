@@ -12,17 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.model.factories.UserServiceProxyFactory;
-import ru.rerumu.lists.model.books.Search;
-import ru.rerumu.lists.model.game.Game;
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.factories.UserServiceProxyFactory;
+import ru.rerumu.lists.domain.game.Game;
+import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.GameAddView;
 import ru.rerumu.lists.views.GameListView;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class GamesController {
@@ -49,8 +48,8 @@ public class GamesController {
             @RequestBody GameAddView gameAddView
     ) throws EntityNotFoundException {
 
-        Optional<User> user = userService.getOne(userId);
-        gameService.addGame(user.orElseThrow(), gameAddView);
+        User user = userService.getOne(userId);
+        gameService.addGame(user, gameAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -62,8 +61,8 @@ public class GamesController {
             @PathVariable Long userId,
             @RequestBody Search search
     ) throws EntityNotFoundException {
-        Optional<User> user = userService.getOne(userId);
-        List<Game> gamesList = gameService.getAll(user.orElseThrow(EntityNotFoundException::new), search);
+        User user = userService.getOne(userId);
+        List<Game> gamesList = gameService.getAll(user, search);
         GameListView gameListView = new GameListView.Builder()
                 .gamesList(gamesList)
                 .build();

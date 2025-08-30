@@ -1,9 +1,9 @@
 package ru.rerumu.lists.services.game.impl;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.model.game.Game;
-import ru.rerumu.lists.model.user.User;
-import ru.rerumu.lists.model.books.Search;
+import ru.rerumu.lists.domain.game.Game;
+import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.views.GameAddView;
@@ -31,14 +31,16 @@ public class GameServiceImpl implements GameService {
         crudRepository.create(newGame);
     }
 
+    // TODO: fix null
     @Override
     public void deleteGame(Integer gameId) {
-        crudRepository.delete(gameId);
+        crudRepository.delete(gameId, null);
     }
 
+    // TODO: fix null
     @Override
     public Optional<Game> findById(Integer gameId) {
-        return crudRepository.findById(gameId);
+        return crudRepository.findById(gameId, null);
     }
 
     public List<Game> getAll(User user, Search search){

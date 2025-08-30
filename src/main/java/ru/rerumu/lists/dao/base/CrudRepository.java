@@ -1,13 +1,13 @@
 package ru.rerumu.lists.dao.base;
 
-import ru.rerumu.lists.model.user.User;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CrudRepository<T,ID> {
 
-    Optional<T> findById(ID id);
+    Optional<T> findById(ID id, User user);
 
     List<T> findAll();
     List<T> findByUser(User user);
@@ -20,5 +20,5 @@ public interface CrudRepository<T,ID> {
     void update(T entity);
     ID getNextId();
 
-    void delete(ID id);
+    void delete(ID id, User user);
 }

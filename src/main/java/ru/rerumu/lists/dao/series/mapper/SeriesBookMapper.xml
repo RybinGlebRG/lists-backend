@@ -1,0 +1,184 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.dao.series.mapper.SeriesBookMapper">
+
+<!--    <resultMap id="SeriesBookResultMap" type="ru.rerumu.lists.domain.series.SeriesBookRelation">-->
+<!--        <association property="book"-->
+<!--                     javaType="ru.rerumu.lists.domain.book.impl.BookImpl"-->
+<!--                     column="{bookId=book_book_id,readListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.dao.book.BookMapper.getOne"-->
+<!--        />-->
+<!--        <association property="series"-->
+<!--                     javaType="ru.rerumu.lists.domain.series.impl.SeriesImpl"-->
+<!--                     column="{seriesId=series_series_id,seriesListId=readListId}"-->
+<!--                     select="ru.rerumu.lists.dao.series.mapper.SeriesMapper.getOne"-->
+<!--        />-->
+<!--    </resultMap>-->
+
+    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.domain.dto.SeriesBookRelationDTO">
+        <constructor>
+            <arg column="series_series_id" javaType="Long"/>
+            <arg column="series_list_id" javaType="Long"/>
+            <arg column="series_order" javaType="Long"/>
+            <arg column="book_id" javaType="Long"/>
+            <arg column="list_list_id" javaType="Long"/>
+            <arg column="title" javaType="String"/>
+            <arg column="status_key_name" javaType="ru.rerumu.lists.domain.BookStatus"/>
+            <arg column="insert_date" javaType="Date"/>
+            <arg column="last_update_date" javaType="Date"/>
+            <arg column="last_chapter" javaType="Integer"/>
+            <arg resultMap="BookTypeResultMap" javaType="ru.rerumu.lists.domain.book.type.BookType"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="BookTypeResultMap" type="ru.rerumu.lists.domain.book.type.BookType">
+        <constructor>
+            <idArg column="type_id" javaType="Integer"/>
+            <arg column="type_name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.domain.series.SeriesBookRelationDto">
+        <constructor>
+            <arg column="series_series_id" name="seriesId"/>
+            <arg column="book_book_id" name="bookId"/>
+            <arg column="series_user_id" name="userId"/>
+            <arg column="series_order" name="seriesOrder"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findBySeries" resultMap="SeriesBookRelationDTOResultMap">
+        select  sb.series_series_id,
+                sb.series_list_id,
+                sb.series_order,
+                b.book_id,
+                b.list_list_id,
+                b.title,
+                s.key_name as status_key_name,
+                b.insert_date AT TIME ZONE 'UTC' as insert_date,
+                b.last_update_date AT TIME ZONE 'UTC' as last_update_date,
+                b.last_chapter,
+                bt.type_id as type_id,
+                bt.name as type_name
+        from series_books sb
+            inner join books b
+                    on b.book_id = sb.book_book_id
+            inner join statuses s
+                    on s.STATUS_ID= b.status_status_id
+            left outer join book_types bt
+                    on bt.type_id = b.type_type_id
+        where sb.series_series_id=#{seriesId}
+    </select>
+
+    <insert id="add">
+        insert into series_books(series_series_id, series_list_id, book_book_id, book_list_id, series_order)
+        values(#{seriesId}, #{readListId}, #{bookId},#{readListId}, #{seriesOrder})
+    </insert>
+
+    <insert id="create">
+        insert into series_books(series_series_id, book_book_id, series_order, book_user_id, series_user_id)
+        values(#{seriesId}, #{bookId}, #{order}, #{userId}, #{userId})
+    </insert>
+
+    <delete id="deleteBySeries">
+        delete from series_books
+        where series_series_id=#{seriesId}
+    </delete>
+
+    <delete id="delete">
+        delete from series_books
+        where series_series_id=#{seriesId}
+          and book_book_id = #{bookId}
+          and book_list_id = #{readListId}
+    </delete>
+
+<!--    <select id="getByBookId" resultMap="SeriesBookResultMap">-->
+<!--        select  sb.book_book_id,-->
+<!--                sb.book_list_id as readListId,-->
+<!--                sb.series_series_id,-->
+<!--                sb.series_order-->
+<!--        from series_books sb-->
+<!--        where sb.book_book_id = #{bookId}-->
+<!--    </select>-->
+
+    <select id="getSeriesIdsByBookId" resultType="Long">
+        select  sb.series_series_id
+        from series_books sb
+        where sb.book_book_id = #{bookId}
+          and sb.book_list_id = #{readListId}
+    </select>
+
+    <select id="getBookIdsBySeriesId" resultType="Long">
+        select  sb.book_book_id
+        from series_books sb
+        where sb.series_series_id=#{seriesId}
+    </select>
+
+    <select id="getOrder" resultType="Long">
+        select  sb.series_order
+        from series_books sb
+        where sb.book_book_id = #{bookId}
+          and sb.series_series_id = #{seriesId}
+          and sb.book_list_id = #{readListId}
+    </select>
+
+    <select id="getOrderByIdOnly" resultType="Long">
+        select  sb.series_order
+        from series_books sb
+        where sb.book_book_id = #{bookId}
+        and sb.series_series_id = #{seriesId}
+    </select>
+
+    <select id="getByUserId" resultMap="SeriesBookRelationDtoResultMapV2">
+        select
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
+        from
+            series_books sb
+        where
+            sb.series_user_id = #{userId}
+            and sb.book_user_id = #{userId}
+    </select>
+
+    <update id="update">
+        update series_books sb
+        set series_order=#{seriesOrder}
+        where sb.book_book_id = #{bookId}
+          and sb.series_series_id = #{seriesId}
+          and sb.book_list_id = #{readListId}
+    </update>
+
+    <update id="save">
+        update series_books sb
+        set series_order=#{order}
+        where sb.book_book_id = #{book.bookId}
+        and sb.series_series_id = #{series.seriesId}
+    </update>
+
+    <update id="merge">
+        MERGE INTO series_books sb
+        USING
+        (
+            select
+                #{seriesId} as series_series_id,
+                #{bookId} as  book_book_id,
+                #{userId} as user_user_id
+        ) sb2
+            on sb2.series_series_id = sb.series_series_id
+            and sb2.book_book_id = sb.book_book_id
+            and sb2.user_user_id = sb.book_user_id
+            and sb2.user_user_id = sb.series_user_id
+        when matched then
+            update set series_order=#{seriesOrder}
+        when not matched then
+            insert (series_series_id, book_book_id, series_order, book_user_id, series_user_id)
+            values(#{seriesId}, #{bookId}, #{seriesOrder}, #{userId}, #{userId})
+    </update>
+
+
+
+</mapper>

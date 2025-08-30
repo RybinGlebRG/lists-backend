@@ -3,7 +3,7 @@ package ru.rerumu.lists.controller.author.out;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import ru.rerumu.lists.model.author.AuthorDTO;
+import ru.rerumu.lists.domain.author.AuthorDTO;
 
 @EqualsAndHashCode
 @ToString
