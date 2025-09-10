@@ -17,6 +17,7 @@ import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class BookDtoDao implements SeriesItemDTO {
     private String title;
     private Integer bookStatus;
     private Date insertDate;
-    private Date lastUpdateDate;
+    private LocalDateTime lastUpdateDate;
     private Integer lastChapter;
     private Integer bookType;
     private String note;

@@ -6,6 +6,7 @@ import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             String title,
             Integer statusId,
             Date insertDate,
-            Date lastUpdateDate,
+            LocalDateTime lastUpdateDate,
             Integer lastChapter,
             Long bookTypeId,
             String note,
@@ -33,7 +34,7 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
                 String title,
                 Integer statusId,
                 Date insertDate,
-                Date lastUpdateDate,
+                LocalDateTime lastUpdateDate,
                 Integer lastChapter,
                 Long bookTypeId,
                 String note,

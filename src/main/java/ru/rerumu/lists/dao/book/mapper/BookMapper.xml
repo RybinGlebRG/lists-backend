@@ -10,7 +10,7 @@
         <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
         <result  property="insertDate" column="book_insert_date" javaType="Date"/>
-        <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
+        <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
         <result  property="URL" column="book_url" javaType="String"/>
@@ -32,7 +32,7 @@
         <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
         <result  property="insertDate" column="book_insert_date" javaType="Date"/>
-        <result  property="lastUpdateDate" column="book_last_update_date" javaType="Date"/>
+        <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
         <result  property="URL" column="book_url" javaType="String"/>
@@ -99,7 +99,7 @@
             b.title as book_title,
             s.STATUS_ID as book_status_id_old,
             b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
-            b.last_update_date AT TIME ZONE 'UTC' as book_last_update_date,
+            b.update_date as book_update_date,
             b.last_chapter,
             bt.type_id as book_type_id,
             bt.name as book_type_name,
@@ -208,7 +208,7 @@
                 s_prev.book_title               as previous_book_title,
                 s_prev.book_status_id_old       as previous_book_status_id_old,
                 s_prev.book_insert_date         as previous_book_insert_date,
-                s_prev.book_last_update_date    as previous_book_last_update_date,
+                s_prev.book_update_date    as previous_book_update_date,
                 s_prev.last_chapter             as previous_last_chapter,
                 s_prev.book_type_id             as previous_book_type_id,
                 s_prev.book_type_name           as previous_book_type_name,
@@ -242,7 +242,7 @@
                 null as previous_book_title,
                 null as previous_book_status_id_old,
                 null as previous_book_insert_date,
-                null as previous_book_last_update_date,
+                null as previous_book_update_date,
                 null as previous_last_chapter,
                 null as previous_book_type_id,
                 null as previous_book_type_name,
@@ -275,7 +275,7 @@
         set
             title=#{title},
             insert_date=#{insertDate},
-            last_update_date=#{lastUpdateDate},
+            update_date=#{lastUpdateDate},
             last_chapter = #{lastChapter},
             type_type_id = #{bookTypeId},
             note = #{note},
@@ -290,7 +290,7 @@
     </select>
 
     <insert id="addOne">
-        insert into books(book_id, list_list_id, status_status_id, insert_date, last_update_date, title, last_chapter, type_type_id, note, url, user_user_id)
+        insert into books(book_id, list_list_id, status_status_id, insert_date, update_date, title, last_chapter, type_type_id, note, url, user_user_id)
         values(#{bookId}, #{readListId},#{statusId}, #{insertDate}, #{lastUpdateDate}, #{title}, #{lastChapter}, #{bookTypeId}, #{note}, #{URL}, #{userId})
     </insert>
 

@@ -30,7 +30,7 @@ public class BookBuilder {
     private String title;
     private BookStatusRecord bookStatus;
     private Date insertDate;
-    private Date lastUpdateDate;
+    private LocalDateTime lastUpdateDate;
     private Integer lastChapter;
 
     private BookType bookType;
@@ -96,13 +96,8 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder lastUpdateDate(Date lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
-        return this;
-    }
-
     public BookBuilder lastUpdateDate(LocalDateTime lastUpdateDate) {
-        this.lastUpdateDate = Date.from(lastUpdateDate.toInstant(ZoneOffset.UTC));
+        this.lastUpdateDate = lastUpdateDate;
         return this;
     }
 

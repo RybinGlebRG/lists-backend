@@ -90,7 +90,7 @@ public class BookViewFactory {
                 bookDTO.getTitle(),
                 maxRecord.getBookStatus(),
                 bookDTO.getLastInsertLocalDate(),
-                bookDTO.getLastUpdateDate_V2(),
+                bookDTO.getLastUpdateDate(),
                 bookDTO.lastChapter,
                 bookDTO.getNote(),
                 bookType,
@@ -113,6 +113,15 @@ public class BookViewFactory {
             if (sortItem.getSortField().equals("createDate")) {
 
                 comparator = comparator.thenComparing(BookDTO::getInsertDate);
+
+                if (sortItem.getSearchOrder() == SearchOrder.DESC) {
+                    comparator = comparator.reversed();
+                }
+            }
+
+            if (sortItem.getSortField().equals("lastUpdateDate")) {
+
+                comparator = comparator.thenComparing(BookDTO::getLastUpdateDate);
 
                 if (sortItem.getSearchOrder() == SearchOrder.DESC) {
                     comparator = comparator.reversed();

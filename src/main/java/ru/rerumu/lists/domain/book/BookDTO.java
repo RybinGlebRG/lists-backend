@@ -42,7 +42,8 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
     public Integer bookStatus;
     @Getter
     public Date insertDate;
-    public Date lastUpdateDate;
+    @Getter
+    public LocalDateTime lastUpdateDate;
     public Integer lastChapter;
     @Getter
     public Long bookType;
@@ -76,7 +77,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             String title,
             Integer bookStatus,
             Date insertDate,
-            Date lastUpdateDate,
+            LocalDateTime lastUpdateDate,
             Integer lastChapter,
             Long bookType,
             String note,
@@ -115,7 +116,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             String title,
             Integer bookStatus,
             Date insertDate,
-            Date lastUpdateDate,
+            LocalDateTime lastUpdateDate,
             Integer lastChapter,
             String note,
             BookTypeDTO bookTypeObj,
@@ -137,9 +138,6 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
         this.userId = userId;
     }
 
-    public LocalDateTime getLastUpdateDate_V2() {
-        return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
-    }
 
     public LocalDateTime getLastInsertLocalDate() {
         return LocalDateTime.ofInstant(insertDate.toInstant(), ZoneOffset.UTC);
@@ -166,11 +164,6 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
 
     @Override
     public BookImpl toDomain() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public LocalDateTime getLastUpdateDate() {
         throw new NotImplementedException();
     }
 }

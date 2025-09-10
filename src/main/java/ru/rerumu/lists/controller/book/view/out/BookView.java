@@ -1,5 +1,6 @@
 package ru.rerumu.lists.controller.book.view.out;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -34,9 +35,11 @@ public class BookView implements DeepCopyable<BookView>{
     private final BookStatusView bookStatus;
 
     @Getter
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime insertDate;
 
     @Getter
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime lastUpdateDate;
 
     @Getter

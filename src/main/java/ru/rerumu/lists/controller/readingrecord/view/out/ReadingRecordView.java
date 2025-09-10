@@ -1,5 +1,6 @@
 package ru.rerumu.lists.controller.readingrecord.view.out;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,11 +18,19 @@ import java.time.LocalDateTime;
 public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
 
     private final Long recordId;
+
     private final Long bookId;
+
     private final BookStatusView bookStatus;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime startDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime endDate;
+
     private final Boolean isMigrated;
+
     private final Long lastChapter;
 
     public ReadingRecordView(
