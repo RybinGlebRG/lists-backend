@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.book.readingrecord.status.StatusRepository;
 import ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 
 // TODO: fix null
 @Component

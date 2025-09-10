@@ -1,17 +1,8 @@
 package ru.rerumu.lists.domain.book.impl;
 
 
-import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.domain.author.AuthorFactory;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
 import ru.rerumu.lists.domain.tag.Tag;
-import ru.rerumu.lists.domain.user.User;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;

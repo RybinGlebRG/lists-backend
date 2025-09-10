@@ -10,7 +10,7 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
+import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.UserFactory;

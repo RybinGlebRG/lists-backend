@@ -10,7 +10,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;

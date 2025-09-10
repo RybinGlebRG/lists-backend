@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.book.readingrecords.status;
+package ru.rerumu.lists.domain.bookstatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

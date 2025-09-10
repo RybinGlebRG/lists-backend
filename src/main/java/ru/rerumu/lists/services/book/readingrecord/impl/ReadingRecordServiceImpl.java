@@ -3,7 +3,7 @@ package ru.rerumu.lists.services.book.readingrecord.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;

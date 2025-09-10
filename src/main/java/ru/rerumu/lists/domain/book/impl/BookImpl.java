@@ -15,6 +15,7 @@ import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.BookChain;
+import ru.rerumu.lists.domain.RecordStatusEnum;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -23,8 +24,8 @@ import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
-import ru.rerumu.lists.domain.book.readingrecords.status.StatusFactory;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
@@ -508,9 +509,18 @@ public class BookImpl implements Book, Cloneable {
                 .findAny()
                 .orElseThrow(EntityNotFoundException::new);
 
+        // Update end date
+        if (endDate != null) {
+            readingRecord.setEndDate(endDate);
+        }
+        // or close record if status changed to "Completed"
+        else if (bookStatusRecord.statusId().equals(RecordStatusEnum.COMPLETED.getId().intValue())) {
+            readingRecord.setEndDate(dateFactory.getLocalDateTime());
+        }
+
         readingRecord.setStatus(bookStatusRecord);
         readingRecord.setStartDate(startDate);
-        readingRecord.setEndDate(endDate);
+
         readingRecord.setLastChapter(lastChapter);
 
         lastUpdateDate = dateFactory.getCurrentDate();
@@ -520,7 +530,13 @@ public class BookImpl implements Book, Cloneable {
     }
 
     @Override
-    public void updateReadingRecord(@NonNull Long readingRecordId, @NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+    public void updateReadingRecord(
+            @NonNull Long readingRecordId,
+            @NonNull Long statusId,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    ) {
         BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
         updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
     }
@@ -563,11 +579,6 @@ public class BookImpl implements Book, Cloneable {
             }
         }
     }
-
-//    @Override
-//    public String toString() {
-//        return this.toJSONObject().toString();
-//    }
 
     @Override
     public BookDTO toDTO() {

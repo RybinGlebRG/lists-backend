@@ -6,7 +6,7 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
