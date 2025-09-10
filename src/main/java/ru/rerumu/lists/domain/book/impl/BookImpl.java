@@ -65,7 +65,7 @@ public class BookImpl implements Book, Cloneable {
     private Date insertDate;
 
     @Getter
-    private Date lastUpdateDate;
+    private LocalDateTime lastUpdateDate;
 
     private Integer lastChapter;
 
@@ -110,7 +110,7 @@ public class BookImpl implements Book, Cloneable {
             @NonNull String title,
             BookStatusRecord bookStatus,
             @NonNull Date insertDate,
-            @NonNull Date lastUpdateDate,
+            @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
             BookType bookType,
             BookChain previousBooks,
@@ -152,10 +152,6 @@ public class BookImpl implements Book, Cloneable {
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
-    }
-
-    public LocalDateTime getLastUpdateDate_V2() {
-        return LocalDateTime.ofInstant(lastUpdateDate.toInstant(), ZoneOffset.UTC);
     }
 
     public Optional<Integer> getLastChapter() {
@@ -256,7 +252,7 @@ public class BookImpl implements Book, Cloneable {
 
     @Override
     public LocalDateTime getUpdateDate() {
-        return getLastUpdateDate_V2();
+        return getLastUpdateDate();
     }
 
     @Override
@@ -343,7 +339,7 @@ public class BookImpl implements Book, Cloneable {
     public void updateStatus(BookStatusRecord bookStatusRecord) {
         if (!Objects.equals(this.bookStatus.statusId(), bookStatusRecord.statusId())){
             this.bookStatus = bookStatusRecord;
-            lastUpdateDate = dateFactory.getCurrentDate();
+            lastUpdateDate = dateFactory.getLocalDateTime();
         }
     }
 
@@ -360,7 +356,7 @@ public class BookImpl implements Book, Cloneable {
     @Override
     public void updateURL(String URL) {
         this.URL = URL;
-        this.lastUpdateDate = dateFactory.getCurrentDate();
+        this.lastUpdateDate = dateFactory.getLocalDateTime();
     }
 
     @Override
@@ -523,7 +519,7 @@ public class BookImpl implements Book, Cloneable {
 
         readingRecord.setLastChapter(lastChapter);
 
-        lastUpdateDate = dateFactory.getCurrentDate();
+        lastUpdateDate = dateFactory.getLocalDateTime();
 
         readingRecord.save();
         save();
