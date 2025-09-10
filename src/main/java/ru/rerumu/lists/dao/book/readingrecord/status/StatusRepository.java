@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.book.readingrecord.status;
 
 import lombok.NonNull;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 
 public interface StatusRepository {
 

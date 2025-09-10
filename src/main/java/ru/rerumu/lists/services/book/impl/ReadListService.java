@@ -20,7 +20,7 @@ import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.domain.book.readingrecords.status.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.domain.booktype.BookType;

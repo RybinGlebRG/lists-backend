@@ -5,7 +5,7 @@ import java.util.Date;
 
 public interface DateFactory {
 
-    public Date getCurrentDate();
+    Date getCurrentDate();
 
     LocalDateTime getLocalDateTime();
 }
