@@ -317,4 +317,15 @@
             b.book_id=#{bookId}
     </select>
 
+    <select id="findSeriesIds" resultType="Long">
+        select
+            sb.series_series_id as series_id
+        from
+            books b
+                inner join series_books sb
+                    on sb.book_book_id = b.book_id
+        where
+            b.book_id = #{bookId}
+    </select>
+
 </mapper>

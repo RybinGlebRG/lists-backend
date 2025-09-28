@@ -167,6 +167,11 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
     }
 
     @Override
+    public List<SeriesDTOv2> findByIds(@NonNull List<Long> seriesIds, @NonNull Long userId) {
+        return seriesMapper.findByIds(seriesIds, userId);
+    }
+
+    @Override
     public void update(SeriesDTOv2 entity) {
         seriesMapper.update(entity);
 

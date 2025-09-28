@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TestCommon {
+public class TestBook {
 
     public static void addBook(
             @NonNull String title,
@@ -38,27 +38,7 @@ public class TestCommon {
                 .extract()
                 .body()
                 .asString();
-        log.info("added book: {}", responseBody);
-    }
-
-    public static void addSeries(@NonNull String title) {
-        String responseBody = RestAssuredMockMvc
-                .given()
-                .body(String.format("""
-                        {
-                            "title": "%s"
-                        }
-                        """, title))
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
-                .when()
-                .post("/api/v1/users/0/series")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
-        log.info("added series: {}", responseBody);
+        log.info("responseBody: {}", responseBody);
     }
 
 }
