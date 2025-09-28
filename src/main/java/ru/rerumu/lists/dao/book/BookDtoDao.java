@@ -47,6 +47,9 @@ public class BookDtoDao implements SeriesItemDTO {
     private UserDtoDao user;
 
     @Setter
+    private List<Long> seriesIds;
+
+    @Setter
     private List<SeriesDTOv2> seriesList;
 
     @Setter

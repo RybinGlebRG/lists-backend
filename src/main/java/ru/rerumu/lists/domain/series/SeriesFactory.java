@@ -30,5 +30,5 @@ public interface SeriesFactory {
 
     SeriesImpl fromDTOv2(SeriesDTOv2 seriesDTO);
 
-    List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId);
+//    List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId);
 }

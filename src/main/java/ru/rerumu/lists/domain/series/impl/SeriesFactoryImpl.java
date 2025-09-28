@@ -81,23 +81,23 @@ public class SeriesFactoryImpl implements SeriesFactory {
         throw new NotImplementedException();
     }
 
-    @Override
-    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
-        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(bookId, userId);
-
-        return seriesDTOList.stream()
-                .map(item -> buildSeries(
-                        item.getSeriesId(),
-                        item.getTitle(),
-                        userFactory.findById(item.getUserId()),
-                        EntityState.PERSISTED,
-                        seriesItemRelationFactory.fromDTO(
-                                new ArrayList<>(item.getSeriesBookRelationDtoList())
-                        )
-                ))
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
+//    @Override
+//    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
+//    public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
+//        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(bookId, userId);
+//
+//        return seriesDTOList.stream()
+//                .map(item -> buildSeries(
+//                        item.getSeriesId(),
+//                        item.getTitle(),
+//                        userFactory.findById(item.getUserId()),
+//                        EntityState.PERSISTED,
+//                        seriesItemRelationFactory.fromDTO(
+//                                new ArrayList<>(item.getSeriesBookRelationDtoList())
+//                        )
+//                ))
+//                .collect(Collectors.toCollection(ArrayList::new));
+//    }
 
     @Override
     public List<Series> findAll(@NonNull User user) {

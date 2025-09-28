@@ -47,4 +47,6 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
     User getBookUser(Long bookId);
 
     List<Author> getAuthors(Long bookId, Long roleId);
+
+    List<Long> findSeriesIds(Long bookId);
 }

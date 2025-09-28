@@ -19,5 +19,8 @@ public interface SeriesRepository extends CrudRepository<SeriesDTOv2,Long> {
 
     void delete(long seriesId);
 
+    @Deprecated
     List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId);
+
+    List<SeriesDTOv2> findByIds(@NonNull List<Long> seriesIds, @NonNull Long userId);
 }

@@ -365,6 +365,28 @@
             and s.user_user_id = #{userId}
     </select>
 
+    <select id="findByIds" resultMap="SeriesResultMapV2">
+        select
+            s.series_id,
+            s.title,
+            s.user_user_id,
+            sb.series_series_id,
+            sb.book_book_id,
+            sb.series_user_id,
+            sb.series_order
+        from
+            series s
+            left outer join series_books sb
+                on sb.series_series_id  = s.series_id
+                and sb.series_user_id = s.user_user_id
+        where
+            s.user_user_id = #{userId}
+            and
+            <foreach collection="ids" index="index" item="item" open="s.series_id in (" separator="," close=")" >
+                #{item}
+            </foreach>
+    </select>
+
     <select id="findByUser" resultMap="SeriesResultMapV2">
         select
             s.series_id,

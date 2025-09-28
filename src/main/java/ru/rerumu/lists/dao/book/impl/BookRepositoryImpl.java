@@ -132,8 +132,13 @@ public class BookRepositoryImpl implements BookRepository {
             throw new EntityNotFoundException();
         }
 
-        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByBook(id, userId);
-        book.setSeriesList(seriesDTOList);
+        List<Long> seriesIds= bookMapper.findSeriesIds(book.getBookId());
+        book.setSeriesIds(seriesIds);
+
+        if (!book.getSeriesIds().isEmpty()) {
+            List<SeriesDTOv2> seriesDTOList = seriesRepository.findByIds(book.getSeriesIds(), userId);
+            book.setSeriesList(seriesDTOList);
+        }
 
         return book;
     }
