@@ -1,5 +1,7 @@
 package ru.rerumu.lists.domain.base;
 
 public enum EntityState {
-    NEW, PERSISTED;
+    NEW,
+    DIRTY,
+    PERSISTED;
 }
