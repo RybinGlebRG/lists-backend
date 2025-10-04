@@ -19,6 +19,9 @@ public interface Entity {
      */
     void save();
 
-
+    /**
+     * Delete the entity
+     */
+    void delete();
 
 }

@@ -19,18 +19,18 @@ public class BacklogItemImpl extends EntityBaseImpl implements BacklogItem {
     private final Long id;
 
     @Getter
-    private final String title;
+    private String title;
 
     @Getter
-    private final SeriesItemType type;
+    private SeriesItemType type;
 
     @Getter
-    private final String note;
+    private String note;
 
     private final User user;
 
     @Getter
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
     public BacklogItemImpl(
             Long id,
@@ -80,5 +80,40 @@ public class BacklogItemImpl extends EntityBaseImpl implements BacklogItem {
         } else if (entityState.equals(EntityState.DIRTY)) {
             backlogItemRepository.update(toDTO());
         }
+
+        entityState = EntityState.PERSISTED;
+    }
+
+    @Override
+    public void delete() {
+        backlogItemRepository.delete(id, user);
+    }
+
+    @Override
+    public void updateTitle(String title) {
+        this.title = title;
+
+        entityState = EntityState.DIRTY;
+    }
+
+    @Override
+    public void updateType(SeriesItemType type) {
+        this.type = type;
+
+        entityState = EntityState.DIRTY;
+    }
+
+    @Override
+    public void updateNote(String note) {
+        this.note = note;
+
+        entityState = EntityState.DIRTY;
+    }
+
+    @Override
+    public void updateCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+
+        entityState = EntityState.DIRTY;
     }
 }

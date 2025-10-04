@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.dao.base.EntityDTOv2;
 import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class SeriesDTOv2 implements EntityDTO<SeriesImpl> {
+public class SeriesDTOv2 implements EntityDTO<SeriesImpl>, EntityDTOv2 {
 
     private Long seriesId;
     private Long userId;

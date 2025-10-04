@@ -15,4 +15,9 @@ public class BacklogItemRepositoryImpl extends CrudRepositoryDtoImpl<BacklogItem
         super(backlogItemMapper);
         this.backlogItemMapper = backlogItemMapper;
     }
+
+    @Override
+    public Long getNextId() {
+        return backlogItemMapper.getNextId();
+    }
 }

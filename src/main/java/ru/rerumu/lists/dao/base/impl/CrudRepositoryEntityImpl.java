@@ -37,6 +37,11 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
     }
 
     @Override
+    public List<T> findByUserId(Long userId) {
+        return mapper.findByUserId(userId);
+    }
+
+    @Override
     public void save(T entity) {
         mapper.save(entity);
     }

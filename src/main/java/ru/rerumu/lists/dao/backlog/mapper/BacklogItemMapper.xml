@@ -4,7 +4,74 @@
 
 <mapper namespace="ru.rerumu.lists.dao.backlog.mapper.BacklogItemMapper">
 
+    <resultMap id="BacklogItemResultMap" type="ru.rerumu.lists.dao.backlog.BacklogItemDTO">
+        <id column="item_id" property="id"/>
+        <result column="user_user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="type_type_id" property="typeId"/>
+        <result column="note" property="note"/>
+        <result column="creation_date" property="creationDate"/>
+    </resultMap>
 
+    <select id="getNextId" resultType="Long">
+        SELECT nextval('backlog_item_id_seq');
+    </select>
+
+    <insert id="create">
+        insert into backlog(item_id, user_user_id, title, type_type_id, note, creation_date)
+        values(#{id}, #{userId},#{title}, #{typeId}, #{note}, #{creationDate})
+    </insert>
+
+    <select id="findByUserId" resultMap="BacklogItemResultMap">
+        select
+            item_id,
+            user_user_id,
+            title,
+            type_type_id,
+            note,
+            creation_date
+        from
+            backlog
+        where
+            user_user_id = #{userId}
+    </select>
+
+    <select id="findById" resultMap="BacklogItemResultMap">
+        select
+            item_id,
+            user_user_id,
+            title,
+            type_type_id,
+            note,
+            creation_date
+        from
+            backlog
+        where
+            user_user_id = #{userId}
+            and item_id = #{id}
+    </select>
+
+    <update id="update">
+        update
+            backlog
+        set
+            title=#{title},
+            type_type_id = #{typeId},
+            note = #{note},
+            creation_date = #{creationDate}
+        where
+            item_id=#{id}
+            and user_user_id = #{userId}
+    </update>
+
+    <delete id="delete">
+        delete
+        from
+            backlog
+        where
+            item_id = #{id}
+            and user_user_id = #{userId}
+    </delete>
 
 
 </mapper>

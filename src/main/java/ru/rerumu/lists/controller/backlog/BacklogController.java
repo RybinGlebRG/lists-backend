@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
+import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.controller.backlog.view.out.BacklogOutView;
 import ru.rerumu.lists.controller.backlog.view.out.BacklogViewFactory;
-import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.services.backlog.BacklogService;
@@ -58,8 +57,16 @@ public class BacklogController {
             @PathVariable Long userId,
             @RequestBody BacklogItemCreateView backlogItemCreateView
     ) {
-        backlogService.addItemToBacklog(userId, backlogItemCreateView);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            BacklogItem backlogItem = backlogService.addItemToBacklog(userId, backlogItemCreateView);
+
+            BacklogItemOutView backlogItemOutView = backlogViewFactory.build(backlogItem);
+            String result = objectMapper.writeValueAsString(backlogItemOutView);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -96,8 +103,16 @@ public class BacklogController {
             @PathVariable Long backlogItemId,
             @RequestBody BacklogItemUpdateView backlogItemUpdateView
     ) {
-        backlogService.updateBacklogItem(userId, backlogItemId, backlogItemUpdateView);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            BacklogItem backlogItem = backlogService.updateBacklogItem(userId, backlogItemId, backlogItemUpdateView);
+
+            BacklogItemOutView backlogItemOutView = backlogViewFactory.build(backlogItem);
+            String result = objectMapper.writeValueAsString(backlogItemOutView);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     /**

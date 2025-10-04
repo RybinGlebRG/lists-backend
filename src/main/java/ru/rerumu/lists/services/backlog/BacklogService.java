@@ -12,11 +12,11 @@ public interface BacklogService {
     /**
      * Add item to backlog
      */
-    void addItemToBacklog(@NonNull Long userId, @NonNull BacklogItemCreateView backlogItemCreateView);
+    BacklogItem addItemToBacklog(@NonNull Long userId, @NonNull BacklogItemCreateView backlogItemCreateView);
 
     List<BacklogItem> getBacklog(@NonNull Long userId);
 
-    void updateBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemUpdateView backlogItemUpdateView);
+    BacklogItem updateBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemUpdateView backlogItemUpdateView);
 
     void deleteBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId);
 

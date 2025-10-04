@@ -14,14 +14,19 @@ public class BacklogViewFactory {
 
     public BacklogOutView build(List<BacklogItem> backlogItems) {
         List<BacklogItemOutView> backlogItemOutViews = backlogItems.stream()
-                .map(item -> new BacklogItemOutView(
-                        item.getTitle(),
-                        item.getType(),
-                        item.getNote(),
-                        item.getCreationDate()
-                ))
+                .map(this::build)
                 .collect(Collectors.toCollection(ArrayList::new));
         return new BacklogOutView(backlogItemOutViews);
+    }
+
+    public BacklogItemOutView build(BacklogItem backlogItem) {
+        return new BacklogItemOutView(
+                backlogItem.getId(),
+                backlogItem.getTitle(),
+                backlogItem.getType().getId(),
+                backlogItem.getNote(),
+                backlogItem.getCreationDate()
+        );
     }
 
 }

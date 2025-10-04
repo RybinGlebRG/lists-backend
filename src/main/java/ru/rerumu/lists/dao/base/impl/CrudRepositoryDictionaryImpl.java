@@ -32,6 +32,11 @@ public class CrudRepositoryDictionaryImpl<T,ID> implements CrudRepository<T,ID> 
     }
 
     @Override
+    public List<T> findByUserId(Long userId) {
+        throw new NotImplementedException();
+    }
+
+    @Override
     public void save(T entity) {
         throw new NotImplementedException();
     }

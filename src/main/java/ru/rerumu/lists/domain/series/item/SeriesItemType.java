@@ -8,7 +8,7 @@ import lombok.NonNull;
 @Getter
 public enum SeriesItemType {
     BOOK(0L),
-    TITLE(1L),
+    MOVIE(1L),
     GAME(2L);
 
     private final Long id;
