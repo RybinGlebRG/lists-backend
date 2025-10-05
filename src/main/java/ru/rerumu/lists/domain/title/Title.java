@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class Title implements SeriesItem {
 
-    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.TITLE;
+    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.MOVIE;
 
     @Getter
     private final Long titleId;

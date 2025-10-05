@@ -145,6 +145,12 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     }
 
     @Override
+    public void delete() {
+        // TODO: Implement
+        throw new NotImplementedException();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

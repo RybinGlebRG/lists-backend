@@ -2,9 +2,9 @@ package ru.rerumu.lists.dao.base.impl;
 
 import com.jcabi.aspects.Loggable;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.dao.base.CrudRepository;
+import ru.rerumu.lists.dao.base.EntityDTOv2;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CrudRepositoryDtoImpl<T extends EntityDTO<?>,ID> implements CrudRepository<T,ID> {
+public class CrudRepositoryDtoImpl<T extends EntityDTOv2,ID> implements CrudRepository<T,ID> {
 
     private final CrudMapper<T, ID, T> mapper;
 
@@ -41,6 +41,11 @@ public class CrudRepositoryDtoImpl<T extends EntityDTO<?>,ID> implements CrudRep
         return entityDTOList.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public List<T> findByUserId(Long userId) {
+        return mapper.findByUserId(userId);
     }
 
     @Override
