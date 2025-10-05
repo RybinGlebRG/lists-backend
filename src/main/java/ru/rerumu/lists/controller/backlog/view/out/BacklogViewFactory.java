@@ -15,7 +15,7 @@ public class BacklogViewFactory {
 
     public BacklogOutView build(List<BacklogItem> backlogItems) {
 
-        Comparator<BacklogItemOutView> backlogItemOutViewComparator = Comparator.comparing(BacklogItemOutView::getCreationDate);
+        Comparator<BacklogItemOutView> backlogItemOutViewComparator = Comparator.comparing(BacklogItemOutView::getCreationDate).reversed();
 
         List<BacklogItemOutView> backlogItemOutViews = backlogItems.stream()
                 .map(this::build)
