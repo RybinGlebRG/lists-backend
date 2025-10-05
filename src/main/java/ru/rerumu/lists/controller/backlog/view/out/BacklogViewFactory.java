@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,8 +14,12 @@ import java.util.stream.Collectors;
 public class BacklogViewFactory {
 
     public BacklogOutView build(List<BacklogItem> backlogItems) {
+
+        Comparator<BacklogItemOutView> backlogItemOutViewComparator = Comparator.comparing(BacklogItemOutView::getCreationDate);
+
         List<BacklogItemOutView> backlogItemOutViews = backlogItems.stream()
                 .map(this::build)
+                .sorted(backlogItemOutViewComparator)
                 .collect(Collectors.toCollection(ArrayList::new));
         return new BacklogOutView(backlogItemOutViews);
     }
