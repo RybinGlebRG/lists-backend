@@ -35,10 +35,8 @@ import ru.rerumu.lists.domain.user.User;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +60,7 @@ public class BookImpl implements Book, Cloneable {
     private BookStatusRecord bookStatus;
 
     @Getter
-    private Date insertDate;
+    private LocalDateTime insertDate;
 
     @Getter
     private LocalDateTime lastUpdateDate;
@@ -109,7 +107,7 @@ public class BookImpl implements Book, Cloneable {
             Long readListId,
             @NonNull String title,
             BookStatusRecord bookStatus,
-            @NonNull Date insertDate,
+            @NonNull LocalDateTime insertDate,
             @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
             BookType bookType,
@@ -319,7 +317,7 @@ public class BookImpl implements Book, Cloneable {
 
     @Override
     public void updateInsertDate(LocalDateTime insertDate) {
-        this.insertDate = Date.from(insertDate.toInstant(ZoneOffset.UTC));
+        this.insertDate = insertDate;
     }
 
     @Override

@@ -19,9 +19,7 @@ import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class BookBuilder {
@@ -29,7 +27,7 @@ public class BookBuilder {
     private Long readListId;
     private String title;
     private BookStatusRecord bookStatus;
-    private Date insertDate;
+    private LocalDateTime insertDate;
     private LocalDateTime lastUpdateDate;
     private Integer lastChapter;
 
@@ -86,13 +84,8 @@ public class BookBuilder {
         return this;
     }
 
-    public BookBuilder insertDate(Date insertDate) {
-        this.insertDate = insertDate;
-        return this;
-    }
-
     public BookBuilder insertDate(LocalDateTime insertDate) {
-        this.insertDate = Date.from(insertDate.toInstant(ZoneOffset.UTC));
+        this.insertDate = insertDate;
         return this;
     }
 

@@ -9,7 +9,7 @@
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
-        <result  property="insertDate" column="book_insert_date" javaType="Date"/>
+        <result  property="insertDate" column="book_insert_date"/>
         <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
@@ -31,7 +31,7 @@
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
         <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
-        <result  property="insertDate" column="book_insert_date" javaType="Date"/>
+        <result  property="insertDate" column="book_insert_date"/>
         <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
         <result  property="note" column="book_note" javaType="String"/>
@@ -98,7 +98,7 @@
             b.list_list_id as book_list_id,
             b.title as book_title,
             s.STATUS_ID as book_status_id_old,
-            b.insert_date AT TIME ZONE 'UTC' as book_insert_date,
+            b.insert_date as book_insert_date,
             b.update_date as book_update_date,
             b.last_chapter,
             bt.type_id as book_type_id,

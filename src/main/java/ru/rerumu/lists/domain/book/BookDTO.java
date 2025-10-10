@@ -20,9 +20,7 @@ import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,7 +39,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
     @Getter
     public Integer bookStatus;
     @Getter
-    public Date insertDate;
+    public LocalDateTime insertDate;
     @Getter
     public LocalDateTime lastUpdateDate;
     public Integer lastChapter;
@@ -76,7 +74,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             Long readListId,
             String title,
             Integer bookStatus,
-            Date insertDate,
+            LocalDateTime insertDate,
             LocalDateTime lastUpdateDate,
             Integer lastChapter,
             Long bookType,
@@ -115,7 +113,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
             Long readListId,
             String title,
             Integer bookStatus,
-            Date insertDate,
+            LocalDateTime insertDate,
             LocalDateTime lastUpdateDate,
             Integer lastChapter,
             String note,
@@ -140,7 +138,7 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
 
 
     public LocalDateTime getLastInsertLocalDate() {
-        return LocalDateTime.ofInstant(insertDate.toInstant(), ZoneOffset.UTC);
+        return insertDate;
     }
 
     public Optional<Integer> getLastChapter() {

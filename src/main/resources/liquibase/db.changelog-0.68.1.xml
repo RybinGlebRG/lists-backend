@@ -1,0 +1,60 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  author="gleb"  id="TAG-STATE-0.68.1">
+        <tagDatabase  tag="0.68.1"/>
+    </changeSet>
+
+    <changeSet  author="liquibase-docs"  id="RENAME-books.insert_date to book.insert_date_old">
+        <renameColumn
+                tableName="books"
+                oldColumnName="insert_date"
+                newColumnName="insert_date_old"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-COLUMN-books.insert_date">
+        <addColumn tableName="books">
+            <column name="insert_date"
+                    type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="gleb" id="MIGRATE-books.last_update_date-TO-books.update_date" >
+        <sql>
+            update books b
+            set insert_date = s.dt
+            from (
+                select
+                    book_id,
+                    insert_date_old AT TIME ZONE 'UTC' as dt
+                from
+                    books
+            ) s
+            where b.book_id = s.book_id
+            ;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <changeSet author="gleb" id="ADD-NOT-NULL-books.insert_date">
+        <addNotNullConstraint
+                tableName="books"
+                columnName="insert_date"
+        />
+    </changeSet>
+
+    <changeSet author="gleb" id="DROP-NOT-NULL-CONSTRAINT-books.insert_date_old" >
+        <dropNotNullConstraint
+                tableName="books"
+                columnName="insert_date_old"
+        />
+    </changeSet>
+
+</databaseChangeLog>
