@@ -1,13 +1,21 @@
 package ru.rerumu.lists.services.backlog.impl;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
+import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.ClientException;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
+import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
 import ru.rerumu.lists.domain.backlog.BacklogItemFactory;
+import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.BookFactory;
+import ru.rerumu.lists.domain.bookstatus.StatusFactory;
+import ru.rerumu.lists.domain.bookstatus.Statuses;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
@@ -16,18 +24,28 @@ import ru.rerumu.lists.services.backlog.BacklogService;
 import java.util.List;
 
 @Service("backlogServiceImpl")
+@Slf4j
 public class BacklogServiceImpl implements BacklogService {
 
     private final BacklogItemFactory backlogItemFactory;
     private final UserFactory userFactory;
+    private final BookFactory bookFactory;
+    private final DateFactory dateFactory;
+    private final StatusFactory statusFactory;
 
     @Autowired
     public BacklogServiceImpl(
             BacklogItemFactory backlogItemFactory,
-            UserFactory userFactory
+            UserFactory userFactory,
+            BookFactory bookFactory,
+            DateFactory dateFactory,
+            StatusFactory statusFactory
     ) {
         this.backlogItemFactory = backlogItemFactory;
         this.userFactory = userFactory;
+        this.bookFactory = bookFactory;
+        this.dateFactory = dateFactory;
+        this.statusFactory = statusFactory;
     }
 
     @Override
@@ -107,5 +125,49 @@ public class BacklogServiceImpl implements BacklogService {
 
         // Delete backlog item
         backlogItem.delete();
+    }
+
+    @Override
+    public void processEvent(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemEventCreateView backlogItemEventCreateView) {
+        // Get user
+        User user = userFactory.findById(userId);
+
+        // Get backlog item
+        BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
+
+        // Get type and check correctness
+        BacklogItemEventType backlogItemEventType = BacklogItemEventType.findById(backlogItemEventCreateView.getEventTypeId());
+        if (backlogItemEventType == null) {
+            throw new ClientException();
+        }
+
+        // If moving to lists
+        if (backlogItemEventType.equals(BacklogItemEventType.MOVE_TO_LIST)) {
+
+            // If item is book
+            if (backlogItem.getType().equals(SeriesItemType.BOOK)) {
+                Book book = bookFactory.createBook(
+                        backlogItem.getTitle(),
+                        null,
+                        backlogItem.getNote(),
+                        statusFactory.findById(Statuses.IN_PROGRESS.getId()),
+                        dateFactory.getLocalDateTime(),
+                        null,
+                        null,
+                        user
+                );
+
+                book.addReadingRecord(
+                        Statuses.IN_PROGRESS.getId(),
+                        dateFactory.getLocalDateTime(),
+                        null,
+                        null
+                );
+
+                book.save();
+
+                backlogItem.delete();
+            }
+        }
     }
 }

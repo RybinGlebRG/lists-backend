@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
+import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.controller.backlog.view.out.BacklogOutView;
@@ -126,6 +127,22 @@ public class BacklogController {
             @PathVariable Long backlogItemId
     ){
         backlogService.deleteBacklogItem(userId, backlogItemId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Create backlog item event
+     */
+    @PostMapping(
+            value = "/api/v1/users/{userId}/backlogItems/{backlogItemId}/events",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<String> createBacklogItemEvent(
+            @PathVariable Long userId,
+            @PathVariable Long backlogItemId,
+            @RequestBody BacklogItemEventCreateView backlogItemEventCreateView
+    ) {
+        backlogService.processEvent(userId, backlogItemId, backlogItemEventCreateView);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

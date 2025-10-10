@@ -21,7 +21,7 @@ docker manifest inspect "$REGISTRY_URL/$APP_NAME:$APP_VERSION" && \
 } || \
 {
   ./mvnw clean install -Dmaven.test.skip && \
-  docker build --no-cache -t "$APP_NAME:$APP_VERSION" -f ./Dockerfile . && \
-  docker image tag "$APP_NAME:$APP_VERSION"  "$REGISTRY_URL/$APP_NAME:$APP_VERSION" && \
-  docker image push "$REGISTRY_URL/$APP_NAME:$APP_VERSION";
+  docker build --no-cache -t "$REGISTRY_URL/$APP_NAME:$APP_VERSION" -t "$REGISTRY_URL/$APP_NAME:latest" -f ./Dockerfile . && \
+  docker image push "$REGISTRY_URL/$APP_NAME:$APP_VERSION" && \
+  docker image push "$REGISTRY_URL/$APP_NAME:latest";
 }
