@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
+import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
@@ -68,6 +69,12 @@ public class BacklogServiceProtectionProxy implements BacklogService {
         checkUser(userId);
 
         backlogService.deleteBacklogItem(userId, backlogItemId);
+    }
+
+    @Override
+    public void processEvent(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemEventCreateView backlogItemEventCreateView) {
+        checkUser(userId);
+        backlogService.processEvent(userId, backlogItemId, backlogItemEventCreateView);
     }
 
     private void checkUser(@NonNull Long userId) {

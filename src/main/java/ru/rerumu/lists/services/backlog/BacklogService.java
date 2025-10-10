@@ -2,6 +2,7 @@ package ru.rerumu.lists.services.backlog;
 
 import lombok.NonNull;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
+import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 
@@ -19,5 +20,10 @@ public interface BacklogService {
     BacklogItem updateBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemUpdateView backlogItemUpdateView);
 
     void deleteBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId);
+
+    /**
+     * Process backlog item event
+     */
+    void processEvent(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemEventCreateView backlogItemEventCreateView);
 
 }

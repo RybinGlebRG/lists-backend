@@ -18,6 +18,7 @@ import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
@@ -48,7 +49,7 @@ public class ReadListService implements BookService {
     private final BookTypesService bookTypesService;
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
-    private final BookFactoryImpl bookFactory;
+    private final BookFactory bookFactory;
     private final TagFactory tagFactory;
     private final UserFactory userFactory;
     private final AuthorFactory authorFactory;
