@@ -18,7 +18,6 @@ import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode
@@ -32,7 +31,7 @@ public class BookDtoDao implements SeriesItemDTO {
     private Long readListId;
     private String title;
     private Integer bookStatus;
-    private Date insertDate;
+    private LocalDateTime insertDate;
     private LocalDateTime lastUpdateDate;
     private Integer lastChapter;
     private Integer bookType;

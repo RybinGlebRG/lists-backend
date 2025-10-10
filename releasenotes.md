@@ -1,3 +1,18 @@
+# v0.68.1
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Fixed incorrect book creation date processing
+
+## Other
+
+- N/A
+
+============================================
 # v0.68.0
 
 ## Features
