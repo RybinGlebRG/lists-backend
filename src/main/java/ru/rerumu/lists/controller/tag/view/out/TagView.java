@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import ru.rerumu.lists.controller.DeepCopyable;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 
 @EqualsAndHashCode
 @ToString

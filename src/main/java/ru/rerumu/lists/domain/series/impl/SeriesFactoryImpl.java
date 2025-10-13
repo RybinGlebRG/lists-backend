@@ -167,6 +167,7 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 seriesBooksRespository,
                 new ArrayList<>()
         );
+        series.initPersistentCopy();
         return series;
     }
 
@@ -191,6 +192,7 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 seriesBooksRespository,
                 seriesItemRelation
         );
+        series.initPersistentCopy();
         return series;
     }
 }

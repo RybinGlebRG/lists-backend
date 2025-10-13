@@ -16,7 +16,7 @@ public class BookUpdateView {
     private final Long readListId;
     private final String title;
     private final Long authorId;
-    private final Long seriesId;
+    private final List<Long> seriesIds;
     private final Long order;
     private final Integer lastChapter;
     private final LocalDateTime insertDateUTC;
@@ -55,7 +55,7 @@ public class BookUpdateView {
             Long readListId,
             @NonNull String title,
             Long authorId,
-            Long seriesId,
+            @NonNull List<Long> seriesIds,
             Long order,
             Integer lastChapter,
             LocalDateTime insertDateUTC,
@@ -68,7 +68,7 @@ public class BookUpdateView {
         this.readListId = readListId;
         this.title = title;
         this.authorId = authorId;
-        this.seriesId = seriesId;
+        this.seriesIds = seriesIds;
         this.order = order;
         this.lastChapter = lastChapter;
         this.insertDateUTC = insertDateUTC;

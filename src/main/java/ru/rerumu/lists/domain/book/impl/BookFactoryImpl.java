@@ -134,6 +134,7 @@ public class BookFactoryImpl implements BookFactory {
         BookImpl book = bookBuilder.build();
 
         bookRepository.addOne(book);
+        book.initPersistentCopy();
 
         return book;
     }
@@ -292,6 +293,7 @@ public class BookFactoryImpl implements BookFactory {
         builder.tags(tags);
 
         BookImpl book = builder.build();
+        book.initPersistentCopy();
 
         return book;
     }
@@ -404,6 +406,7 @@ public class BookFactoryImpl implements BookFactory {
         }
 
         BookImpl book = builder.build();
+        book.initPersistentCopy();
 
         return book;
     }

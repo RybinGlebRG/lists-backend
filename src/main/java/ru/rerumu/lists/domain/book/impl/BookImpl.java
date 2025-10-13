@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
@@ -18,6 +19,8 @@ import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.RecordStatusEnum;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
+import ru.rerumu.lists.domain.base.EntityBaseImpl;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
@@ -37,14 +40,16 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ToString
 @Slf4j
-public class BookImpl implements Book, Cloneable {
+public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneable, DeepCopyable<BookImpl> {
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
     @Getter
@@ -127,6 +132,8 @@ public class BookImpl implements Book, Cloneable {
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory
     ) {
+        // TODO: Change
+        super(EntityState.NEW);
 
         this.bookId = bookId;
         this.readListId = readListId;
@@ -435,9 +442,15 @@ public class BookImpl implements Book, Cloneable {
     public void save() {
         bookRepository.update(this);
 
-        for (Series series: seriesList) {
+        // Collect series from original and current entities
+        Set<Series> seriesSet = new HashSet<>();
+        seriesSet.addAll(seriesList);
+        seriesSet.addAll(persistentCopy.seriesList);
+
+        for (Series series: seriesSet) {
             series.save();
         }
+        initPersistentCopy();
 
     }
 
@@ -607,5 +620,40 @@ public class BookImpl implements Book, Cloneable {
         );
 
         return bookDTO;
+    }
+
+    @Override
+    public BookImpl deepCopy() {
+        // TODO: Need actual deep copy
+        return new BookImpl(
+                bookId,
+                readListId,
+                title,
+                bookStatus,
+                insertDate,
+                lastUpdateDate,
+                lastChapter,
+                bookType,
+                previousBooks,
+                note,
+                new ArrayList<>(readingRecords),
+                statusFactory,
+                URL,
+                user,
+                new ArrayList<>(tags),
+                new ArrayList<>(textAuthors),
+                new ArrayList<>(seriesList),
+                dateFactory,
+                readingRecordFactory,
+                bookRepository,
+                authorsBooksRepository,
+                authorFactory,
+                seriesFactory
+        );
+    }
+
+    @Override
+    protected void initPersistentCopy() {
+        persistentCopy = deepCopy();
     }
 }

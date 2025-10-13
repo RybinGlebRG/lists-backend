@@ -4,6 +4,8 @@ import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
@@ -25,8 +27,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@ToString
-public class SeriesImpl extends EntityBaseImpl implements Series {
+@ToString(callSuper = true, doNotUseGetters = true)
+@Slf4j
+public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, DeepCopyable<SeriesImpl> {
 
     private final Long seriesId;
 
@@ -115,11 +118,13 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
                         user.userId()
                 )
         );
+        entityState = EntityState.DIRTY;
     }
 
     @Override
     public void removeBookRelation(Long bookId) {
-        throw new NotImplementedException();
+        seriesItemRelations.removeIf( seriesItemRelation -> seriesItemRelation.getBookId().equals(bookId));
+        entityState = EntityState.DIRTY;
     }
 
     @Override
@@ -135,13 +140,13 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     @Override
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
-        if (entityState.equals(EntityState.NEW)) {
-            seriesRepository.create(toDTO());
-        } else if (entityState.equals(EntityState.PERSISTED)) {
-            seriesRepository.update(toDTO());
-        } else {
-            throw new ServerException("Incorrect entity state");
+        switch (entityState) {
+            case NEW -> seriesRepository.create(toDTO());
+            case DIRTY -> seriesRepository.update(persistentCopy.toDTO(), toDTO());
+            case PERSISTED -> log.warn("Entity is not altered");
+            default -> throw new ServerException("Incorrect entity state");
         }
+        entityState = EntityState.PERSISTED;
     }
 
     @Override
@@ -161,5 +166,27 @@ public class SeriesImpl extends EntityBaseImpl implements Series {
     @Override
     public int hashCode() {
         return Objects.hashCode(seriesId);
+    }
+
+    @Override
+    public SeriesImpl deepCopy() {
+        return new SeriesImpl(
+                seriesId,
+                title,
+                new ArrayList<>(itemsList),
+                user,
+                new ArrayList<>(seriesBookRelationDTOList),
+                seriesRepository,
+                entityState,
+                seriesBooksRespository,
+                new ArrayList<>(seriesItemRelations)
+        );
+    }
+
+    /**
+     * Set persistent copy
+     */
+    protected void initPersistentCopy() {
+        persistentCopy = deepCopy();
     }
 }

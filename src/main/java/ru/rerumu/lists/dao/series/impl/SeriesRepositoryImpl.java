@@ -179,4 +179,24 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
             seriesBookMapper.merge(seriesBookRelationDto);
         }
     }
+
+    @Override
+    public void update(SeriesDTOv2 originalEntity, SeriesDTOv2 currentEntity) {
+        seriesMapper.update(currentEntity);
+
+        List<SeriesBookRelationDto> relationsToRemove = originalEntity.getSeriesBookRelationDtoList().stream()
+                .filter( item -> !currentEntity.getSeriesBookRelationDtoList().contains(item))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Remove deleted relations
+        for (SeriesBookRelationDto seriesBookRelationDto: relationsToRemove) {
+            seriesBookMapper.delete(seriesBookRelationDto);
+        }
+
+        // Add or update relations
+        for (SeriesBookRelationDto seriesBookRelationDto: currentEntity.getSeriesBookRelationDtoList()) {
+            seriesBookMapper.merge(seriesBookRelationDto);
+        }
+
+    }
 }

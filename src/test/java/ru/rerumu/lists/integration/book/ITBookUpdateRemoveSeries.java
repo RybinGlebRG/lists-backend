@@ -21,12 +21,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import ru.rerumu.lists.integration.TestCommon;
 
+import static org.hamcrest.Matchers.is;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @Slf4j
-class ITBookUpdateParentInChain {
+class ITBookUpdateRemoveSeries {
 
     private static PostgreSQLContainer<?> postgres;
 
@@ -77,45 +79,17 @@ class ITBookUpdateParentInChain {
 
         TestCommon.addSeries("TestSeries");
         TestCommon.addSeries("TestSeries 2");
-        TestCommon.addBook("TestBook 1", 1L);
+        TestCommon.addBook("TestBook", null);
 
-
-        String searchResponseBody = RestAssuredMockMvc
-                .given()
-                .body("""
-                        {
-                            "sort": [
-                                {
-                                    "field": "createDate",
-                                    "ordering": "DESC"
-                                }
-                            ],
-                            "isChainBySeries": true,
-                            "filters": [
-                                {
-                                    "field": "bookStatusIds",
-                                    "values": ["1", "2", "3", "4"]
-                                }
-                            ]
-                        }
-                        """)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
-                .when()
-                .post("/api/v1/users/0/books/search")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
-        log.info("searchResponseBody: {}", searchResponseBody);
-
+        /*
+        Add series
+         */
         String requestBody = """
                 {
-                    "title": "TestBook 1",
+                    "title": "TestBook",
                     "authorId": null,
                     "status": 1,
-                    "seriesIds": [1],
+                    "seriesIds": [1, 2],
                     "order": null,
                     "lastChapter": null,
                     "bookTypeId": 1,
@@ -154,7 +128,7 @@ class ITBookUpdateParentInChain {
                 {
                     "bookId": 0,
                     "readListId": null,
-                    "title": "TestBook 1",
+                    "title": "TestBook",
                     "bookStatus": {
                         "statusId": 1,
                         "statusName": "In progress"
@@ -186,6 +160,10 @@ class ITBookUpdateParentInChain {
                         {
                             "seriesId": 1,
                             "title": "TestSeries"
+                        },
+                        {
+                            "seriesId": 2,
+                            "title": "TestSeries 2"
                         }
                     ],
                     "url": null
@@ -200,6 +178,98 @@ class ITBookUpdateParentInChain {
         );
 
 
+        /*
+        Remove series
+         */
+        requestBody = """
+                {
+                    "title": "TestBook",
+                    "authorId": null,
+                    "status": 1,
+                    "seriesIds": [2],
+                    "order": null,
+                    "lastChapter": null,
+                    "bookTypeId": 1,
+                    "insertDateUTC": "2025-08-27T05:12:00.000Z",
+                    "note": "123123",
+                    "URL": null,
+                    "readingRecords": [
+                        {
+                            "readingRecordId": 0,
+                            "statusId": 1,
+                            "startDate": "2025-08-27T17:12:00",
+                            "endDate": null,
+                            "lastChapter": null
+                        }
+                    ],
+                    "tagIds": []
+                }
+                """;
+
+        responseBody = RestAssuredMockMvc
+                .given()
+                .body(requestBody)
+                .header("Content-Type", "application/json")
+                .attribute("authUserId", 0L)
+                .when()
+                .put("/api/v1/users/0/books/0")
+                .then()
+                .statusCode(200)
+                .body("seriesList.size()", is(1))
+                .extract()
+                .body()
+                .asString();
+        log.info("responseBody: {}", responseBody);
+
+
+        expectedResponseBodyWithoutDates = """
+                {
+                    "bookId": 0,
+                    "readListId": null,
+                    "title": "TestBook",
+                    "bookStatus": {
+                        "statusId": 1,
+                        "statusName": "In progress"
+                    },
+                    "lastChapter": null,
+                    "note": "123123",
+                    "bookType": {
+                        "typeId": 1,
+                        "typeName": "Book"
+                    },
+                    "itemType": "BOOK",
+                    "chain": [],
+                    "readingRecords": [
+                        {
+                            "recordId": 0,
+                            "bookId": 0,
+                            "bookStatus": {
+                                "statusId": 1,
+                                "statusName": "In progress"
+                            },
+                            "endDate": null,
+                            "isMigrated": false,
+                            "lastChapter": null
+                        }
+                    ],
+                    "tags": [],
+                    "textAuthors": [],
+                    "seriesList": [
+                        {
+                            "seriesId": 2,
+                            "title": "TestSeries 2"
+                        }
+                    ],
+                    "url": null
+                }
+                """;
+
+        JSONAssert.assertEquals(
+                "Incorrect response",
+                expectedResponseBodyWithoutDates,
+                responseBody,
+                false
+        );
 
     }
 }

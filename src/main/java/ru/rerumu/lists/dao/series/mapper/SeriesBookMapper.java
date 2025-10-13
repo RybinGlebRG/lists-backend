@@ -25,7 +25,10 @@ public interface SeriesBookMapper {
 
     void update(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
 
+    @Deprecated
     void delete(Long bookId, Long seriesId, Long readListId);
+
+    void delete(SeriesBookRelationDto seriesBookRelationDto);
 
     @Deprecated
     Long getOrder(Long bookId, Long seriesId, Long readListId);

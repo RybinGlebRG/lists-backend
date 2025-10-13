@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import ru.rerumu.lists.controller.DeepCopyable;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.controller.book.view.out.BookStatusView;
 
 import java.time.LocalDateTime;

@@ -4,4 +4,10 @@ public record SeriesBookRelation(
         Long bookId,
         Long seriesId,
         Long userId
-) implements SeriesItemRelation {}
+) implements SeriesItemRelation {
+
+    @Override
+    public Long getBookId() {
+        return bookId;
+    }
+}
