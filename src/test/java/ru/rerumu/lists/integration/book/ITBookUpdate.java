@@ -81,7 +81,7 @@ class ITBookUpdate {
                     "title": "TestBook",
                     "authorId": null,
                     "status": 1,
-                    "seriesId": 1,
+                    "seriesIds": [1],
                     "order": null,
                     "lastChapter": null,
                     "bookTypeId": 1,

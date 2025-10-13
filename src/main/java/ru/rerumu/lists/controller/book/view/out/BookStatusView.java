@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import ru.rerumu.lists.controller.DeepCopyable;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 @Getter

@@ -147,10 +147,12 @@ public class ReadListService implements BookService {
 
         // Update series
         logger.info("Updating series...");
-        if (bookUpdateView.getSeriesId() != null) {
-            Series series = seriesFactory.findById(user, bookUpdateView.getSeriesId());
-            book.updateSeries(List.of(series));
-        }
+        List<Series> seriesList = bookUpdateView.getSeriesIds().stream()
+                // TODO: Should be single query
+                .map( item -> seriesFactory.findById(user, item))
+                .collect(Collectors.toCollection(ArrayList::new));
+        book.updateSeries(seriesList);
+
 
         // Save book
         logger.info("Saving book...");

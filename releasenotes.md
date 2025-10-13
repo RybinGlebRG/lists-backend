@@ -1,3 +1,18 @@
+# v0.69.0
+
+## Features
+
+- Added multiple series support for one book
+
+## Bugfixes
+
+- N/A
+
+## Other
+
+- N/A
+
+============================================
 # v0.68.1
 
 ## Features

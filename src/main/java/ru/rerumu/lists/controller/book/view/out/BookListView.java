@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
-import ru.rerumu.lists.controller.DeepCopyable;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 
 import java.util.ArrayList;
 import java.util.List;

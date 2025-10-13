@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.backlog.impl;
 
 import lombok.Getter;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.backlog.BacklogItemDTO;
 import ru.rerumu.lists.dao.backlog.BacklogItemRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
@@ -115,5 +116,10 @@ public class BacklogItemImpl extends EntityBaseImpl implements BacklogItem {
         this.creationDate = creationDate;
 
         entityState = EntityState.DIRTY;
+    }
+
+    @Override
+    protected void initPersistentCopy() {
+        throw new NotImplementedException();
     }
 }
