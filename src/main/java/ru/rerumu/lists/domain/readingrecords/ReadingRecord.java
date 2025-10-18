@@ -2,11 +2,13 @@ package ru.rerumu.lists.domain.readingrecords;
 
 import lombok.NonNull;
 import org.json.JSONObject;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordImpl;
 
 import java.time.LocalDateTime;
 
-public interface ReadingRecord extends Comparable<ReadingRecord>{
+public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<ReadingRecord> {
 
     Long getId();
     Long getBookId();

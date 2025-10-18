@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.base;
 
 import ru.rerumu.lists.domain.user.User;
 
-public interface Entity {
+public interface Entity<T> {
 
     /**
      * Get entity id
@@ -23,5 +23,15 @@ public interface Entity {
      * Delete the entity
      */
     void delete();
+
+    /**
+     * Get entity state
+     */
+    EntityState getEntityState();
+
+    /**
+     * Get copy of the object corresponding to its state in DB
+     */
+    T getPersistedCopy();
 
 }

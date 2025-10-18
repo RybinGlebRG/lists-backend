@@ -6,6 +6,7 @@ import lombok.ToString;
 @ToString(doNotUseGetters = true)
 public abstract class EntityBaseImpl<T> {
 
+    @Getter
     protected EntityState entityState;
 
     /**

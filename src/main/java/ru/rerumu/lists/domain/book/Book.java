@@ -2,6 +2,7 @@ package ru.rerumu.lists.domain.book;
 
 import lombok.NonNull;
 import org.json.JSONObject;
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
@@ -16,7 +17,7 @@ import ru.rerumu.lists.domain.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface Book extends SeriesItem, Entity {
+public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
 
     void addReadingRecord(
             @NonNull BookStatusRecord bookStatusRecord,
@@ -38,6 +39,8 @@ public interface Book extends SeriesItem, Entity {
 
     Long getListId();
     User getUser();
+    List<ReadingRecord> getReadingRecords();
+    List<Series> getSeriesList();
 
     void updateInsertDate(LocalDateTime insertDate);
     void updateTitle(String title);
