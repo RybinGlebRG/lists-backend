@@ -8,7 +8,6 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 
 import java.time.LocalDateTime;
@@ -19,18 +18,19 @@ import java.util.stream.Collectors;
 @Component
 public class ReadingRecordFactory {
 
-    private final ReadingRecordService readingRecordService;
     private final DateFactory dateFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
 
     @Autowired
-    public ReadingRecordFactory(ReadingRecordService readingRecordService, DateFactory dateFactory, ReadingRecordsRepository readingRecordsRepository) {
-        this.readingRecordService = readingRecordService;
+    public ReadingRecordFactory(
+            DateFactory dateFactory,
+            ReadingRecordsRepository readingRecordsRepository
+    ) {
         this.dateFactory = dateFactory;
         this.readingRecordsRepository = readingRecordsRepository;
     }
 
-    public ReadingRecordImpl createReadingRecord(
+    public ReadingRecord createReadingRecord(
             @NonNull Long bookId,
             @NonNull BookStatusRecord bookStatusRecord,
             LocalDateTime startDate,
@@ -53,17 +53,19 @@ public class ReadingRecordFactory {
                 false,
                 lastChapter,
                 readingRecordsRepository,
-                dateFactory,
-                EntityState.NEW
+                dateFactory
         );
 
         readingRecordsRepository.create(readingRecord.toDTO());
 
-        return readingRecord;
+        ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(readingRecord, EntityState.NEW);
+        readingRecordPersistenceProxy.initPersistedCopy();
+
+        return readingRecordPersistenceProxy;
     }
 
     public ReadingRecord fromDTO(@NonNull ReadingRecordDTO readingRecordDTO){
-        return new ReadingRecordImpl(
+        ReadingRecordImpl readingRecord = new ReadingRecordImpl(
                 readingRecordDTO.recordId(),
                 readingRecordDTO.bookId(),
                 readingRecordDTO.bookStatus(),
@@ -72,9 +74,16 @@ public class ReadingRecordFactory {
                 readingRecordDTO.isMigrated(),
                 readingRecordDTO.lastChapter(),
                 readingRecordsRepository,
-                dateFactory,
+                dateFactory
+        );
+
+        ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(
+                readingRecord,
                 EntityState.PERSISTED
         );
+        readingRecordPersistenceProxy.initPersistedCopy();
+
+        return readingRecordPersistenceProxy;
     }
 
     public List<ReadingRecord> findByBookId(@NonNull Long bookId){

@@ -26,9 +26,7 @@ import java.util.Objects;
 
 @Slf4j
 @ToString(callSuper = true, doNotUseGetters = true)
-public class ReadingRecordImpl
-        extends EntityBaseImpl<ReadingRecordImpl>
-        implements ReadingRecord, DeepCopyable<ReadingRecordImpl> {
+public class ReadingRecordImpl implements ReadingRecord {
 
     @Getter
     private final Long recordId;
@@ -62,10 +60,8 @@ public class ReadingRecordImpl
             Boolean isMigrated,
             Long lastChapter,
             ReadingRecordsRepository readingRecordsRepository,
-            DateFactory dateFactory,
-            EntityState entityState
+            DateFactory dateFactory
     ) {
-        super(entityState);
         this.recordId = recordId;
         this.bookId = bookId;
         this.bookStatus = bookStatus;
@@ -90,10 +86,6 @@ public class ReadingRecordImpl
     @Override
     public void save(){
         readingRecordsRepository.update(this.toDTO());
-
-        // Reinit persisted copy after saving
-        entityState = EntityState.PERSISTED;
-        initPersistentCopy();
     }
 
     @Override
@@ -121,8 +113,6 @@ public class ReadingRecordImpl
         this.bookStatus = bookStatusRecord;
         this.startDate = startDate;
         this.lastChapter = lastChapter;
-
-        entityState = EntityState.DIRTY;
     }
 
     @Override
@@ -162,11 +152,6 @@ public class ReadingRecordImpl
     }
 
     @Override
-    protected void initPersistentCopy() {
-        persistedCopy = deepCopy();
-    }
-
-    @Override
     public ReadingRecordImpl deepCopy() {
         return new ReadingRecordImpl(
                 recordId,
@@ -177,8 +162,7 @@ public class ReadingRecordImpl
                 isMigrated,
                 lastChapter,
                 readingRecordsRepository,
-                dateFactory,
-                entityState
+                dateFactory
         );
     }
 

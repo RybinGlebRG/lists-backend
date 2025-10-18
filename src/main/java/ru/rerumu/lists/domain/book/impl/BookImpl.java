@@ -48,9 +48,7 @@ import java.util.stream.Collectors;
 
 @ToString
 @Slf4j
-public class BookImpl
-        extends EntityBaseImpl<BookImpl>
-        implements Book, DeepCopyable<BookImpl> {
+public class BookImpl implements Book{
 
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
@@ -134,9 +132,6 @@ public class BookImpl
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory
     ) {
-        // TODO: Change
-        super(EntityState.NEW);
-
         this.bookId = bookId;
         this.readListId = readListId;
         this.title = title;
@@ -259,7 +254,7 @@ public class BookImpl
             Long lastChapter
     ) {
 
-        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
@@ -282,7 +277,7 @@ public class BookImpl
         BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
 
         // Create record
-        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
@@ -432,32 +427,6 @@ public class BookImpl
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
         bookRepository.update(this);
-
-        // Collect series from original and current entities
-        Set<Series> seriesSet = new HashSet<>();
-        seriesSet.addAll(seriesList);
-        seriesSet.addAll(persistedCopy.seriesList);
-        // Save collected entities
-        for (Series series: seriesSet) {
-            series.save();
-        }
-
-        // Delete removed reading records
-        List<ReadingRecord> readingRecordsToDelete = persistedCopy.readingRecords.stream()
-                .filter(item -> !readingRecords.contains(item))
-                        .collect(Collectors.toCollection(ArrayList::new));
-        for (ReadingRecord readingRecord: readingRecordsToDelete) {
-            readingRecord.delete();
-        }
-        // Save reading records
-        for (ReadingRecord readingRecord: readingRecords) {
-            readingRecord.save();
-        }
-
-        // Reinit persisted copy after saving
-        entityState = EntityState.PERSISTED;
-        initPersistentCopy();
-
     }
 
     @Override
@@ -610,10 +579,5 @@ public class BookImpl
                 authorFactory,
                 seriesFactory
         );
-    }
-
-    @Override
-    protected void initPersistentCopy() {
-        persistedCopy = deepCopy();
     }
 }
