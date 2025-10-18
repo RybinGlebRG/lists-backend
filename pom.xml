@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.69.0</version>
+	<version>0.69.1</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
