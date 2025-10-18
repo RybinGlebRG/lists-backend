@@ -9,10 +9,10 @@ public abstract class EntityBaseImpl<T> {
     protected EntityState entityState;
 
     /**
-     * Copy of object corresponding to its state in DB
+     * Copy of the object corresponding to its state in DB
      */
     @Getter
-    protected T persistentCopy;
+    protected T persistedCopy;
 
     protected EntityBaseImpl(EntityState entityState) {
         this.entityState = entityState;

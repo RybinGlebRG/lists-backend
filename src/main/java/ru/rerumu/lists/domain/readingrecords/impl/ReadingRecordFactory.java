@@ -1,12 +1,13 @@
-package ru.rerumu.lists.domain.book.readingrecords.impl;
+package ru.rerumu.lists.domain.readingrecords.impl;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 
@@ -37,7 +38,7 @@ public class ReadingRecordFactory {
             Long lastChapter
     ){
 
-        Long readingRecordId = readingRecordService.getNextId();
+        Long readingRecordId = readingRecordsRepository.getNextId();
 
         if (startDate == null) {
             startDate = dateFactory.getLocalDateTime();
@@ -51,7 +52,9 @@ public class ReadingRecordFactory {
                 endDate,
                 false,
                 lastChapter,
-                readingRecordsRepository
+                readingRecordsRepository,
+                dateFactory,
+                EntityState.NEW
         );
 
         readingRecordsRepository.create(readingRecord.toDTO());
@@ -68,7 +71,9 @@ public class ReadingRecordFactory {
                 readingRecordDTO.endDate(),
                 readingRecordDTO.isMigrated(),
                 readingRecordDTO.lastChapter(),
-                readingRecordsRepository
+                readingRecordsRepository,
+                dateFactory,
+                EntityState.PERSISTED
         );
     }
 

@@ -5,7 +5,7 @@ import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;

@@ -4,8 +4,8 @@ import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.series.Series;
@@ -34,29 +34,7 @@ public interface Book extends SeriesItem, Entity {
 
     ReadingRecord deleteReadingRecord(Long readingRecordId);
 
-    void updateReadingRecord(
-            @NonNull Long readingRecordId,
-            @NonNull BookStatusRecord bookStatusRecord,
-            @NonNull LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    );
-    void updateReadingRecord(
-            @NonNull Long readingRecordId,
-            @NonNull Long statusId,
-            @NonNull LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    );
-
     void updateReadingRecords(List<RecordDTO> records);
-
-    /**
-     * Deletes reading records that are not passed in the {@code readingRecordIdsToKeep} parameter.
-     *
-     * @param readingRecordIdsToKeep Reading records to keep
-     */
-    void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep);
 
     Long getListId();
     User getUser();

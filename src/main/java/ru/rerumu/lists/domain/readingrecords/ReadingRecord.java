@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.book.readingrecords;
+package ru.rerumu.lists.domain.readingrecords;
 
 import lombok.NonNull;
 import org.json.JSONObject;
@@ -14,10 +14,12 @@ public interface ReadingRecord extends Comparable<ReadingRecord>{
     void save();
     void delete();
 
-    void setStatus(@NonNull BookStatusRecord bookStatusRecord);
-    void setStartDate(@NonNull LocalDateTime startDate);
-    void setEndDate(LocalDateTime endDate);
-    void setLastChapter(Long lastChapter);
+    void update(
+            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
 
     boolean statusEquals(@NonNull Long statusId);
 

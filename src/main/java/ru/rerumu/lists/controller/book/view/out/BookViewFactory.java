@@ -10,7 +10,7 @@ import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.author.AuthorDTO;
 import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.domain.books.SearchOrder;
 import ru.rerumu.lists.domain.books.SortItem;

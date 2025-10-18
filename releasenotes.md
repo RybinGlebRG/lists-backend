@@ -1,3 +1,18 @@
+# v0.69.1
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Reading records not closing when status is changed to "Completed"
+
+## Other
+
+- Refactoring
+
+============================================
 # v0.69.0
 
 ## Features

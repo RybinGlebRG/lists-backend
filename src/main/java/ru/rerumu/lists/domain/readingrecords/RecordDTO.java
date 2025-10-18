@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.book.readingrecords;
+package ru.rerumu.lists.domain.readingrecords;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.book.readingrecords;
+package ru.rerumu.lists.domain.readingrecords;
 
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.base.EntityDTOv2;

@@ -142,7 +142,7 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     public void save() {
         switch (entityState) {
             case NEW -> seriesRepository.create(toDTO());
-            case DIRTY -> seriesRepository.update(persistentCopy.toDTO(), toDTO());
+            case DIRTY -> seriesRepository.update(persistedCopy.toDTO(), toDTO());
             case PERSISTED -> log.warn("Entity is not altered");
             default -> throw new ServerException("Incorrect entity state");
         }
@@ -187,6 +187,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
      * Set persistent copy
      */
     protected void initPersistentCopy() {
-        persistentCopy = deepCopy();
+        persistedCopy = deepCopy();
     }
 }
