@@ -4,7 +4,6 @@ import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordImpl;
 
 import java.time.LocalDateTime;
 

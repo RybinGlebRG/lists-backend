@@ -293,7 +293,7 @@ public class ReadListService implements BookService {
 
         // Save book
         logger.info("Saving book...");
-        newBook.save();
+        saveBook(newBook);
 
         // Getting created book from DB
         logger.info("Loading book...");
@@ -318,11 +318,13 @@ public class ReadListService implements BookService {
         if (book instanceof BookPersistenceProxy bookPersistenceProxy) {
 
             // Save book
+            logger.debug("Saving book...");
             bookPersistenceProxy.save();
             bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
             bookPersistenceProxy.initPersistedCopy();
 
             // Save series
+            logger.debug("Saving series...");
             // collect series from original and current entities
             Set<Series> seriesSet = new HashSet<>();
             seriesSet.addAll(bookPersistenceProxy.getSeriesList());
@@ -332,32 +334,32 @@ public class ReadListService implements BookService {
                 series.save();
             }
 
+            // Delete removed reading records
+            List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
+                    .filter(item -> !book.getReadingRecords().contains(item))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            for (ReadingRecord readingRecord: readingRecordsToDelete) {
+                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
+                    readingRecordPersistenceProxy.delete();
+                    readingRecordPersistenceProxy.setEntityState(EntityState.DELETED);
+                    readingRecordPersistenceProxy.clearPersistedCopy();
+                } else {
+                    throw new ServerException();
+                }
+            }
+            // Save reading records
+            for (ReadingRecord readingRecord: book.getReadingRecords()) {
+                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
+                    readingRecordPersistenceProxy.save();
+                    readingRecordPersistenceProxy.setEntityState(EntityState.PERSISTED);
+                    readingRecordPersistenceProxy.initPersistedCopy();
+                } else {
+                    throw new ServerException();
+                }
+            }
+
         } else {
             throw new ServerException();
-        }
-
-        // Delete removed reading records
-        List<ReadingRecord> readingRecordsToDelete = book.getPersistedCopy().getReadingRecords().stream()
-                .filter(item -> !book.getReadingRecords().contains(item))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (ReadingRecord readingRecord: readingRecordsToDelete) {
-            if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
-                readingRecordPersistenceProxy.delete();
-                readingRecordPersistenceProxy.setEntityState(EntityState.DELETED);
-                readingRecordPersistenceProxy.clearPersistedCopy();
-            } else {
-                throw new ServerException();
-            }
-        }
-        // Save reading records
-        for (ReadingRecord readingRecord: book.getReadingRecords()) {
-            if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
-                readingRecordPersistenceProxy.save();
-                readingRecordPersistenceProxy.setEntityState(EntityState.PERSISTED);
-                readingRecordPersistenceProxy.initPersistedCopy();
-            } else {
-                throw new ServerException();
-            }
         }
     }
 }

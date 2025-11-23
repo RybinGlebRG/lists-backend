@@ -24,14 +24,14 @@ public interface Entity<T> {
      */
     void delete();
 
-    /**
-     * Get entity state
-     */
-    EntityState getEntityState();
-
-    /**
-     * Get copy of the object corresponding to its state in DB
-     */
-    T getPersistedCopy();
+//    /**
+//     * Get entity state
+//     */
+//    EntityState getEntityState();
+//
+//    /**
+//     * Get copy of the object corresponding to its state in DB
+//     */
+//    T getPersistedCopy();
 
 }

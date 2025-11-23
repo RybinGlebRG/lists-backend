@@ -134,7 +134,6 @@ public class BookFactoryImpl implements BookFactory {
         BookImpl book = bookBuilder.build();
 
         bookRepository.addOne(book);
-        book.initPersistentCopy();
 
         BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.NEW);
         bookPersistenceProxy.initPersistedCopy();
@@ -296,10 +295,9 @@ public class BookFactoryImpl implements BookFactory {
         builder.tags(tags);
 
         BookImpl book = builder.build();
-        book.initPersistentCopy();
 
         BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
-        book.initPersistentCopy();
+        bookPersistenceProxy.initPersistedCopy();
 
         return bookPersistenceProxy;
     }
@@ -412,10 +410,9 @@ public class BookFactoryImpl implements BookFactory {
         }
 
         BookImpl book = builder.build();
-        book.initPersistentCopy();
 
         BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
-        book.initPersistentCopy();
+        bookPersistenceProxy.initPersistedCopy();
 
         return bookPersistenceProxy;
     }

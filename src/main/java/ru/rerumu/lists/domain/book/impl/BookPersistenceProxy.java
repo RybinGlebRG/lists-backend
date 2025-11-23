@@ -77,6 +77,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
+    public List<Series> getSeriesList() {
+        return book.getSeriesList();
+    }
+
+    @Override
     public void updateInsertDate(LocalDateTime insertDate) {
         book.updateInsertDate(insertDate);
     }
@@ -163,12 +168,12 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
 
     @Override
     public EntityState getEntityState() {
-        return book.getEntityState();
+        return entityState;
     }
 
     @Override
     public Book getPersistedCopy() {
-        return book.getPersistedCopy();
+        return persistedCopy;
     }
 
     @Override

@@ -9,16 +9,13 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.RecordStatusEnum;
-import ru.rerumu.lists.domain.base.EntityBaseImpl;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
