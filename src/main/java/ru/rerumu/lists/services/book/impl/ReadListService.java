@@ -10,7 +10,6 @@ import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
@@ -18,18 +17,14 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.RecordDTO;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordPersistenceProxy;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -41,10 +36,7 @@ import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -163,7 +155,7 @@ public class ReadListService implements BookService {
 
         // Save book
         logger.info("Saving book...");
-        saveBook(book);
+        bookRepository.save(book);
         logger.debug(String.format("Updated book: %s", book));
 
         return book;
@@ -293,7 +285,7 @@ public class ReadListService implements BookService {
 
         // Save book
         logger.info("Saving book...");
-        saveBook(newBook);
+        bookRepository.save(newBook);
 
         // Getting created book from DB
         logger.info("Loading book...");
@@ -307,59 +299,5 @@ public class ReadListService implements BookService {
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
         Book book = bookFactory.getBook(bookId, userId);
         book.delete();
-    }
-
-    public Optional<User> getBookUser(Long bookId) {
-        return bookRepository.getBookUser(bookId);
-    }
-
-    private void saveBook(Book book) {
-
-        if (book instanceof BookPersistenceProxy bookPersistenceProxy) {
-
-            // Save book
-            logger.debug("Saving book...");
-            bookPersistenceProxy.save();
-            bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
-            bookPersistenceProxy.initPersistedCopy();
-
-            // Save series
-            logger.debug("Saving series...");
-            // collect series from original and current entities
-            Set<Series> seriesSet = new HashSet<>();
-            seriesSet.addAll(bookPersistenceProxy.getSeriesList());
-            seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
-            // save collected entities
-            for (Series series: seriesSet) {
-                series.save();
-            }
-
-            // Delete removed reading records
-            List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
-                    .filter(item -> !book.getReadingRecords().contains(item))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            for (ReadingRecord readingRecord: readingRecordsToDelete) {
-                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
-                    readingRecordPersistenceProxy.delete();
-                    readingRecordPersistenceProxy.setEntityState(EntityState.DELETED);
-                    readingRecordPersistenceProxy.clearPersistedCopy();
-                } else {
-                    throw new ServerException();
-                }
-            }
-            // Save reading records
-            for (ReadingRecord readingRecord: book.getReadingRecords()) {
-                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
-                    readingRecordPersistenceProxy.save();
-                    readingRecordPersistenceProxy.setEntityState(EntityState.PERSISTED);
-                    readingRecordPersistenceProxy.initPersistedCopy();
-                } else {
-                    throw new ServerException();
-                }
-            }
-
-        } else {
-            throw new ServerException();
-        }
     }
 }

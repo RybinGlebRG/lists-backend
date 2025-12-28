@@ -1,6 +1,7 @@
 package ru.rerumu.lists.dao.book;
 
 import lombok.NonNull;
+import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
 import ru.rerumu.lists.domain.user.User;
 
@@ -27,4 +28,6 @@ public interface BookRepository {
     void delete(Long bookId);
 
     Optional<User> getBookUser(Long bookId);
+
+    void save(Book book);
 }
