@@ -20,11 +20,11 @@ import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -37,7 +37,6 @@ import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -156,7 +155,7 @@ public class ReadListService implements BookService {
 
         // Save book
         logger.info("Saving book...");
-        book.save();
+        bookRepository.save(book);
         logger.debug(String.format("Updated book: %s", book));
 
         return book;
@@ -286,7 +285,7 @@ public class ReadListService implements BookService {
 
         // Save book
         logger.info("Saving book...");
-        newBook.save();
+        bookRepository.save(newBook);
 
         // Getting created book from DB
         logger.info("Loading book...");
@@ -300,9 +299,5 @@ public class ReadListService implements BookService {
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
         Book book = bookFactory.getBook(bookId, userId);
         book.delete();
-    }
-
-    public Optional<User> getBookUser(Long bookId) {
-        return bookRepository.getBookUser(bookId);
     }
 }

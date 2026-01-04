@@ -17,8 +17,8 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
@@ -134,9 +134,11 @@ public class BookFactoryImpl implements BookFactory {
         BookImpl book = bookBuilder.build();
 
         bookRepository.addOne(book);
-        book.initPersistentCopy();
 
-        return book;
+        BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.NEW);
+        bookPersistenceProxy.initPersistedCopy();
+
+        return bookPersistenceProxy;
     }
 
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
@@ -293,9 +295,11 @@ public class BookFactoryImpl implements BookFactory {
         builder.tags(tags);
 
         BookImpl book = builder.build();
-        book.initPersistentCopy();
 
-        return book;
+        BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
+        bookPersistenceProxy.initPersistedCopy();
+
+        return bookPersistenceProxy;
     }
 
     @Override
@@ -406,8 +410,10 @@ public class BookFactoryImpl implements BookFactory {
         }
 
         BookImpl book = builder.build();
-        book.initPersistentCopy();
 
-        return book;
+        BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
+        bookPersistenceProxy.initPersistedCopy();
+
+        return bookPersistenceProxy;
     }
 }

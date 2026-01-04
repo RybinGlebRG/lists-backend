@@ -43,7 +43,7 @@
         <collection property="readingRecords" resultMap="ReadingRecordResultMap"/>
     </resultMap>
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO">
         <constructor>
             <idArg column="rr_id" name="recordId" javaType="java.lang.Long"/>
             <arg column="book_id" name="bookId" javaType="java.lang.Long"/>

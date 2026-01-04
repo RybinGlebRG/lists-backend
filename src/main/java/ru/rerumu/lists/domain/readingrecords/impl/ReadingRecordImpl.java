@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.book.readingrecords.impl;
+package ru.rerumu.lists.domain.readingrecords.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,18 +9,20 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
+import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.domain.RecordStatusEnum;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Slf4j
-@ToString
+@ToString(callSuper = true, doNotUseGetters = true)
 public class ReadingRecordImpl implements ReadingRecord {
 
     @Getter
@@ -36,12 +38,14 @@ public class ReadingRecordImpl implements ReadingRecord {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
 
-    private Boolean isMigrated;
+    private final Boolean isMigrated;
 
     private Long lastChapter;
 
     @ToString.Exclude
     private final ReadingRecordsRepository readingRecordsRepository;
+    @ToString.Exclude
+    private final DateFactory dateFactory;
 
 
     ReadingRecordImpl(
@@ -52,7 +56,8 @@ public class ReadingRecordImpl implements ReadingRecord {
             LocalDateTime endDate,
             Boolean isMigrated,
             Long lastChapter,
-            ReadingRecordsRepository readingRecordsRepository
+            ReadingRecordsRepository readingRecordsRepository,
+            DateFactory dateFactory
     ) {
         this.recordId = recordId;
         this.bookId = bookId;
@@ -62,37 +67,7 @@ public class ReadingRecordImpl implements ReadingRecord {
         this.isMigrated = isMigrated;
         this.lastChapter = lastChapter;
         this.readingRecordsRepository = readingRecordsRepository;
-    }
-
-    public JsonNode toJsonNode(){
-        ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule());
-        JsonNode jsonNode = objectMapper.valueToTree(this);
-        return jsonNode;
-    }
-
-    public JSONObject toJSONObject(){
-
-        log.debug("toJSONObject: {}", this);
-
-        JSONObject obj = new JSONObject();
-
-        obj.put("recordId", recordId);
-        obj.put("bookId", bookId);
-
-        JSONObject recordStatusJson = new JSONObject();
-        recordStatusJson.put("statusId", bookStatus.statusId());
-        recordStatusJson.put("statusName", bookStatus.statusName());
-        obj.put("bookStatus", recordStatusJson);
-
-        obj.put("startDate", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        if (endDate != null) {
-            obj.put("endDate", endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        }
-        obj.put("isMigrated", isMigrated);
-        obj.put("lastChapter", lastChapter);
-
-        return obj;
+        this.dateFactory = dateFactory;
     }
 
     @Override
@@ -116,22 +91,24 @@ public class ReadingRecordImpl implements ReadingRecord {
     }
 
     @Override
-    public void setStatus(@NonNull BookStatusRecord bookStatusRecord) {
-        bookStatus = bookStatusRecord;
-    }
+    public void update(
+            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    ) {
 
-    @Override
-    public void setStartDate(@NonNull LocalDateTime startDate) {
+        // Update end date
+        if (endDate != null) {
+            this.endDate = endDate;
+        }
+        // or close record if status changed to "Completed"
+        else if (bookStatusRecord.statusId().equals(RecordStatusEnum.COMPLETED.getId().intValue())) {
+            this.endDate = dateFactory.getLocalDateTime();
+        }
+
+        this.bookStatus = bookStatusRecord;
         this.startDate = startDate;
-    }
-
-    @Override
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    @Override
-    public void setLastChapter(Long lastChapter) {
         this.lastChapter = lastChapter;
     }
 
@@ -169,5 +146,51 @@ public class ReadingRecordImpl implements ReadingRecord {
     @Override
     public int compareTo(@NonNull ReadingRecord o) {
         return startDate.compareTo(((ReadingRecordImpl) o).startDate);
+    }
+
+    @Override
+    public ReadingRecordImpl deepCopy() {
+        return new ReadingRecordImpl(
+                recordId,
+                bookId,
+                bookStatus,
+                startDate,
+                endDate,
+                isMigrated,
+                lastChapter,
+                readingRecordsRepository,
+                dateFactory
+        );
+    }
+
+    public JsonNode toJsonNode(){
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule());
+        JsonNode jsonNode = objectMapper.valueToTree(this);
+        return jsonNode;
+    }
+
+    public JSONObject toJSONObject(){
+
+        log.debug("toJSONObject: {}", this);
+
+        JSONObject obj = new JSONObject();
+
+        obj.put("recordId", recordId);
+        obj.put("bookId", bookId);
+
+        JSONObject recordStatusJson = new JSONObject();
+        recordStatusJson.put("statusId", bookStatus.statusId());
+        recordStatusJson.put("statusName", bookStatus.statusName());
+        obj.put("bookStatus", recordStatusJson);
+
+        obj.put("startDate", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        if (endDate != null) {
+            obj.put("endDate", endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        }
+        obj.put("isMigrated", isMigrated);
+        obj.put("lastChapter", lastChapter);
+
+        return obj;
     }
 }

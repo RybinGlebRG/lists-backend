@@ -1,6 +1,8 @@
 package ru.rerumu.lists.dao.series.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
@@ -9,8 +11,8 @@ import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
@@ -181,12 +184,14 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
     }
 
     @Override
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public void update(SeriesDTOv2 originalEntity, SeriesDTOv2 currentEntity) {
         seriesMapper.update(currentEntity);
 
         List<SeriesBookRelationDto> relationsToRemove = originalEntity.getSeriesBookRelationDtoList().stream()
                 .filter( item -> !currentEntity.getSeriesBookRelationDtoList().contains(item))
                 .collect(Collectors.toCollection(ArrayList::new));
+        log.trace("relationsToRemove: {}", relationsToRemove);
 
         // Remove deleted relations
         for (SeriesBookRelationDto seriesBookRelationDto: relationsToRemove) {

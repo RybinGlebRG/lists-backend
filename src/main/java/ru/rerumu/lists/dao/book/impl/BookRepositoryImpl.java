@@ -4,6 +4,7 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.book.AuthorBookDto;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
@@ -13,17 +14,25 @@ import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.domain.base.EntityState;
+import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordPersistenceProxy;
+import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // TODO: Refactor class
@@ -181,5 +190,55 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public Optional<User> getBookUser(Long bookId) {
         return Optional.ofNullable(bookMapper.getBookUser(bookId));
+    }
+
+    @Override
+    public void save(Book book) {
+        if (book instanceof BookPersistenceProxy bookPersistenceProxy) {
+
+            // Save book
+            log.debug("Saving book...");
+            bookPersistenceProxy.save();
+            bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
+            bookPersistenceProxy.initPersistedCopy();
+
+            // Save series
+            log.debug("Saving series...");
+            // collect series from original and current entities
+            Set<Series> seriesSet = new HashSet<>();
+            seriesSet.addAll(bookPersistenceProxy.getSeriesList());
+            seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
+            // save collected entities
+            for (Series series: seriesSet) {
+                series.save();
+            }
+
+            // Delete removed reading records
+            List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
+                    .filter(item -> !book.getReadingRecords().contains(item))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            for (ReadingRecord readingRecord: readingRecordsToDelete) {
+                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
+                    readingRecordPersistenceProxy.delete();
+                    readingRecordPersistenceProxy.setEntityState(EntityState.DELETED);
+                    readingRecordPersistenceProxy.clearPersistedCopy();
+                } else {
+                    throw new ServerException();
+                }
+            }
+            // Save reading records
+            for (ReadingRecord readingRecord: book.getReadingRecords()) {
+                if (readingRecord instanceof ReadingRecordPersistenceProxy readingRecordPersistenceProxy) {
+                    readingRecordPersistenceProxy.save();
+                    readingRecordPersistenceProxy.setEntityState(EntityState.PERSISTED);
+                    readingRecordPersistenceProxy.initPersistedCopy();
+                } else {
+                    throw new ServerException();
+                }
+            }
+
+        } else {
+            throw new ServerException();
+        }
     }
 }

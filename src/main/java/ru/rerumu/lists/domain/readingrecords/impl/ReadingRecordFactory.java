@@ -1,13 +1,13 @@
-package ru.rerumu.lists.domain.book.readingrecords.impl;
+package ru.rerumu.lists.domain.readingrecords.impl;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.services.book.readingrecord.ReadingRecordService;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 
 import java.time.LocalDateTime;
@@ -18,18 +18,19 @@ import java.util.stream.Collectors;
 @Component
 public class ReadingRecordFactory {
 
-    private final ReadingRecordService readingRecordService;
     private final DateFactory dateFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
 
     @Autowired
-    public ReadingRecordFactory(ReadingRecordService readingRecordService, DateFactory dateFactory, ReadingRecordsRepository readingRecordsRepository) {
-        this.readingRecordService = readingRecordService;
+    public ReadingRecordFactory(
+            DateFactory dateFactory,
+            ReadingRecordsRepository readingRecordsRepository
+    ) {
         this.dateFactory = dateFactory;
         this.readingRecordsRepository = readingRecordsRepository;
     }
 
-    public ReadingRecordImpl createReadingRecord(
+    public ReadingRecord createReadingRecord(
             @NonNull Long bookId,
             @NonNull BookStatusRecord bookStatusRecord,
             LocalDateTime startDate,
@@ -37,7 +38,7 @@ public class ReadingRecordFactory {
             Long lastChapter
     ){
 
-        Long readingRecordId = readingRecordService.getNextId();
+        Long readingRecordId = readingRecordsRepository.getNextId();
 
         if (startDate == null) {
             startDate = dateFactory.getLocalDateTime();
@@ -51,16 +52,20 @@ public class ReadingRecordFactory {
                 endDate,
                 false,
                 lastChapter,
-                readingRecordsRepository
+                readingRecordsRepository,
+                dateFactory
         );
 
         readingRecordsRepository.create(readingRecord.toDTO());
 
-        return readingRecord;
+        ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(readingRecord, EntityState.NEW);
+        readingRecordPersistenceProxy.initPersistedCopy();
+
+        return readingRecordPersistenceProxy;
     }
 
     public ReadingRecord fromDTO(@NonNull ReadingRecordDTO readingRecordDTO){
-        return new ReadingRecordImpl(
+        ReadingRecordImpl readingRecord = new ReadingRecordImpl(
                 readingRecordDTO.recordId(),
                 readingRecordDTO.bookId(),
                 readingRecordDTO.bookStatus(),
@@ -68,8 +73,17 @@ public class ReadingRecordFactory {
                 readingRecordDTO.endDate(),
                 readingRecordDTO.isMigrated(),
                 readingRecordDTO.lastChapter(),
-                readingRecordsRepository
+                readingRecordsRepository,
+                dateFactory
         );
+
+        ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(
+                readingRecord,
+                EntityState.PERSISTED
+        );
+        readingRecordPersistenceProxy.initPersistedCopy();
+
+        return readingRecordPersistenceProxy;
     }
 
     public List<ReadingRecord> findByBookId(@NonNull Long bookId){

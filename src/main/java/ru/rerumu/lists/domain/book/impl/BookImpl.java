@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
@@ -16,20 +15,16 @@ import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.BookChain;
-import ru.rerumu.lists.domain.RecordStatusEnum;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
-import ru.rerumu.lists.domain.base.EntityBaseImpl;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.book.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.book.readingrecords.RecordDTO;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.book.readingrecords.impl.ReadingRecordImpl;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.RecordDTO;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
@@ -40,16 +35,15 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @ToString
 @Slf4j
-public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneable, DeepCopyable<BookImpl> {
+public class BookImpl implements Book{
+
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.BOOK;
 
     @Getter
@@ -132,9 +126,6 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory
     ) {
-        // TODO: Change
-        super(EntityState.NEW);
-
         this.bookId = bookId;
         this.readListId = readListId;
         this.title = title;
@@ -161,17 +152,6 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
 
     public Optional<Integer> getLastChapter() {
         return Optional.ofNullable(lastChapter);
-    }
-
-    @Deprecated
-    @Override
-    public BookImpl clone() {
-        try {
-            BookImpl clone = (BookImpl) super.clone();
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 
     public JSONObject toJSONObject() {
@@ -268,7 +248,7 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
             Long lastChapter
     ) {
 
-        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
@@ -291,7 +271,7 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
         BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
 
         // Create record
-        ReadingRecordImpl readingRecord = readingRecordFactory.createReadingRecord(
+        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
                 bookId,
                 bookStatusRecord,
                 startDate,
@@ -441,17 +421,6 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
         bookRepository.update(this);
-
-        // Collect series from original and current entities
-        Set<Series> seriesSet = new HashSet<>();
-        seriesSet.addAll(seriesList);
-        seriesSet.addAll(persistentCopy.seriesList);
-
-        for (Series series: seriesSet) {
-            series.save();
-        }
-        initPersistentCopy();
-
     }
 
     @Override
@@ -492,62 +461,6 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
         return readingRecord;
     }
 
-    @Override
-    public void deleteOtherReadingRecords(List<Long> readingRecordIdsToKeep) {
-        List<ReadingRecord> readingRecordsToDelete = readingRecords.stream()
-                .filter(readingRecord -> !readingRecordIdsToKeep.contains(readingRecord.getId()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        for (ReadingRecord readingRecord: readingRecordsToDelete) {
-            readingRecords.remove(readingRecord);
-            readingRecord.delete();
-        }
-    }
-
-    public void updateReadingRecord(
-            @NonNull Long readingRecordId,
-            @NonNull BookStatusRecord bookStatusRecord,
-            @NonNull LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    ){
-        ReadingRecord readingRecord = readingRecords.stream()
-                .filter(item -> item.getId().equals(readingRecordId))
-                .findAny()
-                .orElseThrow(EntityNotFoundException::new);
-
-        // Update end date
-        if (endDate != null) {
-            readingRecord.setEndDate(endDate);
-        }
-        // or close record if status changed to "Completed"
-        else if (bookStatusRecord.statusId().equals(RecordStatusEnum.COMPLETED.getId().intValue())) {
-            readingRecord.setEndDate(dateFactory.getLocalDateTime());
-        }
-
-        readingRecord.setStatus(bookStatusRecord);
-        readingRecord.setStartDate(startDate);
-
-        readingRecord.setLastChapter(lastChapter);
-
-        lastUpdateDate = dateFactory.getLocalDateTime();
-
-        readingRecord.save();
-        save();
-    }
-
-    @Override
-    public void updateReadingRecord(
-            @NonNull Long readingRecordId,
-            @NonNull Long statusId,
-            @NonNull LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    ) {
-        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
-        updateReadingRecord(readingRecordId, bookStatusRecord, startDate, endDate, lastChapter);
-    }
-
     /**
      * Update reading records according to passed list of records
      */
@@ -562,22 +475,32 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
                 .distinct()
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        // Delete other reading records
-        deleteOtherReadingRecords(readingRecordIdsToKeep);
+        // Delete removed reading records
+        List<ReadingRecord> readingRecordsToDelete = readingRecords.stream()
+                .filter( readingRecord -> !readingRecordIdsToKeep.contains(readingRecord.getId()))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (ReadingRecord readingRecord: readingRecordsToDelete) {
+            deleteReadingRecord(readingRecord.getId());
+        }
 
         for (RecordDTO recordDTO: records) {
-            if (recordDTO.getRecordId() == null) {
-                // Add record
-                addReadingRecord(
-                        recordDTO.getStatusId(),
+
+            if (recordDTO.getRecordId() != null) {
+                // Update record
+                ReadingRecord readingRecord = readingRecords.stream()
+                        .filter(item -> item.getId().equals(recordDTO.getRecordId()))
+                        .findAny()
+                        .orElseThrow(EntityNotFoundException::new);
+                BookStatusRecord bookStatusRecord = statusFactory.findById(recordDTO.getStatusId());
+                readingRecord.update(
+                        bookStatusRecord,
                         recordDTO.getStartDate(),
                         recordDTO.getEndDate(),
                         recordDTO.getLastChapter()
                 );
             } else {
-                // Update record
-                updateReadingRecord(
-                        recordDTO.getRecordId(),
+                // Add record
+                addReadingRecord(
                         recordDTO.getStatusId(),
                         recordDTO.getStartDate(),
                         recordDTO.getEndDate(),
@@ -650,10 +573,5 @@ public class BookImpl extends EntityBaseImpl<BookImpl> implements Book, Cloneabl
                 authorFactory,
                 seriesFactory
         );
-    }
-
-    @Override
-    protected void initPersistentCopy() {
-        persistentCopy = deepCopy();
     }
 }
