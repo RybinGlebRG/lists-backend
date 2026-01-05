@@ -41,8 +41,6 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
                 Long userId
     );
 
-    void delete (long bookId);
-
     User getBookUser(Long bookId);
 
     List<Author> getAuthors(Long bookId, Long roleId);

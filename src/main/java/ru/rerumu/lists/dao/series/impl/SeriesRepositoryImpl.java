@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
-import ru.rerumu.lists.dao.book.readingrecord.mapper.ReadingRecordMapper;
+import ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;

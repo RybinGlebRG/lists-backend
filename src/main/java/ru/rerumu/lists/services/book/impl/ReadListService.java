@@ -298,6 +298,6 @@ public class ReadListService implements BookService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
         Book book = bookFactory.getBook(bookId, userId);
-        book.delete();
+        bookRepository.delete(book);
     }
 }

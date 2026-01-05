@@ -232,7 +232,7 @@ public class BookImpl implements Book{
             series.removeBookRelation(bookId);
         }
 
-        bookRepository.delete(bookId);
+        bookRepository.delete(bookId, user);
     }
 
     @Override
@@ -300,6 +300,11 @@ public class BookImpl implements Book{
     @Override
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public LocalDateTime getAddedDate() {
+        return insertDate;
     }
 
     @Override
@@ -463,6 +468,8 @@ public class BookImpl implements Book{
 
     /**
      * Update reading records according to passed list of records
+     *
+     * TODO: Remove DTO
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)

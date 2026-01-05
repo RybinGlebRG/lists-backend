@@ -3,6 +3,7 @@ package ru.rerumu.lists.dao.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
@@ -11,6 +12,7 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookDtoDao;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 
 // TODO: Refactor class
 @Slf4j
+@Component
 public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
@@ -44,18 +47,21 @@ public class BookRepositoryImpl implements BookRepository {
     private final SeriesMapper seriesMapper;
     private final SeriesBooksRespository seriesBooksRespository;
     private final SeriesRepository seriesRepository;
+    private final ReadingRecordsRepository readingRecordsRepository;
 
     public BookRepositoryImpl(
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesMapper seriesMapper,
-            SeriesBooksRespository seriesBooksRespository, SeriesRepository seriesRepository
+            SeriesBooksRespository seriesBooksRespository, SeriesRepository seriesRepository,
+            ReadingRecordsRepository readingRecordsRepository
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesMapper = seriesMapper;
         this.seriesBooksRespository = seriesBooksRespository;
         this.seriesRepository = seriesRepository;
+        this.readingRecordsRepository = readingRecordsRepository;
     }
 
 
@@ -183,8 +189,8 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void delete(Long bookId) {
-        bookMapper.delete(bookId);
+    public void delete(Long bookId, User user) {
+        bookMapper.delete(bookId, user.userId());
     }
 
     @Override
@@ -240,5 +246,30 @@ public class BookRepositoryImpl implements BookRepository {
         } else {
             throw new ServerException();
         }
+    }
+
+    @Override
+    public void delete(Book book) {
+
+        // Delete reading records
+        List<ReadingRecord> readingRecords = book.getReadingRecords();
+        for (ReadingRecord readingRecord: readingRecords) {
+            readingRecordsRepository.delete(readingRecord.getId());
+        }
+
+        // Delete relations with tags
+        book.updateTags(new ArrayList<>());
+
+        // Delete relations with series
+        book.updateSeries(new ArrayList<>());
+
+        // Delete relations with authors
+        book.updateTextAuthors(new ArrayList<>());
+
+        // Save changes
+        save(book);
+
+        // Delete book
+        bookMapper.delete(book.getId(), book.getUser().userId());
     }
 }

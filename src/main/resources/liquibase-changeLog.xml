@@ -10,5 +10,6 @@
     <includeAll path="ru/rerumu/lists/db/changelog/"/>
     <include file="classpath:liquibase/db.changelog-0.67.0.xml"/>
     <include file="classpath:liquibase/db.changelog-0.68.1.xml"/>
+    <include file="classpath:liquibase/db.changelog-0.70.0.xml"/>
 
 </databaseChangeLog>

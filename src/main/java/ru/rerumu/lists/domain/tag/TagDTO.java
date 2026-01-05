@@ -3,11 +3,11 @@ package ru.rerumu.lists.domain.tag;
 import lombok.Getter;
 import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
-import ru.rerumu.lists.dao.base.EntityDTOv2;
+import ru.rerumu.lists.dao.base.MyBatisEntity;
 import ru.rerumu.lists.domain.base.EntityDTO;
 
 @Getter
-public class TagDTO implements EntityDTO<Tag>, EntityDTOv2 {
+public class TagDTO implements EntityDTO<Tag>, MyBatisEntity {
 
     private final Long tagId;
     private final String name;

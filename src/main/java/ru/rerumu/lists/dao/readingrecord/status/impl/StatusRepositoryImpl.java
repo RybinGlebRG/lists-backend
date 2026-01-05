@@ -1,11 +1,11 @@
-package ru.rerumu.lists.dao.book.readingrecord.status.impl;
+package ru.rerumu.lists.dao.readingrecord.status.impl;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.book.readingrecord.status.StatusRepository;
-import ru.rerumu.lists.dao.book.readingrecord.status.mapper.BookStatusMapper;
+import ru.rerumu.lists.dao.readingrecord.status.StatusRepository;
+import ru.rerumu.lists.dao.readingrecord.status.mapper.BookStatusMapper;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 
 // TODO: fix null

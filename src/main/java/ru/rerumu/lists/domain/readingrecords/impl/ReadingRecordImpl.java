@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
-import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.RecordStatusEnum;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
@@ -42,6 +42,12 @@ public class ReadingRecordImpl implements ReadingRecord {
 
     private Long lastChapter;
 
+    /**
+     * Update date of the record
+     */
+    @Getter
+    private LocalDateTime updateDate;
+
     @ToString.Exclude
     private final ReadingRecordsRepository readingRecordsRepository;
     @ToString.Exclude
@@ -57,7 +63,8 @@ public class ReadingRecordImpl implements ReadingRecord {
             Boolean isMigrated,
             Long lastChapter,
             ReadingRecordsRepository readingRecordsRepository,
-            DateFactory dateFactory
+            DateFactory dateFactory,
+            LocalDateTime updateDate
     ) {
         this.recordId = recordId;
         this.bookId = bookId;
@@ -68,6 +75,7 @@ public class ReadingRecordImpl implements ReadingRecord {
         this.lastChapter = lastChapter;
         this.readingRecordsRepository = readingRecordsRepository;
         this.dateFactory = dateFactory;
+        this.updateDate = updateDate;
     }
 
     @Override
@@ -110,6 +118,7 @@ public class ReadingRecordImpl implements ReadingRecord {
         this.bookStatus = bookStatusRecord;
         this.startDate = startDate;
         this.lastChapter = lastChapter;
+        this.updateDate = dateFactory.getLocalDateTime();
     }
 
     @Override
@@ -159,7 +168,8 @@ public class ReadingRecordImpl implements ReadingRecord {
                 isMigrated,
                 lastChapter,
                 readingRecordsRepository,
-                dateFactory
+                dateFactory,
+                updateDate
         );
     }
 

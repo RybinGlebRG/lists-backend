@@ -42,6 +42,11 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     List<ReadingRecord> getReadingRecords();
     List<Series> getSeriesList();
 
+    /**
+     * Date when book was added
+     */
+    LocalDateTime getAddedDate();
+
     void updateInsertDate(LocalDateTime insertDate);
     void updateTitle(String title);
 

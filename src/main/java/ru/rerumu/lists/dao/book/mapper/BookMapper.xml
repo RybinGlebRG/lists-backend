@@ -299,7 +299,7 @@
         from
             books
         where
-            book_id = #{bookId}
+            book_id = #{id}
             and user_user_id = #{userId}
     </delete>
 

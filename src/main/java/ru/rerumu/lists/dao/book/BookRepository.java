@@ -25,9 +25,15 @@ public interface BookRepository {
 
     void addOne(BookImpl book);
 
-    void delete(Long bookId);
+    void delete(Long bookId, User user);
 
     Optional<User> getBookUser(Long bookId);
 
     void save(Book book);
+
+    /**
+     * Delete book
+     * @param book Book to delete
+     */
+    void delete(Book book);
 }

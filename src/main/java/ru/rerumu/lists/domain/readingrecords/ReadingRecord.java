@@ -11,6 +11,7 @@ public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<R
 
     Long getId();
     Long getBookId();
+    LocalDateTime getUpdateDate();
 
     void save();
     void delete();

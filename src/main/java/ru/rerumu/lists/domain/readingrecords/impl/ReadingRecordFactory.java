@@ -3,7 +3,7 @@ package ru.rerumu.lists.domain.readingrecords.impl;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
@@ -30,6 +30,9 @@ public class ReadingRecordFactory {
         this.readingRecordsRepository = readingRecordsRepository;
     }
 
+    /**
+     * Create new reading record
+     */
     public ReadingRecord createReadingRecord(
             @NonNull Long bookId,
             @NonNull BookStatusRecord bookStatusRecord,
@@ -53,7 +56,8 @@ public class ReadingRecordFactory {
                 false,
                 lastChapter,
                 readingRecordsRepository,
-                dateFactory
+                dateFactory,
+                dateFactory.getLocalDateTime()
         );
 
         readingRecordsRepository.create(readingRecord.toDTO());
@@ -74,7 +78,8 @@ public class ReadingRecordFactory {
                 readingRecordDTO.isMigrated(),
                 readingRecordDTO.lastChapter(),
                 readingRecordsRepository,
-                dateFactory
+                dateFactory,
+                readingRecordDTO.updateDate()
         );
 
         ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(
