@@ -12,11 +12,7 @@ import java.util.List;
 
 public interface BookFactory {
 
-    Book fromDTO(@NonNull BookDTO bookDTO);
     Book fromDTO(@NonNull BookMyBatisEntity bookDTO);
-
-    @Deprecated
-    List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList);
 
     List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList);
 

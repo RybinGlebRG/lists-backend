@@ -6,18 +6,18 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
@@ -29,7 +29,6 @@ import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,61 +150,6 @@ public class BookImpl implements Book{
         this.seriesFactory = seriesFactory;
     }
 
-    public JSONObject toJSONObject() {
-        JSONObject obj = new JSONObject();
-
-        obj.put("bookId", bookId);
-        obj.put("readListId", readListId);
-        obj.put("title", title);
-        JSONObject bookStatusJson = new JSONObject();
-//        bookStatusJson.put("statusId", bookStatus.statusId());
-//        bookStatusJson.put("statusName", bookStatus.statusName());
-        obj.put("bookStatus", bookStatusJson);
-        obj.put(
-                "insertDate",
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(insertDate)
-        );
-        obj.put(
-                "lastUpdateDate",
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastUpdateDate)
-        );
-        obj.put("lastChapter", lastChapter);
-        obj.put("note", note);
-
-        if (bookType != null) {
-            JSONObject bookTypeJson = new JSONObject();
-            bookTypeJson.put("typeId", bookType.getId());
-            bookTypeJson.put("typeName", bookType.getName());
-
-            obj.put("bookType", bookTypeJson);
-        }
-        obj.put("itemType", SERIES_ITEM_TYPE.name());
-        JSONArray chainArray = new JSONArray();
-        if (previousBooks != null){
-            chainArray = previousBooks.toJSONArray();
-        }
-        obj.put("chain", chainArray);
-
-        JSONArray readingRecordsArray = new JSONArray();
-        if (readingRecords != null){
-            readingRecords.stream()
-                    .map(ReadingRecord::toJSONObject)
-                    .forEach(readingRecordsArray::put);
-        }
-        obj.put("readingRecords", readingRecordsArray);
-        obj.put("URL", URL);
-
-        JSONArray tagsArray = new JSONArray();
-        if (tags != null) {
-            tags.stream()
-                    .map(Tag::toJSONObject)
-                    .forEach(tagsArray::put);
-        }
-        obj.put("tags", tagsArray);
-
-        return obj;
-    }
-
     @Override
     public boolean currentStatusEquals(Long statusId) {
         ReadingRecord readingRecord = readingRecords.stream()
@@ -230,6 +174,12 @@ public class BookImpl implements Book{
         }
 
         bookRepository.delete(bookId, user);
+    }
+
+    @Override
+    // TODO: remove
+    public JSONObject toJSONObject() {
+        throw new NotImplementedException();
     }
 
     @Override

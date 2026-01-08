@@ -3,7 +3,7 @@ package ru.rerumu.lists.services.game.impl;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.views.GameAddView;

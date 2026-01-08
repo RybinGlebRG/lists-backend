@@ -4,19 +4,19 @@
 
 <mapper namespace="ru.rerumu.lists.dao.series.mapper.SeriesMapper">
 
-    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.domain.series.SeriesDTO">
-        <id column="series_id" property="seriesId" javaType="Long"/>
-        <result column="list_list_id" property="seriesListId" javaType="Long"/>
-        <result column="title" property="title" javaType="String"/>
-        <result column="book_count" property="bookCount" javaType="Integer"/>
-        <collection
-                property="seriesItemOrderDTOList"
-                ofType="ru.rerumu.lists.domain.dto.SeriesItemOrderDTO"
-                resultMap="SeriesItemOrderDTOResultMap"
-        />
-    </resultMap>
+<!--    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.domain.series.SeriesDTO">-->
+<!--        <id column="series_id" property="seriesId" javaType="Long"/>-->
+<!--        <result column="list_list_id" property="seriesListId" javaType="Long"/>-->
+<!--        <result column="title" property="title" javaType="String"/>-->
+<!--        <result column="book_count" property="bookCount" javaType="Integer"/>-->
+<!--        <collection-->
+<!--                property="seriesItemOrderDTOList"-->
+<!--                ofType="ru.rerumu.lists.dao.series.SeriesItemOrderDTO"-->
+<!--                resultMap="SeriesItemOrderDTOResultMap"-->
+<!--        />-->
+<!--    </resultMap>-->
 
-    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.domain.dto.SeriesItemOrderDTO">
+    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.dao.series.SeriesItemOrderDTO">
         <result property="order" column="series_order" javaType="Long"/>
         <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
     </resultMap>
@@ -52,7 +52,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="SeriesResultMapV2" type="ru.rerumu.lists.domain.series.SeriesDTOv2">
+    <resultMap id="SeriesResultMapV2" type="ru.rerumu.lists.dao.series.SeriesMyBatisEntity">
         <id column="series_id" property="seriesId"/>
         <result column="title" property="title"/>
         <result column="user_user_id" property="userId"/>
@@ -330,21 +330,21 @@
 
     </sql>
 
-    <select id="getAll" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.list_list_id=#{readListId}
-    </select>
+<!--    <select id="getAll" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.list_list_id=#{readListId}-->
+<!--    </select>-->
 
-    <select id="getOne" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.series_id=#{seriesId}
-        and s_data.list_list_id=#{readListId}
-    </select>
+<!--    <select id="getOne" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.series_id=#{seriesId}-->
+<!--        and s_data.list_list_id=#{readListId}-->
+<!--    </select>-->
 
-    <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.series_id=#{seriesId}
-    </select>
+<!--    <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.series_id=#{seriesId}-->
+<!--    </select>-->
 
     <select id="findById" resultMap="SeriesResultMapV2">
         select

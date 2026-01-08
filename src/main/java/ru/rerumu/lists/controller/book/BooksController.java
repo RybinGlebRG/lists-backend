@@ -26,7 +26,7 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.series.SeriesService;
 

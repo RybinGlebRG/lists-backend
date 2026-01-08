@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.book.impl;
 
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.domain.BookChain;
+import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;

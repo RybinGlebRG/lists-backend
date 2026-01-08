@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.views.GameAddView;
 

@@ -17,7 +17,7 @@
 <!--        />-->
 <!--    </resultMap>-->
 
-    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.domain.dto.SeriesBookRelationDTO">
+    <resultMap id="SeriesBookRelationDTOResultMap" type="ru.rerumu.lists.dao.series.SeriesBookRelationDTO">
         <constructor>
             <arg column="series_series_id" javaType="Long"/>
             <arg column="series_list_id" javaType="Long"/>

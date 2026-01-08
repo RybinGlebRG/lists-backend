@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.dto;
+package ru.rerumu.lists.dao.series;
 
 public class SeriesTitlesRelationDTO {
     public Integer seriesTitleId;

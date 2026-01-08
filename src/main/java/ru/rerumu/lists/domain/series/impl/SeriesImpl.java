@@ -12,7 +12,6 @@ import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.base.EntityBaseImpl;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
@@ -38,9 +37,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     @Getter
     private final User user;
 
-    @Deprecated
-    private final List<SeriesBookRelationDTO> seriesBookRelationDTOList;
-
     private final SeriesRepository seriesRepository;
 
     private final SeriesBooksRespository seriesBooksRespository;
@@ -54,7 +50,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
             @NonNull String title,
             @NonNull List<SeriesItem> itemsList,
             @NonNull User user,
-            @NonNull List<SeriesBookRelationDTO> seriesBookRelationDTOList,
             @NonNull SeriesRepository seriesRepository,
             @NonNull EntityState entityState,
             @NonNull SeriesBooksRespository seriesBooksRespository,
@@ -65,41 +60,10 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
         this.user = user;
         this.title = title;
         this.itemsList = new ArrayList<>(itemsList);
-        this.seriesBookRelationDTOList = seriesBookRelationDTOList;
         this.seriesRepository = seriesRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.seriesItemRelations = new ArrayList<>(seriesItemRelations);
     }
-
-//    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
-//    public SeriesDTOv2 toDTO(){
-//
-//        List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
-//        for (SeriesItemRelation seriesItemRelation: seriesItemRelations) {
-//            if (seriesItemRelation instanceof SeriesBookRelation seriesBookRelation) {
-//                seriesBookRelationDtoList.add(
-//                        new SeriesBookRelationDto(
-//                                seriesBookRelation.seriesId(),
-//                                seriesBookRelation.bookId(),
-//                                seriesBookRelation.userId(),
-//                                (long) seriesItemRelations.indexOf(seriesBookRelation)
-//                        )
-//                );
-//            } else {
-//                throw new ServerException();
-//            }
-//        }
-//
-//        return new SeriesDTOv2(
-//                seriesId,
-//                user.userId(),
-//                title,
-//                itemsList.stream()
-//                        .map(SeriesItem::toDTO)
-//                        .collect(Collectors.toCollection(ArrayList::new)),
-//                seriesBookRelationDtoList
-//        );
-//    }
 
     @Override
     public Long getItemsCountAsLong() {
@@ -166,7 +130,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
                 title,
                 new ArrayList<>(itemsList),
                 user,
-                new ArrayList<>(seriesBookRelationDTOList),
                 seriesRepository,
                 entityState,
                 seriesBooksRespository,

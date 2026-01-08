@@ -8,7 +8,7 @@ import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.books.Search;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.book.BookService;

@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.books;
+package ru.rerumu.lists.services.book;
 
 public enum SearchOrder {
     ASC,

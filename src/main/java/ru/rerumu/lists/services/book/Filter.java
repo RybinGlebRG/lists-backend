@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.books;
+package ru.rerumu.lists.services.book;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

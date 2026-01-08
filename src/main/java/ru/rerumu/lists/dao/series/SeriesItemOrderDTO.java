@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.dto;
+package ru.rerumu.lists.dao.series;
 
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
 

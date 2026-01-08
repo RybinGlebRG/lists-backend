@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.dto;
+package ru.rerumu.lists.dao.series;
 
 import ru.rerumu.lists.domain.BookStatus;
 import ru.rerumu.lists.domain.booktype.impl.BookTypeImpl;
