@@ -10,7 +10,6 @@ import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
@@ -28,13 +27,8 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public void addReadingRecord(@NonNull BookStatusRecord bookStatusRecord, LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
-        book.addReadingRecord(bookStatusRecord, startDate, endDate, lastChapter);
-    }
-
-    @Override
-    public void addReadingRecord(@NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
-        book.addReadingRecord(statusId, startDate, endDate, lastChapter);
+    public void addReadingRecord(ReadingRecord readingRecord) {
+        book.addReadingRecord(readingRecord);
     }
 
     @Override
@@ -43,8 +37,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public void updateReadingRecords(List<RecordDTO> records) {
-        book.updateReadingRecords(records);
+    public void updateReadingRecords(@NonNull List<ReadingRecord> readingRecords) {
+        if (!readingRecords.equals(book.getReadingRecords())) {
+            book.updateReadingRecords(readingRecords);
+            entityState = EntityState.DIRTY;
+        }
     }
 
     @Override
@@ -79,6 +76,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public List<Series> getSeriesList() {
         return book.getSeriesList();
+    }
+
+    @Override
+    public LocalDateTime getAddedDate() {
+        return book.getAddedDate();
     }
 
     @Override

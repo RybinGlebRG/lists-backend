@@ -50,7 +50,8 @@ public class BookViewFactory {
                         readingRecordDTO.startDate(),
                         readingRecordDTO.endDate(),
                         readingRecordDTO.isMigrated(),
-                        readingRecordDTO.lastChapter()
+                        readingRecordDTO.lastChapter(),
+                        readingRecordDTO.updateDate()
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -119,9 +120,17 @@ public class BookViewFactory {
                 }
             }
 
-            if (sortItem.getSortField().equals("lastUpdateDate")) {
+            if (sortItem.getSortField().equals("readingRecords.updateDate") ) {
 
-                comparator = comparator.thenComparing(BookDTO::getLastUpdateDate);
+                comparator = comparator.thenComparing( bookDTO -> {
+                    ReadingRecordDTO readingRecordDTO = bookDTO.readingRecords.stream()
+                            // Get most recent record
+                            .max(Comparator.comparing(ReadingRecordDTO::startDate))
+                            .orElseThrow(() -> new ServerException("Error while processing records"));
+
+                    // Compare update date
+                    return readingRecordDTO.updateDate();
+                });
 
                 if (sortItem.getSearchOrder() == SearchOrder.DESC) {
                     comparator = comparator.reversed();

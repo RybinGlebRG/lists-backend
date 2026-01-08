@@ -3,7 +3,7 @@ package ru.rerumu.lists.dao.base.impl;
 import com.jcabi.aspects.Loggable;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.base.CrudRepository;
-import ru.rerumu.lists.dao.base.EntityDTOv2;
+import ru.rerumu.lists.dao.base.MyBatisEntity;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CrudRepositoryDtoImpl<T extends EntityDTOv2,ID> implements CrudRepository<T,ID> {
+public class CrudRepositoryDtoImpl<T extends MyBatisEntity,ID> implements CrudRepository<T,ID> {
 
     private final CrudMapper<T, ID, T> mapper;
 

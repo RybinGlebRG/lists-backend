@@ -7,13 +7,16 @@ import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 
 import java.time.LocalDateTime;
 
-public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<ReadingRecord> {
+public interface ReadingRecord extends DeepCopyable<ReadingRecord> {
 
     Long getId();
     Long getBookId();
-
-    void save();
-    void delete();
+    LocalDateTime getUpdateDate();
+    LocalDateTime getStartDate();
+    LocalDateTime getEndDate();
+    BookStatusRecord getBookStatus();
+    Long getLastChapter();
+    Boolean getIsMigrated();
 
     void update(
             @NonNull BookStatusRecord bookStatusRecord,
@@ -24,6 +27,5 @@ public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<R
 
     boolean statusEquals(@NonNull Long statusId);
 
-    ReadingRecordDTO toDTO();
     JSONObject toJSONObject();
 }

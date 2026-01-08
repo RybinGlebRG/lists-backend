@@ -1,3 +1,19 @@
+# v0.70.0
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Book not being deleted
+- Book update date changes unexpectedly
+
+## Other
+
+- Refactoring
+
+============================================
 # v0.69.1
 
 ## Features

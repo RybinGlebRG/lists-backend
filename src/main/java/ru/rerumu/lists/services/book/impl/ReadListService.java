@@ -4,6 +4,8 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
@@ -15,6 +17,7 @@ import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -23,8 +26,9 @@ import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.books.Filter;
 import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.RecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -37,9 +41,12 @@ import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component("BookServiceImpl")
 public class ReadListService implements BookService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -54,7 +61,10 @@ public class ReadListService implements BookService {
     private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
     private final BookTypeRepository bookTypeRepository;
+    private final StatusFactory statusFactory;
+    private final ReadingRecordsRepository readingRecordsRepository;
 
+    @Autowired
     public ReadListService(
             BookRepository bookRepository,
             AuthorsBooksRepository authorsBooksRepository,
@@ -66,7 +76,8 @@ public class ReadListService implements BookService {
             UserFactory userFactory,
             AuthorFactory authorFactory,
             SeriesFactory seriesFactory,
-            BookTypeRepository bookTypeRepository
+            BookTypeRepository bookTypeRepository,
+            StatusFactory statusFactory, ReadingRecordsRepository readingRecordsRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -79,6 +90,8 @@ public class ReadListService implements BookService {
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
         this.bookTypeRepository = bookTypeRepository;
+        this.statusFactory = statusFactory;
+        this.readingRecordsRepository = readingRecordsRepository;
     }
 
     /**
@@ -125,17 +138,60 @@ public class ReadListService implements BookService {
 
         // Update reading records
         logger.info("Updating reading records...");
-        List<RecordDTO> records = bookUpdateView.getReadingRecords().stream()
-                .map(readingRecordView -> new RecordDTO(
-                        readingRecordView.getReadingRecordId(),
-                        bookId,
-                        Long.valueOf(readingRecordView.getStatusId()),
-                        readingRecordView.getStartDate(),
-                        readingRecordView.getEndDate(),
-                        readingRecordView.getLastChapter()
-                ))
+        List<ReadingRecord> readingRecords = new ArrayList<>();
+
+        List<BookUpdateView.ReadingRecordView> recordsToUpdate = bookUpdateView.getReadingRecords().stream()
+                .filter(readingRecordView ->  readingRecordView.getReadingRecordId() != null)
                 .collect(Collectors.toCollection(ArrayList::new));
-        book.updateReadingRecords(records);
+        List<Long> idsToUpdate = recordsToUpdate.stream()
+                .map(BookUpdateView.ReadingRecordView::getReadingRecordId)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Get reading records to update
+        Map<Long, ReadingRecord> readingRecordMap = book.getReadingRecords().stream()
+                .filter(readingRecord -> idsToUpdate.contains(readingRecord.getId()))
+                .collect(Collectors.toMap(
+                        ReadingRecord::getId,
+                        Function.identity()
+                ));
+
+        // Update existing reading records
+        for (BookUpdateView.ReadingRecordView readingRecordView: recordsToUpdate) {
+            ReadingRecord readingRecord = readingRecordMap.get(readingRecordView.getReadingRecordId());
+
+            BookStatusRecord bookStatusRecord = statusFactory.findById(Long.valueOf(readingRecordView.getStatusId()));
+
+            readingRecord.update(
+                    bookStatusRecord,
+                    readingRecordView.getStartDate(),
+                    readingRecordView.getEndDate(),
+                    readingRecordView.getLastChapter()
+            );
+
+            readingRecords.add(readingRecord);
+        }
+
+        // Create reading records
+        List<BookUpdateView.ReadingRecordView> recordsToCreate = bookUpdateView.getReadingRecords().stream()
+                .filter(readingRecordView ->  readingRecordView.getReadingRecordId() == null)
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (BookUpdateView.ReadingRecordView recordToCreate: recordsToCreate) {
+
+            BookStatusRecord bookStatusRecord = statusFactory.findById(Long.valueOf(recordToCreate.getStatusId()));
+
+            ReadingRecord readingRecord = readingRecordsRepository.create(
+                    bookId,
+                    bookStatusRecord,
+                    recordToCreate.getStartDate(),
+                    recordToCreate.getEndDate(),
+                    recordToCreate.getLastChapter()
+            );
+
+            readingRecords.add(readingRecord);
+        }
+
+        // Update reading records
+        book.updateReadingRecords(readingRecords);
 
         // Update author
         logger.info("Updating text authors...");
@@ -269,12 +325,14 @@ public class ReadListService implements BookService {
 
         // Add reading record
         logger.info("Add reading record...");
-        newBook.addReadingRecord(
+        ReadingRecord readingRecord = readingRecordsRepository.create(
+                newBook.getId(),
                 bookStatus,
                 bookAddView.insertDate(),
                 null,
                 bookAddView.getLastChapter() != null ? bookAddView.getLastChapter().longValue() : null
         );
+        newBook.addReadingRecord(readingRecord);
 
         // Add series
         if (bookAddView.getSeriesId() != null) {
@@ -298,6 +356,6 @@ public class ReadListService implements BookService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
         Book book = bookFactory.getBook(bookId, userId);
-        book.delete();
+        bookRepository.delete(book);
     }
 }

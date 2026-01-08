@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.rerumu.lists.dao.base.EntityDTOv2;
+import ru.rerumu.lists.dao.base.MyBatisEntity;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BacklogItemDTO implements EntityDTOv2 {
+public class BacklogItemDTO implements MyBatisEntity {
 
     private Long id;
     private String title;

@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class BookOrderedDtoDao {
 
-    public BookDtoDao bookDTO;
+    public BookMyBatisEntity bookDTO;
     public Integer order;
 
 }

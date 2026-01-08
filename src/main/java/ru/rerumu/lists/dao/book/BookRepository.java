@@ -16,18 +16,24 @@ public interface BookRepository {
      * Find book by id
      */
     @NonNull
-    BookDtoDao findById(Long id, Long userId);
+    BookMyBatisEntity findById(Long id, Long userId);
 
-    List<BookDtoDao> findByUser(User user);
-    List<BookDtoDao> findByUserChained(User user);
+    List<BookMyBatisEntity> findByUser(User user);
+    List<BookMyBatisEntity> findByUserChained(User user);
 
     Long getNextId();
 
     void addOne(BookImpl book);
 
-    void delete(Long bookId);
+    void delete(Long bookId, User user);
 
     Optional<User> getBookUser(Long bookId);
 
     void save(Book book);
+
+    /**
+     * Delete book
+     * @param book Book to delete
+     */
+    void delete(Book book);
 }

@@ -9,8 +9,9 @@ import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.book.BookRepository;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -60,6 +61,7 @@ public class BookFactoryImpl implements BookFactory {
     private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
+    private final ReadingRecordsRepository readingRecordsRepository;
 
     @Autowired
     public BookFactoryImpl(
@@ -73,7 +75,7 @@ public class BookFactoryImpl implements BookFactory {
             AuthorsBooksRepository authorsBooksRepository,
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory,
-            @NonNull SeriesItemRelationFactory seriesItemRelationFactory
+            @NonNull SeriesItemRelationFactory seriesItemRelationFactory, ReadingRecordsRepository readingRecordsRepository
     ) {
         this.dateFactory = dateFactory;
         this.bookRepository = bookRepository;
@@ -86,6 +88,7 @@ public class BookFactoryImpl implements BookFactory {
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
+        this.readingRecordsRepository = readingRecordsRepository;
     }
 
     public Book createBook(
@@ -145,7 +148,7 @@ public class BookFactoryImpl implements BookFactory {
     @NonNull
     @Override
     public Book getBook(Long bookId, Long userId) {
-        BookDtoDao bookDTO = bookRepository.findById(bookId, userId);
+        BookMyBatisEntity bookDTO = bookRepository.findById(bookId, userId);
 
         // TODO: Details of data retrieval should be encapsulated in DAO layer
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
@@ -161,7 +164,7 @@ public class BookFactoryImpl implements BookFactory {
     @Override
     public List<Book> findAll(User user, Boolean isChained) {
         if (isChained) {
-            List<BookDtoDao> bookDtoList = bookRepository.findByUserChained(user);
+            List<BookMyBatisEntity> bookDtoList = bookRepository.findByUserChained(user);
             return fromDTO(bookDtoList);
         } else {
             return bookRepository.findByUser(user).stream()
@@ -181,7 +184,7 @@ public class BookFactoryImpl implements BookFactory {
 
     public List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList) {
         // Preparing reading records
-        Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordFactory.findByBookIds(
+        Map<Long, List<ReadingRecord>> bookId2ReadingRecordsMap = readingRecordsRepository.findByBookIds(
                         // Collecting bookIds from chain
                         bookDTOList.stream()
                                 // flatten book chain
@@ -231,7 +234,7 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     @Override
-    public List<Book> fromDTO(@NonNull List<BookDtoDao> bookDTOList) {
+    public List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList) {
         return bookDTOList.stream()
                 .map(this::fromDTO)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -305,7 +308,7 @@ public class BookFactoryImpl implements BookFactory {
     @Override
     @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     @NonNull
-    public Book fromDTO(@NonNull BookDtoDao bookDTO) throws EmptyMandatoryParameterException {
+    public Book fromDTO(@NonNull BookMyBatisEntity bookDTO) throws EmptyMandatoryParameterException {
 
         BookBuilder builder = new BookBuilder(
                 statusFactory,
@@ -344,6 +347,7 @@ public class BookFactoryImpl implements BookFactory {
             builder.readingRecords(
                     bookDTO.getReadingRecords().stream()
                             .map(readingRecordFactory::fromDTO)
+                            .map(readingRecordsRepository::attach)
                             .collect(Collectors.toCollection(ArrayList::new))
             );
         }

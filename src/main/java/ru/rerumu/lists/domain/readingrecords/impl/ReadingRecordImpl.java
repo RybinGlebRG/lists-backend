@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
-import ru.rerumu.lists.dao.book.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.RecordStatusEnum;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,22 +26,32 @@ public class ReadingRecordImpl implements ReadingRecord {
     @Getter
     private final Long recordId;
 
+    @Getter
     private final Long bookId;
 
+    @Getter
     private BookStatusRecord bookStatus;
 
+    @Getter
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
 
+    @Getter
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
 
+    @Getter
     private final Boolean isMigrated;
 
+    @Getter
     private Long lastChapter;
 
-    @ToString.Exclude
-    private final ReadingRecordsRepository readingRecordsRepository;
+    /**
+     * Update date of the record
+     */
+    @Getter
+    private LocalDateTime updateDate;
+
     @ToString.Exclude
     private final DateFactory dateFactory;
 
@@ -56,8 +64,8 @@ public class ReadingRecordImpl implements ReadingRecord {
             LocalDateTime endDate,
             Boolean isMigrated,
             Long lastChapter,
-            ReadingRecordsRepository readingRecordsRepository,
-            DateFactory dateFactory
+            DateFactory dateFactory,
+            LocalDateTime updateDate
     ) {
         this.recordId = recordId;
         this.bookId = bookId;
@@ -66,8 +74,8 @@ public class ReadingRecordImpl implements ReadingRecord {
         this.endDate = endDate;
         this.isMigrated = isMigrated;
         this.lastChapter = lastChapter;
-        this.readingRecordsRepository = readingRecordsRepository;
         this.dateFactory = dateFactory;
+        this.updateDate = updateDate;
     }
 
     @Override
@@ -78,16 +86,6 @@ public class ReadingRecordImpl implements ReadingRecord {
     @Override
     public Long getBookId() {
         return bookId;
-    }
-
-    @Override
-    public void save(){
-        readingRecordsRepository.update(this.toDTO());
-    }
-
-    @Override
-    public void delete() {
-        readingRecordsRepository.delete(recordId);
     }
 
     @Override
@@ -110,24 +108,12 @@ public class ReadingRecordImpl implements ReadingRecord {
         this.bookStatus = bookStatusRecord;
         this.startDate = startDate;
         this.lastChapter = lastChapter;
+        this.updateDate = dateFactory.getLocalDateTime();
     }
 
     @Override
     public boolean statusEquals(@NonNull Long statusId) {
         return Long.valueOf(bookStatus.statusId()).equals(statusId);
-    }
-
-    @Override
-    public ReadingRecordDTO toDTO() {
-        return new ReadingRecordDTO(
-                recordId,
-                bookId,
-                bookStatus,
-                startDate,
-                endDate,
-                isMigrated,
-                lastChapter
-        );
     }
 
     @Override
@@ -144,11 +130,6 @@ public class ReadingRecordImpl implements ReadingRecord {
     }
 
     @Override
-    public int compareTo(@NonNull ReadingRecord o) {
-        return startDate.compareTo(((ReadingRecordImpl) o).startDate);
-    }
-
-    @Override
     public ReadingRecordImpl deepCopy() {
         return new ReadingRecordImpl(
                 recordId,
@@ -158,8 +139,8 @@ public class ReadingRecordImpl implements ReadingRecord {
                 endDate,
                 isMigrated,
                 lastChapter,
-                readingRecordsRepository,
-                dateFactory
+                dateFactory,
+                updateDate
         );
     }
 

@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.book.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.dao.book.BookDtoDao;
+import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
-public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
+public interface BookMapper extends CrudMapper<BookMyBatisEntity, Long, BookMyBatisEntity> {
 
     void update(
             Long readListId,
@@ -26,7 +26,7 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
             Long userId
     );
 
-    List<BookDtoDao> findByUserChained(Long userId);
+    List<BookMyBatisEntity> findByUserChained(Long userId);
 
     void addOne(Long bookId,
                 Long readListId,
@@ -40,8 +40,6 @@ public interface BookMapper extends CrudMapper<BookDtoDao, Long, BookDtoDao> {
                 String URL,
                 Long userId
     );
-
-    void delete (long bookId);
 
     User getBookUser(Long bookId);
 
