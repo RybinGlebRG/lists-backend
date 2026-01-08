@@ -12,9 +12,11 @@ public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<R
     Long getId();
     Long getBookId();
     LocalDateTime getUpdateDate();
-
-    void save();
-    void delete();
+    LocalDateTime getStartDate();
+    LocalDateTime getEndDate();
+    BookStatusRecord getBookStatus();
+    Long getLastChapter();
+    Boolean getIsMigrated();
 
     void update(
             @NonNull BookStatusRecord bookStatusRecord,
@@ -25,6 +27,5 @@ public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<R
 
     boolean statusEquals(@NonNull Long statusId);
 
-    ReadingRecordDTO toDTO();
     JSONObject toJSONObject();
 }

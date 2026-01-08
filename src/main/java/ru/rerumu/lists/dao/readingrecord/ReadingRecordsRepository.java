@@ -1,12 +1,51 @@
 package ru.rerumu.lists.dao.readingrecord;
 
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.dao.base.CrudRepository;
+import lombok.NonNull;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ReadingRecordsRepository extends CrudRepository<ReadingRecordMyBatisEntity,Long> {
-    List<ReadingRecordMyBatisEntity> findByBookId(Long bookId);
-    List<ReadingRecordMyBatisEntity> findByBookIds(List<Long> bookIds);
+public interface ReadingRecordsRepository {
+    List<ReadingRecord> findByBookId(Long bookId);
+    List<ReadingRecord> findByBookIds(List<Long> bookIds);
+
+    @Deprecated
     void delete(Long readingRecordId);
+
+    /**
+     * Delete reading record
+     */
+    void delete(ReadingRecord readingRecord);
+
+    /**
+     * Get next id for entity
+     */
+    Long getNextId();
+
+    ReadingRecord create(
+            @NonNull Long bookId,
+            @NonNull BookStatusRecord bookStatusRecord,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
+
+    ReadingRecord create(
+            @NonNull Long bookId,
+            @NonNull Long statusId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long lastChapter
+    );
+
+    ReadingRecord findById(@NonNull Long id);
+
+    void update(ReadingRecord readingRecord);
+
+    /**
+     * Wraps instance of ReadingRecord in persistence proxy
+     */
+    ReadingRecord attach(ReadingRecord readingRecord);
 }

@@ -6,13 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
-import ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
@@ -28,22 +28,18 @@ import java.util.stream.Collectors;
 public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long> implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
-    private final ReadingRecordMapper readingRecordMapper;
-    private final ReadingRecordFactory readingRecordFactory;
     private final SeriesBookMapper seriesBookMapper;
+    private final ReadingRecordsRepository readingRecordsRepository;
 
     @Autowired
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper,
-            ReadingRecordMapper readingRecordMapper,
-            ReadingRecordFactory readingRecordFactory,
-            SeriesBookMapper seriesBookMapper
+            SeriesBookMapper seriesBookMapper, ReadingRecordsRepository readingRecordsRepository
     ) {
         super(seriesMapper);
         this.seriesMapper = seriesMapper;
-        this.readingRecordMapper = readingRecordMapper;
-        this.readingRecordFactory = readingRecordFactory;
         this.seriesBookMapper = seriesBookMapper;
+        this.readingRecordsRepository = readingRecordsRepository;
     }
 
     @Deprecated
@@ -56,7 +52,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
                 .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        List<ReadingRecord> readingRecords = readingRecordFactory.findByBookIds(bookIds);
+        List<ReadingRecord> readingRecords = readingRecordsRepository.findByBookIds(bookIds);
 
         Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
                 .collect(Collectors.groupingBy(
@@ -79,7 +75,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
 
             bookDTO.setReadingRecords(
                     records.stream()
-                            .map(ReadingRecord::toDTO)
+                            .map(ReadingRecordDTO::fromDomain)
                             .collect(Collectors.toCollection(ArrayList::new))
             );
         }
@@ -101,9 +97,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
                     .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
                     .collect(Collectors.toCollection(ArrayList::new));
 
-            List<ReadingRecord> readingRecords = readingRecordMapper.findByBookIds(bookIds).stream()
-                    .map(readingRecordFactory::fromDTO)
-                    .collect(Collectors.toCollection(ArrayList::new));
+            List<ReadingRecord> readingRecords = readingRecordsRepository.findByBookIds(bookIds);
 
             Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
                     .collect(Collectors.groupingBy(
@@ -127,7 +121,7 @@ public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long
 
                 bookDTO.setReadingRecords(
                         records.stream()
-                                .map(ReadingRecord::toDTO)
+                                .map(ReadingRecordDTO::fromDomain)
                                 .collect(Collectors.toCollection(ArrayList::new))
                 );
             }

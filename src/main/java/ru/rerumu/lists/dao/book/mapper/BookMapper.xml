@@ -4,7 +4,7 @@
 
 <mapper namespace="ru.rerumu.lists.dao.book.mapper.BookMapper">
 
-    <resultMap id="BookResultMap" type="ru.rerumu.lists.dao.book.BookDtoDao">
+    <resultMap id="BookResultMap" type="ru.rerumu.lists.dao.book.BookMyBatisEntity">
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -26,7 +26,7 @@
         <collection property="readingRecords" resultMap="ReadingRecordResultMap"/>
     </resultMap>
 
-    <resultMap id="BookResultMapNested" type="ru.rerumu.lists.dao.book.BookDtoDao">
+    <resultMap id="BookResultMapNested" type="ru.rerumu.lists.dao.book.BookMyBatisEntity">
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
@@ -43,7 +43,7 @@
         <collection property="readingRecords" resultMap="ReadingRecordResultMap"/>
     </resultMap>
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity">
         <constructor>
             <idArg column="rr_id" name="recordId" javaType="java.lang.Long"/>
             <arg column="book_id" name="bookId" javaType="java.lang.Long"/>
@@ -52,6 +52,7 @@
             <arg column="rr_end_date" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_is_migrated" name="isMigrated" javaType="java.lang.Boolean"/>
             <arg column="rr_last_chapter" name="lastChapter" javaType="java.lang.Long"/>
+            <arg column="rr_update_date" name="updateDate" javaType="java.time.LocalDateTime"/>
         </constructor>
     </resultMap>
 
@@ -116,6 +117,7 @@
             rr.end_date as rr_end_date,
             rr.last_chapter as rr_last_chapter,
             rr.is_migrated as rr_is_migrated,
+            rr.update_date as rr_update_date,
             s2.status_id as rr_status_id,
             s2.name as rr_status_name,
             u.user_id,
@@ -225,6 +227,7 @@
                 s_prev.rr_status_id         	as previous_rr_status_id,
                 s_prev.rr_last_chapter          as previous_rr_last_chapter,
                 s_prev.rr_is_migrated           as previous_rr_is_migrated,
+                s_prev.rr_update_date           as previous_rr_update_date,
                 s_prev.rr_status_id             as previous_rr_status_id,
                 s_prev.rr_status_name           as previous_rr_status_name,
                 s_prev.user_id                  as previous_user_id,
@@ -259,6 +262,7 @@
                 null as previous_rr_status_id,
                 null as previous_rr_last_chapter,
                 null as previous_rr_is_migrated,
+                null as previous_rr_update_date,
                 null as previous_rr_status_id,
                 null as previous_rr_status_name,
                 null as previous_user_id,

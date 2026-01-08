@@ -4,7 +4,7 @@
 
 <mapper namespace="ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper">
 
-    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO">
+    <resultMap id="ReadingRecordResultMap" type="ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity">
         <constructor>
             <idArg column="recordId" name="recordId" javaType="java.lang.Long"/>
             <arg column="bookId" name="bookId" javaType="java.lang.Long"/>
@@ -13,6 +13,7 @@
             <arg column="endDate" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="isMigrated" name="isMigrated" javaType="java.lang.Boolean"/>
             <arg column="last_chapter" name="lastChapter" javaType="java.lang.Long"/>
+            <arg column="update_date" name="updateDate" javaType="java.time.LocalDateTime"/>
         </constructor>
     </resultMap>
 
@@ -31,7 +32,8 @@
                 rr.start_date as startDate,
                 rr.end_date as endDate,
                 rr.is_migrated as isMigrated,
-                rr.last_chapter
+                rr.last_chapter,
+                rr.update_date
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -46,7 +48,8 @@
                 rr.start_date as startDate,
                 rr.end_date as endDate,
                 rr.is_migrated as isMigrated,
-                rr.last_chapter
+                rr.last_chapter,
+                rr.update_date
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -65,7 +68,8 @@
                 rr.start_date as startDate,
                 rr.end_date as endDate,
                 rr.is_migrated as isMigrated,
-                rr.last_chapter
+                rr.last_chapter,
+                rr.update_date
         from reading_records rr
             inner join statuses s
                 on s.status_id = rr.status_status_id
@@ -76,9 +80,9 @@
         select nextval('reading_record_id_seq')
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordImpl">
-        insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated, last_chapter)
-        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter})
+    <insert id="create" parameterType="ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity">
+        insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated, last_chapter, update_date)
+        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter}, #{updateDate})
     </insert>
 
     <update id="update">
@@ -86,7 +90,8 @@
         set status_status_id=#{bookStatus.statusId},
             start_date=#{startDate},
             end_date=#{endDate},
-            last_chapter = #{lastChapter}
+            last_chapter = #{lastChapter},
+            update_date = #{updateDate}
         where record_id=#{recordId}
     </update>
 

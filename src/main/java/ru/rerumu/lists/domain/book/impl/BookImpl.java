@@ -23,7 +23,7 @@ import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.RecordDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
@@ -241,44 +241,7 @@ public class BookImpl implements Book{
     }
 
     @Override
-    public void addReadingRecord(
-            @NonNull BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    ) {
-
-        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
-                bookId,
-                bookStatusRecord,
-                startDate,
-                endDate,
-                lastChapter
-        );
-
-        // TODO: Remove
-        if (readingRecords == null){
-            readingRecords = new ArrayList<>();
-        }
-
-        readingRecords.add(readingRecord);
-
-    }
-
-    @Override
-    public void addReadingRecord(@NonNull Long statusId, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
-        // Find status
-        BookStatusRecord bookStatusRecord = statusFactory.findById(statusId);
-
-        // Create record
-        ReadingRecord readingRecord = readingRecordFactory.createReadingRecord(
-                bookId,
-                bookStatusRecord,
-                startDate,
-                endDate,
-                lastChapter
-        );
-
+    public void addReadingRecord(ReadingRecord readingRecord) {
         // TODO: Remove
         if (readingRecords == null){
             readingRecords = new ArrayList<>();
@@ -461,58 +424,29 @@ public class BookImpl implements Book{
                 .orElseThrow(EntityNotFoundException::new);
 
         readingRecords.remove(readingRecord);
-        readingRecord.delete();
 
         return readingRecord;
     }
 
     /**
-     * Update reading records according to passed list of records
-     *
-     * TODO: Remove DTO
+     * Update reading records
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public void updateReadingRecords(List<RecordDTO> records) {
+    public void updateReadingRecords(List<ReadingRecord> readingRecords) {
 
-        // Collect records to keep from dto
-        List<Long> readingRecordIdsToKeep = records.stream()
-                .map(RecordDTO::getRecordId)
-                .filter(Objects::nonNull)
-                .distinct()
+        // Remove records
+        List<ReadingRecord> recordsToDelete = this.readingRecords.stream()
+                .filter(readingRecord -> !readingRecords.contains(readingRecord))
                 .collect(Collectors.toCollection(ArrayList::new));
-
-        // Delete removed reading records
-        List<ReadingRecord> readingRecordsToDelete = readingRecords.stream()
-                .filter( readingRecord -> !readingRecordIdsToKeep.contains(readingRecord.getId()))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (ReadingRecord readingRecord: readingRecordsToDelete) {
-            deleteReadingRecord(readingRecord.getId());
+        for (ReadingRecord readingRecord: recordsToDelete) {
+            this.readingRecords.remove(readingRecord);
         }
 
-        for (RecordDTO recordDTO: records) {
-
-            if (recordDTO.getRecordId() != null) {
-                // Update record
-                ReadingRecord readingRecord = readingRecords.stream()
-                        .filter(item -> item.getId().equals(recordDTO.getRecordId()))
-                        .findAny()
-                        .orElseThrow(EntityNotFoundException::new);
-                BookStatusRecord bookStatusRecord = statusFactory.findById(recordDTO.getStatusId());
-                readingRecord.update(
-                        bookStatusRecord,
-                        recordDTO.getStartDate(),
-                        recordDTO.getEndDate(),
-                        recordDTO.getLastChapter()
-                );
-            } else {
-                // Add record
-                addReadingRecord(
-                        recordDTO.getStatusId(),
-                        recordDTO.getStartDate(),
-                        recordDTO.getEndDate(),
-                        recordDTO.getLastChapter()
-                );
+        // Add records
+        for (ReadingRecord readingRecord: readingRecords) {
+            if (!this.readingRecords.contains(readingRecord)) {
+                this.readingRecords.add(readingRecord);
             }
         }
     }
@@ -534,7 +468,7 @@ public class BookImpl implements Book{
             bookStatus,
             previousBooks != null ? previousBooks.toDTO() : new ArrayList<>(),
             readingRecords != null ? readingRecords.stream()
-                    .map(ReadingRecord::toDTO)
+                    .map(ReadingRecordDTO::fromDomain)
                     .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
             URL,
             user != null ? user.userId() : null,

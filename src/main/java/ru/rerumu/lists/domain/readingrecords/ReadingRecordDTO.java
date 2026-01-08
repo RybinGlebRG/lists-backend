@@ -22,4 +22,17 @@ public record ReadingRecordDTO(
     public ReadingRecordDTO toDomain() {
         throw new NotImplementedException();
     }
+
+    public static ReadingRecordDTO fromDomain(ReadingRecord readingRecord) {
+        return new ReadingRecordDTO(
+                readingRecord.getId(),
+                readingRecord.getBookId(),
+                readingRecord.getBookStatus(),
+                readingRecord.getStartDate(),
+                readingRecord.getEndDate(),
+                readingRecord.getIsMigrated(),
+                readingRecord.getLastChapter(),
+                readingRecord.getUpdateDate()
+        );
+    }
 }

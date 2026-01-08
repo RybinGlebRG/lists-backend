@@ -2,17 +2,15 @@ package ru.rerumu.lists.dao.readingrecord.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 
 import java.util.List;
 
 @Mapper
-public interface ReadingRecordMapper extends CrudMapper<ReadingRecordDTO,Long, ReadingRecordDTO> {
+public interface ReadingRecordMapper extends CrudMapper<ReadingRecordMyBatisEntity,Long, ReadingRecordMyBatisEntity> {
 
-    List<ReadingRecordDTO> findByBookId(Long bookId);
-    List<ReadingRecordDTO> findByBookIds(List<Long> bookIds);
-
-    Long getNextId();
+    List<ReadingRecordMyBatisEntity> findByBookId(Long bookId);
+    List<ReadingRecordMyBatisEntity> findByBookIds(List<Long> bookIds);
 
     void delete(Long readingRecordId);
 }

@@ -6,7 +6,6 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 
 import java.time.LocalDateTime;
 
@@ -40,13 +39,33 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     }
 
     @Override
-    public void save() {
-        readingRecord.save();
+    public LocalDateTime getUpdateDate() {
+        return readingRecord.getUpdateDate();
     }
 
     @Override
-    public void delete() {
-        readingRecord.delete();
+    public LocalDateTime getStartDate() {
+        return readingRecord.getStartDate();
+    }
+
+    @Override
+    public LocalDateTime getEndDate() {
+        return readingRecord.getEndDate();
+    }
+
+    @Override
+    public BookStatusRecord getBookStatus() {
+        return readingRecord.getBookStatus();
+    }
+
+    @Override
+    public Long getLastChapter() {
+        return readingRecord.getLastChapter();
+    }
+
+    @Override
+    public Boolean getIsMigrated() {
+        return readingRecord.getIsMigrated();
     }
 
     @Override
@@ -58,11 +77,6 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     @Override
     public boolean statusEquals(@NonNull Long statusId) {
         return readingRecord.statusEquals(statusId);
-    }
-
-    @Override
-    public ReadingRecordDTO toDTO() {
-        return readingRecord.toDTO();
     }
 
     @Override

@@ -9,13 +9,16 @@ import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.ClientException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
 import ru.rerumu.lists.domain.backlog.BacklogItemFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.bookstatus.Statuses;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
@@ -32,6 +35,7 @@ public class BacklogServiceImpl implements BacklogService {
     private final BookFactory bookFactory;
     private final DateFactory dateFactory;
     private final StatusFactory statusFactory;
+    private final ReadingRecordsRepository readingRecordsRepository;
 
     @Autowired
     public BacklogServiceImpl(
@@ -39,13 +43,15 @@ public class BacklogServiceImpl implements BacklogService {
             UserFactory userFactory,
             BookFactory bookFactory,
             DateFactory dateFactory,
-            StatusFactory statusFactory
+            StatusFactory statusFactory,
+            ReadingRecordsRepository readingRecordsRepository
     ) {
         this.backlogItemFactory = backlogItemFactory;
         this.userFactory = userFactory;
         this.bookFactory = bookFactory;
         this.dateFactory = dateFactory;
         this.statusFactory = statusFactory;
+        this.readingRecordsRepository = readingRecordsRepository;
     }
 
     @Override
@@ -157,12 +163,20 @@ public class BacklogServiceImpl implements BacklogService {
                         user
                 );
 
-                book.addReadingRecord(
-                        Statuses.IN_PROGRESS.getId(),
+                // Find status
+                BookStatusRecord bookStatusRecord = statusFactory.findById(Statuses.IN_PROGRESS.getId());
+
+                // Create reading record
+                ReadingRecord readingRecord = readingRecordsRepository.create(
+                        book.getId(),
+                        bookStatusRecord,
                         dateFactory.getLocalDateTime(),
                         null,
                         null
                 );
+
+                // Add reading record to book
+                book.addReadingRecord(readingRecord);
 
                 book.save();
 

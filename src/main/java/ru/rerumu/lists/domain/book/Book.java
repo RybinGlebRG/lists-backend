@@ -5,10 +5,9 @@ import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.RecordDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -19,23 +18,14 @@ import java.util.List;
 
 public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
 
-    void addReadingRecord(
-            @NonNull BookStatusRecord bookStatusRecord,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    );
-
-    void addReadingRecord(
-            @NonNull Long statusId,
-            @NonNull LocalDateTime startDate,
-            LocalDateTime endDate,
-            Long lastChapter
-    );
+    /**
+     * Add reading record to book
+     */
+    void addReadingRecord(ReadingRecord readingRecord);
 
     ReadingRecord deleteReadingRecord(Long readingRecordId);
 
-    void updateReadingRecords(List<RecordDTO> records);
+    void updateReadingRecords(List<ReadingRecord> readingRecords);
 
     Long getListId();
     User getUser();

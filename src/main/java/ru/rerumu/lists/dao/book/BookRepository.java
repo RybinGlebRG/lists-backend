@@ -16,10 +16,10 @@ public interface BookRepository {
      * Find book by id
      */
     @NonNull
-    BookDtoDao findById(Long id, Long userId);
+    BookMyBatisEntity findById(Long id, Long userId);
 
-    List<BookDtoDao> findByUser(User user);
-    List<BookDtoDao> findByUserChained(User user);
+    List<BookMyBatisEntity> findByUser(User user);
+    List<BookMyBatisEntity> findByUserChained(User user);
 
     Long getNextId();
 
