@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.title;
+package ru.rerumu.lists.domain.movie;
 
 
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-public class Title implements SeriesItem {
+public class Movie implements SeriesItem {
 
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.MOVIE;
 
@@ -39,7 +39,7 @@ public class Title implements SeriesItem {
     private VideoType videoType;
 
 
-    public Title(
+    public Movie(
             Long titleId,
             Long watchListId,
             String name,
@@ -165,8 +165,8 @@ public class Title implements SeriesItem {
             return this;
         }
 
-        public Title build() {
-            Title title = new Title(
+        public Movie build() {
+            Movie movie = new Movie(
                     titleId,
                     watchListId,
                     name,
@@ -174,7 +174,7 @@ public class Title implements SeriesItem {
                     statusId,
                     videoType
             );
-            return title;
+            return movie;
         }
 
     }

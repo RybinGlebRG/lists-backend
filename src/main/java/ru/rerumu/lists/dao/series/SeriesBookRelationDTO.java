@@ -1,6 +1,5 @@
 package ru.rerumu.lists.dao.series;
 
-import ru.rerumu.lists.domain.BookStatus;
 import ru.rerumu.lists.domain.booktype.impl.BookTypeImpl;
 
 import java.util.Date;

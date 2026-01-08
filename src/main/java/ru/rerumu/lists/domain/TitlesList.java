@@ -3,7 +3,7 @@ package ru.rerumu.lists.domain;
 import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,17 +11,17 @@ import java.util.List;
 public class TitlesList {
 
     @Getter
-    private final List<Title> titles;
+    private final List<Movie> movies;
 
-    public TitlesList(List<Title> titles){
-        this.titles=titles;
+    public TitlesList(List<Movie> movies){
+        this.movies = movies;
     }
 
 
     public JSONObject toJSONObject(){
         JSONObject obj = new JSONObject();
         JSONArray titles = new JSONArray();
-        for (Title item: this.titles){
+        for (Movie item: this.movies){
             titles.put(item.toJSONObject());
         }
         obj.put("titles",titles);
@@ -29,9 +29,9 @@ public class TitlesList {
     }
 
     public void sort(){
-        Comparator<Title> comparator = new Comparator<Title>() {
+        Comparator<Movie> comparator = new Comparator<Movie>() {
             @Override
-            public int compare(Title o1, Title o2) {
+            public int compare(Movie o1, Movie o2) {
                 int res = Integer.compare(o1.getyyyy(), o2.getyyyy());
                 if (res != 0) {
                     return res;
@@ -71,7 +71,7 @@ public class TitlesList {
             }
         };
 
-        this.titles.sort(comparator);
+        this.movies.sort(comparator);
     }
 
     @Override

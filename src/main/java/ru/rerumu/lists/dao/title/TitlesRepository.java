@@ -1,19 +1,19 @@
 package ru.rerumu.lists.dao.title;
 
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.views.TitleCreateView;
 
 import java.util.List;
 
 public interface TitlesRepository {
 
-    List<Title> getAll(Long watchListId);
+    List<Movie> getAll(Long watchListId);
 
-    Title getOne(Long watchListId, Long TitleId);
+    Movie getOne(Long watchListId, Long TitleId);
 
-    Title update(Title title);
+    Movie update(Movie movie);
 
-    Title addOne(TitleCreateView newTitle);
+    Movie addOne(TitleCreateView newTitle);
 
     Long getNextId();
 

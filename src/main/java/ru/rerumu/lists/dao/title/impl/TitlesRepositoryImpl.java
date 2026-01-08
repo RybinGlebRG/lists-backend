@@ -3,7 +3,7 @@ package ru.rerumu.lists.dao.title.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.title.TitleMapper;
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.dao.title.TitlesRepository;
 import ru.rerumu.lists.views.TitleCreateView;
 
@@ -16,27 +16,27 @@ public class TitlesRepositoryImpl implements TitlesRepository {
     private TitleMapper titleMapper;
 
     @Override
-    public List<Title> getAll(Long watchListId) {
+    public List<Movie> getAll(Long watchListId) {
         return titleMapper.getAllTitles(watchListId);
     }
 
     @Override
-    public Title getOne(Long watchListId, Long titleId) {
+    public Movie getOne(Long watchListId, Long titleId) {
         return titleMapper.getOne(watchListId,titleId);
     }
 
     @Override
-    public Title update(Title title) {
+    public Movie update(Movie movie) {
         titleMapper.update(
-                title.getName(),
-                title.getTitleId(),
-                title.getWatchListId(),
-                title.getCreateDateUTC(),
-                title.getStatusId(),
-                title.getVideoType().getTypeId()
+                movie.getName(),
+                movie.getTitleId(),
+                movie.getWatchListId(),
+                movie.getCreateDateUTC(),
+                movie.getStatusId(),
+                movie.getVideoType().getTypeId()
         );
-        Title updatedTitle = titleMapper.getOne(title.getWatchListId(),title.getTitleId());
-        return updatedTitle;
+        Movie updatedMovie = titleMapper.getOne(movie.getWatchListId(), movie.getTitleId());
+        return updatedMovie;
     }
 
     public Long getNextId(){
@@ -49,7 +49,7 @@ public class TitlesRepositoryImpl implements TitlesRepository {
     }
 
     @Override
-    public Title addOne(TitleCreateView newTitle) {
+    public Movie addOne(TitleCreateView newTitle) {
         titleMapper.addOne(
                 newTitle.getWatchListId(),
                 newTitle.getTitleId(),
@@ -58,7 +58,7 @@ public class TitlesRepositoryImpl implements TitlesRepository {
                 newTitle.getStatusId(),
                 newTitle.getVideoType().getTypeId()
         );
-        Title createdTitle = titleMapper.getOne(newTitle.getWatchListId(), newTitle.getTitleId());
-        return createdTitle;
+        Movie createdMovie = titleMapper.getOne(newTitle.getWatchListId(), newTitle.getTitleId());
+        return createdMovie;
     }
 }

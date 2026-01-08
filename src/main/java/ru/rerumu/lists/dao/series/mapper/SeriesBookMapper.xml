@@ -25,7 +25,7 @@
             <arg column="book_id" javaType="Long"/>
             <arg column="list_list_id" javaType="Long"/>
             <arg column="title" javaType="String"/>
-            <arg column="status_key_name" javaType="ru.rerumu.lists.domain.BookStatus"/>
+            <arg column="status_key_name" javaType="ru.rerumu.lists.dao.series.BookStatus"/>
             <arg column="insert_date" javaType="Date"/>
             <arg column="last_update_date" javaType="Date"/>
             <arg column="last_chapter" javaType="Integer"/>

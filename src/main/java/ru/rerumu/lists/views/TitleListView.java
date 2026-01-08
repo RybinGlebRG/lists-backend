@@ -3,7 +3,7 @@ package ru.rerumu.lists.views;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.domain.TitlesList;
 
 import java.util.ArrayList;
@@ -13,27 +13,27 @@ import java.util.stream.Collectors;
 
 public final class TitleListView implements ResponseView{
 
-    private final List<Title> titles;
+    private final List<Movie> movies;
 
-    public TitleListView(List<Title> titles) {
-        this.titles = titles;
+    public TitleListView(List<Movie> movies) {
+        this.movies = movies;
     }
 
-    private List<Title> sort(List<Title> titles){
-        Comparator<Title> comparator = Comparator.comparing(Title::getCreateDateLocal).reversed()
-                .thenComparing(Title::getName)
-                .thenComparingLong(Title::getTitleId);
+    private List<Movie> sort(List<Movie> movies){
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getCreateDateLocal).reversed()
+                .thenComparing(Movie::getName)
+                .thenComparingLong(Movie::getTitleId);
 
-        return titles.stream().sorted(comparator).collect(Collectors.toCollection(ArrayList::new));
+        return movies.stream().sorted(comparator).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public JSONObject toJSONObject() {
-        List<Title> sortedTitles = sort(titles);
+        List<Movie> sortedMovies = sort(movies);
 
         JSONObject obj = new JSONObject();
         JSONArray array = new JSONArray();
-        for (Title item : sortedTitles) {
+        for (Movie item : sortedMovies) {
             JSONObject tmp = item.toJSONObject();
             array.put(tmp);
         }
@@ -60,7 +60,7 @@ public final class TitleListView implements ResponseView{
         }
 
         public TitleListView build(){
-            TitleListView titleListView = new TitleListView(titlesList.getTitles());
+            TitleListView titleListView = new TitleListView(titlesList.getMovies());
             log.debug("titleListView: {}", titleListView);
             return titleListView;
         }

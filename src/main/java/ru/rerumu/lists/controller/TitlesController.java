@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.domain.TitlesList;
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.services.WatchListService;
 import ru.rerumu.lists.views.TitleCreateView;
 import ru.rerumu.lists.views.TitleListView;
@@ -48,8 +48,8 @@ public class TitlesController {
             @RequestAttribute("username") String username) {
         ResponseEntity<String> resEnt;
         try {
-            Title title = watchListService.addTitle(watchListId, newTitle);
-            resEnt = new ResponseEntity<>(title.toString(), HttpStatus.CREATED);
+            Movie movie = watchListService.addTitle(watchListId, newTitle);
+            resEnt = new ResponseEntity<>(movie.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
@@ -64,8 +64,8 @@ public class TitlesController {
                                   @PathVariable Long titleId) {
         ResponseEntity<String> resEnt;
         try {
-            Title title = watchListService.getOne(watchListId, titleId);
-            resEnt = new ResponseEntity<>(title.toString(), HttpStatus.OK);
+            Movie movie = watchListService.getOne(watchListId, titleId);
+            resEnt = new ResponseEntity<>(movie.toString(), HttpStatus.OK);
         } catch (Exception e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",
@@ -79,12 +79,12 @@ public class TitlesController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> updateOne(@PathVariable Long watchListId,
                                      @PathVariable Long titleId,
-                                     @RequestBody Title newTitle,
+                                     @RequestBody Movie newMovie,
                                      @RequestAttribute("username") String username) {
         ResponseEntity<String> resEnt;
         try {
-            Title updatedTitle = watchListService.updateTitle(watchListId, titleId, newTitle);
-            resEnt = new ResponseEntity<>(updatedTitle.toString(), HttpStatus.OK);
+            Movie updatedMovie = watchListService.updateTitle(watchListId, titleId, newMovie);
+            resEnt = new ResponseEntity<>(updatedMovie.toString(), HttpStatus.OK);
         } catch (EmptyMandatoryParameterException e) {
             resEnt = new ResponseEntity<>(
                     "{\"errorMessage\":\"" + e.getMessage() + "\"}",

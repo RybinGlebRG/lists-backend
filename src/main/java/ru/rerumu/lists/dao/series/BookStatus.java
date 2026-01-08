@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.dao.series;
 
 public enum BookStatus {
     IN_PROGRESS(1,"In Progress"),

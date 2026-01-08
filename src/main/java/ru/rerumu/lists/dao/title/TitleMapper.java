@@ -1,15 +1,15 @@
 package ru.rerumu.lists.dao.title;
 
 import org.apache.ibatis.annotations.Mapper;
-import ru.rerumu.lists.domain.title.Title;
+import ru.rerumu.lists.domain.movie.Movie;
 
 import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface TitleMapper {
-    List<Title> getAllTitles(Long watchListId);
-    Title getOne(Long watchListId, Long titleId);
+    List<Movie> getAllTitles(Long watchListId);
+    Movie getOne(Long watchListId, Long titleId);
     void update(
             String name,
             Long titleId,
