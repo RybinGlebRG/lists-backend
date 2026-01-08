@@ -1,8 +1,8 @@
 package ru.rerumu.lists.controller.series.view.out;
 
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.item.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,32 +14,32 @@ import java.util.stream.Collectors;
 @Component
 public class SeriesViewFactory {
 
-    public SeriesView buildSeriesView(SeriesDTOv2 seriesDTO) {
+    public SeriesView buildSeriesView(Series series) {
         return new SeriesView(
-                seriesDTO.getSeriesId(),
-                seriesDTO.getUserId(),
-                seriesDTO.getTitle(),
-                seriesDTO.getItems()
+                series.getId(),
+                series.getUser().userId(),
+                series.getTitle(),
+                series.getItemsList()
         );
     }
 
-    public SeriesListView buildSeriesListView(List<SeriesDTOv2> seriesDTOList) {
-        Comparator<SeriesDTOv2> comparator = Comparator
-                .comparing((SeriesDTOv2 series) -> {
-                    Optional<LocalDateTime> maxDate = series.getItems().stream()
-                            .map(SeriesItemDTOv2::getLastUpdateDate)
+    public SeriesListView buildSeriesListView(List<Series> seriesList) {
+        Comparator<Series> comparator = Comparator
+                .comparing((Series series) -> {
+                    Optional<LocalDateTime> maxDate = series.getItemsList().stream()
+                            .map(SeriesItem::getUpdateDate)
                             .max(LocalDateTime::compareTo);
                     return maxDate.orElse(LocalDateTime.MIN);
                 }).reversed()
-                .thenComparing(SeriesDTOv2::getTitle)
-                .thenComparing(SeriesDTOv2::getSeriesId);
+                .thenComparing(Series::getTitle)
+                .thenComparing(Series::getId);
 
-        seriesDTOList.sort(comparator);
+        seriesList.sort(comparator);
 
         return new SeriesListView(
-            seriesDTOList.stream()
-                    .map(this::buildSeriesView)
-                    .collect(Collectors.toCollection(ArrayList::new))
+                seriesList.stream()
+                        .map(this::buildSeriesView)
+                        .collect(Collectors.toCollection(ArrayList::new))
         );
     }
 }

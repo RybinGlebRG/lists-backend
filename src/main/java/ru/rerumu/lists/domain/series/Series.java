@@ -9,8 +9,6 @@ public interface Series extends Entity {
 
     String getTitle();
 
-    SeriesDTOv2 toDTO();
-
     List<SeriesItem> getItemsList();
 
     Long getItemsCountAsLong();
@@ -24,4 +22,10 @@ public interface Series extends Entity {
      * Remove relation between book and series
      */
     void removeBookRelation(Long bookId);
+
+
+    /*
+    ???
+     */
+    List<SeriesItemRelation> getSeriesItemRelations();
 }

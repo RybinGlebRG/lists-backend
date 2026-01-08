@@ -42,6 +42,7 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     LocalDateTime getUpdateDate();
     Integer getLastChapter();
     String getNote();
+    BookStatusRecord getBookStatus();
 
     /**
      * Date when book was added
@@ -70,7 +71,6 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     boolean filterByStatusIds(List<Integer> statusIds);
     Float getTitleFuzzyMatchScore(String value);
 
-    BookDTO toDTO();
     JSONObject toJSONObject();
 
     boolean currentStatusEquals(Long statusId);

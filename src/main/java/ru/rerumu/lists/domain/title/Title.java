@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.VideoType;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 
 import java.text.SimpleDateFormat;
@@ -115,11 +113,6 @@ public class Title implements SeriesItem {
                 .toInstant()
                 .atOffset(ZoneOffset.UTC)
                 .toLocalDateTime();
-    }
-
-    @Override
-    public SeriesItemDTOv2 toDTO() {
-        throw new NotImplementedException();
     }
 
     public LocalDateTime getCreateDateLocal(){

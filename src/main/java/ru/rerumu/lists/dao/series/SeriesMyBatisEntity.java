@@ -1,34 +1,33 @@
-package ru.rerumu.lists.domain.series;
+package ru.rerumu.lists.dao.series;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.base.MyBatisEntity;
-import ru.rerumu.lists.domain.base.EntityDTO;
-import ru.rerumu.lists.domain.series.impl.SeriesImpl;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@Deprecated
-public class SeriesDTOv2 implements EntityDTO<SeriesImpl>, MyBatisEntity {
+@ToString
+@EqualsAndHashCode
+public class SeriesMyBatisEntity implements MyBatisEntity  {
 
     private Long seriesId;
     private Long userId;
     private String title;
     private List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
 
-    @Override
-    public SeriesImpl toDomain() {
-        throw new NotImplementedException();
-    }
-
-    public static SeriesDTOv2 fromDomain(Series series) {
+    public static SeriesMyBatisEntity fromDomain(Series series) {
 
         List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
         for (SeriesItemRelation seriesItemRelation: series.getSeriesItemRelations()) {
@@ -46,11 +45,12 @@ public class SeriesDTOv2 implements EntityDTO<SeriesImpl>, MyBatisEntity {
             }
         }
 
-        return new SeriesDTOv2(
+        return new SeriesMyBatisEntity(
                 series.getId(),
                 series.getUser().userId(),
                 series.getTitle(),
                 seriesBookRelationDtoList
         );
     }
+
 }

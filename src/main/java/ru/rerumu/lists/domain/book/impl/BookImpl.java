@@ -18,12 +18,10 @@ import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
@@ -448,41 +446,6 @@ public class BookImpl implements Book{
                 this.readingRecords.add(readingRecord);
             }
         }
-    }
-
-    @Override
-    public BookDTO toDTO() {
-
-        BookDTO bookDTO = new BookDTO(
-            bookId,
-            readListId,
-            title,
-            bookStatus != null ? bookStatus.statusId() : null,
-            insertDate,
-            lastUpdateDate,
-            lastChapter,
-            bookType != null ? bookType.getId() : null,
-            note,
-            bookType != null ? bookType.toDTO() : null,
-            bookStatus,
-            previousBooks != null ? previousBooks.toDTO() : new ArrayList<>(),
-            readingRecords != null ? readingRecords.stream()
-                    .map(ReadingRecordDTO::fromDomain)
-                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
-            URL,
-            user != null ? user.userId() : null,
-            tags != null ? tags.stream()
-                    .map(Tag::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
-            textAuthors.stream()
-                    .map(Author::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new)),
-            seriesList.stream()
-                    .map(Series::toDTO)
-                    .collect(Collectors.toCollection(ArrayList::new))
-        );
-
-        return bookDTO;
     }
 
     @Override

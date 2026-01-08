@@ -1,12 +1,14 @@
 package ru.rerumu.lists.domain.base;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString(doNotUseGetters = true)
 public abstract class EntityBaseImpl<T> {
 
     @Getter
+    @Setter
     protected EntityState entityState;
 
     /**

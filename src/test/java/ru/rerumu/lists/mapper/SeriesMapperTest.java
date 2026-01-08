@@ -17,13 +17,13 @@ public class SeriesMapperTest {
     @Autowired
     private SeriesMapper seriesMapper;
 
-    @Test
-    void shouldLoad(){
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-                .setLevel(Level.INFO);
-        Logger logger = LoggerFactory.getLogger(this.getClass());
-        List<SeriesDTO> seriesList = seriesMapper.getAll(2L);
-        logger.debug("shouldLoad: "+seriesList.toString());
-
-    }
+//    @Test
+//    void shouldLoad(){
+//        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
+//                .setLevel(Level.INFO);
+//        Logger logger = LoggerFactory.getLogger(this.getClass());
+//        List<SeriesDTO> seriesList = seriesMapper.getAll(2L);
+//        logger.debug("shouldLoad: "+seriesList.toString());
+//
+//    }
 }

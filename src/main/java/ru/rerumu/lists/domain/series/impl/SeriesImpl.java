@@ -7,7 +7,6 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
-import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
@@ -16,8 +15,6 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.dto.SeriesBookRelationDTO;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
@@ -25,7 +22,6 @@ import ru.rerumu.lists.domain.user.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @ToString(callSuper = true, doNotUseGetters = true)
 @Slf4j
@@ -49,6 +45,7 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
 
     private final SeriesBooksRespository seriesBooksRespository;
 
+    @Getter
     private final List<SeriesItemRelation> seriesItemRelations;
 
 
@@ -74,35 +71,35 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
         this.seriesItemRelations = new ArrayList<>(seriesItemRelations);
     }
 
-    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
-    public SeriesDTOv2 toDTO(){
-
-        List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
-        for (SeriesItemRelation seriesItemRelation: seriesItemRelations) {
-            if (seriesItemRelation instanceof SeriesBookRelation seriesBookRelation) {
-                seriesBookRelationDtoList.add(
-                        new SeriesBookRelationDto(
-                                seriesBookRelation.seriesId(),
-                                seriesBookRelation.bookId(),
-                                seriesBookRelation.userId(),
-                                (long) seriesItemRelations.indexOf(seriesBookRelation)
-                        )
-                );
-            } else {
-                throw new ServerException();
-            }
-        }
-
-        return new SeriesDTOv2(
-                seriesId,
-                user.userId(),
-                title,
-                itemsList.stream()
-                        .map(SeriesItem::toDTO)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                seriesBookRelationDtoList
-        );
-    }
+//    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
+//    public SeriesDTOv2 toDTO(){
+//
+//        List<SeriesBookRelationDto> seriesBookRelationDtoList = new ArrayList<>();
+//        for (SeriesItemRelation seriesItemRelation: seriesItemRelations) {
+//            if (seriesItemRelation instanceof SeriesBookRelation seriesBookRelation) {
+//                seriesBookRelationDtoList.add(
+//                        new SeriesBookRelationDto(
+//                                seriesBookRelation.seriesId(),
+//                                seriesBookRelation.bookId(),
+//                                seriesBookRelation.userId(),
+//                                (long) seriesItemRelations.indexOf(seriesBookRelation)
+//                        )
+//                );
+//            } else {
+//                throw new ServerException();
+//            }
+//        }
+//
+//        return new SeriesDTOv2(
+//                seriesId,
+//                user.userId(),
+//                title,
+//                itemsList.stream()
+//                        .map(SeriesItem::toDTO)
+//                        .collect(Collectors.toCollection(ArrayList::new)),
+//                seriesBookRelationDtoList
+//        );
+//    }
 
     @Override
     public Long getItemsCountAsLong() {
@@ -140,13 +137,7 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     @Override
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
-        switch (entityState) {
-            case NEW -> seriesRepository.create(toDTO());
-            case DIRTY -> seriesRepository.update(persistedCopy.toDTO(), toDTO());
-            case PERSISTED -> log.warn("Entity is not altered");
-            default -> throw new ServerException("Incorrect entity state");
-        }
-        entityState = EntityState.PERSISTED;
+        throw new NotImplementedException();
     }
 
     @Override

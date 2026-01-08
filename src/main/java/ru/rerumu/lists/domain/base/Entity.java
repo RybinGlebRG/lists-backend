@@ -17,6 +17,7 @@ public interface Entity<T> {
     /**
      * Save entity
      */
+    @Deprecated
     void save();
 
     /**

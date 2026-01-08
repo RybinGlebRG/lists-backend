@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface BookFactory {
 
-    Book getBook(Long bookId, Long userId);
-    List<Book> findAll(User user, Boolean isChained);
     Book fromDTO(@NonNull BookDTO bookDTO);
     Book fromDTO(@NonNull BookMyBatisEntity bookDTO);
 

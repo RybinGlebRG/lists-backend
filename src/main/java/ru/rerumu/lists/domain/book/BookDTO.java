@@ -7,16 +7,15 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorDTO;
-import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.domain.book.impl.BookImpl;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookTypeDTO;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
 import ru.rerumu.lists.domain.series.SeriesDTOv2;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
+import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.time.LocalDateTime;
@@ -24,12 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Builder(toBuilder = true)
 @ToString
 @EqualsAndHashCode
 @Getter
-public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDTOv2 {
+@Deprecated
+public class BookDTO {
     @Getter
     public Long bookId;
     @Getter
@@ -160,8 +161,41 @@ public class BookDTO implements EntityDTO<BookImpl>, SeriesItemDTO, SeriesItemDT
         return Objects.requireNonNullElseGet(tags, ArrayList::new);
     }
 
-    @Override
     public BookImpl toDomain() {
         throw new NotImplementedException();
+    }
+
+    public static BookDTO fromDomain(Book book) {
+
+        BookDTO bookDTO = new BookDTO(
+                book.getId(),
+                null,
+                book.getTitle(),
+                book.getBookStatus() != null ? book.getBookStatus().statusId() : null,
+                book.getInsertDate(),
+                book.getUpdateDate(),
+                book.getLastChapter(),
+                book.getBookType() != null ? book.getBookType().getId() : null,
+                book.getNote(),
+                book.getBookType() != null ? book.getBookType().toDTO() : null,
+                book.getBookStatus(),
+                book.getPreviousBooks() != null ? book.getPreviousBooks() .toDTO() : new ArrayList<>(),
+                book.getReadingRecords() != null ? book.getReadingRecords().stream()
+                        .map(ReadingRecordDTO::fromDomain)
+                        .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
+                book.getURL(),
+                book.getUser() != null ? book.getUser() .userId() : null,
+                book.getTags() != null ? book.getTags().stream()
+                        .map(Tag::toDTO)
+                        .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>(),
+                book.getTextAuthors().stream()
+                        .map(Author::toDTO)
+                        .collect(Collectors.toCollection(ArrayList::new)),
+                book.getSeriesList().stream()
+                        .map(SeriesDTOv2::fromDomain)
+                        .collect(Collectors.toCollection(ArrayList::new))
+        );
+
+        return bookDTO;
     }
 }

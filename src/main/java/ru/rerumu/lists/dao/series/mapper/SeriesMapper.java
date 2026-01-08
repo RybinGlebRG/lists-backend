@@ -3,16 +3,15 @@ package ru.rerumu.lists.dao.series.mapper;
 import lombok.NonNull;
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
-import ru.rerumu.lists.domain.series.SeriesDTO;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 
 import java.util.List;
 
 @Mapper
-public interface SeriesMapper extends CrudMapper<SeriesDTOv2,Long, SeriesDTOv2> {
-    SeriesDTO getOne(Long readListId, Long seriesId);
-    @Deprecated
-    SeriesDTO getOneBySeriesOnly( Long seriesId);
+public interface SeriesMapper extends CrudMapper<SeriesMyBatisEntity,Long, SeriesMyBatisEntity> {
+//    SeriesDTO getOne(Long readListId, Long seriesId);
+//    @Deprecated
+//    SeriesDTO getOneBySeriesOnly( Long seriesId);
     int getBookCount(Long readListId, Long seriesId);
 
 //    long getNextId();
@@ -21,7 +20,7 @@ public interface SeriesMapper extends CrudMapper<SeriesDTOv2,Long, SeriesDTOv2> 
 
     void delete(long seriesId);
 
-    List<SeriesDTO> getAll(Long readListId);
+//    List<SeriesDTO> getAll(Long readListId);
 
-    List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId);
+    List<SeriesMyBatisEntity> findByBook(@NonNull Long bookId, @NonNull Long userId);
 }

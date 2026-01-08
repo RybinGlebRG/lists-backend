@@ -14,7 +14,6 @@ public interface CrudRepository<T,ID> {
     List<T> findByUser(User user);
     List<T> findByUserId(Long userId);
 
-    @Deprecated
     void save(T entity);
 
     void create(T entity);

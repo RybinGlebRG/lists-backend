@@ -7,26 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
+import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
@@ -142,35 +141,6 @@ public class BookFactoryImpl implements BookFactory {
         bookPersistenceProxy.initPersistedCopy();
 
         return bookPersistenceProxy;
-    }
-
-    @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    @NonNull
-    @Override
-    public Book getBook(Long bookId, Long userId) {
-        BookMyBatisEntity bookDTO = bookRepository.findById(bookId, userId);
-
-        // TODO: Details of data retrieval should be encapsulated in DAO layer
-        List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(bookId);
-
-        bookDTO.setTextAuthors(authorsDTOs);
-        Book book = fromDTO(bookDTO);
-        return book;
-    }
-
-    /**
-     * Find all books of user
-     */
-    @Override
-    public List<Book> findAll(User user, Boolean isChained) {
-        if (isChained) {
-            List<BookMyBatisEntity> bookDtoList = bookRepository.findByUserChained(user);
-            return fromDTO(bookDtoList);
-        } else {
-            return bookRepository.findByUser(user).stream()
-                    .map(this::fromDTO)
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
     }
 
     public Book fromDTO(@NonNull BookDTO bookDTO) {
@@ -308,7 +278,7 @@ public class BookFactoryImpl implements BookFactory {
     @Override
     @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     @NonNull
-    public Book fromDTO(@NonNull BookMyBatisEntity bookDTO) throws EmptyMandatoryParameterException {
+    public Book fromDTO(@NonNull BookMyBatisEntity bookMyBatisEntity) throws EmptyMandatoryParameterException {
 
         BookBuilder builder = new BookBuilder(
                 statusFactory,
@@ -319,42 +289,42 @@ public class BookFactoryImpl implements BookFactory {
                 authorFactory,
                 seriesFactory
         )
-                .bookId(bookDTO.getBookId())
-                .title(bookDTO.getTitle())
-                .bookStatus(bookDTO.getBookStatusObj())
-                .insertDate(bookDTO.getInsertDate())
-                .lastUpdateDate(bookDTO.getLastUpdateDate())
-                .lastChapter(bookDTO.getLastChapter())
-                .note(bookDTO.getNote())
-                .URL(bookDTO.getURL())
-                .user(userFactory.fromDTO(bookDTO.getUser()));
+                .bookId(bookMyBatisEntity.getBookId())
+                .title(bookMyBatisEntity.getTitle())
+                .bookStatus(bookMyBatisEntity.getBookStatusObj())
+                .insertDate(bookMyBatisEntity.getInsertDate())
+                .lastUpdateDate(bookMyBatisEntity.getLastUpdateDate())
+                .lastChapter(bookMyBatisEntity.getLastChapter())
+                .note(bookMyBatisEntity.getNote())
+                .URL(bookMyBatisEntity.getURL())
+                .user(userFactory.fromDTO(bookMyBatisEntity.getUser()));
 
-        if (bookDTO.getTextAuthors() != null) {
-            builder.textAuthors(authorFactory.fromDTO(bookDTO.getTextAuthors()));
+        if (bookMyBatisEntity.getTextAuthors() != null) {
+            builder.textAuthors(authorFactory.fromDTO(bookMyBatisEntity.getTextAuthors()));
         } else {
             builder.textAuthors(new ArrayList<>());
         }
 
-        if (bookDTO.getBookTypeObj() != null) {
-            builder.bookType(bookDTO.getBookTypeObj());
+        if (bookMyBatisEntity.getBookTypeObj() != null) {
+            builder.bookType(bookMyBatisEntity.getBookTypeObj());
         }
 
-//        if (bookId2ReadingRecordsMap.get(bookDTO.getBookId()) != null) {
-//            builder.readingRecords(bookId2ReadingRecordsMap.get(bookDTO.getBookId()));
+//        if (bookId2ReadingRecordsMap.get(bookMyBatisEntity.getBookId()) != null) {
+//            builder.readingRecords(bookId2ReadingRecordsMap.get(bookMyBatisEntity.getBookId()));
 //        }
         // TODO: ???
-        if (bookDTO.getReadingRecords() != null) {
+        if (bookMyBatisEntity.getReadingRecords() != null) {
             builder.readingRecords(
-                    bookDTO.getReadingRecords().stream()
+                    bookMyBatisEntity.getReadingRecords().stream()
                             .map(readingRecordFactory::fromDTO)
                             .map(readingRecordsRepository::attach)
                             .collect(Collectors.toCollection(ArrayList::new))
             );
         }
 
-        if (bookDTO.getPreviousBooks() != null) {
+        if (bookMyBatisEntity.getPreviousBooks() != null) {
 
-            HashMap<Book, Integer> bookOrderMap = bookDTO.getPreviousBooks().stream()
+            HashMap<Book, Integer> bookOrderMap = bookMyBatisEntity.getPreviousBooks().stream()
                     .filter(Objects::nonNull)
                     .map(item -> new AbstractMap.SimpleImmutableEntry<>(
                             fromDTO(item.getBookDTO()),
@@ -373,8 +343,8 @@ public class BookFactoryImpl implements BookFactory {
 
         // Set Tags
         List<Tag> tags;
-        if (bookDTO.getTags() != null) {
-            tags = bookDTO.getTags().stream()
+        if (bookMyBatisEntity.getTags() != null) {
+            tags = bookMyBatisEntity.getTags().stream()
                     .map(tagFactory::fromDTO)
                     .collect(Collectors.toCollection(ArrayList::new));
         } else {
@@ -384,25 +354,25 @@ public class BookFactoryImpl implements BookFactory {
 
 
         // Set series list
-        if (bookDTO.getSeriesList() != null && !bookDTO.getSeriesList().isEmpty()) {
+        if (bookMyBatisEntity.getSeriesList() != null && !bookMyBatisEntity.getSeriesList().isEmpty()) {
 
-            List<SeriesDTOv2> seriesDTOList = bookDTO.getSeriesList();
+            List<SeriesMyBatisEntity> seriesDTOList = bookMyBatisEntity.getSeriesList();
 
             // Converting Series DTO to domain entity
             // TODO: Refactoring required?
             List<Series> seriesList = new ArrayList<>();
-            for (SeriesDTOv2 seriesDTO: seriesDTOList) {
+            for (SeriesMyBatisEntity seriesMyBatisEntity: seriesDTOList) {
 
                 // Getting list of relations to book for each series
-                List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesDTO.getSeriesBookRelationDtoList().stream()
+                List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesMyBatisEntity.getSeriesBookRelationDtoList().stream()
                         .map(item -> (SeriesItemRelationDTO)item)
                         .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
                         .collect(Collectors.toCollection(ArrayList::new));
 
                 Series series = seriesFactory.buildSeries(
-                        seriesDTO.getSeriesId(),
-                        seriesDTO.getTitle(),
-                        userFactory.findById(seriesDTO.getUserId()),
+                        seriesMyBatisEntity.getSeriesId(),
+                        seriesMyBatisEntity.getTitle(),
+                        userFactory.findById(seriesMyBatisEntity.getUserId()),
                         EntityState.PERSISTED,
                         seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
                 );

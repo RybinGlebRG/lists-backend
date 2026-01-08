@@ -9,10 +9,10 @@ import lombok.ToString;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
+import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
 import ru.rerumu.lists.domain.tag.TagDTO;
@@ -39,7 +39,10 @@ public class BookMyBatisEntity implements SeriesItemDTO {
     private BookType bookTypeObj;
     private BookStatusRecord bookStatusObj;
     private List<BookOrderedDtoDao> previousBooks;
+
+    @Setter
     private List<ReadingRecordMyBatisEntity> readingRecords;
+
     private String URL;
     private Long userId;
     private List<TagDTO> tags;
@@ -49,7 +52,7 @@ public class BookMyBatisEntity implements SeriesItemDTO {
     private List<Long> seriesIds;
 
     @Setter
-    private List<SeriesDTOv2> seriesList;
+    private List<SeriesMyBatisEntity> seriesList;
 
     @Setter
     private List<AuthorDtoDao> textAuthors;

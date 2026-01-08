@@ -2,6 +2,7 @@ package ru.rerumu.lists.domain;
 
 import org.json.JSONArray;
 import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.dto.BookOrderedDTO;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public record BookChain(HashMap<Book,Integer> map) {
 
     public List<BookOrderedDTO> toDTO(){
         return map.entrySet().stream()
-                .map(entry -> new BookOrderedDTO(entry.getKey().toDTO(), entry.getValue()))
+                .map(entry -> new BookOrderedDTO(BookDTO.fromDomain(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
     }

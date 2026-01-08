@@ -9,6 +9,4 @@ public interface SeriesItem {
     JSONObject toJSONObject();
 
     LocalDateTime getUpdateDate();
-
-    SeriesItemDTOv2 toDTO();
 }

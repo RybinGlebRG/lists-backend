@@ -7,7 +7,6 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.BookDTO;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
@@ -180,11 +179,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public BookDTO toDTO() {
-        return book.toDTO();
-    }
-
-    @Override
     public JSONObject toJSONObject() {
         return book.toJSONObject();
     }
@@ -202,6 +196,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public String getNote() {
         return book.getNote();
+    }
+
+    @Override
+    public BookStatusRecord getBookStatus() {
+        return book.getBookStatus();
     }
 
     @Override

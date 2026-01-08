@@ -18,6 +18,7 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -63,6 +64,7 @@ public class ReadListService implements BookService {
     private final BookTypeRepository bookTypeRepository;
     private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
+    private final SeriesRepository seriesRepository;
 
     @Autowired
     public ReadListService(
@@ -77,7 +79,9 @@ public class ReadListService implements BookService {
             AuthorFactory authorFactory,
             SeriesFactory seriesFactory,
             BookTypeRepository bookTypeRepository,
-            StatusFactory statusFactory, ReadingRecordsRepository readingRecordsRepository
+            StatusFactory statusFactory,
+            ReadingRecordsRepository readingRecordsRepository,
+            SeriesRepository seriesRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -92,6 +96,7 @@ public class ReadListService implements BookService {
         this.bookTypeRepository = bookTypeRepository;
         this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
+        this.seriesRepository = seriesRepository;
     }
 
     /**
@@ -106,7 +111,7 @@ public class ReadListService implements BookService {
         User user = userFactory.findById(userId);
 
         logger.info("Getting book with id='{}'...", bookId);
-        Book book = bookFactory.getBook(bookId, userId);
+        Book book = bookRepository.findById(bookId, userId);
 
         // Update insert date
         logger.info("Updating insert date...");
@@ -204,7 +209,7 @@ public class ReadListService implements BookService {
         logger.info("Updating series...");
         List<Series> seriesList = bookUpdateView.getSeriesIds().stream()
                 // TODO: Should be single query
-                .map( item -> seriesFactory.findById(user, item))
+                .map( item -> seriesRepository.findById(item, user))
                 .collect(Collectors.toCollection(ArrayList::new));
         book.updateSeries(seriesList);
 
@@ -228,7 +233,7 @@ public class ReadListService implements BookService {
 
         // Find user book
         logger.info("Get book with id='{}' of user with id='{}'", bookId, userId);
-        return bookFactory.getBook(bookId, userId);
+        return bookRepository.findById(bookId, userId);
     }
 
     /**
@@ -240,9 +245,9 @@ public class ReadListService implements BookService {
 
         User user = userFactory.findById(userId);
         if (search.getChainBySeries()) {
-            bookList = bookFactory.findAll(user, true);
+            bookList = bookRepository.findByUserChained(user);
         } else {
-            bookList = bookFactory.findAll(user, false);
+            bookList = bookRepository.findByUser(user);
         }
 
         Stream<Book> bookStream = bookList.stream();
@@ -337,7 +342,7 @@ public class ReadListService implements BookService {
         // Add series
         if (bookAddView.getSeriesId() != null) {
             logger.info("Add series...");
-            Series series = seriesFactory.findById(user, bookAddView.getSeriesId());
+            Series series = seriesRepository.findById(bookAddView.getSeriesId(), user);
             newBook.updateSeries(List.of(series));
         }
 
@@ -355,7 +360,7 @@ public class ReadListService implements BookService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
-        Book book = bookFactory.getBook(bookId, userId);
+        Book book = bookRepository.findById(bookId, userId);
         bookRepository.delete(book);
     }
 }

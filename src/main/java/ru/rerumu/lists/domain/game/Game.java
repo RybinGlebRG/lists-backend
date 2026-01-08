@@ -3,9 +3,7 @@ package ru.rerumu.lists.domain.game;
 import lombok.Getter;
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTOv2;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 
@@ -44,11 +42,6 @@ public class Game implements SeriesItem {
     @Override
     public LocalDateTime getUpdateDate() {
         return createDateUTC;
-    }
-
-    @Override
-    public SeriesItemDTOv2 toDTO() {
-        throw new NotImplementedException();
     }
 
     public final static class Builder{

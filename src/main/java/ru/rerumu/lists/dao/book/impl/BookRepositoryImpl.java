@@ -14,17 +14,16 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.book.impl.BookImpl;
+import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
@@ -47,13 +46,16 @@ public class BookRepositoryImpl implements BookRepository {
     private final SeriesBooksRespository seriesBooksRespository;
     private final SeriesRepository seriesRepository;
     private final ReadingRecordsRepository readingRecordsRepository;
+    private final BookFactory bookFactory;
 
     public BookRepositoryImpl(
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesMapper seriesMapper,
-            SeriesBooksRespository seriesBooksRespository, SeriesRepository seriesRepository,
-            ReadingRecordsRepository readingRecordsRepository
+            SeriesBooksRespository seriesBooksRespository,
+            SeriesRepository seriesRepository,
+            ReadingRecordsRepository readingRecordsRepository,
+            BookFactory bookFactory
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -61,24 +63,24 @@ public class BookRepositoryImpl implements BookRepository {
         this.seriesBooksRespository = seriesBooksRespository;
         this.seriesRepository = seriesRepository;
         this.readingRecordsRepository = readingRecordsRepository;
+        this.bookFactory = bookFactory;
     }
 
 
     @Override
-    public void update(BookImpl book) {
-        BookDTO bookDTO = book.toDTO();
+    public void update(Book book) {
 
         bookMapper.update(
-                book.getReadListId(),
-                book.getBookId(),
+                null,
+                book.getId(),
                 book.getTitle(),
                 book.getBookStatus() != null ? book.getBookStatus().statusId() : null,
                 book.getInsertDate(),
-                book.getLastUpdateDate(),
+                book.getUpdateDate(),
                 book.getLastChapter() != null ? book.getLastChapter() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
-                bookDTO.URL,
+                book.getURL(),
                 book.getUser().userId()
         );
     }
@@ -88,7 +90,7 @@ public class BookRepositoryImpl implements BookRepository {
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public List<BookMyBatisEntity> findByUserChained(User user) {
+    public List<Book> findByUserChained(User user) {
 
         // Load all books by user
         List<BookMyBatisEntity> bookDtoList = bookMapper.findByUserChained(user.userId());
@@ -116,15 +118,17 @@ public class BookRepositoryImpl implements BookRepository {
         }
 
         // Loading all series
-        List<SeriesDTOv2> seriesDTOList = seriesRepository.findByUser(user);
+        List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesRepository.findByUser(user).stream()
+                .map(SeriesMyBatisEntity::fromDomain)
+                .collect(Collectors.toCollection(ArrayList::new));
         for (BookMyBatisEntity bookMybatisEntity : bookDtoList) {
 
             // Getting list of series that contain book
-            List<SeriesDTOv2> containsBook = new ArrayList<>();
-            for (SeriesDTOv2 seriesDTO: seriesDTOList) {
-                for (SeriesBookRelationDto seriesBookRelationDto: seriesDTO.getSeriesBookRelationDtoList()) {
+            List<SeriesMyBatisEntity> containsBook = new ArrayList<>();
+            for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
+                for (SeriesBookRelationDto seriesBookRelationDto: seriesMyBatisEntity.getSeriesBookRelationDtoList()) {
                     if (seriesBookRelationDto.getBookId().equals(bookMybatisEntity.getBookId())) {
-                        containsBook.add(seriesDTO);
+                        containsBook.add(seriesMyBatisEntity);
                         break;
                     }
                 }
@@ -133,13 +137,18 @@ public class BookRepositoryImpl implements BookRepository {
             bookMybatisEntity.setSeriesList(containsBook);
         }
 
-        return bookDtoList;
+        List<Book> books = new ArrayList<>();
+        for (BookMyBatisEntity bookMyBatisEntity: bookDtoList) {
+            books.add(bookFactory.fromDTO(bookMyBatisEntity));
+        }
+
+        return books;
     }
 
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
     @NonNull
-    public BookMyBatisEntity findById(Long id, Long userId) {
+    public Book findById(Long id, Long userId) {
         BookMyBatisEntity book = bookMapper.findById(id, userId);
 
         if (book == null) {
@@ -150,17 +159,73 @@ public class BookRepositoryImpl implements BookRepository {
         book.setSeriesIds(seriesIds);
 
         if (!book.getSeriesIds().isEmpty()) {
-            List<SeriesDTOv2> seriesDTOList = seriesRepository.findByIds(book.getSeriesIds(), userId);
+            List<SeriesMyBatisEntity> seriesDTOList = seriesRepository.findByIds(book.getSeriesIds(), userId).stream()
+                    .map(SeriesMyBatisEntity::fromDomain)
+                    .collect(Collectors.toCollection(ArrayList::new));
             book.setSeriesList(seriesDTOList);
         }
 
-        return book;
+        List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(id);
+        book.setTextAuthors(authorsDTOs);
+
+        return bookFactory.fromDTO(book);
     }
 
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
-    public List<BookMyBatisEntity> findByUser(User user) {
-        return bookMapper.findByUser(user);
+    public List<Book> findByUser(User user) {
+
+        List<BookMyBatisEntity> bookMyBatisEntities = bookMapper.findByUser(user);
+
+        // Load all relations between books and authors by user
+        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.userId());
+        Map<Long, List<AuthorBookDto>> authorsMap = authorBookDtoList.stream()
+                .collect(Collectors.groupingBy(
+                        AuthorBookDto::getBookId,
+                        HashMap::new,
+                        Collectors.toCollection(ArrayList::new)
+                ));
+
+        // Add authors to corresponding books
+        for (BookMyBatisEntity item: bookMyBatisEntities) {
+            List<AuthorBookDto> dtoList = authorsMap.get(item.getBookId());
+
+            List<AuthorDtoDao> authorDtoDaoList = new ArrayList<>();
+            if (dtoList != null) {
+                authorDtoDaoList = dtoList.stream()
+                        .map(AuthorBookDto::getAuthorDtoDao)
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
+            item.setTextAuthors(authorDtoDaoList);
+        }
+
+        // Loading all series
+        List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesRepository.findByUser(user).stream()
+                .map(SeriesMyBatisEntity::fromDomain)
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (BookMyBatisEntity bookMybatisEntity : bookMyBatisEntities) {
+
+            // Getting list of series that contain book
+            List<SeriesMyBatisEntity> containsBook = new ArrayList<>();
+            for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
+                for (SeriesBookRelationDto seriesBookRelationDto: seriesMyBatisEntity.getSeriesBookRelationDtoList()) {
+                    if (seriesBookRelationDto.getBookId().equals(bookMybatisEntity.getBookId())) {
+                        containsBook.add(seriesMyBatisEntity);
+                        break;
+                    }
+                }
+            }
+
+            bookMybatisEntity.setSeriesList(containsBook);
+        }
+
+        List<Book> books = new ArrayList<>();
+        for (BookMyBatisEntity bookMyBatisEntity: bookMyBatisEntities) {
+            books.add(bookFactory.fromDTO(bookMyBatisEntity));
+        }
+
+        return books;
+
     }
 
     @Override
@@ -169,21 +234,20 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void addOne(BookImpl book) {
-        BookDTO bookDTO = book.toDTO();
+    public void addOne(Book book) {
 
         bookMapper.addOne(
-                book.getBookId(),
-                book.getReadListId(),
+                book.getId(),
+                null,
                 book.getTitle(),
                 book.getBookStatus().statusId(),
                 book.getInsertDate(),
-                book.getLastUpdateDate(),
+                book.getUpdateDate(),
                 book.getLastChapter() != null ? book.getLastChapter() : null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
-                bookDTO.URL,
-                bookDTO.userId
+                book.getURL(),
+                book.getUser().userId()
         );
     }
 
