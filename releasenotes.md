@@ -1,3 +1,18 @@
+# v0.70.1
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Reading records update date incorrect
+
+## Other
+
+- N/A
+
+============================================
 # v0.70.0
 
 ## Features

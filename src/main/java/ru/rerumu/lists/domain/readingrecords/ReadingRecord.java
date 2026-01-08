@@ -18,7 +18,11 @@ public interface ReadingRecord extends DeepCopyable<ReadingRecord> {
     Long getLastChapter();
     Boolean getIsMigrated();
 
-    void update(
+    /**
+     * Update reading record
+     * @return {@code true} if changes were made, {@code false} otherwise
+     */
+    boolean update(
             @NonNull BookStatusRecord bookStatusRecord,
             @NonNull LocalDateTime startDate,
             LocalDateTime endDate,
