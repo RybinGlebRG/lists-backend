@@ -1,6 +1,4 @@
-package ru.rerumu.lists.domain.book;
-
-import ru.rerumu.lists.domain.series.Series;
+package ru.rerumu.lists.domain.series;
 
 public record OrderedSeries(
         Series series,

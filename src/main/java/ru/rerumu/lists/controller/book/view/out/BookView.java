@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.controller.author.out.AuthorView2;
-import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;

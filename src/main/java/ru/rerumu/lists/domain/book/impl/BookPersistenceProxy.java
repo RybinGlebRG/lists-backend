@@ -2,6 +2,7 @@ package ru.rerumu.lists.domain.book.impl;
 
 import lombok.NonNull;
 import org.json.JSONObject;
+import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;
@@ -76,6 +77,41 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public List<Series> getSeriesList() {
         return book.getSeriesList();
+    }
+
+    @Override
+    public BookChain getPreviousBooks() {
+        return book.getPreviousBooks();
+    }
+
+    @Override
+    public BookType getBookType() {
+        return book.getBookType();
+    }
+
+    @Override
+    public List<Tag> getTags() {
+        return book.getTags();
+    }
+
+    @Override
+    public List<Author> getTextAuthors() {
+        return book.getTextAuthors();
+    }
+
+    @Override
+    public String getURL() {
+        return book.getURL();
+    }
+
+    @Override
+    public String getTitle() {
+        return book.getTitle();
+    }
+
+    @Override
+    public LocalDateTime getInsertDate() {
+        return book.getInsertDate();
     }
 
     @Override
@@ -156,6 +192,16 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public LocalDateTime getUpdateDate() {
         return book.getUpdateDate();
+    }
+
+    @Override
+    public Integer getLastChapter() {
+        return book.getLastChapter();
+    }
+
+    @Override
+    public String getNote() {
+        return book.getNote();
     }
 
     @Override

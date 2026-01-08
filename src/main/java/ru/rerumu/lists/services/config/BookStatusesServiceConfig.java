@@ -3,7 +3,7 @@ package ru.rerumu.lists.services.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDictionaryImpl;
-import ru.rerumu.lists.dao.readingrecord.status.mapper.BookStatusMapper;
+import ru.rerumu.lists.dao.readingrecordstatus.mapper.BookStatusMapper;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 

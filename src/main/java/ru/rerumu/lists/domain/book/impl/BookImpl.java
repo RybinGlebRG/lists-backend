@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ToString
@@ -65,6 +64,7 @@ public class BookImpl implements Book{
     @Getter
     private LocalDateTime lastUpdateDate;
 
+    @Getter
     private Integer lastChapter;
 
     @Getter
@@ -79,6 +79,7 @@ public class BookImpl implements Book{
     @Getter
     private List<ReadingRecord> readingRecords;
 
+    @Getter
     private String URL;
 
     private final User user;
@@ -86,6 +87,7 @@ public class BookImpl implements Book{
     @Getter
     private List<Tag> tags;
 
+    @Getter
     private final List<Author> textAuthors;
 
     @Getter
@@ -149,10 +151,6 @@ public class BookImpl implements Book{
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
-    }
-
-    public Optional<Integer> getLastChapter() {
-        return Optional.ofNullable(lastChapter);
     }
 
     public JSONObject toJSONObject() {

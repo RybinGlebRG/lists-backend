@@ -3,6 +3,7 @@ package ru.rerumu.lists.domain.book;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.DeepCopyable;
+import ru.rerumu.lists.domain.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
@@ -31,6 +32,16 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     User getUser();
     List<ReadingRecord> getReadingRecords();
     List<Series> getSeriesList();
+    BookChain getPreviousBooks();
+    BookType getBookType();
+    List<Tag> getTags();
+    List<Author> getTextAuthors();
+    String getURL();
+    String getTitle();
+    LocalDateTime getInsertDate();
+    LocalDateTime getUpdateDate();
+    Integer getLastChapter();
+    String getNote();
 
     /**
      * Date when book was added

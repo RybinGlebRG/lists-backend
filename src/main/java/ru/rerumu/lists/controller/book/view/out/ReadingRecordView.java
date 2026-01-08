@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller.readingrecord.view.out;
+package ru.rerumu.lists.controller.book.view.out;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.DeepCopyable;
-import ru.rerumu.lists.controller.book.view.out.BookStatusView;
 
 import java.time.LocalDateTime;
 

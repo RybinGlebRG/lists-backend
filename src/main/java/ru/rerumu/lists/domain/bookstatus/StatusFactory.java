@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.bookstatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.readingrecord.status.StatusRepository;
+import ru.rerumu.lists.dao.readingrecordstatus.StatusRepository;
 
 @Component
 public class StatusFactory {

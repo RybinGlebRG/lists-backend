@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.readingrecord.status;
+package ru.rerumu.lists.dao.readingrecordstatus;
 
 import lombok.NonNull;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;

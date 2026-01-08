@@ -30,9 +30,7 @@ import ru.rerumu.lists.domain.books.Search;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.series.SeriesService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -69,7 +67,7 @@ public class BooksController {
             @RequestBody BookUpdateView bookUpdateView
     ) throws EmptyMandatoryParameterException, JsonProcessingException {
         Book book = bookService.updateBook(bookId, userId, bookUpdateView);
-        BookView bookView = bookViewFactory.buildBookView(book.toDTO());
+        BookView bookView = bookViewFactory.buildBookView(book);
         String result = objectMapper.writeValueAsString(bookView);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -88,7 +86,7 @@ public class BooksController {
         Book book = bookService.getBook(bookId, userId);
 //        List<Series> seriesList = seriesService.findByBook((BookImpl) book, userId);
 
-        BookView bookView = bookViewFactory.buildBookView(book.toDTO());
+        BookView bookView = bookViewFactory.buildBookView(book);
         String result = objectMapper.writeValueAsString(bookView);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -107,7 +105,7 @@ public class BooksController {
 
         try {
             Book book = bookService.addBook(bookAddView, userId);
-            BookView bookView = bookViewFactory.buildBookView(book.toDTO());
+            BookView bookView = bookViewFactory.buildBookView(book);
 
             return new ResponseEntity<>(objectMapper.writeValueAsString(bookView), HttpStatus.OK);
         } catch (JsonProcessingException e) {
@@ -143,12 +141,7 @@ public class BooksController {
     ) throws JsonProcessingException {
 
         List<Book> books = bookService.getAllBooks(search, authUserId);
-        BookListView bookListView = bookViewFactory.buildBookListView(
-                books.stream()
-                        .map(Book::toDTO)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                search
-        );
+        BookListView bookListView = bookViewFactory.buildBookListView(books, search);
 
         String result = objectMapper.writeValueAsString(bookListView);
 

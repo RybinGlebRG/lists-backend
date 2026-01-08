@@ -7,6 +7,8 @@ public interface BookType extends Dictionary {
 
     BookTypeDTO toDTO();
 
+    Long getId();
+
     String getName();
 
     JSONObject toJsonObject();
