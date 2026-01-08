@@ -130,11 +130,6 @@ public class ReadingRecordImpl implements ReadingRecord {
     }
 
     @Override
-    public int compareTo(@NonNull ReadingRecord o) {
-        return startDate.compareTo(((ReadingRecordImpl) o).startDate);
-    }
-
-    @Override
     public ReadingRecordImpl deepCopy() {
         return new ReadingRecordImpl(
                 recordId,

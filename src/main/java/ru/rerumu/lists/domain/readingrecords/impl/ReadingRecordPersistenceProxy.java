@@ -85,11 +85,6 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     }
 
     @Override
-    public int compareTo(@NonNull ReadingRecord o) {
-        return readingRecord.compareTo(o);
-    }
-
-    @Override
     public ReadingRecord deepCopy() {
         return readingRecord.deepCopy();
     }

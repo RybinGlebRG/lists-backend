@@ -171,7 +171,7 @@ public class ReadListService implements BookService {
             readingRecords.add(readingRecord);
         }
 
-        // Create
+        // Create reading records
         List<BookUpdateView.ReadingRecordView> recordsToCreate = bookUpdateView.getReadingRecords().stream()
                 .filter(readingRecordView ->  readingRecordView.getReadingRecordId() == null)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -190,6 +190,7 @@ public class ReadListService implements BookService {
             readingRecords.add(readingRecord);
         }
 
+        // Update reading records
         book.updateReadingRecords(readingRecords);
 
         // Update author

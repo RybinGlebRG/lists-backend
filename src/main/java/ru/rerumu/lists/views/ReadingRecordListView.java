@@ -36,7 +36,7 @@ public record ReadingRecordListView(
     }
 
     public JSONObject toJSONObject() {
-        Comparator<ReadingRecord> readingRecordComparator = ReadingRecord::compareTo;
+        Comparator<ReadingRecord> readingRecordComparator = Comparator.comparing(ReadingRecord::getStartDate);
         readingRecordList.sort(readingRecordComparator);
 
         JSONObject obj = new JSONObject();

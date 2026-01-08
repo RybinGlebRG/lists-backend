@@ -7,7 +7,7 @@ import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 
 import java.time.LocalDateTime;
 
-public interface ReadingRecord extends Comparable<ReadingRecord>, DeepCopyable<ReadingRecord> {
+public interface ReadingRecord extends DeepCopyable<ReadingRecord> {
 
     Long getId();
     Long getBookId();

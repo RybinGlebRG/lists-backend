@@ -37,8 +37,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public void updateReadingRecords(List<ReadingRecord> readingRecords) {
-        book.updateReadingRecords(readingRecords);
+    public void updateReadingRecords(@NonNull List<ReadingRecord> readingRecords) {
+        if (!readingRecords.equals(book.getReadingRecords())) {
+            book.updateReadingRecords(readingRecords);
+            entityState = EntityState.DIRTY;
+        }
     }
 
     @Override

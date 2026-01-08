@@ -52,6 +52,12 @@ public class ReadingRecordFactory {
     }
 
     public ReadingRecord fromDTO(@NonNull ReadingRecordMyBatisEntity readingRecordMyBatisEntity){
+
+        LocalDateTime updateDate = readingRecordMyBatisEntity.getUpdateDate();
+        if (updateDate == null) {
+            updateDate = readingRecordMyBatisEntity.getStartDate();
+        }
+
         ReadingRecordImpl readingRecord = new ReadingRecordImpl(
                 readingRecordMyBatisEntity.getRecordId(),
                 readingRecordMyBatisEntity.getBookId(),
@@ -61,7 +67,7 @@ public class ReadingRecordFactory {
                 readingRecordMyBatisEntity.getIsMigrated(),
                 readingRecordMyBatisEntity.getLastChapter(),
                 dateFactory,
-                readingRecordMyBatisEntity.getUpdateDate()
+                updateDate
         );
 
         return readingRecord;

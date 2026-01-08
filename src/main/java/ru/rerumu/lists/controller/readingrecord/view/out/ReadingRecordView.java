@@ -33,6 +33,8 @@ public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
 
     private final Long lastChapter;
 
+    private final LocalDateTime updateDate;
+
     public ReadingRecordView(
             Long recordId,
             Long bookId,
@@ -40,7 +42,8 @@ public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
             LocalDateTime startDate,
             LocalDateTime endDate,
             Boolean isMigrated,
-            Long lastChapter
+            Long lastChapter,
+            LocalDateTime updateDate
     ) {
         this.recordId = recordId;
         this.bookId = bookId;
@@ -49,6 +52,7 @@ public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
         this.endDate = endDate;
         this.isMigrated = isMigrated;
         this.lastChapter = lastChapter;
+        this.updateDate = updateDate;
     }
 
 

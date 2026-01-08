@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -212,7 +213,7 @@ public class BookImpl implements Book{
     @Override
     public boolean currentStatusEquals(Long statusId) {
         ReadingRecord readingRecord = readingRecords.stream()
-                .max(Comparable::compareTo)
+                .max(Comparator.comparing(ReadingRecord::getStartDate))
                 .orElseThrow(() -> new ServerException("Error while processing records"));
 
         return readingRecord.statusEquals(statusId);
