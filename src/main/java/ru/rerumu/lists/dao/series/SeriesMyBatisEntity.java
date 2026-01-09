@@ -9,7 +9,7 @@ import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.base.MyBatisEntity;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
 
 import java.util.ArrayList;

@@ -7,16 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
-import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.series.SeriesBooksRepository;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.impl.SeriesImpl;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
 
@@ -30,78 +29,24 @@ public class SeriesRepositoryImpl implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final SeriesBookMapper seriesBookMapper;
-    private final ReadingRecordsRepository readingRecordsRepository;
     private final SeriesFactory seriesFactory;
     private final UserFactory userFactory;
+    private final SeriesBooksRepository seriesBooksRepository;
 
     @Autowired
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper,
             SeriesBookMapper seriesBookMapper,
-            ReadingRecordsRepository readingRecordsRepository,
             SeriesFactory seriesFactory,
-            UserFactory userFactory
+            UserFactory userFactory,
+            SeriesBooksRepository seriesBooksRepository
     ) {
         this.seriesMapper = seriesMapper;
         this.seriesBookMapper = seriesBookMapper;
-        this.readingRecordsRepository = readingRecordsRepository;
         this.seriesFactory = seriesFactory;
         this.userFactory = userFactory;
+        this.seriesBooksRepository = seriesBooksRepository;
     }
-
-//    @Override
-//    public List<SeriesDTO> getAll(Long seriesListId) {
-//
-//        try {
-//            List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
-//
-//            List<Long> bookIds = res.stream()
-//                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
-//                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookMyBatisEntity)
-//                    .map(seriesItemOrderDTO -> ((BookMyBatisEntity)seriesItemOrderDTO.itemDTO).getBookId())
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//
-//            List<ReadingRecord> readingRecords = readingRecordsRepository.findByBookIds(bookIds);
-//
-//            Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
-//                    .collect(Collectors.groupingBy(
-//                            ReadingRecord::getBookId,
-//                            HashMap::new,
-//                            Collectors.toCollection(ArrayList::new)
-//                    ));
-//
-//            List<BookMyBatisEntity> bookDTOList = res.stream()
-//                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
-//                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookMyBatisEntity)
-//                    .map(seriesItemOrderDTO -> (BookMyBatisEntity)seriesItemOrderDTO.itemDTO)
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//
-//            for(BookMyBatisEntity bookMyBatisEntity: bookDTOList){
-//                List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookMyBatisEntity.getBookId());
-//
-//                if (records == null){
-//                    records = new ArrayList<>();
-//                }
-//
-//                bookMyBatisEntity.setReadingRecords(
-//                        records.stream()
-//                                .map(ReadingRecordMyBatisEntity::fromDomain)
-//                                .collect(Collectors.toCollection(ArrayList::new))
-//                );
-//            }
-//
-//            List<SeriesDTO> resList = new ArrayList<>(res);
-//            return resList;
-//        } catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
-
-//    @Override
-//    public int getBookCount(Long readListId, Long seriesId) {
-//        return seriesMapper.getBookCount(readListId, seriesId);
-//    }
 
     @Override
     public Long getNextId() {
@@ -130,20 +75,29 @@ public class SeriesRepositoryImpl implements SeriesRepository{
             throw new EntityNotFoundException();
         }
 
-        return seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+        Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
     }
 
-//    @Override
-//    public void add(SeriesDTO series) {
-//        seriesMapper.add(
-//                series.seriesListId,
-//                series.seriesId,
-//                series.title
-//        );
-//    }
+    @Override
+    public @NonNull Series create(@NonNull String title, @NonNull User user) {
+        Long id = getNextId();
+
+        Series series = seriesFactory.buildSeries(id, title, user);
+
+        seriesMapper.create(SeriesMyBatisEntity.fromDomain(series));
+
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+    }
 
     @Override
     public void delete(long seriesId) {
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRepository.getBySeriesId(seriesId);
+        if (!seriesBookRelationList.isEmpty()) {
+            throw new ServerException("EntityHasChildrenException");
+        }
+
         seriesMapper.delete(seriesId);
     }
 
@@ -156,7 +110,9 @@ public class SeriesRepositoryImpl implements SeriesRepository{
         List<Series> seriesList = new ArrayList<>();
 
         for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
-            seriesList.add(seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user));
+            Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+            series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+            seriesList.add(series);
         }
 
         return seriesList;
@@ -171,7 +127,9 @@ public class SeriesRepositoryImpl implements SeriesRepository{
         List<Series> seriesList = new ArrayList<>();
 
         for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
-            seriesList.add(seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user));
+            Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+            series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+            seriesList.add(series);
         }
 
         return seriesList;
@@ -180,19 +138,23 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     @Override
     public void save(@NonNull Series series) {
 
-        SeriesImpl seriesImpl = (SeriesImpl) series;
+        SeriesPersistenceProxy seriesPersistenceProxy = (SeriesPersistenceProxy) series;
 
-        switch (seriesImpl.getEntityState()) {
-            case NEW -> create(SeriesMyBatisEntity.fromDomain(series));
-            case DIRTY -> update(
-                    SeriesMyBatisEntity.fromDomain(seriesImpl.getPersistedCopy()),
+        switch (seriesPersistenceProxy.getEntityState()) {
+            case NEW -> {
+                create(SeriesMyBatisEntity.fromDomain(series));
+                seriesPersistenceProxy.onSave();
+            }
+            case DIRTY -> {
+                update(
+                    SeriesMyBatisEntity.fromDomain(seriesPersistenceProxy.getPersistedCopy()),
                     SeriesMyBatisEntity.fromDomain(series)
-            );
+                );
+                seriesPersistenceProxy.onSave();
+            }
             case PERSISTED -> log.warn("Entity is not altered");
             default -> throw new ServerException("Incorrect entity state");
         }
-
-        seriesImpl.setEntityState(EntityState.PERSISTED);
     }
 
     private void create(SeriesMyBatisEntity myBatisEntity) {
@@ -200,7 +162,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     }
 
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
-    public void update(SeriesMyBatisEntity originalEntity, SeriesMyBatisEntity currentEntity) {
+    private void update(SeriesMyBatisEntity originalEntity, SeriesMyBatisEntity currentEntity) {
         seriesMapper.update(currentEntity);
 
         List<SeriesBookRelationDto> relationsToRemove = originalEntity.getSeriesBookRelationDtoList().stream()

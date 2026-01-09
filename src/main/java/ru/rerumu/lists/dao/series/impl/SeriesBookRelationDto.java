@@ -1,10 +1,11 @@
-package ru.rerumu.lists.domain.series;
+package ru.rerumu.lists.dao.series.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 
 @AllArgsConstructor
 @NoArgsConstructor

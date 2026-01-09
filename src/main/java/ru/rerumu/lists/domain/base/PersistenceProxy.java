@@ -20,4 +20,9 @@ public abstract class PersistenceProxy<T> {
 
     public abstract void clearPersistedCopy();
 
+    public void onSave() {
+        entityState = EntityState.PERSISTED;
+        initPersistedCopy();
+    }
+
 }

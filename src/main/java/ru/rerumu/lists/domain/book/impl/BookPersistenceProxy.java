@@ -25,6 +25,11 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     public BookPersistenceProxy(Book book, EntityState entityState) {
         super(entityState);
         this.book = book;
+
+        // If persisted, then should have persisted copy
+        if (entityState.equals(EntityState.PERSISTED)) {
+            initPersistedCopy();
+        }
     }
 
     @Override
@@ -232,6 +237,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
 
     @Override
     public Book deepCopy() {
-        return book.deepCopy();
+        return new BookPersistenceProxy(book.deepCopy(), entityState);
     }
 }

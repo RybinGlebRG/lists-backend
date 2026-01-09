@@ -28,10 +28,16 @@ public class BookViewFactory {
 
     public BookView buildBookView(@NonNull Book book) {
 
-        List<BookView> chain = book.getPreviousBooks().map().entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .map(entry -> buildBookView(entry.getKey()))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<BookView> chain;
+        if (book.getPreviousBooks() != null) {
+            chain = book.getPreviousBooks().map().entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .map(entry -> buildBookView(entry.getKey()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+        } else {
+            chain = new ArrayList<>();
+        }
 
         List<ReadingRecordView> readingRecordViews = book.getReadingRecords().stream()
                 .sorted(Comparator.comparing(ReadingRecord::getStartDate))

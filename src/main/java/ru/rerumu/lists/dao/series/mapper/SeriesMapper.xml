@@ -59,7 +59,7 @@
         <collection property="seriesBookRelationDtoList" resultMap="SeriesBookRelationDtoResultMapV2"/>
     </resultMap>
 
-    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.domain.series.SeriesBookRelationDto">
+    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto">
         <constructor>
             <arg column="series_series_id" name="seriesId"/>
             <arg column="book_book_id" name="bookId"/>

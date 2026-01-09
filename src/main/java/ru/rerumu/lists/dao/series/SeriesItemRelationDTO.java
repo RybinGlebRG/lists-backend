@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.series;
+package ru.rerumu.lists.dao.series;
 
 public interface SeriesItemRelationDTO {
 

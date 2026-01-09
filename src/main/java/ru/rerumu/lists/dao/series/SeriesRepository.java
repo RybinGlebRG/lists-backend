@@ -8,12 +8,6 @@ import java.util.List;
 
 public interface SeriesRepository {
 
-//    List<SeriesDTO> getAll(Long seriesListId);
-//    int getBookCount(Long readListId, Long seriesId);
-
-//    Integer getNextId();
-//    void add(SeriesDTO series);
-
     void delete(long seriesId);
 
     @Deprecated
@@ -29,4 +23,13 @@ public interface SeriesRepository {
     List<Series> findByUser(User user);
 
     Series findById(@NonNull Long seriesId, @NonNull User user);
+
+    /**
+     * Create series
+     */
+    @NonNull
+    Series create(
+            @NonNull String title,
+            @NonNull User user
+    );
 }

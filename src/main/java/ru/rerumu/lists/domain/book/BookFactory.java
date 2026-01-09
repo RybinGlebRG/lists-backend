@@ -8,13 +8,10 @@ import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface BookFactory {
 
     Book fromDTO(@NonNull BookMyBatisEntity bookDTO);
-
-    List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList);
 
     Book createBook(
             Long bookId,

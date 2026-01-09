@@ -3,19 +3,18 @@ package ru.rerumu.lists.dao.series;
 import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SeriesBooksRespository {
+public interface SeriesBooksRepository {
 
 //    @Deprecated
 //    void add(Long bookId, Long seriesId, Long readListId, Long seriesOrder);
 
-//    void create(Long seriesId, Long bookId, Long itemPosition, Long userId);
-
-    void create(SeriesBookRelation seriesBookRelation);
+    @NonNull
+    SeriesBookRelation create(@NonNull Long bookId, @NonNull Long seriesId, @NonNull Long userId);
 
 //    void deleteBySeries(Long seriesId);
 

@@ -11,6 +11,7 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
+import ru.rerumu.lists.dao.series.impl.SeriesPersistenceProxy;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -25,7 +26,7 @@ import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.SeriesItemRelationDTO;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
@@ -135,17 +136,11 @@ public class BookFactoryImpl implements BookFactory {
     }
 
     @Override
-    public List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList) {
-        return bookDTOList.stream()
-                .map(this::fromDTO)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Override
     @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     @NonNull
     public Book fromDTO(@NonNull BookMyBatisEntity bookMyBatisEntity) throws EmptyMandatoryParameterException {
 
+        // Get authors
         List<Author> authors;
         if (bookMyBatisEntity.getTextAuthors() != null) {
             authors = authorFactory.fromDTO(bookMyBatisEntity.getTextAuthors());
@@ -153,6 +148,7 @@ public class BookFactoryImpl implements BookFactory {
             authors = new ArrayList<>();
         }
 
+        // Get book type
         BookType bookType;
         if (bookMyBatisEntity.getBookTypeObj() != null) {
             bookType = bookMyBatisEntity.getBookTypeObj();
@@ -160,6 +156,7 @@ public class BookFactoryImpl implements BookFactory {
             bookType = null;
         }
 
+        // Get reading records
         List<ReadingRecord> readingRecords;
         if (bookMyBatisEntity.getReadingRecords() != null) {
             readingRecords = bookMyBatisEntity.getReadingRecords().stream()
@@ -170,6 +167,7 @@ public class BookFactoryImpl implements BookFactory {
             readingRecords = new ArrayList<>();
         }
 
+        // Get previous books
         BookChain bookChain;
         if (bookMyBatisEntity.getPreviousBooks() != null) {
 
@@ -190,7 +188,7 @@ public class BookFactoryImpl implements BookFactory {
             bookChain = null;
         }
 
-        // Set Tags
+        // Get tags
         List<Tag> tags;
         if (bookMyBatisEntity.getTags() != null) {
             tags = bookMyBatisEntity.getTags().stream()
@@ -200,7 +198,7 @@ public class BookFactoryImpl implements BookFactory {
             tags = new ArrayList<>();
         }
 
-        // Set series list
+        // Get series list
         List<Series> seriesList;
         if (bookMyBatisEntity.getSeriesList() != null && !bookMyBatisEntity.getSeriesList().isEmpty()) {
 
@@ -221,9 +219,11 @@ public class BookFactoryImpl implements BookFactory {
                         seriesMyBatisEntity.getSeriesId(),
                         seriesMyBatisEntity.getTitle(),
                         userFactory.findById(seriesMyBatisEntity.getUserId()),
-                        EntityState.PERSISTED,
                         seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
                 );
+
+                // TODO: move to repository
+                series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
 
                 seriesList.add(series);
             }
@@ -231,6 +231,7 @@ public class BookFactoryImpl implements BookFactory {
             seriesList = new ArrayList<>();
         }
 
+        // Create book
         Book book = new BookImpl(
                 bookMyBatisEntity.getBookId(),
                 null,
@@ -256,9 +257,6 @@ public class BookFactoryImpl implements BookFactory {
                 seriesFactory
         );
 
-        BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
-        bookPersistenceProxy.initPersistedCopy();
-
-        return bookPersistenceProxy;
+        return book;
     }
 }

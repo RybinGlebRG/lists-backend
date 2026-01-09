@@ -4,13 +4,11 @@ import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.series.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
-import ru.rerumu.lists.domain.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.user.User;
 
@@ -23,15 +21,12 @@ import java.util.stream.Collectors;
 @Component
 public class SeriesFactoryImpl implements SeriesFactory {
 
-    private final SeriesBooksRespository seriesBooksRespository;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
 
     @Autowired
     public SeriesFactoryImpl(
-            @NonNull SeriesBooksRespository seriesBooksRespository,
             @NonNull SeriesItemRelationFactory seriesItemRelationFactory
     ) {
-        this.seriesBooksRespository = seriesBooksRespository;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
     }
 
@@ -49,7 +44,6 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 seriesMyBatisEntity.getSeriesId(),
                 seriesMyBatisEntity.getTitle(),
                 user,
-                EntityState.PERSISTED,
                 seriesItemRelations
         );
     }
@@ -67,11 +61,8 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 title,
                 new ArrayList<>(),
                 user,
-                EntityState.NEW,
-                seriesBooksRespository,
                 new ArrayList<>()
         );
-        series.initPersistentCopy();
         return series;
     }
 
@@ -82,7 +73,6 @@ public class SeriesFactoryImpl implements SeriesFactory {
             @NonNull Long id,
             @NonNull String title,
             @NonNull User user,
-            @NonNull EntityState entityState,
             @NonNull List<SeriesItemRelation> seriesItemRelation
             ) {
         SeriesImpl series = new SeriesImpl(
@@ -90,11 +80,8 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 title,
                 new ArrayList<>(),
                 user,
-                entityState,
-                seriesBooksRespository,
                 seriesItemRelation
         );
-        series.initPersistentCopy();
         return series;
     }
 }

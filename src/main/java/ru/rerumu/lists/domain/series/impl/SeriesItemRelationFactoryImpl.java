@@ -4,9 +4,9 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
+import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
-import ru.rerumu.lists.domain.series.SeriesItemRelationDTO;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 
 import java.util.ArrayList;

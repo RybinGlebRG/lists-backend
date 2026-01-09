@@ -13,9 +13,10 @@ import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.dao.series.SeriesBooksRespository;
+import ru.rerumu.lists.dao.series.SeriesBooksRepository;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
@@ -25,7 +26,6 @@ import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class BookRepositoryImpl implements BookRepository {
     private final BookMapper bookMapper;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesMapper seriesMapper;
-    private final SeriesBooksRespository seriesBooksRespository;
+    private final SeriesBooksRepository seriesBooksRepository;
     private final SeriesRepository seriesRepository;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final BookFactory bookFactory;
@@ -55,7 +55,7 @@ public class BookRepositoryImpl implements BookRepository {
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
             SeriesMapper seriesMapper,
-            SeriesBooksRespository seriesBooksRespository,
+            SeriesBooksRepository seriesBooksRepository,
             SeriesRepository seriesRepository,
             ReadingRecordsRepository readingRecordsRepository,
             BookFactory bookFactory
@@ -63,7 +63,7 @@ public class BookRepositoryImpl implements BookRepository {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesMapper = seriesMapper;
-        this.seriesBooksRespository = seriesBooksRespository;
+        this.seriesBooksRepository = seriesBooksRepository;
         this.seriesRepository = seriesRepository;
         this.readingRecordsRepository = readingRecordsRepository;
         this.bookFactory = bookFactory;
@@ -142,7 +142,8 @@ public class BookRepositoryImpl implements BookRepository {
 
         List<Book> books = new ArrayList<>();
         for (BookMyBatisEntity bookMyBatisEntity: bookDtoList) {
-            books.add(bookFactory.fromDTO(bookMyBatisEntity));
+            Book book = bookFactory.fromDTO(bookMyBatisEntity);
+            books.add(new BookPersistenceProxy(book, EntityState.PERSISTED));
         }
 
         return books;
@@ -171,7 +172,8 @@ public class BookRepositoryImpl implements BookRepository {
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(id);
         book.setTextAuthors(authorsDTOs);
 
-        return bookFactory.fromDTO(book);
+        Book result = bookFactory.fromDTO(book);
+        return new BookPersistenceProxy(result, EntityState.PERSISTED);
     }
 
     @Override
@@ -224,7 +226,8 @@ public class BookRepositoryImpl implements BookRepository {
 
         List<Book> books = new ArrayList<>();
         for (BookMyBatisEntity bookMyBatisEntity: bookMyBatisEntities) {
-            books.add(bookFactory.fromDTO(bookMyBatisEntity));
+            Book book = bookFactory.fromDTO(bookMyBatisEntity);
+            books.add(new BookPersistenceProxy(book, EntityState.PERSISTED));
         }
 
         return books;

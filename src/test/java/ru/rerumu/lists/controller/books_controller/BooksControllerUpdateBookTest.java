@@ -46,9 +46,6 @@ class BooksControllerUpdateBookTest {
     private SeriesServiceImpl seriesService;
 
     @MockBean
-    private AuthorsBooksRelationService authorsBooksRelationService;
-
-    @MockBean
     private BookSeriesRelationService bookSeriesRelationService;
 
     @BeforeAll

@@ -8,48 +8,16 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.series.SeriesBooksRespository;
-import ru.rerumu.lists.dao.series.SeriesRepository;
-import ru.rerumu.lists.domain.series.impl.SeriesFactoryImpl;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.AuthUserParser;
-import ru.rerumu.lists.services.BookSeriesRelationService;
-import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.SeriesService;
-import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.series.impl.SeriesServiceProtectionProxy;
 import ru.rerumu.lists.services.user.UserService;
 
 @Configuration
 @Slf4j
 public class SeriesServiceConfig {
-
-//    @Bean("seriesServiceImpl")
-//    public SeriesService seriesService(
-//            SeriesServiceImpl seriesServiceImpl
-//    ){
-//        return seriesServiceImpl;
-//    }
-
-    @Bean("seriesServiceImpl")
-    public SeriesServiceImpl seriesServiceImpl(
-            SeriesRepository seriesRepository,
-            BookSeriesRelationService bookSeriesRelationService,
-            SeriesBooksRespository seriesBooksRespository,
-            ReadListService readListService,
-            SeriesFactoryImpl seriesFactory,
-            UserFactory userFactory
-    ){
-        return new SeriesServiceImpl(
-                seriesRepository,
-                bookSeriesRelationService,
-                seriesBooksRespository,
-                readListService,
-                seriesFactory,
-                userFactory
-        );
-    }
 
     @Bean("seriesServiceProtectionProxy")
     @Primary

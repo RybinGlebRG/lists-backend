@@ -1,16 +1,10 @@
 package ru.rerumu.lists.domain.series.impl;
 
-import com.jcabi.aspects.Loggable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
-import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
-import ru.rerumu.lists.dao.series.SeriesBooksRespository;
-import ru.rerumu.lists.domain.base.EntityBaseImpl;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
@@ -23,7 +17,7 @@ import java.util.Objects;
 
 @ToString(callSuper = true, doNotUseGetters = true)
 @Slf4j
-public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, DeepCopyable<SeriesImpl> {
+public class SeriesImpl implements Series {
 
     private final Long seriesId;
 
@@ -36,8 +30,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     @Getter
     private final User user;
 
-    private final SeriesBooksRespository seriesBooksRespository;
-
     @Getter
     private final List<SeriesItemRelation> seriesItemRelations;
 
@@ -47,16 +39,12 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
             @NonNull String title,
             @NonNull List<SeriesItem> itemsList,
             @NonNull User user,
-            @NonNull EntityState entityState,
-            @NonNull SeriesBooksRespository seriesBooksRespository,
             @NonNull List<SeriesItemRelation> seriesItemRelations
     ) {
-        super(entityState);
         this.seriesId = seriesId;
         this.user = user;
         this.title = title;
         this.itemsList = new ArrayList<>(itemsList);
-        this.seriesBooksRespository = seriesBooksRespository;
         this.seriesItemRelations = new ArrayList<>(seriesItemRelations);
     }
 
@@ -66,7 +54,7 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     }
 
     @Override
-    public void addBookRelation(Long bookId) {
+    public boolean addBookRelation(Long bookId) {
         seriesItemRelations.add(
                 new SeriesBookRelation(
                         bookId,
@@ -74,18 +62,12 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
                         user.userId()
                 )
         );
-        entityState = EntityState.DIRTY;
+        return true;
     }
 
     @Override
-    public void removeBookRelation(Long bookId) {
-        seriesItemRelations.removeIf( seriesItemRelation -> seriesItemRelation.getBookId().equals(bookId));
-        entityState = EntityState.DIRTY;
-    }
-
-    @Override
-    public SeriesImpl clone() {
-        throw new UnsupportedMethodException();
+    public boolean removeBookRelation(Long bookId) {
+        return seriesItemRelations.removeIf( seriesItemRelation -> seriesItemRelation.getItemId().equals(bookId));
     }
 
     @Override
@@ -94,14 +76,12 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     }
 
     @Override
-    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
         throw new NotImplementedException();
     }
 
     @Override
     public void delete() {
-        // TODO: Implement
         throw new NotImplementedException();
     }
 
@@ -125,16 +105,7 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
                 title,
                 new ArrayList<>(itemsList),
                 user,
-                entityState,
-                seriesBooksRespository,
                 new ArrayList<>(seriesItemRelations)
         );
-    }
-
-    /**
-     * Set persistent copy
-     */
-    protected void initPersistentCopy() {
-        persistedCopy = deepCopy();
     }
 }
