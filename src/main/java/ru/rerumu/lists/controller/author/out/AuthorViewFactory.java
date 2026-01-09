@@ -13,12 +13,15 @@ import java.util.stream.Collectors;
 @Component
 public class AuthorViewFactory {
 
+    public AuthorView buildAuthorView(Author author) {
+        return new AuthorView(author);
+    }
+
     public AuthorsListView buildAuthorsListView(List<Author> authors) {
 
-        List<AuthorView2> views = authors.stream()
-                .map(Author::toDTO)
-                .sorted(Comparator.comparing(authorDTO -> authorDTO.getName().toLowerCase().strip()))
-                .map(AuthorView2::new)
+        List<AuthorView> views = authors.stream()
+                .sorted(Comparator.comparing(author -> author.getName().toLowerCase().strip()))
+                .map(AuthorView::new)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return new AuthorsListView(views);

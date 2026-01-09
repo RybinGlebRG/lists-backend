@@ -1,31 +1,20 @@
 package ru.rerumu.lists.controller.author.out;
 
-import org.json.JSONObject;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.author.AuthorDTO;
 
+@EqualsAndHashCode
+@ToString
+@Getter
 public class AuthorView {
 
-    private final Author author;
+    private final Long authorId;
+    private final String name;
 
     public AuthorView(Author author) {
-        this.author = author;
+        this.authorId = author.getId();
+        this.name = author.getName();
     }
-
-    public JSONObject toJSONObject(){
-        AuthorDTO authorDTO = author.toDTO();
-
-        JSONObject obj = new JSONObject();
-        obj.put("authorId", authorDTO.getAuthorId());
-        obj.put("name", authorDTO.getName());
-        obj.put("user", authorDTO.getUser());
-
-        return obj;
-    }
-
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
-
 }

@@ -15,10 +15,6 @@
         <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
 
-        <!-- TODO: fix -->
-            <allow class="ru.rerumu.lists.domain.factories.UserServiceProxyFactory"/>
-        <!-- -->
-
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 

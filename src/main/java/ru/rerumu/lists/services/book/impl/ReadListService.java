@@ -13,6 +13,7 @@ import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
+import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
@@ -21,16 +22,12 @@ import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
@@ -56,15 +53,13 @@ public class ReadListService implements BookService {
     private final BookTypesService bookTypesService;
     private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
-    private final BookFactory bookFactory;
     private final TagFactory tagFactory;
-    private final AuthorFactory authorFactory;
-    private final SeriesFactory seriesFactory;
     private final BookTypeRepository bookTypeRepository;
     private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final SeriesRepository seriesRepository;
     private final UsersRepository usersRepository;
+    private final AuthorsRepository authorsRepository;
 
     @Autowired
     public ReadListService(
@@ -73,29 +68,26 @@ public class ReadListService implements BookService {
             BookTypesService bookTypesService,
             BookStatusesService bookStatusesService,
             FuzzyMatchingService fuzzyMatchingService,
-            BookFactoryImpl bookFactory,
             TagFactory tagFactory,
-            AuthorFactory authorFactory,
-            SeriesFactory seriesFactory,
             BookTypeRepository bookTypeRepository,
             StatusFactory statusFactory,
             ReadingRecordsRepository readingRecordsRepository,
-            SeriesRepository seriesRepository, UsersRepository usersRepository
+            SeriesRepository seriesRepository,
+            UsersRepository usersRepository,
+            AuthorsRepository authorsRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.bookTypesService = bookTypesService;
         this.bookStatusesService = bookStatusesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
-        this.bookFactory = bookFactory;
         this.tagFactory = tagFactory;
-        this.authorFactory = authorFactory;
-        this.seriesFactory = seriesFactory;
         this.bookTypeRepository = bookTypeRepository;
         this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.seriesRepository = seriesRepository;
         this.usersRepository = usersRepository;
+        this.authorsRepository = authorsRepository;
     }
 
     /**
@@ -200,7 +192,7 @@ public class ReadListService implements BookService {
         // Update author
         logger.info("Updating text authors...");
         if (bookUpdateView.getAuthorId() != null) {
-            Author author = authorFactory.findById(bookUpdateView.getAuthorId());
+            Author author = authorsRepository.findById(bookUpdateView.getAuthorId(), user);
             book.updateTextAuthors(List.of(author));
         }
 
@@ -321,7 +313,7 @@ public class ReadListService implements BookService {
             logger.info("Add author...");
             authorsBooksRepository.add(
                     newBook.getId(),
-                    authorFactory.findById(bookAddView.getAuthorId()).getId(),
+                    authorsRepository.findById(bookAddView.getAuthorId(), user).getId(),
                     user.getId(),
                     AuthorRole.TEXT_AUTHOR.getId()
             );

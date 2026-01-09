@@ -7,7 +7,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
@@ -47,9 +46,6 @@ public class BookFactoryImplTest {
 
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;
-
-    @Mock
-    private AuthorFactory authorFactory;
 
 
 //    @BeforeEach

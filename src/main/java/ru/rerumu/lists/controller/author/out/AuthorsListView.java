@@ -11,9 +11,9 @@ import java.util.List;
 @Getter
 public class AuthorsListView {
 
-    private final List<AuthorView2> items;
+    private final List<AuthorView> items;
 
-    public AuthorsListView(List<AuthorView2> items) {
+    public AuthorsListView(List<AuthorView> items) {
         this.items = items;
     }
 }

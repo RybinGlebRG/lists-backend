@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.author.out.AuthorView;
 import ru.rerumu.lists.controller.author.out.AuthorViewFactory;
 import ru.rerumu.lists.controller.author.out.AuthorsListView;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.author.AuthorsService;
@@ -46,15 +47,21 @@ public class AuthorsController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping(value = "/api/v1/authors/{authorId}",
+    @GetMapping(value = "/api/v1/users/{userId}/authors/{authorId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getOne(
+            @PathVariable Long userId,
             @PathVariable Long authorId
     ) {
-        Author author = authorsService.getAuthor(authorId);
-        AuthorView authorView = new AuthorView(author);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(authorView.toString(), HttpStatus.OK);
-        return resEnt;
+        try {
+            Author author = authorsService.getAuthor(authorId, userId);
+            AuthorView authorView = authorViewFactory.buildAuthorView(author);
+            String result = objectMapper.writeValueAsString(authorView);
+            ResponseEntity<String> resEnt = new ResponseEntity<>(result, HttpStatus.OK);
+            return resEnt;
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     @GetMapping(value = "/api/v1/users/{userId}/authors",

@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.services.book.Search;
-import ru.rerumu.lists.domain.factories.UserServiceProxyFactory;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.GameAddView;
@@ -31,12 +30,9 @@ public class GamesController {
     @Deprecated
     private final UserService userService;
 
-    private final UserServiceProxyFactory userServiceProxyFactory;
-
-    public GamesController(GameService gameService, @Qualifier("UserServiceProtectionProxy") UserService userService, UserServiceProxyFactory userServiceProxyFactory) {
+    public GamesController(GameService gameService, @Qualifier("UserServiceProtectionProxy") UserService userService) {
         this.gameService = gameService;
         this.userService = userService;
-        this.userServiceProxyFactory = userServiceProxyFactory;
     }
 
     @PostMapping(

@@ -3,7 +3,7 @@ package ru.rerumu.lists.controller.book.view.out;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.controller.author.out.AuthorView2;
+import ru.rerumu.lists.controller.author.out.AuthorView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.author.Author;
@@ -76,9 +76,9 @@ public class BookViewFactory {
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        List<AuthorView2> textAuthors = book.getTextAuthors().stream()
+        List<AuthorView> textAuthors = book.getTextAuthors().stream()
                 .sorted(Comparator.comparing(Author::getName))
-                .map(AuthorView2::new)
+                .map(AuthorView::new)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         List<SeriesView> seriesViewList = book.getSeriesList().stream()

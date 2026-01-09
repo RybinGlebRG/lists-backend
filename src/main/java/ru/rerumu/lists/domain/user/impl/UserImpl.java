@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.rerumu.lists.crosscut.exception.AppException;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserDTO;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -39,10 +38,6 @@ public class UserImpl implements User {
     @Override
     public Long getId() {
         return userId;
-    }
-
-    public UserDTO toDTO() {
-        return new UserDTO(userId, name, null);
     }
 
     @Override

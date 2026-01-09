@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
@@ -15,7 +16,6 @@ import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.impl.SeriesPersistenceProxy;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
@@ -52,11 +52,11 @@ public class BookFactoryImpl implements BookFactory {
     private final TagFactory tagFactory;
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
-    private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final UsersRepository usersRepository;
+    private final AuthorsRepository authorsRepository;
 
     @Autowired
     public BookFactoryImpl(
@@ -66,11 +66,11 @@ public class BookFactoryImpl implements BookFactory {
             TagFactory tagFactory,
             StatusFactory statusFactory,
             AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory,
             @NonNull SeriesItemRelationFactory seriesItemRelationFactory,
             ReadingRecordsRepository readingRecordsRepository,
-            UsersRepository usersRepository
+            UsersRepository usersRepository,
+            AuthorsRepository authorsRepository
     ) {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
@@ -78,11 +78,11 @@ public class BookFactoryImpl implements BookFactory {
         this.tagFactory = tagFactory;
         this.statusFactory = statusFactory;
         this.authorsBooksRepository = authorsBooksRepository;
-        this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.usersRepository = usersRepository;
+        this.authorsRepository = authorsRepository;
     }
 
     public Book createBook(
@@ -129,7 +129,6 @@ public class BookFactoryImpl implements BookFactory {
                 dateFactory,
                 readingRecordFactory,
                 authorsBooksRepository,
-                authorFactory,
                 seriesFactory
         );
 
@@ -144,7 +143,9 @@ public class BookFactoryImpl implements BookFactory {
         // Get authors
         List<Author> authors;
         if (bookMyBatisEntity.getTextAuthors() != null) {
-            authors = authorFactory.fromDTO(bookMyBatisEntity.getTextAuthors());
+            authors = bookMyBatisEntity.getTextAuthors().stream()
+                    .map(authorsRepository::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
         } else {
             authors = new ArrayList<>();
         }
@@ -256,7 +257,6 @@ public class BookFactoryImpl implements BookFactory {
                 dateFactory,
                 readingRecordFactory,
                 authorsBooksRepository,
-                authorFactory,
                 seriesFactory
         );
 

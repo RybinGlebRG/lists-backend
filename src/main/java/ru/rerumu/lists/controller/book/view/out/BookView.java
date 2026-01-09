@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.DeepCopyable;
-import ru.rerumu.lists.controller.author.out.AuthorView2;
+import ru.rerumu.lists.controller.author.out.AuthorView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;
@@ -84,7 +84,7 @@ public class BookView implements DeepCopyable<BookView>{
     private final List<TagView> tags;
 
     @Getter
-    private final List<AuthorView2> textAuthors;
+    private final List<AuthorView> textAuthors;
 
     @Setter
     @Getter
@@ -106,7 +106,7 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull List<ReadingRecordView> readingRecords,
             String URL,
             @NonNull List<TagView> tags,
-            List<AuthorView2> textAuthors,
+            List<AuthorView> textAuthors,
             List<SeriesView> seriesList
     ) {
         this.bookId = bookId;

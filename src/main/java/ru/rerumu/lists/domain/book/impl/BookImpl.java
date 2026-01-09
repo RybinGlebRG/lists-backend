@@ -14,7 +14,6 @@ import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
@@ -95,7 +94,6 @@ public class BookImpl implements Book{
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
-    private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
 
 
@@ -120,7 +118,6 @@ public class BookImpl implements Book{
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
             @NonNull AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory
     ) {
         this.bookId = bookId;
@@ -142,7 +139,6 @@ public class BookImpl implements Book{
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.authorsBooksRepository = authorsBooksRepository;
-        this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
     }
 
@@ -407,7 +403,6 @@ public class BookImpl implements Book{
                 dateFactory,
                 readingRecordFactory,
                 authorsBooksRepository,
-                authorFactory,
                 seriesFactory
         );
     }
