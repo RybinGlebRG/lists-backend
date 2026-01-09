@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
-import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
@@ -24,17 +23,14 @@ import java.util.stream.Collectors;
 @Component
 public class SeriesFactoryImpl implements SeriesFactory {
 
-    private final SeriesRepository seriesRepository;
     private final SeriesBooksRespository seriesBooksRespository;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
 
     @Autowired
     public SeriesFactoryImpl(
-            @NonNull SeriesRepository seriesRepository,
             @NonNull SeriesBooksRespository seriesBooksRespository,
             @NonNull SeriesItemRelationFactory seriesItemRelationFactory
     ) {
-        this.seriesRepository = seriesRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
     }
@@ -71,7 +67,6 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 title,
                 new ArrayList<>(),
                 user,
-                seriesRepository,
                 EntityState.NEW,
                 seriesBooksRespository,
                 new ArrayList<>()
@@ -95,7 +90,6 @@ public class SeriesFactoryImpl implements SeriesFactory {
                 title,
                 new ArrayList<>(),
                 user,
-                seriesRepository,
                 entityState,
                 seriesBooksRespository,
                 seriesItemRelation

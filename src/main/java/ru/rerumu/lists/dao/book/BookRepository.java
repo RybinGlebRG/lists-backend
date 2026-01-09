@@ -2,8 +2,11 @@ package ru.rerumu.lists.dao.book;
 
 import lombok.NonNull;
 import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.user.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,4 +38,18 @@ public interface BookRepository {
      * @param book Book to delete
      */
     void delete(Book book);
+
+    /**
+     * Create book
+     */
+    Book create(
+            String title,
+            Integer lastChapter,
+            String note,
+            BookStatusRecord bookStatus,
+            LocalDateTime insertDate,
+            BookType bookType,
+            String URL,
+            User user
+    );
 }

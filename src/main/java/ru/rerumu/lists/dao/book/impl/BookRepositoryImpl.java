@@ -21,11 +21,14 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
+import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
 import ru.rerumu.lists.domain.user.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -267,7 +270,7 @@ public class BookRepositoryImpl implements BookRepository {
 
             // Save book
             log.debug("Saving book...");
-            bookPersistenceProxy.save();
+            update(book);
             bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
             bookPersistenceProxy.initPersistedCopy();
 
@@ -279,7 +282,7 @@ public class BookRepositoryImpl implements BookRepository {
             seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
             // save collected entities
             for (Series series: seriesSet) {
-                series.save();
+                seriesRepository.save(series);
             }
 
             // Delete removed reading records
@@ -299,8 +302,22 @@ public class BookRepositoryImpl implements BookRepository {
         }
     }
 
+    // TODO: Not deleting???
     @Override
     public void delete(Book book) {
+
+        // TODO: Check
+        Long bookId = book.getId();
+        authorsBooksRepository.getAuthorsByBookId(bookId)
+                .forEach(authorDtoDao -> authorsBooksRepository.delete(
+                        bookId,
+                        authorDtoDao.getAuthorId()
+                ));
+
+        // TODO: Check
+        for (Series series: book.getSeriesList()) {
+            series.removeBookRelation(bookId);
+        }
 
         // Delete reading records
         List<ReadingRecord> readingRecords = book.getReadingRecords();
@@ -322,5 +339,38 @@ public class BookRepositoryImpl implements BookRepository {
 
         // Delete book
         bookMapper.delete(book.getId(), book.getUser().userId());
+    }
+
+    @Override
+    public Book create(
+            String title,
+            Integer lastChapter,
+            String note,
+            BookStatusRecord bookStatus,
+            LocalDateTime insertDate,
+            BookType bookType,
+            String URL,
+            User user
+    ) {
+        Long bookId = getNextId();
+
+        Book book = bookFactory.createBook(
+                bookId,
+                title,
+                lastChapter,
+                note,
+                bookStatus,
+                insertDate,
+                bookType,
+                URL,
+                user
+        );
+
+        addOne(book);
+
+        BookPersistenceProxy bookPersistenceProxy = new BookPersistenceProxy(book, EntityState.PERSISTED);
+        bookPersistenceProxy.initPersistedCopy();
+
+        return bookPersistenceProxy;
     }
 }

@@ -9,6 +9,7 @@ import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.ClientException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
@@ -36,6 +37,7 @@ public class BacklogServiceImpl implements BacklogService {
     private final DateFactory dateFactory;
     private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     public BacklogServiceImpl(
@@ -44,7 +46,8 @@ public class BacklogServiceImpl implements BacklogService {
             BookFactory bookFactory,
             DateFactory dateFactory,
             StatusFactory statusFactory,
-            ReadingRecordsRepository readingRecordsRepository
+            ReadingRecordsRepository readingRecordsRepository,
+            BookRepository bookRepository
     ) {
         this.backlogItemFactory = backlogItemFactory;
         this.userFactory = userFactory;
@@ -52,6 +55,7 @@ public class BacklogServiceImpl implements BacklogService {
         this.dateFactory = dateFactory;
         this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -152,7 +156,7 @@ public class BacklogServiceImpl implements BacklogService {
 
             // If item is book
             if (backlogItem.getType().equals(SeriesItemType.BOOK)) {
-                Book book = bookFactory.createBook(
+                Book book = bookRepository.create(
                         backlogItem.getTitle(),
                         null,
                         backlogItem.getNote(),

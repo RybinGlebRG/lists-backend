@@ -71,6 +71,4 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
 
     boolean currentStatusEquals(Long statusId);
 
-
-    void delete();
 }

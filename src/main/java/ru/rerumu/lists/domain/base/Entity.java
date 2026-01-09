@@ -23,6 +23,7 @@ public interface Entity<T> {
     /**
      * Delete the entity
      */
+    @Deprecated
     void delete();
 
 //    /**

@@ -2,6 +2,7 @@ package ru.rerumu.lists.domain.book.impl;
 
 import lombok.NonNull;
 import org.json.JSONObject;
+import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -61,11 +62,7 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
 
     @Override
     public void save() {
-        book.save();
-
-        // Reinit persisted copy after saving
-        entityState = EntityState.PERSISTED;
-        initPersistedCopy();
+        throw new NotImplementedException();
     }
 
     @Override

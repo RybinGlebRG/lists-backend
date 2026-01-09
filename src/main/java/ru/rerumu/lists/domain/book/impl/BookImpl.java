@@ -13,7 +13,6 @@ import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
@@ -92,7 +91,6 @@ public class BookImpl implements Book{
 
 
     private final ReadingRecordFactory readingRecordFactory;
-    private final BookRepository bookRepository;
     private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final StatusFactory statusFactory;
@@ -121,7 +119,6 @@ public class BookImpl implements Book{
             @NonNull List<Series> seriesList,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
-            @NonNull BookRepository bookRepository,
             @NonNull AuthorsBooksRepository authorsBooksRepository,
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory
@@ -144,7 +141,6 @@ public class BookImpl implements Book{
         this.textAuthors = textAuthors;
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
-        this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
@@ -159,21 +155,10 @@ public class BookImpl implements Book{
         return readingRecord.statusEquals(statusId);
     }
 
+    // TODO: remove
     @Override
     public void delete() {
-
-        // TODO: Details of data storage should be encapsulated in DAO layer (probably)
-        authorsBooksRepository.getAuthorsByBookId(bookId)
-                        .forEach(authorDtoDao -> authorsBooksRepository.delete(
-                                bookId,
-                                authorDtoDao.getAuthorId()
-                        ));
-
-        for (Series series: seriesList) {
-            series.removeBookRelation(bookId);
-        }
-
-        bookRepository.delete(bookId, user);
+        throw new NotImplementedException();
     }
 
     @Override
@@ -335,7 +320,7 @@ public class BookImpl implements Book{
     @Override
     @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
     public void save() {
-        bookRepository.update(this);
+        throw new NotImplementedException();
     }
 
     @Override
@@ -421,7 +406,6 @@ public class BookImpl implements Book{
                 new ArrayList<>(seriesList),
                 dateFactory,
                 readingRecordFactory,
-                bookRepository,
                 authorsBooksRepository,
                 authorFactory,
                 seriesFactory

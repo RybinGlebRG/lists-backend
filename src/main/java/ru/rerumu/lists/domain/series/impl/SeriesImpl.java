@@ -9,7 +9,6 @@ import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.UnsupportedMethodException;
 import ru.rerumu.lists.dao.series.SeriesBooksRespository;
-import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.domain.base.EntityBaseImpl;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
@@ -37,8 +36,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
     @Getter
     private final User user;
 
-    private final SeriesRepository seriesRepository;
-
     private final SeriesBooksRespository seriesBooksRespository;
 
     @Getter
@@ -50,7 +47,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
             @NonNull String title,
             @NonNull List<SeriesItem> itemsList,
             @NonNull User user,
-            @NonNull SeriesRepository seriesRepository,
             @NonNull EntityState entityState,
             @NonNull SeriesBooksRespository seriesBooksRespository,
             @NonNull List<SeriesItemRelation> seriesItemRelations
@@ -60,7 +56,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
         this.user = user;
         this.title = title;
         this.itemsList = new ArrayList<>(itemsList);
-        this.seriesRepository = seriesRepository;
         this.seriesBooksRespository = seriesBooksRespository;
         this.seriesItemRelations = new ArrayList<>(seriesItemRelations);
     }
@@ -130,7 +125,6 @@ public class SeriesImpl extends EntityBaseImpl<SeriesImpl> implements Series, De
                 title,
                 new ArrayList<>(itemsList),
                 user,
-                seriesRepository,
                 entityState,
                 seriesBooksRespository,
                 new ArrayList<>(seriesItemRelations)

@@ -306,7 +306,7 @@ public class ReadListService implements BookService {
 
         // Create book
         logger.info("Create book...");
-        Book newBook = bookFactory.createBook(
+        Book newBook = bookRepository.create(
                 bookAddView.getTitle(),
                 bookAddView.getLastChapter(),
                 bookAddView.note(),

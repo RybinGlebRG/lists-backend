@@ -17,6 +17,7 @@ public interface BookFactory {
     List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList);
 
     Book createBook(
+            Long bookId,
             String title,
             Integer lastChapter,
             String note,
