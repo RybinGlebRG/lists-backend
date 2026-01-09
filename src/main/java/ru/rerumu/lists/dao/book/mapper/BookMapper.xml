@@ -79,7 +79,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.User">
+    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.impl.UserImpl">
         <constructor>
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>

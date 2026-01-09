@@ -17,7 +17,7 @@ public class SeriesViewFactory {
     public SeriesView buildSeriesView(Series series) {
         return new SeriesView(
                 series.getId(),
-                series.getUser().userId(),
+                series.getUser().getId(),
                 series.getTitle(),
                 series.getItemsList()
         );

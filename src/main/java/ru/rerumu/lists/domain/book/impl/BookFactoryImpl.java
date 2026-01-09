@@ -10,8 +10,10 @@ import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.impl.SeriesPersistenceProxy;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -26,12 +28,10 @@ import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -49,7 +49,6 @@ public class BookFactoryImpl implements BookFactory {
     private final DateFactory dateFactory;
     private final ReadingRecordFactory readingRecordFactory;
     private final BookTypeFactory bookTypeFactory;
-    private final UserFactory userFactory;
     private final TagFactory tagFactory;
     private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
@@ -57,24 +56,25 @@ public class BookFactoryImpl implements BookFactory {
     private final SeriesFactory seriesFactory;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public BookFactoryImpl(
             DateFactory dateFactory,
             ReadingRecordFactory readingRecordFactory,
             BookTypeFactory bookTypeFactory,
-            UserFactory userFactory,
             TagFactory tagFactory,
             StatusFactory statusFactory,
             AuthorsBooksRepository authorsBooksRepository,
             @NonNull AuthorFactory authorFactory,
             @NonNull SeriesFactory seriesFactory,
-            @NonNull SeriesItemRelationFactory seriesItemRelationFactory, ReadingRecordsRepository readingRecordsRepository
+            @NonNull SeriesItemRelationFactory seriesItemRelationFactory,
+            ReadingRecordsRepository readingRecordsRepository,
+            UsersRepository usersRepository
     ) {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.bookTypeFactory = bookTypeFactory;
-        this.userFactory = userFactory;
         this.tagFactory = tagFactory;
         this.statusFactory = statusFactory;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -82,6 +82,7 @@ public class BookFactoryImpl implements BookFactory {
         this.seriesFactory = seriesFactory;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
         this.readingRecordsRepository = readingRecordsRepository;
+        this.usersRepository = usersRepository;
     }
 
     public Book createBook(
@@ -218,7 +219,7 @@ public class BookFactoryImpl implements BookFactory {
                 Series series = seriesFactory.buildSeries(
                         seriesMyBatisEntity.getSeriesId(),
                         seriesMyBatisEntity.getTitle(),
-                        userFactory.findById(seriesMyBatisEntity.getUserId()),
+                        usersRepository.findById(seriesMyBatisEntity.getUserId()),
                         seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
                 );
 
@@ -230,6 +231,8 @@ public class BookFactoryImpl implements BookFactory {
         } else {
             seriesList = new ArrayList<>();
         }
+
+        User user = usersRepository.findById(bookMyBatisEntity.getUser().getUserId());
 
         // Create book
         Book book = new BookImpl(
@@ -246,7 +249,7 @@ public class BookFactoryImpl implements BookFactory {
                 readingRecords,
                 statusFactory,
                 bookMyBatisEntity.getURL(),
-                userFactory.fromDTO(bookMyBatisEntity.getUser()),
+                user,
                 tags,
                 authors,
                 seriesList,

@@ -19,13 +19,12 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookFactoryImpl;
-import ru.rerumu.lists.services.book.Filter;
-import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
@@ -35,8 +34,9 @@ import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.book.BookService;
+import ru.rerumu.lists.services.book.Filter;
+import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
@@ -58,13 +58,13 @@ public class ReadListService implements BookService {
     private final FuzzyMatchingService fuzzyMatchingService;
     private final BookFactory bookFactory;
     private final TagFactory tagFactory;
-    private final UserFactory userFactory;
     private final AuthorFactory authorFactory;
     private final SeriesFactory seriesFactory;
     private final BookTypeRepository bookTypeRepository;
     private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final SeriesRepository seriesRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public ReadListService(
@@ -75,13 +75,12 @@ public class ReadListService implements BookService {
             FuzzyMatchingService fuzzyMatchingService,
             BookFactoryImpl bookFactory,
             TagFactory tagFactory,
-            UserFactory userFactory,
             AuthorFactory authorFactory,
             SeriesFactory seriesFactory,
             BookTypeRepository bookTypeRepository,
             StatusFactory statusFactory,
             ReadingRecordsRepository readingRecordsRepository,
-            SeriesRepository seriesRepository
+            SeriesRepository seriesRepository, UsersRepository usersRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -90,13 +89,13 @@ public class ReadListService implements BookService {
         this.fuzzyMatchingService = fuzzyMatchingService;
         this.bookFactory = bookFactory;
         this.tagFactory = tagFactory;
-        this.userFactory = userFactory;
         this.authorFactory = authorFactory;
         this.seriesFactory = seriesFactory;
         this.bookTypeRepository = bookTypeRepository;
         this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.seriesRepository = seriesRepository;
+        this.usersRepository = usersRepository;
     }
 
     /**
@@ -108,7 +107,7 @@ public class ReadListService implements BookService {
     public Book updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
 
         logger.info("Getting user with id='{}'...", userId);
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         logger.info("Getting book with id='{}'...", bookId);
         Book book = bookRepository.findById(bookId, userId);
@@ -243,7 +242,7 @@ public class ReadListService implements BookService {
     public List<Book> getAllBooks(Search search, Long userId) {
         List<Book> bookList;
 
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         if (search.getChainBySeries()) {
             bookList = bookRepository.findByUserChained(user);
         } else {
@@ -302,7 +301,7 @@ public class ReadListService implements BookService {
 
         // Find user
         logger.info("Find user...");
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Create book
         logger.info("Create book...");
@@ -323,7 +322,7 @@ public class ReadListService implements BookService {
             authorsBooksRepository.add(
                     newBook.getId(),
                     authorFactory.findById(bookAddView.getAuthorId()).getId(),
-                    user.userId(),
+                    user.getId(),
                     AuthorRole.TEXT_AUTHOR.getId()
             );
         }
@@ -352,7 +351,7 @@ public class ReadListService implements BookService {
 
         // Getting created book from DB
         logger.info("Loading book...");
-        return getBook(newBook.getId(), user.userId());
+        return getBook(newBook.getId(), user.getId());
     }
 
     /**

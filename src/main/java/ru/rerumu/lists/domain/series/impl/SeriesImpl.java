@@ -59,7 +59,7 @@ public class SeriesImpl implements Series {
                 new SeriesBookRelation(
                         bookId,
                         seriesId,
-                        user.userId()
+                        user.getId()
                 )
         );
         return true;

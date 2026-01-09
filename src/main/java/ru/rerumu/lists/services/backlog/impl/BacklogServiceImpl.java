@@ -11,6 +11,7 @@ import ru.rerumu.lists.crosscut.exception.ClientException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
 import ru.rerumu.lists.domain.backlog.BacklogItemFactory;
@@ -22,7 +23,6 @@ import ru.rerumu.lists.domain.bookstatus.Statuses;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.backlog.BacklogService;
 
 import java.util.List;
@@ -32,36 +32,36 @@ import java.util.List;
 public class BacklogServiceImpl implements BacklogService {
 
     private final BacklogItemFactory backlogItemFactory;
-    private final UserFactory userFactory;
     private final BookFactory bookFactory;
     private final DateFactory dateFactory;
     private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final BookRepository bookRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public BacklogServiceImpl(
             BacklogItemFactory backlogItemFactory,
-            UserFactory userFactory,
             BookFactory bookFactory,
             DateFactory dateFactory,
             StatusFactory statusFactory,
             ReadingRecordsRepository readingRecordsRepository,
-            BookRepository bookRepository
+            BookRepository bookRepository,
+            UsersRepository usersRepository
     ) {
         this.backlogItemFactory = backlogItemFactory;
-        this.userFactory = userFactory;
         this.bookFactory = bookFactory;
         this.dateFactory = dateFactory;
         this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.bookRepository = bookRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
     public BacklogItem addItemToBacklog(@NonNull Long userId, @NonNull BacklogItemCreateView backlogItemCreateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get type and check correctness
         SeriesItemType seriesItemType = SeriesItemType.findById(backlogItemCreateView.getType());
@@ -87,7 +87,7 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public List<BacklogItem> getBacklog(@NonNull Long userId) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Load and return backlog items
         return backlogItemFactory.loadByUser(user);
@@ -96,7 +96,7 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public BacklogItem updateBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemUpdateView backlogItemUpdateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
         BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
@@ -128,7 +128,7 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public void deleteBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
         BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
@@ -140,7 +140,7 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public void processEvent(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemEventCreateView backlogItemEventCreateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
         BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);

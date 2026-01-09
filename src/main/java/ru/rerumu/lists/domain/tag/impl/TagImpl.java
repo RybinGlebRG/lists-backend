@@ -58,7 +58,7 @@ public class TagImpl implements Tag {
         return new TagDTO(
                 tagId,
                 name,
-                user.userId()
+                user.getId()
         );
     }
 

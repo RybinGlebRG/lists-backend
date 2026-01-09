@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceProtectionProxy;
@@ -25,16 +25,16 @@ public class SeriesServiceConfig {
     public SeriesService seriesServiceProtectionProxy(
             @Qualifier("seriesServiceImpl") SeriesService seriesService,
             UserService userService,
-            UserFactory userFactory
+            UsersRepository usersRepository
     ) throws EntityNotFoundException {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
-        log.info(String.format("GOT USER %d", authUser.userId()));
+        log.info(String.format("GOT USER %d", authUser.getId()));
         var seriesServiceProtectionProxy = new SeriesServiceProtectionProxy(
                 seriesService,
                 userService,
                 authUser,
-                userFactory
+                usersRepository
         );
         return seriesServiceProtectionProxy;
     }

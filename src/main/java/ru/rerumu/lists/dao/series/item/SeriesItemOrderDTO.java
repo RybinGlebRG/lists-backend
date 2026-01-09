@@ -1,6 +1,4 @@
-package ru.rerumu.lists.dao.series;
-
-import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
+package ru.rerumu.lists.dao.series.item;
 
 public class SeriesItemOrderDTO {
 

@@ -11,17 +11,17 @@
 <!--        <result column="book_count" property="bookCount" javaType="Integer"/>-->
 <!--        <collection-->
 <!--                property="seriesItemOrderDTOList"-->
-<!--                ofType="ru.rerumu.lists.dao.series.SeriesItemOrderDTO"-->
+<!--                ofType="ru.rerumu.lists.dao.series.item.SeriesItemOrderDTO"-->
 <!--                resultMap="SeriesItemOrderDTOResultMap"-->
 <!--        />-->
 <!--    </resultMap>-->
 
-    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.dao.series.SeriesItemOrderDTO">
+    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.dao.series.item.SeriesItemOrderDTO">
         <result property="order" column="series_order" javaType="Long"/>
         <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
     </resultMap>
 
-    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.domain.series.item.SeriesItemDTO">
+    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.dao.series.item.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
             <case value="1" resultMap="ru.rerumu.lists.dao.book.mapper.BookMapper.BookResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>

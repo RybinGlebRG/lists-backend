@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.views.BookSeriesAddView;
 
@@ -19,32 +19,32 @@ import java.util.List;
 public class SeriesServiceImpl implements SeriesService {
 
     private final SeriesRepository seriesRepository;
-    private final UserFactory userFactory;
+    private final UsersRepository usersRepository;
 
     public SeriesServiceImpl(
             SeriesRepository seriesRepository,
-            UserFactory userFactory
+            UsersRepository usersRepository
     ) {
         this.seriesRepository = seriesRepository;
-        this.userFactory = userFactory;
+        this.usersRepository = usersRepository;
     }
 
     @Override
     public List<Series> findAll(@NonNull Long userId) {
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         return seriesRepository.findByUser(user);
     }
 
     @Override
     public Series findById(@NonNull Long seriesId, @NonNull Long userId) {
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         return seriesRepository.findById(seriesId, user);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Series add(Long userId, BookSeriesAddView bookSeriesAddView) {
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         return seriesRepository.create(bookSeriesAddView.getTitle(), user);
     }
 

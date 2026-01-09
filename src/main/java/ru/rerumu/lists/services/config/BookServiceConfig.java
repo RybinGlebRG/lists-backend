@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.impl.BookServiceProtectionProxy;
@@ -24,11 +24,11 @@ public class BookServiceConfig {
     public BookService getBookServiceProtectionProxy(
             UserService userService,
             ReadListService readListService,
-            UserFactory userFactory
+            UsersRepository usersRepository
     ) {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
-        log .info(String.format("GOT USER %d", authUser.userId()));
-        return new BookServiceProtectionProxy(readListService, authUser, userFactory);
+        log .info(String.format("GOT USER %d", authUser.getId()));
+        return new BookServiceProtectionProxy(readListService, authUser, usersRepository);
     }
 }

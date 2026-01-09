@@ -43,15 +43,15 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
         BookTagDTO bookTagDTO = new BookTagDTO(
                 nextId,
                 book.getId(),
-                book.getUser().userId(),
+                book.getUser().getId(),
                 tag.getId(),
-                tag.getUser().userId()
+                tag.getUser().getId()
         );
         bookTagMapper.add(bookTagDTO);
     }
 
     @Override
     public List<TagDTO> findByIds(List<Long> tagIds, User user) {
-        return tagsMapper.findByIds(tagIds, user.userId());
+        return tagsMapper.findByIds(tagIds, user.getId());
     }
 }

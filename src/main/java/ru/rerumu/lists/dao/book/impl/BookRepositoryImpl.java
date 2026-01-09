@@ -84,7 +84,7 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
                 book.getURL(),
-                book.getUser().userId()
+                book.getUser().getId()
         );
     }
 
@@ -96,10 +96,10 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> findByUserChained(User user) {
 
         // Load all books by user
-        List<BookMyBatisEntity> bookDtoList = bookMapper.findByUserChained(user.userId());
+        List<BookMyBatisEntity> bookDtoList = bookMapper.findByUserChained(user.getId());
 
         // Load all relations between books and authors by user
-        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.userId());
+        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.getId());
         Map<Long, List<AuthorBookDto>> authorsMap = authorBookDtoList.stream()
                 .collect(Collectors.groupingBy(
                         AuthorBookDto::getBookId,
@@ -183,7 +183,7 @@ public class BookRepositoryImpl implements BookRepository {
         List<BookMyBatisEntity> bookMyBatisEntities = bookMapper.findByUser(user);
 
         // Load all relations between books and authors by user
-        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.userId());
+        List<AuthorBookDto> authorBookDtoList = authorsBooksRepository.getAllByUserId(user.getId());
         Map<Long, List<AuthorBookDto>> authorsMap = authorBookDtoList.stream()
                 .collect(Collectors.groupingBy(
                         AuthorBookDto::getBookId,
@@ -253,13 +253,13 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
                 book.getURL(),
-                book.getUser().userId()
+                book.getUser().getId()
         );
     }
 
     @Override
     public void delete(Long bookId, User user) {
-        bookMapper.delete(bookId, user.userId());
+        bookMapper.delete(bookId, user.getId());
     }
 
     @Override
@@ -341,7 +341,7 @@ public class BookRepositoryImpl implements BookRepository {
         save(book);
 
         // Delete book
-        bookMapper.delete(book.getId(), book.getUser().userId());
+        bookMapper.delete(book.getId(), book.getUser().getId());
     }
 
     @Override

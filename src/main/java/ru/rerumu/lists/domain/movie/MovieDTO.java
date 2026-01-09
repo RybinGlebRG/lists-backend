@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.movie;
 
 import ru.rerumu.lists.domain.base.EntityDTO;
 import ru.rerumu.lists.domain.VideoType;
-import ru.rerumu.lists.domain.series.item.SeriesItemDTO;
+import ru.rerumu.lists.dao.series.item.SeriesItemDTO;
 
 import java.util.Date;
 

@@ -302,7 +302,7 @@ public class BookImpl implements Book{
             textAuthors.add(author);
 
             // TODO: Probably better to move to DAO layer. Should be behind BookRepository???
-            authorsBooksRepository.add(bookId, author.getId(), user.userId(), AuthorRole.TEXT_AUTHOR.getId());
+            authorsBooksRepository.add(bookId, author.getId(), user.getId(), AuthorRole.TEXT_AUTHOR.getId());
         }
 
         // Remove existing authors

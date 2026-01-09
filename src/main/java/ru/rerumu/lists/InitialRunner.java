@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.user.impl.UserImpl;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.util.UUID;
@@ -37,7 +37,8 @@ public class InitialRunner implements CommandLineRunner {
             logger.error(String.format("Initial username = '%s'", DEFAULT_USERNAME));
             logger.error(String.format("Initial password = '%s'", defaultPassword));
 
-            userService.add(new User(0L, DEFAULT_USERNAME, defaultPassword));
+            // TODO: fix
+            userService.add(new UserImpl(0L, DEFAULT_USERNAME, defaultPassword));
         }
 
 

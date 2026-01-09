@@ -40,8 +40,8 @@ public class JWTFilter extends OncePerRequestFilter {
             final String token = header.split(" ")[1].trim();
             String identity = userService.checkTokenAndGetIdentity(token);
             User user = userService.checkTokenAndGetUser(token);
-            httpServletRequest.setAttribute("username",user.name());
-            httpServletRequest.setAttribute("authUserId",user.userId());
+            httpServletRequest.setAttribute("username",user.getName());
+            httpServletRequest.setAttribute("authUserId",user.getId());
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(identity,null, new ArrayList<>()));
         }
         catch (ExpiredJwtException e){

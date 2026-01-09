@@ -47,7 +47,7 @@ public class SeriesMyBatisEntity implements MyBatisEntity  {
 
         return new SeriesMyBatisEntity(
                 series.getId(),
-                series.getUser().userId(),
+                series.getUser().getId(),
                 series.getTitle(),
                 seriesBookRelationDtoList
         );

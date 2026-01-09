@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.user;
 
+import lombok.NonNull;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.domain.user.User;
 
@@ -17,4 +18,11 @@ public interface UsersRepository extends CrudRepository<User,Long> {
 
     User findById(Long userId);
     List<User> findByIds(List<Long> userIds);
+
+    @NonNull
+    User create(
+            @NonNull Long userId,
+            @NonNull String name,
+            char[] password
+    );
 }

@@ -4,12 +4,12 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.ServerException;
-import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.dao.tag.TagsRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagDTO;
 import ru.rerumu.lists.domain.tag.TagFactory;
-import ru.rerumu.lists.dao.tag.TagsRepository;
-import ru.rerumu.lists.domain.user.UserFactory;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
 public class TagFactoryImpl implements TagFactory {
 
     private final TagsRepository tagsRepository;
-    private final UserFactory userFactory;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public TagFactoryImpl(
             TagsRepository tagsRepository,
-            UserFactory userFactory
+            UsersRepository usersRepository
     ) {
         this.tagsRepository = tagsRepository;
-        this.userFactory = userFactory;
+        this.usersRepository = usersRepository;
     }
 
 
@@ -46,7 +46,7 @@ public class TagFactoryImpl implements TagFactory {
     @NonNull
     @Override
     public Tag fromDTO(@NonNull TagDTO tagDTO) {
-        User user = userFactory.findById(tagDTO.getUserId());
+        User user = usersRepository.findById(tagDTO.getUserId());
 
         return new TagImpl(
                 tagDTO.getTagId(),

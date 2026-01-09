@@ -7,11 +7,11 @@ import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.book.BookService;
+import ru.rerumu.lists.services.book.Search;
 
 import java.util.List;
 
@@ -20,19 +20,23 @@ public class BookServiceProtectionProxy implements BookService {
 
     private final ReadListService readListService;
     private final User authUser;
-    private final UserFactory userFactory;
+    private final UsersRepository usersRepository;
 
-    public BookServiceProtectionProxy(ReadListService readListService, User authUser, UserFactory userFactory) {
+    public BookServiceProtectionProxy(
+            ReadListService readListService,
+            User authUser,
+            UsersRepository usersRepository
+    ) {
         this.readListService = readListService;
         this.authUser = authUser;
-        this.userFactory = userFactory;
+        this.usersRepository = usersRepository;
     }
 
     @Override
     @NonNull
     public Book addBook(@NonNull BookAddView bookAddView, @NonNull Long userId) throws EmptyMandatoryParameterException, EntityNotFoundException {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         log.debug("user: {}", user);
 
 
@@ -48,7 +52,7 @@ public class BookServiceProtectionProxy implements BookService {
     @Override
     public Book getBook(@NonNull Long bookId, @NonNull Long userId) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         
         // Check if actual user has access
         if (!user.equals(authUser)) {
@@ -61,7 +65,7 @@ public class BookServiceProtectionProxy implements BookService {
     @Override
     public List<Book> getAllBooks(Search search, Long userId) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {
@@ -74,7 +78,7 @@ public class BookServiceProtectionProxy implements BookService {
     @Override
     public Book updateBook(@NonNull Long bookId, @NonNull Long userId, @NonNull BookUpdateView bookUpdateView) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {
@@ -87,7 +91,7 @@ public class BookServiceProtectionProxy implements BookService {
     @Override
     public void deleteBook(@NonNull Long bookId, @NonNull Long userId) throws EntityNotFoundException, EmptyMandatoryParameterException {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {

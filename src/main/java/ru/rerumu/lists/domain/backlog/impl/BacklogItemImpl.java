@@ -59,7 +59,7 @@ public class BacklogItemImpl extends EntityBaseImpl implements BacklogItem {
             title,
             type.getId(),
             note,
-            user.userId(),
+            user.getId(),
             creationDate
         );
     }

@@ -40,7 +40,7 @@ public class GameServiceConfig {
     ) throws EntityNotFoundException {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
         User authUser = userService.getOne(authUserId);
-        logger.info(String.format("GOT USER %d", authUser.userId()));
+        logger.info(String.format("GOT USER %d", authUser.getId()));
         var gameServiceProtectionProxy = new GameServiceProtectionProxy(
                 authUser,
                 gameService

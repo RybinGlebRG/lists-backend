@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException {
         User user = usersRepository.getOne(tokenRequest.getUsername());
-        boolean isValid = isValidPassword(tokenRequest.getPassword(),user.getHashedPassword());
+        boolean isValid = isValidPassword(tokenRequest.getPassword(), Arrays.toString(user.getHashedPassword()));
         if (!isValid){
             throw new IncorrectPasswordException();
         }
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         String passwordString;
 
         try {
-            KeySpec keySpec = new PBEKeySpec(user.password().toCharArray(), salt, iterations, 256);
+            KeySpec keySpec = new PBEKeySpec(user.getPassword().toCharArray(), salt, iterations, 256);
             SecretKey secretKey2 = new SecretKeySpec(
                     SecretKeyFactory
                             .getInstance("PBKDF2WithHmacSHA256")
@@ -90,9 +90,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         }
 
-        user = new User(user.userId(), user.name(), passwordString);
-        crudRepository.create(user);
-
+        usersRepository.create(user.getId(), user.getName(), passwordString.toCharArray());
     }
 
     private boolean isValidPassword(String requestPassword, String hashedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {

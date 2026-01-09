@@ -55,7 +55,7 @@ public class BacklogItemFactoryImpl implements BacklogItemFactory {
 
     @Override
     public List<BacklogItem> loadByUser(@NonNull User user) {
-        List<BacklogItemDTO> backlogItemDTOs = backlogItemRepository.findByUserId(user.userId());
+        List<BacklogItemDTO> backlogItemDTOs = backlogItemRepository.findByUserId(user.getId());
 
         return backlogItemDTOs.stream()
                 .map(backlogItemDTO -> fromDTO(backlogItemDTO, user))

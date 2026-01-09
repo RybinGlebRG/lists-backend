@@ -32,7 +32,7 @@ public class UserServiceProtectionProxyImpl implements UserService {
 
     @Override
     public User getOne(Long userId) throws EntityNotFoundException {
-        if (!authUser.userId().equals(userId)){
+        if (!authUser.getId().equals(userId)){
             throw new UserPermissionException();
         }
         return userService.getOne(userId);

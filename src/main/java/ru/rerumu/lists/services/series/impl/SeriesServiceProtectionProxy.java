@@ -3,9 +3,9 @@ package ru.rerumu.lists.services.series.impl;
 import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.views.BookSeriesAddView;
@@ -16,20 +16,20 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     private final SeriesService seriesService;
     private final UserService userService;
     private final User authUser;
-    private final UserFactory userFactory;
+    private final UsersRepository usersRepository;
 
 
-    public SeriesServiceProtectionProxy(SeriesService seriesService, UserService userService, User authUser, UserFactory userFactory) {
+    public SeriesServiceProtectionProxy(SeriesService seriesService, UserService userService, User authUser, UsersRepository usersRepository) {
         this.seriesService = seriesService;
         this.userService = userService;
         this.authUser = authUser;
-        this.userFactory = userFactory;
+        this.usersRepository = usersRepository;
     }
 
     @Override
     public List<Series> findAll(Long userId) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {
@@ -47,7 +47,7 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     @Override
     public Series add(Long userId, BookSeriesAddView bookSeriesAddView) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {

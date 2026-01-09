@@ -12,12 +12,12 @@ import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +30,22 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     private final SeriesMapper seriesMapper;
     private final SeriesBookMapper seriesBookMapper;
     private final SeriesFactory seriesFactory;
-    private final UserFactory userFactory;
     private final SeriesBooksRepository seriesBooksRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper,
             SeriesBookMapper seriesBookMapper,
             SeriesFactory seriesFactory,
-            UserFactory userFactory,
-            SeriesBooksRepository seriesBooksRepository
+            SeriesBooksRepository seriesBooksRepository,
+            UsersRepository usersRepository
     ) {
         this.seriesMapper = seriesMapper;
         this.seriesBookMapper = seriesBookMapper;
         this.seriesFactory = seriesFactory;
-        this.userFactory = userFactory;
         this.seriesBooksRepository = seriesBooksRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     @Override
     @NonNull
     public Series findById(@NonNull Long seriesId, @NonNull User user) {
-        SeriesMyBatisEntity seriesMyBatisEntity = seriesMapper.findById(seriesId, user.userId());
+        SeriesMyBatisEntity seriesMyBatisEntity = seriesMapper.findById(seriesId, user.getId());
         if (seriesMyBatisEntity == null) {
             throw new EntityNotFoundException();
         }
@@ -105,7 +105,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
         List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesMapper.findByBook(bookId, userId);
 
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         List<Series> seriesList = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     public List<Series> findByIds(@NonNull List<Long> seriesIds, @NonNull Long userId) {
         List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesMapper.findByIds(seriesIds, userId);
 
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         List<Series> seriesList = new ArrayList<>();
 
