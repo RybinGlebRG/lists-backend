@@ -1,9 +1,21 @@
 package ru.rerumu.lists.domain.user.impl;
 
 import lombok.Getter;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import ru.rerumu.lists.crosscut.exception.AppException;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserDTO;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Objects;
 
 public class UserImpl implements User {
@@ -17,18 +29,11 @@ public class UserImpl implements User {
     @Getter
     private final String password;
 
+
     public UserImpl(Long userId, String name, String password) {
         this.userId = userId;
         this.name = name;
         this.password = password;
-    }
-
-    public char[] getHashedPassword() {
-        return password.toCharArray();
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -38,6 +43,31 @@ public class UserImpl implements User {
 
     public UserDTO toDTO() {
         return new UserDTO(userId, name, null);
+    }
+
+    @Override
+    public boolean isValidPassword(char[] password) {
+        try {
+            Security.setProperty("crypto.policy", "unlimited");
+            Security.addProvider(new BouncyCastleProvider());
+            String[] parts = this.password.split("\\$");
+            int iterations = Integer.parseInt(parts[2]);
+            byte[] salt = Base64.getDecoder().decode(parts[3]);
+            byte[] hash = Base64.getDecoder().decode(parts[4]);
+            // TODO: Specify charset
+            KeySpec keySpec = new PBEKeySpec(password, salt, iterations, 256);
+            SecretKey secretKey = new SecretKeySpec(
+                    SecretKeyFactory
+                            .getInstance("PBKDF2WithHmacSHA256")
+                            .generateSecret(keySpec)
+                            .getEncoded()
+                    , "AES");
+            byte[] tmp = secretKey.getEncoded();
+            return Arrays.equals(hash, tmp);
+
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new AppException(e);
+        }
     }
 
     @Override

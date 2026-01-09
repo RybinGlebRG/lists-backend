@@ -60,7 +60,7 @@ public class AuthorsController {
     @GetMapping(value = "/api/v1/users/{userId}/authors",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable Long userId) throws JsonProcessingException {
-        User user = userService.getOne(userId);
+        User user = userService.findById(userId);
         List<Author> authors = authorsService.getAuthors(user);
         AuthorsListView authorsListView = authorViewFactory.buildAuthorsListView(authors);
         String result = objectMapper.writeValueAsString(authorsListView);
@@ -76,7 +76,7 @@ public class AuthorsController {
             @PathVariable Long userId,
             @RequestBody AddAuthorView addAuthorView
     ) {
-        User user = userService.getOne(userId);
+        User user = userService.findById(userId);
         authorsService.addAuthor(addAuthorView, user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

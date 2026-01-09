@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.rerumu.lists.crosscut.exception.NoJWTException;
+import ru.rerumu.lists.crosscut.exception.UnauthorizedException;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
+
     private final UserService userService;
 
     public JWTFilter(@Qualifier("UserService") UserService userService) {
@@ -27,31 +28,33 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse,
-                                    FilterChain filterChain) throws ServletException, IOException {
-
+    protected void doFilterInternal(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         try {
             final String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-            if (header==null){
-                throw new NoJWTException();
+            if (header == null || !header.startsWith("Bearer ")){
+                throw new UnauthorizedException();
             }
             final String token = header.split(" ")[1].trim();
-            String identity = userService.checkTokenAndGetIdentity(token);
-            User user = userService.checkTokenAndGetUser(token);
+            User user = userService.findByToken(token);
+
             httpServletRequest.setAttribute("username",user.getName());
             httpServletRequest.setAttribute("authUserId",user.getId());
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(identity,null, new ArrayList<>()));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                    user.getName(),
+                    null,
+                    new ArrayList<>()
+            ));
         }
         catch (ExpiredJwtException e){
-            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        } catch (NoJWTException e){
+            throw new UnauthorizedException();
         }
 
-
-        filterChain.doFilter(httpServletRequest,httpServletResponse);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
 }

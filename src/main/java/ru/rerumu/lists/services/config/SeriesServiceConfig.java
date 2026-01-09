@@ -28,7 +28,7 @@ public class SeriesServiceConfig {
             UsersRepository usersRepository
     ) throws EntityNotFoundException {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
-        User authUser = userService.getOne(authUserId);
+        User authUser = userService.findById(authUserId);
         log.info(String.format("GOT USER %d", authUser.getId()));
         var seriesServiceProtectionProxy = new SeriesServiceProtectionProxy(
                 seriesService,

@@ -27,7 +27,7 @@ public class BookServiceConfig {
             UsersRepository usersRepository
     ) {
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
-        User authUser = userService.getOne(authUserId);
+        User authUser = userService.findById(authUserId);
         log .info(String.format("GOT USER %d", authUser.getId()));
         return new BookServiceProtectionProxy(readListService, authUser, usersRepository);
     }

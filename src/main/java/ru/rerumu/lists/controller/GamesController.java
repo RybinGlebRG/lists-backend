@@ -48,7 +48,7 @@ public class GamesController {
             @RequestBody GameAddView gameAddView
     ) throws EntityNotFoundException {
 
-        User user = userService.getOne(userId);
+        User user = userService.findById(userId);
         gameService.addGame(user, gameAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -61,7 +61,7 @@ public class GamesController {
             @PathVariable Long userId,
             @RequestBody Search search
     ) throws EntityNotFoundException {
-        User user = userService.getOne(userId);
+        User user = userService.findById(userId);
         List<Game> gamesList = gameService.getAll(user, search);
         GameListView gameListView = new GameListView.Builder()
                 .gamesList(gamesList)

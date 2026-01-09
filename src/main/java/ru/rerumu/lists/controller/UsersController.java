@@ -26,7 +26,7 @@ public class UsersController {
     }
 
     @PostMapping(
-            value = "/api/v0.2/users/tokens",
+            value = "/api/v1/tokens",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )

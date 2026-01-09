@@ -1,11 +1,10 @@
 package ru.rerumu.lists.controller.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,37 +16,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig  {
     private static final String[] AUTH_WHITELIST = {
-            "/api/v0.2/users/tokens",
+            "/api/v1/tokens",
     };
 
     @Autowired
     private JWTFilter jwtFilter;
-
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .cors().and().csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers(AUTH_WHITELIST).permitAll()
-//                .anyRequest().authenticated();
-//
-//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 //                .cors().and()
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
+                .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                        authorizationManagerRequestMatcherRegistry
+                            .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                            .requestMatchers(AUTH_WHITELIST).permitAll()
+                            .anyRequest().authenticated()
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -55,12 +42,23 @@ public class WebSecurityConfig  {
     }
 
 
-    // TODO: Properly configure Spring Security
+//    // TODO: Properly configure Spring Security
+//    @Bean
+//    public AuthenticationManager noopAuthenticationManager() {
+//        return authentication -> {
+//            throw new AuthenticationServiceException("Authentication is done by JWT tokens");
+//        };
+//    }
+
+    /**
+     * <p>Making sure that filter is only added to Spring Security. So that it is not called twice according
+     * to https://docs.spring.io/spring-security/reference/servlet/architecture.html#_declaring_your_filter_as_a_bean</p>
+     */
     @Bean
-    public AuthenticationManager noopAuthenticationManager() {
-        return authentication -> {
-            throw new AuthenticationServiceException("Authentication is done by JWT tokens");
-        };
+    public FilterRegistrationBean<JWTFilter> jwtFilterRegistration(JWTFilter filter) {
+        FilterRegistrationBean<JWTFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
 }

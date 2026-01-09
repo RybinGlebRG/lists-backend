@@ -23,6 +23,6 @@ public interface UsersRepository extends CrudRepository<User,Long> {
     User create(
             @NonNull Long userId,
             @NonNull String name,
-            char[] password
+            char[] plainPassword
     );
 }

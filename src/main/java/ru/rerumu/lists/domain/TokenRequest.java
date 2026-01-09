@@ -1,5 +1,8 @@
 package ru.rerumu.lists.domain;
 
+import lombok.Getter;
+
+@Getter
 public class TokenRequest {
     private final String password;
     private final String username;
@@ -9,11 +12,4 @@ public class TokenRequest {
         this.username = username;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

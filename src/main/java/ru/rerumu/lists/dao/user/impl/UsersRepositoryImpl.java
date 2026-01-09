@@ -70,8 +70,8 @@ public class UsersRepositoryImpl extends CrudRepositoryEntityImpl<User,Long>  im
     }
 
     @Override
-    public @NonNull User create(@NonNull Long userId, @NonNull String name, char[] password) {
-        User user = userFactory.build(userId, name, password);
+    public @NonNull User create(@NonNull Long userId, @NonNull String name, char[] plainPassword) {
+        User user = userFactory.build(userId, name, plainPassword);
         userMapper.create(user);
         return user;
     }
