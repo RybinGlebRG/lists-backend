@@ -1,7 +1,7 @@
-package ru.rerumu.lists.controller.series.view.in;
+package ru.rerumu.lists.controller.series.views.in;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 
 public record SeriesUpdateItem(
         @JsonProperty("itemType") SeriesItemType itemType,

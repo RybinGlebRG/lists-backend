@@ -7,7 +7,7 @@ import ru.rerumu.lists.dao.backlog.BacklogItemRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.base.EntityBaseImpl;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;

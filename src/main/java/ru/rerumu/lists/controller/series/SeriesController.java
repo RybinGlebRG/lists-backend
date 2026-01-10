@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
-import ru.rerumu.lists.controller.series.view.out.SeriesListView;
-import ru.rerumu.lists.controller.series.view.out.SeriesView;
-import ru.rerumu.lists.controller.series.view.out.SeriesViewFactory;
+import ru.rerumu.lists.controller.series.views.in.SeriesUpdateView;
+import ru.rerumu.lists.controller.series.views.out.SeriesListView;
+import ru.rerumu.lists.controller.series.views.out.SeriesView;
+import ru.rerumu.lists.controller.series.views.out.SeriesViewFactory;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.services.series.SeriesService;
-import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.controller.series.views.BookSeriesAddView;
 
 import java.util.List;
 

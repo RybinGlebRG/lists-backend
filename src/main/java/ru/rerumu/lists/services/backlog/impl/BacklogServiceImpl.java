@@ -19,7 +19,7 @@ import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.backlog.BacklogService;
 

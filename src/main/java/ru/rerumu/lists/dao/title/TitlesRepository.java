@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.title;
 
 import ru.rerumu.lists.domain.movie.Movie;
-import ru.rerumu.lists.views.TitleCreateView;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 
 import java.util.List;
 

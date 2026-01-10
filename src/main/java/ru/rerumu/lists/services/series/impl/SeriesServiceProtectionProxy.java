@@ -1,6 +1,6 @@
 package ru.rerumu.lists.services.series.impl;
 
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
+import ru.rerumu.lists.controller.series.views.in.SeriesUpdateView;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.dao.user.UsersRepository;
@@ -8,7 +8,7 @@ import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.series.SeriesService;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.controller.series.views.BookSeriesAddView;
 
 import java.util.List;
 

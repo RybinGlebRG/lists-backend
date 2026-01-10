@@ -3,7 +3,7 @@ package ru.rerumu.lists.controller.book.view.out;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.controller.author.out.AuthorView;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.author.Author;
@@ -13,7 +13,7 @@ import ru.rerumu.lists.services.book.SearchOrder;
 import ru.rerumu.lists.services.book.SortItem;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
 
 import java.util.ArrayList;

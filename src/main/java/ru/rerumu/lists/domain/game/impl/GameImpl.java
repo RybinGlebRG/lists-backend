@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.game.Game;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;

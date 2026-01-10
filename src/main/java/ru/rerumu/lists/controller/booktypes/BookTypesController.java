@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookTypesListView;
+import ru.rerumu.lists.controller.booktypes.views.BookTypesListView;
 
 import java.util.List;
 

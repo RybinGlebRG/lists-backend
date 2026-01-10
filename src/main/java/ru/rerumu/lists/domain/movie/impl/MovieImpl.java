@@ -5,7 +5,7 @@ import lombok.Setter;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.domain.movietype.MovieType;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

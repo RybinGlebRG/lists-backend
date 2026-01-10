@@ -4,13 +4,13 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
+import ru.rerumu.lists.controller.series.views.in.SeriesUpdateView;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.series.SeriesService;
-import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.controller.series.views.BookSeriesAddView;
 
 import java.util.List;
 

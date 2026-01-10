@@ -1,7 +1,7 @@
 package ru.rerumu.lists.domain.movie;
 
 import ru.rerumu.lists.domain.movietype.MovieType;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 
 import java.time.LocalDateTime;
 import java.util.Date;

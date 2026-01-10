@@ -20,7 +20,7 @@ import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 

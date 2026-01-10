@@ -8,7 +8,7 @@ import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;

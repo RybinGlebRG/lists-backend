@@ -1,7 +1,7 @@
 package ru.rerumu.lists.domain.backlog;
 
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 
 import java.time.LocalDateTime;
 

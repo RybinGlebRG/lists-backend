@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller.series.view.out;
+package ru.rerumu.lists.controller.series.views.out;
 
 import java.util.List;
 

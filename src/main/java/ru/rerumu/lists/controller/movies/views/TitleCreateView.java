@@ -1,4 +1,4 @@
-package ru.rerumu.lists.views;
+package ru.rerumu.lists.controller.movies.views;
 
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.domain.movietype.MovieType;

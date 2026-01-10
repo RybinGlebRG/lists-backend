@@ -11,7 +11,7 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.views.AddAuthorView;
+import ru.rerumu.lists.controller.author.views.AddAuthorView;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.series;
 
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 
 import java.util.List;
 

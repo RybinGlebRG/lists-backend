@@ -1,8 +1,8 @@
 package ru.rerumu.lists.services.series;
 
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
+import ru.rerumu.lists.controller.series.views.in.SeriesUpdateView;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.views.BookSeriesAddView;
+import ru.rerumu.lists.controller.series.views.BookSeriesAddView;
 
 import java.util.List;
 

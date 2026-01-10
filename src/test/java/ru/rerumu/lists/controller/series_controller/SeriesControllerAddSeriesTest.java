@@ -2,10 +2,8 @@ package ru.rerumu.lists.controller.series_controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,9 +14,6 @@ import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.book.impl.ReadListService;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookSeriesAddView;
-
-import static org.mockito.Mockito.*;
 
 @WebMvcTest(SeriesController.class)
 @AutoConfigureMockMvc(addFilters = false)

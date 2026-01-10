@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.DeepCopyable;
-import ru.rerumu.lists.controller.author.out.AuthorView;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;

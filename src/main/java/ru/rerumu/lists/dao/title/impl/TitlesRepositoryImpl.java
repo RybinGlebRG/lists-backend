@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.movie.mapper.TitleMapper;
 import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.dao.title.TitlesRepository;
-import ru.rerumu.lists.views.TitleCreateView;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 
 import java.util.List;
 

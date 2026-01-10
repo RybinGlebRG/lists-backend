@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller.author.out;
+package ru.rerumu.lists.controller.author.views.out;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

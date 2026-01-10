@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.series.item;
+package ru.rerumu.lists.domain.seriesitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

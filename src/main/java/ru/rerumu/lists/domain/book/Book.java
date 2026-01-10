@@ -7,7 +7,7 @@ import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 

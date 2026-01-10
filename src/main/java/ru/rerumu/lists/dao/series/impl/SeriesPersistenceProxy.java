@@ -5,7 +5,7 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;

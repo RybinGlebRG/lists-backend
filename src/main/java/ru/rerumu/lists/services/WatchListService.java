@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.dao.title.TitlesRepository;
 import ru.rerumu.lists.domain.movie.Movie;
-import ru.rerumu.lists.views.TitleCreateView;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 
 import java.util.List;
 

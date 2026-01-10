@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.rerumu.lists.controller.author.out.AuthorView;
-import ru.rerumu.lists.controller.author.out.AuthorViewFactory;
-import ru.rerumu.lists.controller.author.out.AuthorsListView;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
+import ru.rerumu.lists.controller.author.views.out.AuthorViewFactory;
+import ru.rerumu.lists.controller.author.views.out.AuthorsListView;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.author.AuthorsService;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.AddAuthorView;
+import ru.rerumu.lists.controller.author.views.AddAuthorView;
 
 import java.util.List;
 

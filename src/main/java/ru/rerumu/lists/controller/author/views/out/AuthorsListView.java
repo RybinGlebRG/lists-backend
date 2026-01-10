@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller.author.out;
+package ru.rerumu.lists.controller.author.views.out;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

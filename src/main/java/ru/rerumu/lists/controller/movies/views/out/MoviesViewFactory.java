@@ -3,7 +3,7 @@ package ru.rerumu.lists.controller.movies.views.out;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.domain.movie.Movie;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
