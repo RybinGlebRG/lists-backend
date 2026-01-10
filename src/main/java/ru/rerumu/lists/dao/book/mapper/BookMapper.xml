@@ -47,19 +47,16 @@
         <constructor>
             <idArg column="rr_id" name="recordId" javaType="java.lang.Long"/>
             <arg column="book_id" name="bookId" javaType="java.lang.Long"/>
-            <arg name="bookStatus" resultMap="BookStatusResultMap" javaType="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses"/>
+            <arg
+                    column="rr_status_id"
+                    name="bookStatus"
+                    javaType="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses"
+            />
             <arg column="rr_start_date" name="startDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_end_date" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="rr_is_migrated" name="isMigrated" javaType="java.lang.Boolean"/>
             <arg column="rr_last_chapter" name="lastChapter" javaType="java.lang.Long"/>
             <arg column="rr_update_date" name="updateDate" javaType="java.time.LocalDateTime"/>
-        </constructor>
-    </resultMap>
-
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses">
-        <constructor>
-            <idArg column="rr_status_id" name="statusId" javaType="java.lang.Integer"/>
-            <arg column="rr_status_name" name="statusName" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
 

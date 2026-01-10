@@ -8,19 +8,16 @@
         <constructor>
             <idArg column="recordId" name="recordId" javaType="java.lang.Long"/>
             <arg column="bookId" name="bookId" javaType="java.lang.Long"/>
-            <arg resultMap="BookStatusResultMap" name="bookStatus" javaType="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses"/>
+            <arg
+                    column="statusId"
+                    name="bookStatus"
+                    javaType="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses"
+            />
             <arg column="startDate" name="startDate" javaType="java.time.LocalDateTime"/>
             <arg column="endDate" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="isMigrated" name="isMigrated" javaType="java.lang.Boolean"/>
             <arg column="last_chapter" name="lastChapter" javaType="java.lang.Long"/>
             <arg column="update_date" name="updateDate" javaType="java.time.LocalDateTime"/>
-        </constructor>
-    </resultMap>
-
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses">
-        <constructor>
-            <idArg column="statusId" javaType="java.lang.Integer"/>
-            <arg column="statusName" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
 
@@ -82,12 +79,12 @@
 
     <insert id="create" parameterType="ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity">
         insert into reading_records(record_id, book_book_id, status_status_id, start_date, end_date, is_migrated, last_chapter, update_date)
-        values(#{recordId}, #{bookId}, #{bookStatus.statusId}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter}, #{updateDate})
+        values(#{recordId}, #{bookId}, #{bookStatus.id}, #{startDate}, #{endDate}, #{isMigrated}, #{lastChapter}, #{updateDate})
     </insert>
 
     <update id="update">
         update reading_records
-        set status_status_id=#{bookStatus.statusId},
+        set status_status_id=#{bookStatus.id},
             start_date=#{startDate},
             end_date=#{endDate},
             last_chapter = #{lastChapter},

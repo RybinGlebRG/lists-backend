@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.readingrecordstatus.impl;
 
+import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
@@ -12,6 +13,7 @@ public class ReadingRecordStatusRepositoryImpl implements ReadingRecordStatusRep
 
     @Override
     @NonNull
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public ReadingRecordStatuses findById(@NonNull Long statusId) {
         ReadingRecordStatuses bookStatusRecord = null;
 

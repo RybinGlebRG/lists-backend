@@ -45,8 +45,8 @@ public class BookViewFactory {
                         readingRecord.getId(),
                         readingRecord.getBookId(),
                         new BookStatusView(
-                                readingRecord.getBookStatus().statusId(),
-                                readingRecord.getBookStatus().statusName()
+                                readingRecord.getBookStatus().getId().intValue(),
+                                readingRecord.getBookStatus().getName()
                         ),
                         readingRecord.getStartDate(),
                         readingRecord.getEndDate(),
