@@ -7,10 +7,10 @@ import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordPersistenceProxy;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -103,7 +103,7 @@ public class ReadingRecordRepositoryImpl implements ReadingRecordsRepository {
     @Override
     public ReadingRecord create(
             @NonNull Long bookId,
-            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull ReadingRecordStatuses bookStatusRecord,
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long lastChapter

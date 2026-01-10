@@ -20,12 +20,11 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
@@ -50,7 +49,6 @@ public class BookFactoryImpl implements BookFactory {
     private final ReadingRecordFactory readingRecordFactory;
     private final BookTypeFactory bookTypeFactory;
     private final TagFactory tagFactory;
-    private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
@@ -64,7 +62,6 @@ public class BookFactoryImpl implements BookFactory {
             ReadingRecordFactory readingRecordFactory,
             BookTypeFactory bookTypeFactory,
             TagFactory tagFactory,
-            StatusFactory statusFactory,
             AuthorsBooksRepository authorsBooksRepository,
             @NonNull SeriesFactory seriesFactory,
             @NonNull SeriesItemRelationFactory seriesItemRelationFactory,
@@ -76,7 +73,6 @@ public class BookFactoryImpl implements BookFactory {
         this.readingRecordFactory = readingRecordFactory;
         this.bookTypeFactory = bookTypeFactory;
         this.tagFactory = tagFactory;
-        this.statusFactory = statusFactory;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesFactory = seriesFactory;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
@@ -90,7 +86,7 @@ public class BookFactoryImpl implements BookFactory {
             String title,
             Integer lastChapter,
             String note,
-            BookStatusRecord bookStatus,
+            ReadingRecordStatuses bookStatus,
             LocalDateTime insertDate,
             BookType bookType,
             String URL,
@@ -120,7 +116,6 @@ public class BookFactoryImpl implements BookFactory {
                 null,
                 note,
                 new ArrayList<>(),
-                statusFactory,
                 URL,
                 user,
                 new ArrayList<>(),
@@ -248,7 +243,6 @@ public class BookFactoryImpl implements BookFactory {
                 bookChain,
                 bookMyBatisEntity.getNote(),
                 readingRecords,
-                statusFactory,
                 bookMyBatisEntity.getURL(),
                 user,
                 tags,

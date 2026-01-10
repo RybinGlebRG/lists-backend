@@ -2,15 +2,15 @@ package ru.rerumu.lists.domain.readingrecords;
 
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.base.MyBatisEntity;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.base.EntityDTO;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 
 public record ReadingRecordDTO(
         Long recordId,
         Long bookId,
-        BookStatusRecord bookStatus,
+        ReadingRecordStatuses bookStatus,
         LocalDateTime startDate,
         LocalDateTime endDate,
         Boolean isMigrated,

@@ -22,9 +22,9 @@ import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 
@@ -349,7 +349,7 @@ public class BookRepositoryImpl implements BookRepository {
             String title,
             Integer lastChapter,
             String note,
-            BookStatusRecord bookStatus,
+            ReadingRecordStatuses bookStatus,
             LocalDateTime insertDate,
             BookType bookType,
             String URL,

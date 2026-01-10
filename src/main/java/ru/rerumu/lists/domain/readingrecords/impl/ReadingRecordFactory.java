@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +28,7 @@ public class ReadingRecordFactory {
     public ReadingRecord createReadingRecord(
             @NonNull Long readingRecordId,
             @NonNull Long bookId,
-            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull ReadingRecordStatuses bookStatusRecord,
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long lastChapter

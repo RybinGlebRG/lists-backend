@@ -4,9 +4,9 @@ import lombok.NonNull;
 import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -40,7 +40,7 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     LocalDateTime getUpdateDate();
     Integer getLastChapter();
     String getNote();
-    BookStatusRecord getBookStatus();
+    ReadingRecordStatuses getBookStatus();
 
     /**
      * Date when book was added
@@ -54,7 +54,7 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     void updateLastChapter(Integer lastChapter);
 
     @Deprecated
-    void updateStatus(BookStatusRecord bookStatusRecord);
+    void updateStatus(ReadingRecordStatuses bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
     void updateURL(String URL);

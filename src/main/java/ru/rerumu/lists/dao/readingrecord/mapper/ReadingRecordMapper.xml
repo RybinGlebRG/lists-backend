@@ -8,7 +8,7 @@
         <constructor>
             <idArg column="recordId" name="recordId" javaType="java.lang.Long"/>
             <arg column="bookId" name="bookId" javaType="java.lang.Long"/>
-            <arg resultMap="BookStatusResultMap" name="bookStatus" javaType="ru.rerumu.lists.domain.bookstatus.BookStatusRecord"/>
+            <arg resultMap="BookStatusResultMap" name="bookStatus" javaType="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses"/>
             <arg column="startDate" name="startDate" javaType="java.time.LocalDateTime"/>
             <arg column="endDate" name="endDate" javaType="java.time.LocalDateTime"/>
             <arg column="isMigrated" name="isMigrated" javaType="java.lang.Boolean"/>
@@ -17,7 +17,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.bookstatus.BookStatusRecord">
+    <resultMap id="BookStatusResultMap" type="ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses">
         <constructor>
             <idArg column="statusId" javaType="java.lang.Integer"/>
             <arg column="statusName" javaType="java.lang.String"/>

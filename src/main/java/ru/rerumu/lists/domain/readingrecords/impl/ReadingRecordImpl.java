@@ -11,9 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
-import ru.rerumu.lists.domain.RecordStatusEnum;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +29,7 @@ public class ReadingRecordImpl implements ReadingRecord {
     private final Long bookId;
 
     @Getter
-    private BookStatusRecord bookStatus;
+    private ReadingRecordStatuses bookStatus;
 
     @Getter
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -59,7 +58,7 @@ public class ReadingRecordImpl implements ReadingRecord {
     ReadingRecordImpl(
             Long recordId,
             Long bookId,
-            BookStatusRecord bookStatus,
+            ReadingRecordStatuses bookStatus,
             LocalDateTime startDate,
             LocalDateTime endDate,
             Boolean isMigrated,
@@ -90,7 +89,7 @@ public class ReadingRecordImpl implements ReadingRecord {
 
     @Override
     public boolean update(
-            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull ReadingRecordStatuses bookStatusRecord,
             @NonNull LocalDateTime startDate,
             LocalDateTime endDate,
             Long lastChapter
@@ -103,7 +102,7 @@ public class ReadingRecordImpl implements ReadingRecord {
             isChanged = true;
         }
         // or close record if status changed to "Completed"
-        else if (bookStatusRecord.statusId().equals(RecordStatusEnum.COMPLETED.getId().intValue())) {
+        else if (bookStatusRecord.equals(ReadingRecordStatuses.COMPLETED)) {
             this.endDate = dateFactory.getLocalDateTime();
             isChanged = true;
         }
@@ -132,7 +131,7 @@ public class ReadingRecordImpl implements ReadingRecord {
 
     @Override
     public boolean statusEquals(@NonNull Long statusId) {
-        return Long.valueOf(bookStatus.statusId()).equals(statusId);
+        return bookStatus.getId().equals(statusId);
     }
 
     @Override
@@ -180,8 +179,8 @@ public class ReadingRecordImpl implements ReadingRecord {
         obj.put("bookId", bookId);
 
         JSONObject recordStatusJson = new JSONObject();
-        recordStatusJson.put("statusId", bookStatus.statusId());
-        recordStatusJson.put("statusName", bookStatus.statusName());
+        recordStatusJson.put("statusId", bookStatus.getId());
+        recordStatusJson.put("statusName", bookStatus.getName());
         obj.put("bookStatus", recordStatusJson);
 
         obj.put("startDate", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));

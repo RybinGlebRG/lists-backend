@@ -19,14 +19,14 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.readingrecordstatus.ReadingRecordStatusRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.tag.TagFactory;
@@ -34,7 +34,6 @@ import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.Filter;
 import ru.rerumu.lists.services.book.Search;
-import ru.rerumu.lists.services.book.status.BookStatusesService;
 import ru.rerumu.lists.services.book.type.BookTypesService;
 
 import java.util.ArrayList;
@@ -51,43 +50,39 @@ public class ReadListService implements BookService {
     private final BookRepository bookRepository;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final BookTypesService bookTypesService;
-    private final BookStatusesService bookStatusesService;
     private final FuzzyMatchingService fuzzyMatchingService;
     private final TagFactory tagFactory;
     private final BookTypeRepository bookTypeRepository;
-    private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final SeriesRepository seriesRepository;
     private final UsersRepository usersRepository;
     private final AuthorsRepository authorsRepository;
+    private final ReadingRecordStatusRepository readingRecordStatusRepository;
 
     @Autowired
     public ReadListService(
             BookRepository bookRepository,
             AuthorsBooksRepository authorsBooksRepository,
             BookTypesService bookTypesService,
-            BookStatusesService bookStatusesService,
             FuzzyMatchingService fuzzyMatchingService,
             TagFactory tagFactory,
             BookTypeRepository bookTypeRepository,
-            StatusFactory statusFactory,
             ReadingRecordsRepository readingRecordsRepository,
             SeriesRepository seriesRepository,
             UsersRepository usersRepository,
-            AuthorsRepository authorsRepository
+            AuthorsRepository authorsRepository, ReadingRecordStatusRepository readingRecordStatusRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.bookTypesService = bookTypesService;
-        this.bookStatusesService = bookStatusesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
         this.tagFactory = tagFactory;
         this.bookTypeRepository = bookTypeRepository;
-        this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.seriesRepository = seriesRepository;
         this.usersRepository = usersRepository;
         this.authorsRepository = authorsRepository;
+        this.readingRecordStatusRepository = readingRecordStatusRepository;
     }
 
     /**
@@ -155,7 +150,7 @@ public class ReadListService implements BookService {
         for (BookUpdateView.ReadingRecordView readingRecordView: recordsToUpdate) {
             ReadingRecord readingRecord = readingRecordMap.get(readingRecordView.getReadingRecordId());
 
-            BookStatusRecord bookStatusRecord = statusFactory.findById(Long.valueOf(readingRecordView.getStatusId()));
+            ReadingRecordStatuses bookStatusRecord = readingRecordStatusRepository.findById(Long.valueOf(readingRecordView.getStatusId()));
 
             readingRecord.update(
                     bookStatusRecord,
@@ -173,7 +168,7 @@ public class ReadListService implements BookService {
                 .collect(Collectors.toCollection(ArrayList::new));
         for (BookUpdateView.ReadingRecordView recordToCreate: recordsToCreate) {
 
-            BookStatusRecord bookStatusRecord = statusFactory.findById(Long.valueOf(recordToCreate.getStatusId()));
+            ReadingRecordStatuses bookStatusRecord = readingRecordStatusRepository.findById(Long.valueOf(recordToCreate.getStatusId()));
 
             ReadingRecord readingRecord = readingRecordsRepository.create(
                     bookId,
@@ -282,7 +277,7 @@ public class ReadListService implements BookService {
 
         // Find status
         logger.info("Find status...");
-        BookStatusRecord bookStatus = bookStatusesService.findById(bookAddView.status()).orElseThrow();
+        ReadingRecordStatuses bookStatus = readingRecordStatusRepository.findById((long) bookAddView.status());
 
         // Find type
         logger.info("Find type...");

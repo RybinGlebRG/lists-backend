@@ -3,7 +3,7 @@ package ru.rerumu.lists.domain.readingrecords;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.DeepCopyable;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ public interface ReadingRecord extends DeepCopyable<ReadingRecord> {
     LocalDateTime getUpdateDate();
     LocalDateTime getStartDate();
     LocalDateTime getEndDate();
-    BookStatusRecord getBookStatus();
+    ReadingRecordStatuses getBookStatus();
     Long getLastChapter();
     Boolean getIsMigrated();
 
@@ -23,7 +23,7 @@ public interface ReadingRecord extends DeepCopyable<ReadingRecord> {
      * @return {@code true} if changes were made, {@code false} otherwise
      */
     boolean update(
-            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull ReadingRecordStatuses bookStatusRecord,
             @NonNull LocalDateTime startDate,
             LocalDateTime endDate,
             Long lastChapter

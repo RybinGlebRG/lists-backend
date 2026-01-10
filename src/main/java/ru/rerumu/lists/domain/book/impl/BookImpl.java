@@ -16,11 +16,10 @@ import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
@@ -51,7 +50,7 @@ public class BookImpl implements Book{
     private String title;
 
     @Getter
-    private BookStatusRecord bookStatus;
+    private ReadingRecordStatuses bookStatus;
 
     @Getter
     private LocalDateTime insertDate;
@@ -92,7 +91,6 @@ public class BookImpl implements Book{
     private final ReadingRecordFactory readingRecordFactory;
     private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-    private final StatusFactory statusFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
 
@@ -101,7 +99,7 @@ public class BookImpl implements Book{
             @NonNull Long bookId,
             Long readListId,
             @NonNull String title,
-            BookStatusRecord bookStatus,
+            ReadingRecordStatuses bookStatus,
             @NonNull LocalDateTime insertDate,
             @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
@@ -109,7 +107,6 @@ public class BookImpl implements Book{
             BookChain previousBooks,
             String note,
             @NonNull List<ReadingRecord> readingRecords,
-            @NonNull StatusFactory statusFactory,
             String URL,
             @NonNull User user,
             @NonNull List<Tag> tags,
@@ -131,7 +128,6 @@ public class BookImpl implements Book{
         this.note = note;
         this.readingRecords = new ArrayList<>(readingRecords);
         this.seriesList = new ArrayList<>(seriesList);
-        this.statusFactory = statusFactory;
         this.URL = URL;
         this.user = user;
         this.tags = new ArrayList<>(tags);
@@ -217,8 +213,8 @@ public class BookImpl implements Book{
     }
 
     @Override
-    public void updateStatus(BookStatusRecord bookStatusRecord) {
-        if (!Objects.equals(this.bookStatus.statusId(), bookStatusRecord.statusId())){
+    public void updateStatus(ReadingRecordStatuses bookStatusRecord) {
+        if (!Objects.equals(this.bookStatus, bookStatusRecord)){
             this.bookStatus = bookStatusRecord;
             lastUpdateDate = dateFactory.getLocalDateTime();
         }
@@ -321,7 +317,7 @@ public class BookImpl implements Book{
 
     @Override
     public boolean filterByStatusIds(List<Integer> statusIds) {
-        return statusIds.contains(bookStatus.statusId());
+        return statusIds.contains(bookStatus.getId().intValue());
     }
 
     @Override
@@ -394,7 +390,6 @@ public class BookImpl implements Book{
                 previousBooks,
                 note,
                 new ArrayList<>(readingRecords),
-                statusFactory,
                 URL,
                 user,
                 new ArrayList<>(tags),

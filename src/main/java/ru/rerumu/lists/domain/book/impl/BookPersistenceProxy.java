@@ -3,14 +3,14 @@ package ru.rerumu.lists.domain.book.impl;
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
-import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
@@ -136,7 +136,7 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public void updateStatus(BookStatusRecord bookStatusRecord) {
+    public void updateStatus(ReadingRecordStatuses bookStatusRecord) {
         book.updateStatus(bookStatusRecord);
     }
 
@@ -201,7 +201,7 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public BookStatusRecord getBookStatus() {
+    public ReadingRecordStatuses getBookStatus() {
         return book.getBookStatus();
     }
 

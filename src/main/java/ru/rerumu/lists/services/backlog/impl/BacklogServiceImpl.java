@@ -17,10 +17,8 @@ import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
 import ru.rerumu.lists.domain.backlog.BacklogItemFactory;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
-import ru.rerumu.lists.domain.bookstatus.Statuses;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.backlog.BacklogService;
@@ -34,7 +32,6 @@ public class BacklogServiceImpl implements BacklogService {
     private final BacklogItemFactory backlogItemFactory;
     private final BookFactory bookFactory;
     private final DateFactory dateFactory;
-    private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final BookRepository bookRepository;
     private final UsersRepository usersRepository;
@@ -44,7 +41,6 @@ public class BacklogServiceImpl implements BacklogService {
             BacklogItemFactory backlogItemFactory,
             BookFactory bookFactory,
             DateFactory dateFactory,
-            StatusFactory statusFactory,
             ReadingRecordsRepository readingRecordsRepository,
             BookRepository bookRepository,
             UsersRepository usersRepository
@@ -52,7 +48,6 @@ public class BacklogServiceImpl implements BacklogService {
         this.backlogItemFactory = backlogItemFactory;
         this.bookFactory = bookFactory;
         this.dateFactory = dateFactory;
-        this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.bookRepository = bookRepository;
         this.usersRepository = usersRepository;
@@ -160,7 +155,7 @@ public class BacklogServiceImpl implements BacklogService {
                         backlogItem.getTitle(),
                         null,
                         backlogItem.getNote(),
-                        statusFactory.findById(Statuses.IN_PROGRESS.getId()),
+                        ReadingRecordStatuses.IN_PROGRESS,
                         dateFactory.getLocalDateTime(),
                         null,
                         null,
@@ -168,7 +163,7 @@ public class BacklogServiceImpl implements BacklogService {
                 );
 
                 // Find status
-                BookStatusRecord bookStatusRecord = statusFactory.findById(Statuses.IN_PROGRESS.getId());
+                ReadingRecordStatuses bookStatusRecord = ReadingRecordStatuses.IN_PROGRESS;
 
                 // Create reading record
                 ReadingRecord readingRecord = readingRecordsRepository.create(

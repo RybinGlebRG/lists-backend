@@ -10,11 +10,11 @@ import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
-import ru.rerumu.lists.dao.user.UserDtoDao;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.dao.series.item.SeriesItemDTO;
+import ru.rerumu.lists.dao.user.UserDtoDao;
+import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.tag.TagDTO;
 
 import java.time.LocalDateTime;
@@ -37,7 +37,7 @@ public class BookMyBatisEntity implements SeriesItemDTO {
     private Integer bookType;
     private String note;
     private BookType bookTypeObj;
-    private BookStatusRecord bookStatusObj;
+    private ReadingRecordStatuses bookStatusObj;
     private List<BookOrderedDtoDao> previousBooks;
 
     @Setter

@@ -4,8 +4,8 @@ import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.base.PersistenceProxy;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 
@@ -54,7 +54,7 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     }
 
     @Override
-    public BookStatusRecord getBookStatus() {
+    public ReadingRecordStatuses getBookStatus() {
         return readingRecord.getBookStatus();
     }
 
@@ -69,7 +69,7 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     }
 
     @Override
-    public boolean update(@NonNull BookStatusRecord bookStatusRecord, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
+    public boolean update(@NonNull ReadingRecordStatuses bookStatusRecord, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
         boolean isChanged = readingRecord.update(bookStatusRecord, startDate, endDate, lastChapter);
         if (isChanged) {
             entityState = EntityState.DIRTY;
