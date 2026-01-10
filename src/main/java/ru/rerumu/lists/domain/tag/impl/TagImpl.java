@@ -5,7 +5,7 @@ import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.dao.tag.TagsRepository;
-import ru.rerumu.lists.domain.tag.TagDTO;
+import ru.rerumu.lists.dao.tag.TagDTO;
 
 import java.util.Objects;
 
@@ -16,7 +16,7 @@ public class TagImpl implements Tag {
     private final TagsRepository tagsRepository;
     private final User user;
 
-    TagImpl(Long tagId, String name, User user, TagsRepository tagsRepository) {
+    public TagImpl(Long tagId, String name, User user, TagsRepository tagsRepository) {
         this.tagId = tagId;
         this.name = name;
         this.tagsRepository = tagsRepository;

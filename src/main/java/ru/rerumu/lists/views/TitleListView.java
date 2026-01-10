@@ -22,7 +22,7 @@ public final class TitleListView implements ResponseView{
     private List<Movie> sort(List<Movie> movies){
         Comparator<Movie> comparator = Comparator.comparing(Movie::getCreateDateLocal).reversed()
                 .thenComparing(Movie::getName)
-                .thenComparingLong(Movie::getTitleId);
+                .thenComparingLong(Movie::getId);
 
         return movies.stream().sorted(comparator).collect(Collectors.toCollection(ArrayList::new));
     }

@@ -2,6 +2,7 @@ package ru.rerumu.lists.services.game.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.domain.game.Game;
+import ru.rerumu.lists.domain.game.impl.GameImpl;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.dao.base.CrudRepository;
@@ -21,7 +22,7 @@ public class GameServiceImpl implements GameService {
 
     @Transactional(rollbackFor = Exception.class)
     public void addGame(User user, GameAddView gameAddView){
-        Game newGame = new Game.Builder()
+        Game newGame = new GameImpl.Builder()
                 .title(gameAddView.title())
                 .user(user)
                 .createDateUTC(gameAddView.createDateUTC())

@@ -14,6 +14,7 @@ import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.impl.SeriesPersistenceProxy;
+import ru.rerumu.lists.dao.tag.TagsRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
@@ -21,7 +22,6 @@ import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
@@ -29,7 +29,6 @@ import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
-import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
@@ -47,38 +46,34 @@ public class BookFactoryImpl implements BookFactory {
 
     private final DateFactory dateFactory;
     private final ReadingRecordFactory readingRecordFactory;
-    private final BookTypeFactory bookTypeFactory;
-    private final TagFactory tagFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
     private final SeriesItemRelationFactory seriesItemRelationFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final UsersRepository usersRepository;
     private final AuthorsRepository authorsRepository;
+    private final TagsRepository tagsRepository;
 
     @Autowired
     public BookFactoryImpl(
             DateFactory dateFactory,
             ReadingRecordFactory readingRecordFactory,
-            BookTypeFactory bookTypeFactory,
-            TagFactory tagFactory,
             AuthorsBooksRepository authorsBooksRepository,
             @NonNull SeriesFactory seriesFactory,
             @NonNull SeriesItemRelationFactory seriesItemRelationFactory,
             ReadingRecordsRepository readingRecordsRepository,
             UsersRepository usersRepository,
-            AuthorsRepository authorsRepository
+            AuthorsRepository authorsRepository, TagsRepository tagsRepository
     ) {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
-        this.bookTypeFactory = bookTypeFactory;
-        this.tagFactory = tagFactory;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesFactory = seriesFactory;
         this.seriesItemRelationFactory = seriesItemRelationFactory;
         this.readingRecordsRepository = readingRecordsRepository;
         this.usersRepository = usersRepository;
         this.authorsRepository = authorsRepository;
+        this.tagsRepository = tagsRepository;
     }
 
     public Book createBook(
@@ -189,7 +184,7 @@ public class BookFactoryImpl implements BookFactory {
         List<Tag> tags;
         if (bookMyBatisEntity.getTags() != null) {
             tags = bookMyBatisEntity.getTags().stream()
-                    .map(tagFactory::fromDTO)
+                    .map(tagsRepository::attach)
                     .collect(Collectors.toCollection(ArrayList::new));
         } else {
             tags = new ArrayList<>();

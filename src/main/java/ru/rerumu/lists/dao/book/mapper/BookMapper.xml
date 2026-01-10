@@ -68,7 +68,7 @@
         />
     </resultMap>
 
-    <resultMap id="TagResultMap" type="ru.rerumu.lists.domain.tag.TagDTO">
+    <resultMap id="TagResultMap" type="ru.rerumu.lists.dao.tag.TagDTO">
         <constructor>
             <idArg name="tagId" column="tag_id"/>
             <arg name="name" column="tag_name"/>

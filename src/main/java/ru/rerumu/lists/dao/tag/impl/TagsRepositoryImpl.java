@@ -1,28 +1,38 @@
 package ru.rerumu.lists.dao.tag.impl;
 
+import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.tag.BookTagDTO;
 import ru.rerumu.lists.dao.tag.BookTagMapper;
-import ru.rerumu.lists.dao.tag.mapper.TagsMapper;
 import ru.rerumu.lists.dao.tag.TagsRepository;
+import ru.rerumu.lists.dao.tag.mapper.TagsMapper;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.tag.Tag;
-import ru.rerumu.lists.domain.tag.TagDTO;
+import ru.rerumu.lists.dao.tag.TagDTO;
+import ru.rerumu.lists.domain.tag.impl.TagImpl;
 import ru.rerumu.lists.domain.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> implements TagsRepository {
 
     private final TagsMapper tagsMapper;
     private final BookTagMapper bookTagMapper;
+    private final UsersRepository usersRepository;
 
-    public TagsRepositoryImpl(TagsMapper tagsMapper, BookTagMapper bookTagMapper) {
+    @Autowired
+    public TagsRepositoryImpl(TagsMapper tagsMapper, BookTagMapper bookTagMapper, UsersRepository usersRepository) {
         super(tagsMapper);
         this.tagsMapper = tagsMapper;
         this.bookTagMapper = bookTagMapper;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -31,8 +41,7 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
             bookTagMapper.delete(bookId, tagId);
     }
 
-    @Override
-    public void create(Tag tag) {
+    private void create(Tag tag) {
         tagsMapper.create(tag.toDTO());
     }
 
@@ -51,7 +60,57 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
     }
 
     @Override
-    public List<TagDTO> findByIds(List<Long> tagIds, User user) {
-        return tagsMapper.findByIds(tagIds, user.getId());
+    public @NonNull Tag create(@NonNull String name, @NonNull User user) {
+        Long nextId = getNextId();
+
+        Tag tag = new TagImpl(nextId, name, user, this);
+
+        create(tag);
+
+        return tag;
+    }
+
+    @Override
+    public @NonNull Tag attach(@NonNull TagDTO tagDTO) {
+        User user = usersRepository.findById(tagDTO.getUserId());
+
+        return new TagImpl(
+                tagDTO.getTagId(),
+                tagDTO.getName(),
+                user,
+                this
+        );
+    }
+
+    @Override
+    public List<Tag> findAll(@NonNull User user) {
+        List<TagDTO> tagDTOs = findByUser(user);
+
+        return tagDTOs.stream()
+                .map(tagDTO -> new TagImpl(
+                        tagDTO.getTagId(),
+                        tagDTO.getName(),
+                        user,
+                        this
+                ))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public @NonNull List<Tag> findByIds(@NonNull List<Long> tagIds, @NonNull User user) {
+        List<TagDTO> tagDTOs;
+
+        if (tagIds.isEmpty()) {
+            tagDTOs = new ArrayList<>();
+        } else {
+            tagDTOs = tagsMapper.findByIds(tagIds, user.getId());
+            if (tagDTOs == null) {
+                throw new ServerException();
+            }
+        }
+
+        return tagDTOs.stream()
+                .map(this::attach)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

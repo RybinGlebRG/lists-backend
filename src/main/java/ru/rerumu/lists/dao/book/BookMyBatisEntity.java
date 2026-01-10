@@ -15,7 +15,7 @@ import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
-import ru.rerumu.lists.domain.tag.TagDTO;
+import ru.rerumu.lists.dao.tag.TagDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

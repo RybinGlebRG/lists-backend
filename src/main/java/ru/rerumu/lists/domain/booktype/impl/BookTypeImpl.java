@@ -2,7 +2,7 @@ package ru.rerumu.lists.domain.booktype.impl;
 
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.booktype.BookTypeDTO;
+import ru.rerumu.lists.dao.booktype.BookTypeDTO;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.booktype;
+package ru.rerumu.lists.dao.booktype;
 
 import lombok.NonNull;
 import ru.rerumu.lists.domain.base.EntityDTO;

@@ -21,6 +21,7 @@ import ru.rerumu.lists.dao.booktype.BookTypeRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.readingrecordstatus.ReadingRecordStatusRepository;
 import ru.rerumu.lists.dao.series.SeriesRepository;
+import ru.rerumu.lists.dao.tag.TagsRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
@@ -29,7 +30,6 @@ import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.tag.Tag;
-import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.Filter;
@@ -51,13 +51,13 @@ public class ReadListService implements BookService {
     private final AuthorsBooksRepository authorsBooksRepository;
     private final BookTypesService bookTypesService;
     private final FuzzyMatchingService fuzzyMatchingService;
-    private final TagFactory tagFactory;
     private final BookTypeRepository bookTypeRepository;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final SeriesRepository seriesRepository;
     private final UsersRepository usersRepository;
     private final AuthorsRepository authorsRepository;
     private final ReadingRecordStatusRepository readingRecordStatusRepository;
+    private final TagsRepository tagsRepository;
 
     @Autowired
     public ReadListService(
@@ -65,24 +65,25 @@ public class ReadListService implements BookService {
             AuthorsBooksRepository authorsBooksRepository,
             BookTypesService bookTypesService,
             FuzzyMatchingService fuzzyMatchingService,
-            TagFactory tagFactory,
             BookTypeRepository bookTypeRepository,
             ReadingRecordsRepository readingRecordsRepository,
             SeriesRepository seriesRepository,
             UsersRepository usersRepository,
-            AuthorsRepository authorsRepository, ReadingRecordStatusRepository readingRecordStatusRepository
+            AuthorsRepository authorsRepository,
+            ReadingRecordStatusRepository readingRecordStatusRepository,
+            TagsRepository tagsRepository
     ) {
         this.bookRepository = bookRepository;
         this.authorsBooksRepository = authorsBooksRepository;
         this.bookTypesService = bookTypesService;
         this.fuzzyMatchingService = fuzzyMatchingService;
-        this.tagFactory = tagFactory;
         this.bookTypeRepository = bookTypeRepository;
         this.readingRecordsRepository = readingRecordsRepository;
         this.seriesRepository = seriesRepository;
         this.usersRepository = usersRepository;
         this.authorsRepository = authorsRepository;
         this.readingRecordStatusRepository = readingRecordStatusRepository;
+        this.tagsRepository = tagsRepository;
     }
 
     /**
@@ -124,7 +125,7 @@ public class ReadListService implements BookService {
 
         // Update tags
         logger.info("Updating tags...");
-        List<Tag> tags = tagFactory.findByIds(bookUpdateView.getTagIds(), book.getUser());
+        List<Tag> tags = tagsRepository.findByIds(bookUpdateView.getTagIds(), book.getUser());
         book.updateTags(tags);
 
         // Update reading records

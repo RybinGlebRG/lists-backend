@@ -5,8 +5,6 @@ import ru.rerumu.lists.domain.base.Dictionary;
 
 public interface BookType extends Dictionary {
 
-    BookTypeDTO toDTO();
-
     Long getId();
 
     String getName();

@@ -66,7 +66,7 @@ public class TitlesList {
                     return res;
                 }
 
-                res = Long.compare(o1.getTitleId(), o2.getTitleId());
+                res = Long.compare(o1.getId(), o2.getId());
                 return res;
             }
         };

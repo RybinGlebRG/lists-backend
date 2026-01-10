@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.title;
+package ru.rerumu.lists.dao.movie.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.domain.movie.Movie;

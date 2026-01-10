@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.tag;
 
 import org.json.JSONObject;
+import ru.rerumu.lists.dao.tag.TagDTO;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.book.Book;
 

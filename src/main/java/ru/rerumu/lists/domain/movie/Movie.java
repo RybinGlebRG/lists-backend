@@ -1,181 +1,46 @@
 package ru.rerumu.lists.domain.movie;
 
-
-import lombok.Getter;
-import lombok.Setter;
-import org.json.JSONObject;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.domain.VideoType;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 
-public class Movie implements SeriesItem {
 
-    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.MOVIE;
+public interface Movie extends SeriesItem {
 
-    @Getter
-    private final Long titleId;
+    LocalDateTime getCreateDateLocal();
 
-    @Getter
-    private String name;
+    String getName();
 
-    @Getter
-    private Date createDateUTC;
+    Long getId();
 
-    @Getter
-    private final Long watchListId;
+    void setName(String name);
 
-    @Getter
-    @Setter
-    private Long statusId;
+    void setCreateDateUTC(Date createDateUTC);
 
-    @Getter
-    @Setter
-    private VideoType videoType;
+    Date getCreateDateUTC();
 
+    void setStatusId(Long statusId);
 
-    public Movie(
-            Long titleId,
-            Long watchListId,
-            String name,
-            Date createDateUTC,
-            Long statusId,
-            VideoType videoType
-    ) {
-        this.titleId = titleId;
-        this.watchListId = watchListId;
-        this.name = name;
-        this.createDateUTC = createDateUTC;
-        this.statusId = statusId;
-        this.videoType = videoType;
-    }
+    Long getStatusId();
 
-    public int getdd() {
-        return Integer.parseInt(new SimpleDateFormat("dd").format(this.createDateUTC));
-    }
+    VideoType getVideoType();
 
-    public int getMonth() {
-        return Integer.parseInt(new SimpleDateFormat("MM").format(this.createDateUTC));
-    }
+    void setVideoType(VideoType videoType);
 
-    public int getyyyy() {
-        return Integer.parseInt(new SimpleDateFormat("yyyy").format(this.createDateUTC));
-    }
+    Long getWatchListId();
 
-    public int getHH() {
-        return Integer.parseInt(new SimpleDateFormat("HH").format(this.createDateUTC));
-    }
+    int getdd();
 
-    public int getmm() {
-        return Integer.parseInt(new SimpleDateFormat("mm").format(this.createDateUTC));
-    }
+    int getMonth();
 
-    public int getss() {
-        return Integer.parseInt(new SimpleDateFormat("ss").format(this.createDateUTC));
-    }
+    int getyyyy();
 
-    public void setName(String name) throws EmptyMandatoryParameterException {
-        if (name == null || name.isEmpty()) {
-            throw new EmptyMandatoryParameterException("Name is null or empty");
-        }
-        this.name = name;
-    }
+    int getHH();
 
-    public void setCreateDateUTC(Date createDateUTC) throws EmptyMandatoryParameterException {
-        if (createDateUTC == null) {
-            throw new EmptyMandatoryParameterException("createDateUTC is null");
-        }
-        this.createDateUTC = createDateUTC;
-    }
+    int getmm();
 
+    int getss();
 
-    public JSONObject toJSONObject() {
-        JSONObject obj = new JSONObject();
-        obj.put("id", titleId);
-        obj.put("name", name);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        obj.put("create_date_utc", sdf.format(createDateUTC));
-        obj.put("watchListId", this.watchListId);
-        obj.put("statusId", this.statusId);
-        obj.put("videoType", videoType != null ? videoType.toJSONObject() : null);
-        obj.put("itemType",SERIES_ITEM_TYPE.name());
-        return obj;
-    }
-
-    @Override
-    public LocalDateTime getUpdateDate() {
-        return createDateUTC
-                .toInstant()
-                .atOffset(ZoneOffset.UTC)
-                .toLocalDateTime();
-    }
-
-    public LocalDateTime getCreateDateLocal(){
-        return createDateUTC
-                .toInstant()
-                .atOffset(ZoneOffset.UTC)
-                .toLocalDateTime();
-    }
-
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
-
-    public static class Builder {
-        private Long titleId;
-        private String name;
-        private Date createDateUTC;
-        private Long watchListId;
-        private Long statusId;
-        private VideoType videoType;
-
-        public Builder titleId(Long titleId) {
-            this.titleId = titleId;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder createDateUTC(Date createDateUTC) {
-            this.createDateUTC = createDateUTC;
-            return this;
-        }
-
-        public Builder watchListId(Long watchListId) {
-            this.watchListId = watchListId;
-            return this;
-        }
-
-        public Builder statusId(Long statusId) {
-            this.statusId = statusId;
-            return this;
-        }
-
-        public Builder videoType(VideoType videoType) {
-            this.videoType = videoType;
-            return this;
-        }
-
-        public Movie build() {
-            Movie movie = new Movie(
-                    titleId,
-                    watchListId,
-                    name,
-                    createDateUTC,
-                    statusId,
-                    videoType
-            );
-            return movie;
-        }
-
-    }
 }

@@ -2,9 +2,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.dao.movie.TitleMapper">
+<mapper namespace="ru.rerumu.lists.dao.movie.mapper.TitleMapper">
 
-    <resultMap id="TitleResultMap" type="ru.rerumu.lists.domain.movie.Movie">
+    <resultMap id="TitleResultMap" type="ru.rerumu.lists.domain.movie.impl.MovieImpl">
         <constructor>
             <idArg column="title_id" name="titleId"/>
             <arg column="list_list_id" name="watchListId"/>

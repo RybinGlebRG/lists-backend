@@ -8,9 +8,7 @@ import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.booktype.BookTypeFactory;
 import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.tag.TagFactory;
 import ru.rerumu.lists.domain.user.UserFactory;
 
 @Slf4j
@@ -30,13 +28,7 @@ public class BookFactoryImplTest {
     private ReadingRecordFactory readingRecordFactory;
 
     @Mock
-    private BookTypeFactory bookTypeFactory;
-
-    @Mock
     private UserFactory userFactory;
-
-    @Mock
-    private TagFactory tagFactory;
 
     @Mock
     private AuthorsBooksRepository authorsBooksRepository;

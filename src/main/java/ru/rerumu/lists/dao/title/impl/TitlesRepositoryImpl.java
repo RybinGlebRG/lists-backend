@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.title.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.title.TitleMapper;
+import ru.rerumu.lists.dao.movie.mapper.TitleMapper;
 import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.dao.title.TitlesRepository;
 import ru.rerumu.lists.views.TitleCreateView;
@@ -29,13 +29,13 @@ public class TitlesRepositoryImpl implements TitlesRepository {
     public Movie update(Movie movie) {
         titleMapper.update(
                 movie.getName(),
-                movie.getTitleId(),
+                movie.getId(),
                 movie.getWatchListId(),
                 movie.getCreateDateUTC(),
                 movie.getStatusId(),
                 movie.getVideoType().getTypeId()
         );
-        Movie updatedMovie = titleMapper.getOne(movie.getWatchListId(), movie.getTitleId());
+        Movie updatedMovie = titleMapper.getOne(movie.getWatchListId(), movie.getId());
         return updatedMovie;
     }
 

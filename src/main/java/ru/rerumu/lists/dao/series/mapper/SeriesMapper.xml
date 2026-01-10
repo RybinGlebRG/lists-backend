@@ -29,7 +29,7 @@
         </discriminator>
     </resultMap>
 
-    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.domain.movie.MovieDTO">
+    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.dao.movie.MovieDTO">
         <id property="titleId" column="title_id"/>
         <result property="name" column="title_name"/>
         <result property="createDateUTC" column="title_create_date_utc"/>
@@ -45,7 +45,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.domain.movie.MovieStatus">
+    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.dao.movie.MovieStatus">
         <constructor>
             <idArg column="title_status_id" name="statusId" javaType="_int"/>
             <arg column="title_status_name" name="statusName" javaType="String"/>
