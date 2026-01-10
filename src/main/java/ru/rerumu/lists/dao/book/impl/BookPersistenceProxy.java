@@ -1,16 +1,14 @@
-package ru.rerumu.lists.domain.book.impl;
+package ru.rerumu.lists.dao.book.impl;
 
 import lombok.NonNull;
-import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.base.PersistenceProxy;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
@@ -48,11 +46,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
             book.updateReadingRecords(readingRecords);
             entityState = EntityState.DIRTY;
         }
-    }
-
-    @Override
-    public Long getListId() {
-        return book.getListId();
     }
 
     @Override
@@ -131,16 +124,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public void updateLastChapter(Integer lastChapter) {
-        book.updateLastChapter(lastChapter);
-    }
-
-    @Override
-    public void updateStatus(ReadingRecordStatuses bookStatusRecord) {
-        book.updateStatus(bookStatusRecord);
-    }
-
-    @Override
     public void updateNote(String note) {
         book.updateNote(note);
     }
@@ -171,38 +154,13 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
-    public boolean filterByStatusIds(List<Integer> statusIds) {
-        return book.filterByStatusIds(statusIds);
-    }
-
-    @Override
     public Float getTitleFuzzyMatchScore(String value) {
         return book.getTitleFuzzyMatchScore(value);
     }
 
     @Override
-    public JSONObject toJSONObject() {
-        return book.toJSONObject();
-    }
-
-    @Override
-    public LocalDateTime getUpdateDate() {
-        return book.getUpdateDate();
-    }
-
-    @Override
-    public Integer getLastChapter() {
-        return book.getLastChapter();
-    }
-
-    @Override
     public String getNote() {
         return book.getNote();
-    }
-
-    @Override
-    public ReadingRecordStatuses getBookStatus() {
-        return book.getBookStatus();
     }
 
     @Override

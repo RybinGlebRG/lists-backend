@@ -5,8 +5,7 @@ import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.Entity;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -26,7 +25,6 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
 
     void updateReadingRecords(List<ReadingRecord> readingRecords);
 
-    Long getListId();
     User getUser();
     List<ReadingRecord> getReadingRecords();
     List<Series> getSeriesList();
@@ -37,10 +35,7 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     String getURL();
     String getTitle();
     LocalDateTime getInsertDate();
-    LocalDateTime getUpdateDate();
-    Integer getLastChapter();
     String getNote();
-    ReadingRecordStatuses getBookStatus();
 
     /**
      * Date when book was added
@@ -50,11 +45,6 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
     void updateInsertDate(LocalDateTime insertDate);
     void updateTitle(String title);
 
-    @Deprecated
-    void updateLastChapter(Integer lastChapter);
-
-    @Deprecated
-    void updateStatus(ReadingRecordStatuses bookStatusRecord);
     void updateNote(String note);
     void updateType(BookType bookType);
     void updateURL(String URL);
@@ -66,7 +56,6 @@ public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
      */
     void updateTextAuthors(List<Author> authors);
 
-    boolean filterByStatusIds(List<Integer> statusIds);
     Float getTitleFuzzyMatchScore(String value);
 
     boolean currentStatusEquals(Long statusId);

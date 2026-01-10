@@ -11,11 +11,11 @@
             <arg column="name" name="name"/>
             <arg column="create_date_utc" name="createDateUTC"/>
             <arg column="status_status_id" name="statusId"/>
-            <arg resultMap="VideoTypeResultMap" name="videoType" javaType="ru.rerumu.lists.domain.VideoType"/>
+            <arg resultMap="VideoTypeResultMap" name="videoType" javaType="ru.rerumu.lists.domain.movietype.MovieType"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.VideoType">
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.movietype.MovieType">
         <result column="type_id" property="typeId" />
         <result column="type_name" property="name" />
     </resultMap>

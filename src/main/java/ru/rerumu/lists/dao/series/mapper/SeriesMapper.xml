@@ -38,7 +38,7 @@
         <association property="videoType" resultMap="VideoTypeResultMap"/>
     </resultMap>
 
-    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.VideoType">
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.movietype.MovieType">
         <constructor>
             <idArg column="title_type_id" name="typeId" javaType="Long"/>
             <arg column="title_type_name" name="name" javaType="String"/>

@@ -1,44 +1,26 @@
 package ru.rerumu.lists.domain.book.impl;
 
-import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
-import ru.rerumu.lists.dao.book.BookMyBatisEntity;
-import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
-import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
-import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
-import ru.rerumu.lists.dao.series.impl.SeriesPersistenceProxy;
-import ru.rerumu.lists.dao.tag.TagsRepository;
-import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -48,207 +30,78 @@ public class BookFactoryImpl implements BookFactory {
     private final ReadingRecordFactory readingRecordFactory;
     private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
-    private final SeriesItemRelationFactory seriesItemRelationFactory;
-    private final ReadingRecordsRepository readingRecordsRepository;
-    private final UsersRepository usersRepository;
-    private final AuthorsRepository authorsRepository;
-    private final TagsRepository tagsRepository;
 
     @Autowired
     public BookFactoryImpl(
             DateFactory dateFactory,
             ReadingRecordFactory readingRecordFactory,
             AuthorsBooksRepository authorsBooksRepository,
-            @NonNull SeriesFactory seriesFactory,
-            @NonNull SeriesItemRelationFactory seriesItemRelationFactory,
-            ReadingRecordsRepository readingRecordsRepository,
-            UsersRepository usersRepository,
-            AuthorsRepository authorsRepository, TagsRepository tagsRepository
+            @NonNull SeriesFactory seriesFactory
     ) {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
         this.authorsBooksRepository = authorsBooksRepository;
         this.seriesFactory = seriesFactory;
-        this.seriesItemRelationFactory = seriesItemRelationFactory;
-        this.readingRecordsRepository = readingRecordsRepository;
-        this.usersRepository = usersRepository;
-        this.authorsRepository = authorsRepository;
-        this.tagsRepository = tagsRepository;
-    }
-
-    public Book createBook(
-            Long bookId,
-            String title,
-            Integer lastChapter,
-            String note,
-            ReadingRecordStatuses bookStatus,
-            LocalDateTime insertDate,
-            BookType bookType,
-            String URL,
-            User user
-    ) {
-
-        LocalDateTime actualInsertDate;
-        LocalDateTime actualUpdateDate;
-        if (insertDate != null) {
-            actualInsertDate = insertDate;
-            actualUpdateDate = insertDate;
-        } else {
-            LocalDateTime tmp = dateFactory.getLocalDateTime();
-            actualInsertDate = tmp;
-            actualUpdateDate =  tmp;
-        }
-
-        BookImpl book = new BookImpl(
-                bookId,
-                null,
-                title,
-                bookStatus,
-                actualInsertDate,
-                actualUpdateDate,
-                lastChapter,
-                bookType,
-                null,
-                note,
-                new ArrayList<>(),
-                URL,
-                user,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                dateFactory,
-                readingRecordFactory,
-                authorsBooksRepository,
-                seriesFactory
-        );
-
-        return book;
     }
 
     @Override
-    @Loggable(value = Loggable.TRACE, trim = false, prepend = true)
     @NonNull
-    public Book fromDTO(@NonNull BookMyBatisEntity bookMyBatisEntity) throws EmptyMandatoryParameterException {
+    public Book build(
+            @NonNull Long bookId,
+            @NonNull String title,
+            LocalDateTime insertDate,
+            BookType bookType,
+            BookChain previousBooks,
+            String note,
+            List<ReadingRecord> readingRecords,
+            String URL,
+            @NonNull User user,
+            List<Tag> tags,
+            List<Author> textAuthors,
+            List<Series> seriesList
+    ) {
+        LocalDateTime actualInsertDate;
+        if (insertDate != null) {
+            actualInsertDate = insertDate;
 
-        // Get authors
-        List<Author> authors;
-        if (bookMyBatisEntity.getTextAuthors() != null) {
-            authors = bookMyBatisEntity.getTextAuthors().stream()
-                    .map(authorsRepository::fromDTO)
-                    .collect(Collectors.toCollection(ArrayList::new));
         } else {
-            authors = new ArrayList<>();
+            LocalDateTime tmp = dateFactory.getLocalDateTime();
+            actualInsertDate = tmp;
         }
 
-        // Get book type
-        BookType bookType;
-        if (bookMyBatisEntity.getBookTypeObj() != null) {
-            bookType = bookMyBatisEntity.getBookTypeObj();
-        } else {
-            bookType = null;
-        }
-
-        // Get reading records
-        List<ReadingRecord> readingRecords;
-        if (bookMyBatisEntity.getReadingRecords() != null) {
-            readingRecords = bookMyBatisEntity.getReadingRecords().stream()
-                    .map(readingRecordFactory::fromDTO)
-                    .map(readingRecordsRepository::attach)
-                    .collect(Collectors.toCollection(ArrayList::new));
-        } else {
+        if (readingRecords == null) {
             readingRecords = new ArrayList<>();
         }
 
-        // Get previous books
-        BookChain bookChain;
-        if (bookMyBatisEntity.getPreviousBooks() != null) {
-
-            HashMap<Book, Integer> bookOrderMap = bookMyBatisEntity.getPreviousBooks().stream()
-                    .filter(Objects::nonNull)
-                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
-                            fromDTO(item.getBookDTO()),
-                            item.getOrder()
-                    ))
-                    .collect(
-                            HashMap::new,
-                            (map, item) -> map.put(item.getKey(), item.getValue()),
-                            HashMap::putAll
-                    );
-
-            bookChain = new BookChain(bookOrderMap);
-        } else {
-            bookChain = null;
-        }
-
-        // Get tags
-        List<Tag> tags;
-        if (bookMyBatisEntity.getTags() != null) {
-            tags = bookMyBatisEntity.getTags().stream()
-                    .map(tagsRepository::attach)
-                    .collect(Collectors.toCollection(ArrayList::new));
-        } else {
+        if (tags == null) {
             tags = new ArrayList<>();
         }
 
-        // Get series list
-        List<Series> seriesList;
-        if (bookMyBatisEntity.getSeriesList() != null && !bookMyBatisEntity.getSeriesList().isEmpty()) {
+        if (textAuthors == null) {
+            textAuthors = new ArrayList<>();
+        }
 
-            List<SeriesMyBatisEntity> seriesDTOList = bookMyBatisEntity.getSeriesList();
-
-            // Converting Series DTO to domain entity
-            // TODO: Refactoring required?
-            seriesList = new ArrayList<>();
-            for (SeriesMyBatisEntity seriesMyBatisEntity: seriesDTOList) {
-
-                // Getting list of relations to book for each series
-                List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesMyBatisEntity.getSeriesBookRelationDtoList().stream()
-                        .map(item -> (SeriesItemRelationDTO)item)
-                        .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
-                        .collect(Collectors.toCollection(ArrayList::new));
-
-                Series series = seriesFactory.buildSeries(
-                        seriesMyBatisEntity.getSeriesId(),
-                        seriesMyBatisEntity.getTitle(),
-                        usersRepository.findById(seriesMyBatisEntity.getUserId()),
-                        seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
-                );
-
-                // TODO: move to repository
-                series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
-
-                seriesList.add(series);
-            }
-        } else {
+        if (seriesList == null) {
             seriesList = new ArrayList<>();
         }
 
-        User user = usersRepository.findById(bookMyBatisEntity.getUser().getUserId());
-
-        // Create book
-        Book book = new BookImpl(
-                bookMyBatisEntity.getBookId(),
-                null,
-                bookMyBatisEntity.getTitle(),
-                bookMyBatisEntity.getBookStatusObj(),
-                bookMyBatisEntity.getInsertDate(),
-                bookMyBatisEntity.getLastUpdateDate(),
-                bookMyBatisEntity.getLastChapter(),
+        return new BookImpl(
+                bookId,
+                title,
+                actualInsertDate,
                 bookType,
-                bookChain,
-                bookMyBatisEntity.getNote(),
+                previousBooks,
+                note,
                 readingRecords,
-                bookMyBatisEntity.getURL(),
+                URL,
                 user,
                 tags,
-                authors,
+                textAuthors,
                 seriesList,
                 dateFactory,
                 readingRecordFactory,
                 authorsBooksRepository,
                 seriesFactory
         );
-
-        return book;
     }
 }

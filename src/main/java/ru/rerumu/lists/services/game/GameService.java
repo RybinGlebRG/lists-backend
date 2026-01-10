@@ -3,7 +3,7 @@ package ru.rerumu.lists.services.game;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
-import ru.rerumu.lists.views.GameAddView;
+import ru.rerumu.lists.controller.games.views.GameAddView;
 
 import java.util.List;
 import java.util.Optional;

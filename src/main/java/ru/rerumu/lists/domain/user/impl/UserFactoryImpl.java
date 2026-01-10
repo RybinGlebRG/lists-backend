@@ -1,7 +1,6 @@
 package ru.rerumu.lists.domain.user.impl;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.user.User;
@@ -19,11 +18,6 @@ import java.util.Base64;
 
 @Component
 public class UserFactoryImpl implements UserFactory {
-
-
-    @Autowired
-    public UserFactoryImpl() {
-    }
 
     @Override
     public User fromDTO(UserDtoDao userDtoDao) {

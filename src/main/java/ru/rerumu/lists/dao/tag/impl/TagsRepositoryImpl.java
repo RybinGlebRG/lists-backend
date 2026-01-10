@@ -42,7 +42,12 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
     }
 
     private void create(Tag tag) {
-        tagsMapper.create(tag.toDTO());
+
+        tagsMapper.create(new TagDTO(
+                tag.getId(),
+                tag.getName(),
+                tag.getUser().getId()
+        ));
     }
 
     @Override
@@ -63,7 +68,7 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
     public @NonNull Tag create(@NonNull String name, @NonNull User user) {
         Long nextId = getNextId();
 
-        Tag tag = new TagImpl(nextId, name, user, this);
+        Tag tag = new TagImpl(nextId, name, user);
 
         create(tag);
 
@@ -77,8 +82,7 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
         return new TagImpl(
                 tagDTO.getTagId(),
                 tagDTO.getName(),
-                user,
-                this
+                user
         );
     }
 
@@ -90,8 +94,7 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
                 .map(tagDTO -> new TagImpl(
                         tagDTO.getTagId(),
                         tagDTO.getName(),
-                        user,
-                        this
+                        user
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
     }

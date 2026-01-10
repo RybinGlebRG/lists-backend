@@ -92,6 +92,11 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     }
 
     @Override
+    public Series attach(@NonNull Series series) {
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+    }
+
+    @Override
     public void delete(long seriesId) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRepository.getBySeriesId(seriesId);
         if (!seriesBookRelationList.isEmpty()) {

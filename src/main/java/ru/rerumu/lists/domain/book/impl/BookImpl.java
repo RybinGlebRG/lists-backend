@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
@@ -17,9 +16,8 @@ import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ToString
@@ -44,22 +41,10 @@ public class BookImpl implements Book{
     private final Long bookId;
 
     @Getter
-    private final Long readListId;
-
-    @Getter
     private String title;
 
     @Getter
-    private ReadingRecordStatuses bookStatus;
-
-    @Getter
     private LocalDateTime insertDate;
-
-    @Getter
-    private LocalDateTime lastUpdateDate;
-
-    @Getter
-    private Integer lastChapter;
 
     @Getter
     private BookType bookType;
@@ -79,7 +64,7 @@ public class BookImpl implements Book{
     private final User user;
 
     @Getter
-    private List<Tag> tags;
+    private final List<Tag> tags;
 
     @Getter
     private final List<Author> textAuthors;
@@ -97,12 +82,8 @@ public class BookImpl implements Book{
 
     BookImpl(
             @NonNull Long bookId,
-            Long readListId,
             @NonNull String title,
-            ReadingRecordStatuses bookStatus,
             @NonNull LocalDateTime insertDate,
-            @NonNull LocalDateTime lastUpdateDate,
-            Integer lastChapter,
             BookType bookType,
             BookChain previousBooks,
             String note,
@@ -118,11 +99,8 @@ public class BookImpl implements Book{
             @NonNull SeriesFactory seriesFactory
     ) {
         this.bookId = bookId;
-        this.readListId = readListId;
         this.title = title;
-        this.bookStatus = bookStatus;
         this.insertDate = insertDate;
-        this.lastUpdateDate = lastUpdateDate;
         this.bookType = bookType;
         this.previousBooks = previousBooks;
         this.note = note;
@@ -154,17 +132,6 @@ public class BookImpl implements Book{
     }
 
     @Override
-    // TODO: remove
-    public JSONObject toJSONObject() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public LocalDateTime getUpdateDate() {
-        return getLastUpdateDate();
-    }
-
-    @Override
     public void addReadingRecord(ReadingRecord readingRecord) {
         // TODO: Remove
         if (readingRecords == null){
@@ -177,11 +144,6 @@ public class BookImpl implements Book{
     @Override
     public Long getId() {
         return bookId;
-    }
-
-    @Override
-    public Long getListId() {
-        return readListId;
     }
 
     @Override
@@ -205,22 +167,6 @@ public class BookImpl implements Book{
     }
 
     @Override
-    public void updateLastChapter(Integer lastChapter) {
-//        if (!Objects.equals(this.lastChapter, lastChapter)){
-//            this.lastChapter = lastChapter;
-//            lastUpdateDate = dateFactory.getCurrentDate();
-//        }
-    }
-
-    @Override
-    public void updateStatus(ReadingRecordStatuses bookStatusRecord) {
-        if (!Objects.equals(this.bookStatus, bookStatusRecord)){
-            this.bookStatus = bookStatusRecord;
-            lastUpdateDate = dateFactory.getLocalDateTime();
-        }
-    }
-
-    @Override
     public void updateNote(String note) {
         this.note = note;
     }
@@ -233,7 +179,6 @@ public class BookImpl implements Book{
     @Override
     public void updateURL(String URL) {
         this.URL = URL;
-        this.lastUpdateDate = dateFactory.getLocalDateTime();
     }
 
     @Override
@@ -244,7 +189,6 @@ public class BookImpl implements Book{
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Tag tag: tagsToAdd) {
             this.tags.add(tag);
-            tag.addToBook(this);
         }
 
         // Removing tags
@@ -253,7 +197,6 @@ public class BookImpl implements Book{
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Tag tag: tagsToRemove) {
             this.tags.remove(tag);
-            tag.removeFromBook(bookId);
         }
     }
 
@@ -316,11 +259,6 @@ public class BookImpl implements Book{
     }
 
     @Override
-    public boolean filterByStatusIds(List<Integer> statusIds) {
-        return statusIds.contains(bookStatus.getId().intValue());
-    }
-
-    @Override
     public Float getTitleFuzzyMatchScore(String value) {
         if (title.equalsIgnoreCase(value)){
             return 1f;
@@ -380,12 +318,8 @@ public class BookImpl implements Book{
         // TODO: Need actual deep copy
         return new BookImpl(
                 bookId,
-                readListId,
                 title,
-                bookStatus,
                 insertDate,
-                lastUpdateDate,
-                lastChapter,
                 bookType,
                 previousBooks,
                 note,

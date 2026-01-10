@@ -1,10 +1,10 @@
-package ru.rerumu.lists.domain.readingrecords.impl;
+package ru.rerumu.lists.dao.readingrecord.impl;
 
 import lombok.NonNull;
 import org.json.JSONObject;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.base.PersistenceProxy;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.dao.base.PersistenceProxy;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;

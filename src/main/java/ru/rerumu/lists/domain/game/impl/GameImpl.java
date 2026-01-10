@@ -46,11 +46,6 @@ public class GameImpl implements Game {
         return obj;
     }
 
-    @Override
-    public LocalDateTime getUpdateDate() {
-        return createDateUTC;
-    }
-
     public final static class Builder{
         private Integer gameId;
         private String title;

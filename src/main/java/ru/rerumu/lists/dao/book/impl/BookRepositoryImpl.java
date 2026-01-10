@@ -3,10 +3,11 @@ package ru.rerumu.lists.dao.book.impl;
 import com.jcabi.aspects.Loggable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
+import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorBookDto;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
@@ -14,31 +15,42 @@ import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.book.mapper.BookMapper;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.series.SeriesBooksRepository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
+import ru.rerumu.lists.dao.tag.TagsRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
+import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.book.impl.BookPersistenceProxy;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesFactory;
+import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
+import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO: Refactor class
+
 @Slf4j
 @Component
 public class BookRepositoryImpl implements BookRepository {
@@ -50,7 +62,14 @@ public class BookRepositoryImpl implements BookRepository {
     private final SeriesRepository seriesRepository;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final BookFactory bookFactory;
+    private final TagsRepository tagsRepository;
+    private final AuthorsRepository authorsRepository;
+    private final ReadingRecordFactory readingRecordFactory;
+    private final SeriesFactory seriesFactory;
+    private final UsersRepository usersRepository;
+    private final SeriesItemRelationFactory seriesItemRelationFactory;
 
+    @Autowired
     public BookRepositoryImpl(
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
@@ -58,7 +77,13 @@ public class BookRepositoryImpl implements BookRepository {
             SeriesBooksRepository seriesBooksRepository,
             SeriesRepository seriesRepository,
             ReadingRecordsRepository readingRecordsRepository,
-            BookFactory bookFactory
+            BookFactory bookFactory,
+            TagsRepository tagsRepository,
+            AuthorsRepository authorsRepository,
+            ReadingRecordFactory readingRecordFactory,
+            SeriesFactory seriesFactory,
+            UsersRepository usersRepository,
+            SeriesItemRelationFactory seriesItemRelationFactory
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
@@ -67,6 +92,12 @@ public class BookRepositoryImpl implements BookRepository {
         this.seriesRepository = seriesRepository;
         this.readingRecordsRepository = readingRecordsRepository;
         this.bookFactory = bookFactory;
+        this.tagsRepository = tagsRepository;
+        this.authorsRepository = authorsRepository;
+        this.readingRecordFactory = readingRecordFactory;
+        this.seriesFactory = seriesFactory;
+        this.usersRepository = usersRepository;
+        this.seriesItemRelationFactory = seriesItemRelationFactory;
     }
 
 
@@ -77,10 +108,10 @@ public class BookRepositoryImpl implements BookRepository {
                 null,
                 book.getId(),
                 book.getTitle(),
-                book.getBookStatus() != null ? book.getBookStatus().getId().intValue() : null,
+                null,
                 book.getInsertDate(),
-                book.getUpdateDate(),
-                book.getLastChapter() != null ? book.getLastChapter() : null,
+                null,
+                null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
                 book.getURL(),
@@ -142,7 +173,7 @@ public class BookRepositoryImpl implements BookRepository {
 
         List<Book> books = new ArrayList<>();
         for (BookMyBatisEntity bookMyBatisEntity: bookDtoList) {
-            Book book = bookFactory.fromDTO(bookMyBatisEntity);
+            Book book = attach(bookMyBatisEntity);
             books.add(new BookPersistenceProxy(book, EntityState.PERSISTED));
         }
 
@@ -172,7 +203,7 @@ public class BookRepositoryImpl implements BookRepository {
         List<AuthorDtoDao> authorsDTOs = authorsBooksRepository.getAuthorsByBookId(id);
         book.setTextAuthors(authorsDTOs);
 
-        Book result = bookFactory.fromDTO(book);
+        Book result = attach(book);
         return new BookPersistenceProxy(result, EntityState.PERSISTED);
     }
 
@@ -226,7 +257,7 @@ public class BookRepositoryImpl implements BookRepository {
 
         List<Book> books = new ArrayList<>();
         for (BookMyBatisEntity bookMyBatisEntity: bookMyBatisEntities) {
-            Book book = bookFactory.fromDTO(bookMyBatisEntity);
+            Book book = attach(bookMyBatisEntity);
             books.add(new BookPersistenceProxy(book, EntityState.PERSISTED));
         }
 
@@ -246,10 +277,10 @@ public class BookRepositoryImpl implements BookRepository {
                 book.getId(),
                 null,
                 book.getTitle(),
-                book.getBookStatus().getId().intValue(),
+                null,
                 book.getInsertDate(),
-                book.getUpdateDate(),
-                book.getLastChapter() != null ? book.getLastChapter() : null,
+                null,
+                null,
                 book.getBookType() != null ? book.getBookType().getId() : null,
                 book.getNote(),
                 book.getURL(),
@@ -269,40 +300,55 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void save(Book book) {
-        if (book instanceof BookPersistenceProxy bookPersistenceProxy) {
 
-            // Save book
-            log.debug("Saving book...");
-            update(book);
-            bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
-            bookPersistenceProxy.initPersistedCopy();
+        BookPersistenceProxy bookPersistenceProxy = (BookPersistenceProxy) book;
 
-            // Save series
-            log.debug("Saving series...");
-            // collect series from original and current entities
-            Set<Series> seriesSet = new HashSet<>();
-            seriesSet.addAll(bookPersistenceProxy.getSeriesList());
-            seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
-            // save collected entities
-            for (Series series: seriesSet) {
-                seriesRepository.save(series);
-            }
+        // Save book
+        log.debug("Saving book...");
+        update(book);
+        bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
+        bookPersistenceProxy.initPersistedCopy();
 
-            // Delete removed reading records
-            List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
-                    .filter(item -> !book.getReadingRecords().contains(item))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            for (ReadingRecord readingRecord: readingRecordsToDelete) {
-                readingRecordsRepository.delete(readingRecord);
-            }
-            // Save reading records
-            for (ReadingRecord readingRecord: book.getReadingRecords()) {
-                readingRecordsRepository.update(readingRecord);
-            }
-
-        } else {
-            throw new ServerException();
+        // Save series
+        log.debug("Saving series...");
+        // collect series from original and current entities
+        Set<Series> seriesSet = new HashSet<>();
+        seriesSet.addAll(bookPersistenceProxy.getSeriesList());
+        seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
+        // save collected entities
+        for (Series series: seriesSet) {
+            seriesRepository.save(series);
         }
+
+        log.debug("Saving records...");
+        // Delete removed reading records
+        List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
+                .filter(item -> !book.getReadingRecords().contains(item))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (ReadingRecord readingRecord: readingRecordsToDelete) {
+            readingRecordsRepository.delete(readingRecord);
+        }
+        // Save reading records
+        for (ReadingRecord readingRecord: book.getReadingRecords()) {
+            readingRecordsRepository.update(readingRecord);
+        }
+
+        log.debug("Saving tags...");
+        // Adding new tags
+        List<Tag> tagsToAdd = book.getTags().stream()
+                .filter(tag -> !bookPersistenceProxy.getPersistedCopy().getTags().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Tag tag: tagsToAdd) {
+            tagsRepository.add(tag, book);
+        }
+        // Removing tags
+        List<Tag> tagsToRemove = bookPersistenceProxy.getPersistedCopy().getTags().stream()
+                .filter(tag -> !book.getTags().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Tag tag: tagsToRemove) {
+            tagsRepository.remove(book.getId(), tag.getId());
+        }
+
     }
 
     // TODO: Not deleting???
@@ -357,16 +403,19 @@ public class BookRepositoryImpl implements BookRepository {
     ) {
         Long bookId = getNextId();
 
-        Book book = bookFactory.createBook(
+        Book book = bookFactory.build(
                 bookId,
                 title,
-                lastChapter,
-                note,
-                bookStatus,
                 insertDate,
                 bookType,
+                null,
+                note,
+                null,
                 URL,
-                user
+                user,
+                null,
+                null,
+                null
         );
 
         addOne(book);
@@ -375,5 +424,118 @@ public class BookRepositoryImpl implements BookRepository {
         bookPersistenceProxy.initPersistedCopy();
 
         return bookPersistenceProxy;
+    }
+
+    @Override
+    public @NonNull Book attach(@NonNull BookMyBatisEntity bookMyBatisEntity) {
+
+        // Get authors
+        List<Author> authors;
+        if (bookMyBatisEntity.getTextAuthors() != null) {
+            authors = bookMyBatisEntity.getTextAuthors().stream()
+                    .map(authorsRepository::fromDTO)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            authors = new ArrayList<>();
+        }
+
+        // Get book type
+        BookType bookType;
+        if (bookMyBatisEntity.getBookTypeObj() != null) {
+            bookType = bookMyBatisEntity.getBookTypeObj();
+        } else {
+            bookType = null;
+        }
+
+        // Get reading records
+        List<ReadingRecord> readingRecords;
+        if (bookMyBatisEntity.getReadingRecords() != null) {
+            readingRecords = bookMyBatisEntity.getReadingRecords().stream()
+                    .map(readingRecordFactory::fromDTO)
+                    .map(readingRecordsRepository::attach)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            readingRecords = new ArrayList<>();
+        }
+
+        // Get previous books
+        BookChain bookChain;
+        if (bookMyBatisEntity.getPreviousBooks() != null) {
+
+            HashMap<Book, Integer> bookOrderMap = bookMyBatisEntity.getPreviousBooks().stream()
+                    .filter(Objects::nonNull)
+                    .map(item -> new AbstractMap.SimpleImmutableEntry<>(
+                            attach(item.getBookDTO()),
+                            item.getOrder()
+                    ))
+                    .collect(
+                            HashMap::new,
+                            (map, item) -> map.put(item.getKey(), item.getValue()),
+                            HashMap::putAll
+                    );
+
+            bookChain = new BookChain(bookOrderMap);
+        } else {
+            bookChain = null;
+        }
+
+        // Get tags
+        List<Tag> tags;
+        if (bookMyBatisEntity.getTags() != null) {
+            tags = bookMyBatisEntity.getTags().stream()
+                    .map(tagsRepository::attach)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            tags = new ArrayList<>();
+        }
+
+        // Get series list
+        List<Series> seriesList;
+        if (bookMyBatisEntity.getSeriesList() != null && !bookMyBatisEntity.getSeriesList().isEmpty()) {
+
+            List<SeriesMyBatisEntity> seriesDTOList = bookMyBatisEntity.getSeriesList();
+
+            // Converting Series DTO to domain entity
+            seriesList = new ArrayList<>();
+            for (SeriesMyBatisEntity seriesMyBatisEntity: seriesDTOList) {
+
+                // Getting list of relations to book for each series
+                List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesMyBatisEntity.getSeriesBookRelationDtoList().stream()
+                        .map(item -> (SeriesItemRelationDTO)item)
+                        .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                Series series = seriesFactory.buildSeries(
+                        seriesMyBatisEntity.getSeriesId(),
+                        seriesMyBatisEntity.getTitle(),
+                        usersRepository.findById(seriesMyBatisEntity.getUserId()),
+                        seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
+                );
+
+                series = seriesRepository.attach(series);
+
+                seriesList.add(series);
+            }
+        } else {
+            seriesList = new ArrayList<>();
+        }
+
+        User user = usersRepository.findById(bookMyBatisEntity.getUser().getUserId());
+
+        // Create book
+        return bookFactory.build(
+                bookMyBatisEntity.getBookId(),
+                bookMyBatisEntity.getTitle(),
+                bookMyBatisEntity.getInsertDate(),
+                bookType,
+                bookChain,
+                bookMyBatisEntity.getNote(),
+                readingRecords,
+                bookMyBatisEntity.getURL(),
+                user,
+                tags,
+                authors,
+                seriesList
+        );
     }
 }

@@ -1,5 +1,7 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.movies;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,32 +15,40 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.movies.views.out.MovieListView;
+import ru.rerumu.lists.controller.movies.views.out.MoviesViewFactory;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.domain.TitlesList;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.services.WatchListService;
 import ru.rerumu.lists.views.TitleCreateView;
-import ru.rerumu.lists.views.TitleListView;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
-public class TitlesController {
+public class MoviesController {
 
     private final WatchListService watchListService;
+    private final MoviesViewFactory moviesViewFactory;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public TitlesController(WatchListService watchListService) {
+    public MoviesController(WatchListService watchListService, MoviesViewFactory moviesViewFactory, ObjectMapper objectMapper) {
         this.watchListService = watchListService;
+        this.moviesViewFactory = moviesViewFactory;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getAll(@PathVariable long watchListId, @RequestAttribute("username") String username) {
-        TitlesList titlesList = watchListService.getAll(watchListId);
-        TitleListView titleListView = TitleListView.builder()
-                .titlesList(titlesList)
-                .build();
-        ResponseEntity<String> resEnt = new ResponseEntity<>(titleListView.toString(), HttpStatus.OK);
-        return resEnt;
+        try {
+            List<Movie> movies = watchListService.getAll(watchListId);
+            MovieListView movieListView = moviesViewFactory.buildMovieListView(movies);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieListView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     @PostMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)

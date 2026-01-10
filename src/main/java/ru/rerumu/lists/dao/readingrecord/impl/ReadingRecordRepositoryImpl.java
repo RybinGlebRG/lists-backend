@@ -7,9 +7,8 @@ import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordPersistenceProxy;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;

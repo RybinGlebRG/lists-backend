@@ -1,7 +1,5 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.games;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,20 +9,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.games.views.GameAddView;
+import ru.rerumu.lists.controller.games.views.GameListView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.GameAddView;
-import ru.rerumu.lists.views.GameListView;
 
 import java.util.List;
 
 @RestController
 public class GamesController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GameService gameService;
     @Deprecated

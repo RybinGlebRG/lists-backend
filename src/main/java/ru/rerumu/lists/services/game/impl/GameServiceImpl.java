@@ -7,7 +7,7 @@ import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.services.game.GameService;
-import ru.rerumu.lists.views.GameAddView;
+import ru.rerumu.lists.controller.games.views.GameAddView;
 
 import java.util.List;
 import java.util.Optional;

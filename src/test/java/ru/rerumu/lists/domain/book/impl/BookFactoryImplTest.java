@@ -8,7 +8,7 @@ import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.user.UserFactory;
 
 @Slf4j

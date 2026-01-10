@@ -1,34 +1,35 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.controller.movies.views.out;
 
-import lombok.Getter;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import lombok.NonNull;
+import org.springframework.stereotype.Component;
 import ru.rerumu.lists.domain.movie.Movie;
+import ru.rerumu.lists.domain.series.item.SeriesItemType;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class TitlesList {
+@Component
+public class MoviesViewFactory {
 
-    @Getter
-    private final List<Movie> movies;
+    private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.MOVIE;
 
-    public TitlesList(List<Movie> movies){
-        this.movies = movies;
+    @NonNull
+    public MovieView buildMovieView(@NonNull Movie movie) {
+        return new MovieView(
+                movie.getId(),
+                movie.getName(),
+                movie.getCreateDateLocal(),
+                movie.getWatchListId(),
+                movie.getStatusId(),
+                movie.getVideoType().toJSONObject().toString(),
+                SERIES_ITEM_TYPE.name()
+        );
     }
 
-
-    public JSONObject toJSONObject(){
-        JSONObject obj = new JSONObject();
-        JSONArray titles = new JSONArray();
-        for (Movie item: this.movies){
-            titles.put(item.toJSONObject());
-        }
-        obj.put("titles",titles);
-        return obj;
-    }
-
-    public void sort(){
+    @NonNull
+    public MovieListView buildMovieListView(@NonNull List<Movie> movies) {
         Comparator<Movie> comparator = new Comparator<Movie>() {
             @Override
             public int compare(Movie o1, Movie o2) {
@@ -71,11 +72,12 @@ public class TitlesList {
             }
         };
 
-        this.movies.sort(comparator);
+        return new MovieListView(
+                movies.stream()
+                        .sorted(comparator)
+                        .map(this::buildMovieView)
+                        .collect(Collectors.toCollection(ArrayList::new))
+        );
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
 }

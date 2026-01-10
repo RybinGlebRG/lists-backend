@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.controller.users;
 
 import lombok.Getter;
 

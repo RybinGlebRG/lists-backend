@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.series.impl;
 
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.base.EntityState;
-import ru.rerumu.lists.domain.base.PersistenceProxy;
+import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
 import ru.rerumu.lists.domain.series.item.SeriesItem;

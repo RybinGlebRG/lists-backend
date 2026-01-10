@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
-import ru.rerumu.lists.domain.TokenRequest;
+import ru.rerumu.lists.controller.users.TokenRequest;
 import ru.rerumu.lists.domain.user.User;
 
 import java.security.NoSuchAlgorithmException;

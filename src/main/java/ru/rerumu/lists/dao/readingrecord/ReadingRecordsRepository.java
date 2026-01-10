@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.readingrecord;
 
 import lombok.NonNull;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;

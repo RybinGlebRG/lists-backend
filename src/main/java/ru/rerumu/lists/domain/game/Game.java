@@ -1,5 +1,6 @@
 package ru.rerumu.lists.domain.game;
 
+import org.json.JSONObject;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
@@ -14,4 +15,5 @@ public interface Game extends SeriesItem {
 
     User getUser();
 
+    JSONObject toJSONObject();
 }

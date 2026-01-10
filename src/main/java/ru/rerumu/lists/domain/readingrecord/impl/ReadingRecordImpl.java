@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.readingrecords.impl;
+package ru.rerumu.lists.domain.readingrecord.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.crosscut.utils.LocalDateTimeSerializer;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;

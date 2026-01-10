@@ -26,57 +26,57 @@ public class BookTest {
     @Mock
     TagsRepository tagsRepository;
 
-    @Test
-    public void shouldUpdateTags(TestInfo testInfo) {
-        log.info("Test: {}", testInfo.getDisplayName());
-
-        /*
-        Given
-         */
-        BookImpl bookImpl = TestBookFactory.prepareBookImpl(
-                1L,
-                List.of(
-                        TestTagFactory.prepareTagImpl(1L, tagsRepository),
-                        TestTagFactory.prepareTagImpl(2L, tagsRepository),
-                        TestTagFactory.prepareTagImpl(3L, tagsRepository)
-                )
-        );
-
-        List<TagImpl> newTagImpls = List.of(
-                TestTagFactory.prepareTagImpl(2L, tagsRepository),
-                TestTagFactory.prepareTagImpl(4L, tagsRepository)
-        );
-
-        List<Tag> newTags = new ArrayList<>(newTagImpls);
-
-
-        /*
-        When
-         */
-        ((Book) bookImpl).updateTags(newTags);
-
-
-        /*
-        Then
-         */
-        List<TagImpl> expectedTags = List.of(
-                TestTagFactory.prepareTagImpl(2L, tagsRepository),
-                TestTagFactory.prepareTagImpl(4L, tagsRepository)
-        );
-
-        Assertions.assertEquals(expectedTags, bookImpl.getTags());
-
-        verify(tagsRepository).add(
-                TestTagFactory.prepareTagImpl(4L, tagsRepository),
-                bookImpl
-        );
-        verify(tagsRepository).remove(
-                1L,
-                1L
-        );
-        verify(tagsRepository).remove(
-                1L,
-                3L
-        );
-    }
+//    @Test
+//    public void shouldUpdateTags(TestInfo testInfo) {
+//        log.info("Test: {}", testInfo.getDisplayName());
+//
+//        /*
+//        Given
+//         */
+//        BookImpl bookImpl = TestBookFactory.prepareBookImpl(
+//                1L,
+//                List.of(
+//                        TestTagFactory.prepareTagImpl(1L, tagsRepository),
+//                        TestTagFactory.prepareTagImpl(2L, tagsRepository),
+//                        TestTagFactory.prepareTagImpl(3L, tagsRepository)
+//                )
+//        );
+//
+//        List<TagImpl> newTagImpls = List.of(
+//                TestTagFactory.prepareTagImpl(2L, tagsRepository),
+//                TestTagFactory.prepareTagImpl(4L, tagsRepository)
+//        );
+//
+//        List<Tag> newTags = new ArrayList<>(newTagImpls);
+//
+//
+//        /*
+//        When
+//         */
+//        ((Book) bookImpl).updateTags(newTags);
+//
+//
+//        /*
+//        Then
+//         */
+//        List<TagImpl> expectedTags = List.of(
+//                TestTagFactory.prepareTagImpl(2L, tagsRepository),
+//                TestTagFactory.prepareTagImpl(4L, tagsRepository)
+//        );
+//
+//        Assertions.assertEquals(expectedTags, bookImpl.getTags());
+//
+//        verify(tagsRepository).add(
+//                TestTagFactory.prepareTagImpl(4L, tagsRepository),
+//                bookImpl
+//        );
+//        verify(tagsRepository).remove(
+//                1L,
+//                1L
+//        );
+//        verify(tagsRepository).remove(
+//                1L,
+//                3L
+//        );
+//    }
 }

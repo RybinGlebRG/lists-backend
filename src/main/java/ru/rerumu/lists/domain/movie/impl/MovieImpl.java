@@ -2,10 +2,9 @@ package ru.rerumu.lists.domain.movie.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.domain.VideoType;
 import ru.rerumu.lists.domain.movie.Movie;
+import ru.rerumu.lists.domain.movietype.MovieType;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +34,7 @@ public class MovieImpl implements Movie {
 
     @Getter
     @Setter
-    private VideoType videoType;
+    private MovieType videoType;
 
 
     public MovieImpl(
@@ -44,7 +43,7 @@ public class MovieImpl implements Movie {
             String name,
             Date createDateUTC,
             Long statusId,
-            VideoType videoType
+            MovieType videoType
     ) {
         this.titleId = titleId;
         this.watchListId = watchListId;
@@ -92,28 +91,6 @@ public class MovieImpl implements Movie {
         this.createDateUTC = createDateUTC;
     }
 
-
-    public JSONObject toJSONObject() {
-        JSONObject obj = new JSONObject();
-        obj.put("id", titleId);
-        obj.put("name", name);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        obj.put("create_date_utc", sdf.format(createDateUTC));
-        obj.put("watchListId", this.watchListId);
-        obj.put("statusId", this.statusId);
-        obj.put("videoType", videoType != null ? videoType.toJSONObject() : null);
-        obj.put("itemType",SERIES_ITEM_TYPE.name());
-        return obj;
-    }
-
-    @Override
-    public LocalDateTime getUpdateDate() {
-        return createDateUTC
-                .toInstant()
-                .atOffset(ZoneOffset.UTC)
-                .toLocalDateTime();
-    }
-
     public LocalDateTime getCreateDateLocal(){
         return createDateUTC
                 .toInstant()
@@ -126,18 +103,13 @@ public class MovieImpl implements Movie {
         return titleId;
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject().toString();
-    }
-
     public static class Builder {
         private Long titleId;
         private String name;
         private Date createDateUTC;
         private Long watchListId;
         private Long statusId;
-        private VideoType videoType;
+        private MovieType videoType;
 
         public Builder titleId(Long titleId) {
             this.titleId = titleId;
@@ -164,7 +136,7 @@ public class MovieImpl implements Movie {
             return this;
         }
 
-        public Builder videoType(VideoType videoType) {
+        public Builder videoType(MovieType videoType) {
             this.videoType = videoType;
             return this;
         }

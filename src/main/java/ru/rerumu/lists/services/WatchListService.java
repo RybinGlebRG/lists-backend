@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.domain.movie.Movie;
-import ru.rerumu.lists.domain.TitlesList;
 import ru.rerumu.lists.dao.title.TitlesRepository;
+import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.views.TitleCreateView;
 
 import java.util.List;
@@ -46,11 +45,8 @@ public class WatchListService {
         return this.titlesRepository.getOne(watchListId,titleId);
     }
 
-    public TitlesList getAll(Long watchListId){
-        List<Movie> movies = titlesRepository.getAll(watchListId);
-        TitlesList titlesList = new TitlesList(movies);
-        titlesList.sort();
-        return titlesList;
+    public List<Movie> getAll(Long watchListId){
+        return titlesRepository.getAll(watchListId);
     }
 
     @Transactional(rollbackFor = Exception.class)

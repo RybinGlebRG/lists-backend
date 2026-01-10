@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.services;
 
 public enum MetricType {
     DB_QUERY_EXECUTION_TIME,

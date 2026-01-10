@@ -38,10 +38,6 @@ public class BookView implements DeepCopyable<BookView>{
     private final LocalDateTime insertDate;
 
     @Getter
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private final LocalDateTime lastUpdateDate;
-
-    @Getter
     private final Integer lastChapter;
 
     @Getter
@@ -97,7 +93,6 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull String title,
             BookStatusView bookStatus,
             @NonNull LocalDateTime insertDate,
-            @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
             String note,
             BookType bookType,
@@ -119,7 +114,6 @@ public class BookView implements DeepCopyable<BookView>{
             this.bookStatus = null;
         }
         this.insertDate = insertDate;
-        this.lastUpdateDate = lastUpdateDate;
         this.lastChapter = lastChapter;
         this.note = note;
 

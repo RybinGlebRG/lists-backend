@@ -6,16 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.item.SeriesItemDTO;
+import ru.rerumu.lists.dao.tag.TagDTO;
 import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
-import ru.rerumu.lists.dao.tag.TagDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,8 +55,4 @@ public class BookMyBatisEntity implements SeriesItemDTO {
     @Setter
     private List<AuthorDtoDao> textAuthors;
 
-    @Override
-    public SeriesItem toDomain() {
-        throw new NotImplementedException();
-    }
 }

@@ -32,4 +32,6 @@ public interface SeriesRepository {
             @NonNull String title,
             @NonNull User user
     );
+
+    Series attach(@NonNull Series series);
 }

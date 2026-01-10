@@ -1,4 +1,4 @@
-package ru.rerumu.lists.views;
+package ru.rerumu.lists.controller.games.views;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

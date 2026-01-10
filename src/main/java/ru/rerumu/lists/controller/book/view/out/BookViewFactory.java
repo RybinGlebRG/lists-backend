@@ -11,7 +11,7 @@ import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.book.SearchOrder;
 import ru.rerumu.lists.services.book.SortItem;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.item.SeriesItemType;
 import ru.rerumu.lists.domain.tag.Tag;
@@ -92,8 +92,7 @@ public class BookViewFactory {
                 book.getTitle(),
                 maxRecord.getBookStatus(),
                 book.getInsertDate(),
-                book.getUpdateDate(),
-                book.getLastChapter(),
+                null,
                 book.getNote(),
                 bookType,
                 SeriesItemType.BOOK.name(),

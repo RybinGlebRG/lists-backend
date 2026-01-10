@@ -26,14 +26,4 @@ public interface Entity<T> {
     @Deprecated
     void delete();
 
-//    /**
-//     * Get entity state
-//     */
-//    EntityState getEntityState();
-//
-//    /**
-//     * Get copy of the object corresponding to its state in DB
-//     */
-//    T getPersistedCopy();
-
 }

@@ -1,13 +1,13 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.domain.movietype;
 
 import org.json.JSONObject;
 
 // TODO: To record
-public class VideoType {
+public class MovieType {
     private final Long typeId;
     private final String name;
 
-    public VideoType(Long typeId, String name){
+    public MovieType(Long typeId, String name){
         this.typeId = typeId;
         this.name = name;
     }

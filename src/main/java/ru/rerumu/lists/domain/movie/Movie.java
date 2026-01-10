@@ -1,6 +1,6 @@
 package ru.rerumu.lists.domain.movie;
 
-import ru.rerumu.lists.domain.VideoType;
+import ru.rerumu.lists.domain.movietype.MovieType;
 import ru.rerumu.lists.domain.series.item.SeriesItem;
 
 import java.time.LocalDateTime;
@@ -25,9 +25,9 @@ public interface Movie extends SeriesItem {
 
     Long getStatusId();
 
-    VideoType getVideoType();
+    MovieType getVideoType();
 
-    void setVideoType(VideoType videoType);
+    void setVideoType(MovieType videoType);
 
     Long getWatchListId();
 

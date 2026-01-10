@@ -35,7 +35,6 @@
 
         <!-- TODO: fix -->
             <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
-            <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
         <!-- -->
 
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>

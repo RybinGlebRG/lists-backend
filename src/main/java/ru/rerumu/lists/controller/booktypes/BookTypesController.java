@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.booktypes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

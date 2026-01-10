@@ -40,7 +40,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagsRepository.findByIds(List.of(tagId), user);
 
         for (Tag tag: tags) {
-            tag.delete();
+            tagsRepository.delete(tag.getId(), tag.getUser());
         }
     }
 

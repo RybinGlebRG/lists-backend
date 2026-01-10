@@ -1,7 +1,7 @@
 package ru.rerumu.lists.views;
 
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.domain.VideoType;
+import ru.rerumu.lists.domain.movietype.MovieType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,7 +12,7 @@ public class TitleCreateView {
     private Date createDateUTC;
     private Long watchListId;
     private Long statusId;
-    private VideoType videoType;
+    private MovieType videoType;
 
     public String getName(){
         return this.name;
@@ -76,11 +76,11 @@ public class TitleCreateView {
         this.statusId = statusId;
     }
 
-    public VideoType getVideoType() {
+    public MovieType getVideoType() {
         return videoType;
     }
 
-    public void setVideoType(VideoType videoType) {
+    public void setVideoType(MovieType videoType) {
         this.videoType = videoType;
     }
 

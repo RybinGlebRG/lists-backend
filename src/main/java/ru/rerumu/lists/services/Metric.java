@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain;
+package ru.rerumu.lists.services;
 
 import java.time.LocalDateTime;
 

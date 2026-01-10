@@ -1,4 +1,4 @@
-package ru.rerumu.lists.controller;
+package ru.rerumu.lists.controller.users;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.rerumu.lists.domain.TokenRequest;
 import ru.rerumu.lists.services.user.UserService;
 
 @CrossOrigin
