@@ -53,7 +53,7 @@ public class BooksController {
     @PutMapping(value = "/api/v1/users/{userId}/books/{bookId}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> updateOne(
+    ResponseEntity<String> updateBook(
             @PathVariable Long userId,
             @PathVariable Long bookId,
             @RequestBody BookUpdateView bookUpdateView

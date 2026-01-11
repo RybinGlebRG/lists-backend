@@ -75,11 +75,11 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
 
     @Override
     public boolean update(@NonNull ReadingRecordStatuses bookStatusRecord, @NonNull LocalDateTime startDate, LocalDateTime endDate, Long lastChapter) {
-        boolean isChanged = readingRecord.update(bookStatusRecord, startDate, endDate, lastChapter);
-        if (isChanged) {
+        boolean isModified = readingRecord.update(bookStatusRecord, startDate, endDate, lastChapter);
+        if (isModified) {
             entityState = EntityState.DIRTY;
         }
-        return isChanged;
+        return isModified;
     }
 
     @Override

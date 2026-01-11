@@ -52,7 +52,6 @@ public class BookImpl implements Book{
     @Getter
     private String note;
 
-    @Getter
     private List<ReadingRecord> readingRecords;
 
     @Getter
@@ -120,6 +119,15 @@ public class BookImpl implements Book{
     }
 
     @Override
+    public boolean removeReadingRecord(ReadingRecord readingRecord) {
+        if (readingRecord != null) {
+            return readingRecords.remove(readingRecord);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public void addReadingRecord(ReadingRecord readingRecord) {
         // TODO: Remove
         if (readingRecords == null){
@@ -137,6 +145,11 @@ public class BookImpl implements Book{
     @Override
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public List<ReadingRecord> getReadingRecords() {
+        return new ArrayList<>(readingRecords);
     }
 
     @Override
@@ -175,9 +188,7 @@ public class BookImpl implements Book{
         List<Tag> tagsToAdd = tags.stream()
                 .filter(tag -> !this.tags.contains(tag))
                 .collect(Collectors.toCollection(ArrayList::new));
-        for (Tag tag: tagsToAdd) {
-            this.tags.add(tag);
-        }
+        this.tags.addAll(tagsToAdd);
 
         // Removing tags
         List<Tag> tagsToRemove = this.tags.stream()

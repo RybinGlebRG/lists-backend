@@ -94,39 +94,39 @@ public class ReadingRecordImpl implements ReadingRecord {
             LocalDateTime endDate,
             Long lastChapter
     ) {
-        boolean isChanged = false;
+        boolean isModified = false;
 
         // Update end date
         if (endDate != null) {
             this.endDate = endDate;
-            isChanged = true;
+            isModified = true;
         }
         // or close record if status changed to "Completed"
         else if (bookStatusRecord.equals(ReadingRecordStatuses.COMPLETED)) {
             this.endDate = dateFactory.getLocalDateTime();
-            isChanged = true;
+            isModified = true;
         }
 
         if (!this.bookStatus.equals(bookStatusRecord)) {
             this.bookStatus = bookStatusRecord;
-            isChanged = true;
+            isModified = true;
         }
 
         if (!this.startDate.equals(startDate)) {
             this.startDate = startDate;
-            isChanged = true;
+            isModified = true;
         }
 
         if (!Objects.equals(this.lastChapter, lastChapter)) {
             this.lastChapter = lastChapter;
-            isChanged = true;
+            isModified = true;
         }
 
-        if (isChanged) {
+        if (isModified) {
             this.updateDate = dateFactory.getLocalDateTime();
         }
 
-        return isChanged;
+        return isModified;
     }
 
     @Override

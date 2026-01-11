@@ -13,7 +13,11 @@ import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book {
 
@@ -163,6 +167,15 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     }
 
     @Override
+    public boolean removeReadingRecord(ReadingRecord readingRecord) {
+        boolean isModified = book.removeReadingRecord(readingRecord);
+        if (isModified) {
+            entityState = EntityState.DIRTY;
+        }
+        return isModified;
+    }
+
+    @Override
     public EntityState getEntityState() {
         return entityState;
     }
@@ -185,5 +198,52 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public Book deepCopy() {
         return new BookPersistenceProxy(book.deepCopy(), entityState);
+    }
+
+    @NonNull
+    public List<ReadingRecord> getRemovedReadingRecords() {
+        return getPersistedCopy().getReadingRecords().stream()
+                .filter(item -> !book.getReadingRecords().contains(item))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @NonNull
+    public List<Tag> getRemovedTags() {
+        return getPersistedCopy().getTags().stream()
+                .filter(tag -> !book.getTags().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @NonNull
+    public List<Tag> getAddedTags() {
+        return book.getTags().stream()
+                .filter(tag -> !getPersistedCopy().getTags().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @NonNull
+    public List<Author> getRemovedAuthors() {
+        return getPersistedCopy().getTextAuthors().stream()
+                .filter(tag -> !book.getTextAuthors().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @NonNull
+    public List<Author> getAddedAuthors() {
+        return book.getTextAuthors().stream()
+                .filter(tag -> !getPersistedCopy().getTextAuthors().contains(tag))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Collect series from persisted and current entities
+     */
+    @NonNull
+    public Set<Series> getAllSeries() {
+        Set<Series> seriesSet = new HashSet<>();
+        seriesSet.addAll(getSeriesList());
+        seriesSet.addAll(getPersistedCopy().getSeriesList());
+
+        return seriesSet;
     }
 }

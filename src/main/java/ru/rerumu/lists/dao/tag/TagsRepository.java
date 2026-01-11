@@ -23,6 +23,6 @@ public interface TagsRepository extends CrudRepository<TagDTO,Long> {
     @NonNull
     Tag attach(@NonNull TagDTO tagDTO);
 
-    void add(Tag tag, Book book);
+    void addTagTo(Tag tag, Book book);
 
 }

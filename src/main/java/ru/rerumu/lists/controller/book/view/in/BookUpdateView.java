@@ -29,7 +29,7 @@ public class BookUpdateView {
     @Getter
     public static class ReadingRecordView {
         private final Long readingRecordId;
-        private final Integer statusId;
+        private final Long statusId;
         private final LocalDateTime startDate;
         private final LocalDateTime endDate;
         private final Long lastChapter;
@@ -37,7 +37,7 @@ public class BookUpdateView {
         @JsonCreator
         public ReadingRecordView(
                 Long readingRecordId,
-                Integer statusId,
+                Long statusId,
                 @NonNull LocalDateTime startDate,
                 LocalDateTime endDate,
                 Long lastChapter

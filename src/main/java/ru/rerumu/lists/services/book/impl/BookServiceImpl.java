@@ -37,6 +37,7 @@ import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.booktype.BookTypesService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -130,60 +131,39 @@ public class BookServiceImpl implements BookService {
 
         // Update reading records
         logger.info("Updating reading records...");
-        List<ReadingRecord> readingRecords = new ArrayList<>();
-
-        List<BookUpdateView.ReadingRecordView> recordsToUpdate = bookUpdateView.getReadingRecords().stream()
-                .filter(readingRecordView ->  readingRecordView.getReadingRecordId() != null)
-                .collect(Collectors.toCollection(ArrayList::new));
-        List<Long> idsToUpdate = recordsToUpdate.stream()
-                .map(BookUpdateView.ReadingRecordView::getReadingRecordId)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        // Get reading records to update
-        Map<Long, ReadingRecord> readingRecordMap = book.getReadingRecords().stream()
-                .filter(readingRecord -> idsToUpdate.contains(readingRecord.getId()))
+        Map<Long, BookUpdateView.ReadingRecordView> id2readingRecordViewMap =  bookUpdateView.getReadingRecords().stream()
+                .filter(readingRecordView -> readingRecordView.getReadingRecordId() != null)
                 .collect(Collectors.toMap(
-                        ReadingRecord::getId,
-                        Function.identity()
+                        BookUpdateView.ReadingRecordView::getReadingRecordId,
+                        Function.identity(),
+                        (o1, o2) -> o2,
+                        HashMap::new
                 ));
-
-        // Update existing reading records
-        for (BookUpdateView.ReadingRecordView readingRecordView: recordsToUpdate) {
-            ReadingRecord readingRecord = readingRecordMap.get(readingRecordView.getReadingRecordId());
-
-            ReadingRecordStatuses bookStatusRecord = readingRecordStatusRepository.findById(Long.valueOf(readingRecordView.getStatusId()));
-
-            readingRecord.update(
-                    bookStatusRecord,
-                    readingRecordView.getStartDate(),
-                    readingRecordView.getEndDate(),
-                    readingRecordView.getLastChapter()
-            );
-
-            readingRecords.add(readingRecord);
+        // Remove or update reading records
+        for (ReadingRecord readingRecord: book.getReadingRecords()) {
+            if (!id2readingRecordViewMap.containsKey(readingRecord.getId())) {
+                book.removeReadingRecord(readingRecord);
+            } else {
+                BookUpdateView.ReadingRecordView readingRecordView = id2readingRecordViewMap.get(readingRecord.getId());
+                readingRecord.update(
+                        readingRecordStatusRepository.findById(readingRecordView.getStatusId()),
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                );
+            }
         }
-
-        // Create reading records
-        List<BookUpdateView.ReadingRecordView> recordsToCreate = bookUpdateView.getReadingRecords().stream()
-                .filter(readingRecordView ->  readingRecordView.getReadingRecordId() == null)
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (BookUpdateView.ReadingRecordView recordToCreate: recordsToCreate) {
-
-            ReadingRecordStatuses bookStatusRecord = readingRecordStatusRepository.findById(Long.valueOf(recordToCreate.getStatusId()));
-
-            ReadingRecord readingRecord = readingRecordsRepository.create(
-                    bookId,
-                    bookStatusRecord,
-                    recordToCreate.getStartDate(),
-                    recordToCreate.getEndDate(),
-                    recordToCreate.getLastChapter()
-            );
-
-            readingRecords.add(readingRecord);
-        }
-
-        // Update reading records
-        book.updateReadingRecords(readingRecords);
+        // Add reading record
+        bookUpdateView.getReadingRecords().stream()
+                .filter(readingRecordView -> readingRecordView.getReadingRecordId() == null)
+                .map(readingRecordView -> readingRecordsRepository.create(
+                        bookId,
+                        readingRecordStatusRepository.findById(readingRecordView.getStatusId()),
+                        readingRecordView.getStartDate(),
+                        readingRecordView.getEndDate(),
+                        readingRecordView.getLastChapter()
+                ))
+                .forEachOrdered(book::addReadingRecord);
 
         // Update author
         logger.info("Updating text authors...");
@@ -307,7 +287,7 @@ public class BookServiceImpl implements BookService {
         // Add author
         if (bookAddView.getAuthorId() != null) {
             logger.info("Add author...");
-            authorsBooksRepository.add(
+            authorsBooksRepository.addAuthorTo(
                     newBook.getId(),
                     authorsRepository.findById(bookAddView.getAuthorId(), user).getId(),
                     user.getId(),

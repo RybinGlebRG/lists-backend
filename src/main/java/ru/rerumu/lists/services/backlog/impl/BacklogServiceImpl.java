@@ -145,7 +145,7 @@ public class BacklogServiceImpl implements BacklogService {
         // If moving to lists
         if (backlogItemEventType.equals(BacklogItemEventType.MOVE_TO_LIST)) {
 
-            // If item is book
+            // If item is a book
             if (backlogItem.getType().equals(SeriesItemType.BOOK)) {
                 Book book = bookRepository.create(
                         backlogItem.getTitle(),

@@ -60,4 +60,6 @@ public interface Book extends SeriesItem, Entity, DeepCopyable<Book> {
 
     boolean currentStatusEquals(Long statusId);
 
+    boolean removeReadingRecord(ReadingRecord readingRecord);
+
 }

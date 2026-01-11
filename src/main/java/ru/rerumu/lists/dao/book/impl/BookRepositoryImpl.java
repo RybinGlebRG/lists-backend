@@ -288,33 +288,21 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void save(Book book) {
-
         BookPersistenceProxy bookPersistenceProxy = (BookPersistenceProxy) book;
-        Book bookPersistedCopy = bookPersistenceProxy.getPersistedCopy();
 
         // Save book
         log.debug("Saving book...");
         update(book);
-        bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
-        bookPersistenceProxy.initPersistedCopy();
 
         // Save series
         log.debug("Saving series...");
-        // collect series from original and current entities
-        Set<Series> seriesSet = new HashSet<>();
-        seriesSet.addAll(bookPersistenceProxy.getSeriesList());
-        seriesSet.addAll(bookPersistenceProxy.getPersistedCopy().getSeriesList());
-        // save collected entities
-        for (Series series: seriesSet) {
+        for (Series series: bookPersistenceProxy.getAllSeries()) {
             seriesRepository.save(series);
         }
 
         log.debug("Saving records...");
         // Delete removed reading records
-        List<ReadingRecord> readingRecordsToDelete = bookPersistenceProxy.getPersistedCopy().getReadingRecords().stream()
-                .filter(item -> !book.getReadingRecords().contains(item))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (ReadingRecord readingRecord: readingRecordsToDelete) {
+        for (ReadingRecord readingRecord: bookPersistenceProxy.getRemovedReadingRecords()) {
             readingRecordsRepository.delete(readingRecord);
         }
         // Save reading records
@@ -323,42 +311,28 @@ public class BookRepositoryImpl implements BookRepository {
         }
 
         log.debug("Saving tags...");
-        // Adding new tags
-        List<Tag> tagsToAdd = book.getTags().stream()
-                .filter(tag -> !bookPersistenceProxy.getPersistedCopy().getTags().contains(tag))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (Tag tag: tagsToAdd) {
-            tagsRepository.add(tag, book);
-        }
         // Removing tags
-        List<Tag> tagsToRemove = bookPersistenceProxy.getPersistedCopy().getTags().stream()
-                .filter(tag -> !book.getTags().contains(tag))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (Tag tag: tagsToRemove) {
+        for (Tag tag: bookPersistenceProxy.getRemovedTags()) {
             tagsRepository.remove(book.getId(), tag.getId());
+        }
+        // Adding new tags
+        for (Tag tag: bookPersistenceProxy.getAddedTags()) {
+            tagsRepository.addTagTo(tag, book);
         }
 
         log.debug("Saving authors...");
-        // Add new authors
-        List<Author> authorsToAdd = book.getTextAuthors().stream()
-                .filter(author -> !bookPersistedCopy.getTextAuthors().contains(author))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (Author author: authorsToAdd) {
-            authorsBooksRepository.add(
-                    book.getId(),
-                    author.getId(),
-                    book.getUser().getId(),
-                    AuthorRole.TEXT_AUTHOR.getId()
-            );
-        }
-
         // Remove existing authors
-        List<Author> authorsToRemove = bookPersistedCopy.getTextAuthors().stream()
-                .filter(author -> !book.getTextAuthors().contains(author))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (Author author: authorsToRemove) {
+        for (Author author: bookPersistenceProxy.getRemovedAuthors()) {
             authorsBooksRepository.deleteByAuthor(author.getId());
         }
+        // Add new authors
+        for (Author author: bookPersistenceProxy.getAddedAuthors()) {
+            authorsBooksRepository.addAuthorTo(author, book, AuthorRole.TEXT_AUTHOR);
+        }
+
+        // Mark as saved
+        bookPersistenceProxy.setEntityState(EntityState.PERSISTED);
+        bookPersistenceProxy.initPersistedCopy();
 
     }
 

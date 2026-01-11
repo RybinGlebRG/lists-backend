@@ -51,7 +51,7 @@ public class TagsRepositoryImpl extends CrudRepositoryDtoImpl<TagDTO,Long> imple
     }
 
     @Override
-    public void add(Tag tag, Book book) {
+    public void addTagTo(Tag tag, Book book) {
         Long nextId = bookTagMapper.nextval();
 
         BookTagDTO bookTagDTO = new BookTagDTO(
