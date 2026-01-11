@@ -16,7 +16,6 @@ import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.series.SeriesService;
-import ru.rerumu.lists.services.user.UserService;
 
 import java.util.List;
 
