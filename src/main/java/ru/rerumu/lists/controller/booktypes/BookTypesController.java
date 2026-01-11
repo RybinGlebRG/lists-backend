@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.domain.booktype.BookType;
-import ru.rerumu.lists.services.book.type.BookTypesService;
+import ru.rerumu.lists.services.booktype.BookTypesService;
 import ru.rerumu.lists.services.user.UserService;
 import ru.rerumu.lists.controller.booktypes.views.BookTypesListView;
 

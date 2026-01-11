@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.mappers;
+package ru.rerumu.lists.dao.series.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

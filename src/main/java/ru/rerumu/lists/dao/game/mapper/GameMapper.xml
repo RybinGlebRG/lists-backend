@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ru.rerumu.lists.dao.game.GameMapper">
+<mapper namespace="ru.rerumu.lists.dao.game.mapper.GameMapper">
 
     <resultMap id="GameResultMap" type="ru.rerumu.lists.domain.game.Game">
         <constructor>

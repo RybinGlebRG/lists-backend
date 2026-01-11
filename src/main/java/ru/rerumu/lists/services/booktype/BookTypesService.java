@@ -1,4 +1,4 @@
-package ru.rerumu.lists.services.book.type;
+package ru.rerumu.lists.services.booktype;
 
 import org.springframework.stereotype.Service;
 import ru.rerumu.lists.dao.booktype.BookTypeRepository;

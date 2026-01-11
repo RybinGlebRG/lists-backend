@@ -1,4 +1,4 @@
-package ru.rerumu.lists.dao.game;
+package ru.rerumu.lists.dao.game.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;

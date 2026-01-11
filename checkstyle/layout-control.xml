@@ -21,11 +21,25 @@
     <!--  crosscut  -->
     <subpackage name="crosscut(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
+
+        <!-- TODO: fix -->
+            <allow class="ru.rerumu.lists.domain.book.Book"/>
+        <!-- -->
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  dao  -->
     <subpackage name="dao(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
+
+        <!-- TODO: fix -->
+            <allow class="ru.rerumu.lists.controller.movies.views.TitleCreateView"/>
+        <!-- -->
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 
     <!--  domain  -->
@@ -39,11 +53,15 @@
     <!--  services  -->
     <subpackage name="services(\..*)?" regex="true" strategyOnMismatch="allowed">
         <allow pkg="ru\.rerumu\.lists\.services(\..*)?" regex="true"/>
-    </subpackage>
+        <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
+        <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
 
-    <!--  views  -->
-    <subpackage name="views(\..*)?" regex="true" strategyOnMismatch="allowed">
-        <allow pkg="ru\.rerumu\.lists\.views(\..*)?" regex="true"/>
+        <!-- TODO: fix -->
+            <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
+            <allow pkg="ru\.rerumu\.lists\.controller(\..*)?" regex="true"/>
+        <!-- -->
+
+        <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 
 </import-control>

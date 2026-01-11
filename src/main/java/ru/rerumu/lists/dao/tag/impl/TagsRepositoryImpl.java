@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
 import ru.rerumu.lists.dao.tag.BookTagDTO;
-import ru.rerumu.lists.dao.tag.BookTagMapper;
+import ru.rerumu.lists.dao.tag.mapper.BookTagMapper;
 import ru.rerumu.lists.dao.tag.TagsRepository;
 import ru.rerumu.lists.dao.tag.mapper.TagsMapper;
 import ru.rerumu.lists.dao.user.UsersRepository;

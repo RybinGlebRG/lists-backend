@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -12,7 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.series.SeriesController;
 import ru.rerumu.lists.services.*;
-import ru.rerumu.lists.services.book.impl.ReadListService;
+import ru.rerumu.lists.services.book.impl.BookServiceImpl;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -26,7 +25,7 @@ class SeriesControllerDeleteSeriesTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReadListService readListService;
+    private BookServiceImpl bookServiceImpl;
 
     @MockBean
     private SeriesServiceImpl seriesService;

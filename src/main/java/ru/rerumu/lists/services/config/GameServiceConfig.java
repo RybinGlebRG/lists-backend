@@ -10,7 +10,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
-import ru.rerumu.lists.dao.game.GameMapper;
+import ru.rerumu.lists.dao.game.mapper.GameMapper;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.AuthUserParser;

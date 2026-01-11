@@ -2,6 +2,12 @@ package ru.rerumu.lists.services.book.impl;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.request.RequestContextHolder;
 import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
@@ -10,26 +16,35 @@ import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.Search;
+import ru.rerumu.lists.services.user.UserService;
 
 import java.util.List;
 
 @Slf4j
+@Service("BookServiceProtectionProxy")
+@Primary
+@RequestScope
 public class BookServiceProtectionProxy implements BookService {
 
-    private final ReadListService readListService;
+    private final BookService bookService;
     private final User authUser;
     private final UsersRepository usersRepository;
 
+    @Autowired
     public BookServiceProtectionProxy(
-            ReadListService readListService,
-            User authUser,
-            UsersRepository usersRepository
+            @Qualifier("BookServiceImpl") BookService bookService,
+            UsersRepository usersRepository,
+            UserService userService
     ) {
-        this.readListService = readListService;
-        this.authUser = authUser;
+        this.bookService = bookService;
         this.usersRepository = usersRepository;
+
+        Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
+        authUser = userService.findById(authUserId);
+        log.info(String.format("GOT USER %d", authUser.getId()));
     }
 
     @Override
@@ -46,7 +61,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
         
-        return readListService.addBook(bookAddView, userId);
+        return bookService.addBook(bookAddView, userId);
     }
 
     @Override
@@ -59,7 +74,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
         
-        return readListService.getBook(bookId, userId);
+        return bookService.getBook(bookId, userId);
     }
 
     @Override
@@ -72,7 +87,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
         
-        return readListService.getAllBooks(search, userId);
+        return bookService.getAllBooks(search, userId);
     }
 
     @Override
@@ -85,7 +100,7 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
 
-        return readListService.updateBook(bookId, userId, bookUpdateView);
+        return bookService.updateBook(bookId, userId, bookUpdateView);
     }
 
     @Override
@@ -98,6 +113,6 @@ public class BookServiceProtectionProxy implements BookService {
             throw new UserPermissionException();
         }
         
-        readListService.deleteBook(bookId, userId);
+        bookService.deleteBook(bookId, userId);
     }
 }

@@ -34,7 +34,7 @@ import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.Filter;
 import ru.rerumu.lists.services.book.Search;
-import ru.rerumu.lists.services.book.type.BookTypesService;
+import ru.rerumu.lists.services.booktype.BookTypesService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component("BookServiceImpl")
-public class ReadListService implements BookService {
+public class BookServiceImpl implements BookService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BookRepository bookRepository;
@@ -60,7 +60,7 @@ public class ReadListService implements BookService {
     private final TagsRepository tagsRepository;
 
     @Autowired
-    public ReadListService(
+    public BookServiceImpl(
             BookRepository bookRepository,
             AuthorsBooksRepository authorsBooksRepository,
             BookTypesService bookTypesService,
