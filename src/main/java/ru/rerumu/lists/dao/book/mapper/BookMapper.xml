@@ -8,7 +8,6 @@
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
-        <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
         <result  property="insertDate" column="book_insert_date"/>
         <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
@@ -30,7 +29,6 @@
         <id property="bookId" column="book_id" javaType="Long"/>
         <result  property="readListId" column="book_list_id" javaType="Long"/>
         <result  property="title" column="book_title" javaType="String"/>
-        <result  property="bookStatus" column="book_status_id_old" javaType="Integer"/>
         <result  property="insertDate" column="book_insert_date"/>
         <result  property="lastUpdateDate" column="book_update_date"/>
         <result  property="lastChapter" column="last_chapter" javaType="Integer"/>
@@ -95,14 +93,11 @@
             b.book_id,
             b.list_list_id as book_list_id,
             b.title as book_title,
-            s.STATUS_ID as book_status_id_old,
             b.insert_date as book_insert_date,
             b.update_date as book_update_date,
             b.last_chapter,
             bt.type_id as book_type_id,
             bt.name as book_type_name,
-            s.STATUS_ID as book_status_id,
-            s.NAME as book_status_name,
             b.note as book_note,
             b.url as book_url,
             b.user_user_id as book_user_id,
@@ -121,8 +116,6 @@
             u.name as user_name,
             u.password as user_password
         from books b
-            inner join statuses s
-                on s.STATUS_ID= b.status_status_id
             inner join users u
                 on u.user_id = b.user_user_id
             left outer join book_types bt
@@ -205,14 +198,11 @@
                 s_prev.book_id                  as previous_book_id,
                 s_prev.book_list_id             as previous_book_list_id,
                 s_prev.book_title               as previous_book_title,
-                s_prev.book_status_id_old       as previous_book_status_id_old,
                 s_prev.book_insert_date         as previous_book_insert_date,
                 s_prev.book_update_date    as previous_book_update_date,
                 s_prev.last_chapter             as previous_last_chapter,
                 s_prev.book_type_id             as previous_book_type_id,
                 s_prev.book_type_name           as previous_book_type_name,
-                s_prev.book_status_id           as previous_book_status_id,
-                s_prev.book_status_name         as previous_book_status_name,
                 s_prev.book_note                as previous_book_note,
                 s_prev.series_order             as previous_book_series_order,
                 s_prev.tag_id                   as previous_tag_id,
@@ -240,14 +230,11 @@
                 null as previous_book_id,
                 null as previous_book_list_id,
                 null as previous_book_title,
-                null as previous_book_status_id_old,
                 null as previous_book_insert_date,
                 null as previous_book_update_date,
                 null as previous_last_chapter,
                 null as previous_book_type_id,
                 null as previous_book_type_name,
-                null as previous_book_status_id,
-                null as previous_book_status_name,
                 null as previous_book_note,
                 null as previous_book_series_order,
                 null as previous_tag_id,

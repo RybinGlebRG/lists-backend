@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
@@ -73,16 +72,6 @@ public class SeriesImpl implements Series {
     @Override
     public Long getId() {
         return seriesId;
-    }
-
-    @Override
-    public void save() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public void delete() {
-        throw new NotImplementedException();
     }
 
     @Override

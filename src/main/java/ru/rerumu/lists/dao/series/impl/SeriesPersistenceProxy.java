@@ -1,7 +1,6 @@
 package ru.rerumu.lists.dao.series.impl;
 
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
-import ru.rerumu.lists.domain.base.EntityState;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesItemRelation;
@@ -84,16 +83,6 @@ public class SeriesPersistenceProxy extends PersistenceProxy<Series> implements 
     @Override
     public User getUser() {
         return series.getUser();
-    }
-
-    @Override
-    public void save() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public void delete() {
-        throw new NotImplementedException();
     }
 
     @Override

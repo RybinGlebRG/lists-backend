@@ -4,6 +4,7 @@ import lombok.NonNull;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +32,7 @@ public interface SeriesBooksRepository {
     Optional<SeriesBookRelation> getByIds(Long seriesId, Long bookId) throws EntityNotFoundException;
 
     List<SeriesBookRelationDto> getAllByUserId(@NonNull Long userId);
+
+    @NonNull
+    List<SeriesItemRelation> fromDTO(@NonNull List<SeriesItemRelationDTO> seriesItemRelationDTOList);
 }

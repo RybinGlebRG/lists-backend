@@ -339,7 +339,7 @@ public class ReadListService implements BookService {
 
         // Getting created book from DB
         logger.info("Loading book...");
-        return getBook(newBook.getId(), user.getId());
+        return bookRepository.findById(newBook.getId(), user.getId());
     }
 
     /**

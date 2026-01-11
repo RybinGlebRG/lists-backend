@@ -14,7 +14,7 @@ import ru.rerumu.lists.domain.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface Book extends SeriesItem, Entity<Book>, DeepCopyable<Book> {
+public interface Book extends SeriesItem, Entity, DeepCopyable<Book> {
 
     /**
      * Add reading record to book

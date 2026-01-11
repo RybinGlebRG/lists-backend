@@ -28,7 +28,6 @@ public class BookMyBatisEntity implements SeriesItemDTO {
     private Long bookId;
     private Long readListId;
     private String title;
-    private Integer bookStatus;
     private LocalDateTime insertDate;
     private LocalDateTime lastUpdateDate;
     private Integer lastChapter;

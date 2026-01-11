@@ -2,7 +2,6 @@ package ru.rerumu.lists.dao.base;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.rerumu.lists.domain.base.EntityState;
 
 public abstract class PersistenceProxy<T> {
 

@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.series.SeriesBooksRepository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,5 +74,27 @@ public class SeriesBooksRepositoryImpl implements SeriesBooksRepository {
     @Override
     public List<SeriesBookRelationDto> getAllByUserId(@NonNull Long userId) {
         return seriesBookMapper.getByUserId(userId);
+    }
+
+    @Override
+    @NonNull
+    public List<SeriesItemRelation> fromDTO(@NonNull List<SeriesItemRelationDTO> seriesItemRelationDTOList) {
+        List<SeriesItemRelation> seriesItemRelations = new ArrayList<>();
+
+        for (SeriesItemRelationDTO item: seriesItemRelationDTOList) {
+            if (item instanceof SeriesBookRelationDto seriesBookRelationDto) {
+                seriesItemRelations.add(
+                        new SeriesBookRelation(
+                                seriesBookRelationDto.getBookId(),
+                                seriesBookRelationDto.getSeriesId(),
+                                seriesBookRelationDto.getUserId()
+                        )
+                );
+            } else {
+                throw new ServerException();
+            }
+        }
+
+        return seriesItemRelations;
     }
 }

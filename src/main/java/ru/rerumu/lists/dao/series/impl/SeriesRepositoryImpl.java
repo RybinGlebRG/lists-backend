@@ -8,18 +8,21 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.dao.series.SeriesBooksRepository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.dao.user.UsersRepository;
-import ru.rerumu.lists.domain.base.EntityState;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesBookRelation;
 import ru.rerumu.lists.domain.series.SeriesFactory;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,7 +64,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
         List<Series> seriesList = new ArrayList<>();
 
         for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
-            seriesList.add(seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user));
+            seriesList.add(fromMyBatisEntity(seriesMyBatisEntity, user));
         }
 
         return seriesList;
@@ -75,7 +78,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
             throw new EntityNotFoundException();
         }
 
-        Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+        Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
 
         return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
     }
@@ -97,6 +100,24 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     }
 
     @Override
+    public Series fromMyBatisEntity(SeriesMyBatisEntity seriesMyBatisEntity, User user) {
+
+        List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesMyBatisEntity.getSeriesBookRelationDtoList().stream()
+                .map(item -> (SeriesItemRelationDTO)item)
+                .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<SeriesItemRelation> seriesItemRelations = seriesBooksRepository.fromDTO(seriesItemRelationDTOList);
+
+        return seriesFactory.buildSeries(
+                seriesMyBatisEntity.getSeriesId(),
+                seriesMyBatisEntity.getTitle(),
+                user,
+                seriesItemRelations
+        );
+    }
+
+    @Override
     public void delete(long seriesId) {
         List<SeriesBookRelation> seriesBookRelationList = seriesBooksRepository.getBySeriesId(seriesId);
         if (!seriesBookRelationList.isEmpty()) {
@@ -115,7 +136,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
         List<Series> seriesList = new ArrayList<>();
 
         for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
-            Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+            Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
             series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
             seriesList.add(series);
         }
@@ -132,7 +153,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
         List<Series> seriesList = new ArrayList<>();
 
         for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
-            Series series = seriesFactory.fromMyBatisEntity(seriesMyBatisEntity, user);
+            Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
             series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
             seriesList.add(series);
         }

@@ -1,7 +1,6 @@
 package ru.rerumu.lists.domain.series;
 
 import lombok.NonNull;
-import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
@@ -21,6 +20,4 @@ public interface SeriesFactory {
             @NonNull User user,
             @NonNull List<SeriesItemRelation> seriesItemRelation
     );
-
-    Series fromMyBatisEntity(SeriesMyBatisEntity myBatisEntity,  User user);
 }

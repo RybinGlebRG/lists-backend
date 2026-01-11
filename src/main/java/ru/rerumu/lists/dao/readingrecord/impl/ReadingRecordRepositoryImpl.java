@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
 import ru.rerumu.lists.dao.readingrecord.mapper.ReadingRecordMapper;
-import ru.rerumu.lists.domain.base.EntityState;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
@@ -39,7 +39,7 @@ public class ReadingRecordRepositoryImpl implements ReadingRecordsRepository {
         List<ReadingRecord> readingRecords = readingRecordMyBatisEntities.stream()
 
                 // Map from DTO
-                .map(readingRecordFactory::fromDTO)
+                .map(this::attach)
 
                 // Init proxy
                 .map(readingRecord -> {
@@ -63,7 +63,7 @@ public class ReadingRecordRepositoryImpl implements ReadingRecordsRepository {
         List<ReadingRecord> readingRecords = readingRecordMyBatisEntities.stream()
 
                 // Map from DTO
-                .map(readingRecordFactory::fromDTO)
+                .map(this::attach)
 
                 // Init proxy
                 .map(readingRecord -> {
@@ -172,6 +172,29 @@ public class ReadingRecordRepositoryImpl implements ReadingRecordsRepository {
 
     @Override
     public ReadingRecord attach(ReadingRecord readingRecord) {
+        ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(
+                readingRecord,
+                EntityState.PERSISTED
+        );
+        readingRecordPersistenceProxy.initPersistedCopy();
+
+        return readingRecordPersistenceProxy;
+    }
+
+    @Override
+    public ReadingRecord attach(ReadingRecordMyBatisEntity readingRecordMyBatisEntity) {
+
+        ReadingRecord readingRecord = readingRecordFactory.build(
+                readingRecordMyBatisEntity.getRecordId(),
+                readingRecordMyBatisEntity.getBookId(),
+                readingRecordMyBatisEntity.getBookStatus(),
+                readingRecordMyBatisEntity.getStartDate(),
+                readingRecordMyBatisEntity.getEndDate(),
+                readingRecordMyBatisEntity.getIsMigrated(),
+                readingRecordMyBatisEntity.getLastChapter(),
+                readingRecordMyBatisEntity.getUpdateDate()
+        );
+
         ReadingRecordPersistenceProxy readingRecordPersistenceProxy = new ReadingRecordPersistenceProxy(
                 readingRecord,
                 EntityState.PERSISTED

@@ -33,10 +33,6 @@
         <allow pkg="ru\.rerumu\.lists\.domain(\..*)?" regex="true"/>
         <allow pkg="ru\.rerumu\.lists\.crosscut(\..*)?" regex="true"/>
 
-        <!-- TODO: fix -->
-            <allow pkg="ru\.rerumu\.lists\.dao(\..*)?" regex="true"/>
-        <!-- -->
-
         <disallow pkg="ru\.rerumu\.lists(\..*)?" regex="true"/>
     </subpackage>
 

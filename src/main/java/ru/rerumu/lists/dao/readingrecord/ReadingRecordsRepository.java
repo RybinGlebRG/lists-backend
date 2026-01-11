@@ -48,4 +48,6 @@ public interface ReadingRecordsRepository {
      * Wraps instance of ReadingRecord in persistence proxy
      */
     ReadingRecord attach(ReadingRecord readingRecord);
+
+    ReadingRecord attach(ReadingRecordMyBatisEntity readingRecordMyBatisEntity);
 }

@@ -1,10 +1,9 @@
 package ru.rerumu.lists.dao.book.impl;
 
 import lombok.NonNull;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.booktype.BookType;
@@ -56,11 +55,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public User getUser() {
         return book.getUser();
-    }
-
-    @Override
-    public void save() {
-        throw new NotImplementedException();
     }
 
     @Override
@@ -166,11 +160,6 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
     @Override
     public boolean currentStatusEquals(Long statusId) {
         return book.currentStatusEquals(statusId);
-    }
-
-    @Override
-    public void delete() {
-        book.delete();
     }
 
     @Override

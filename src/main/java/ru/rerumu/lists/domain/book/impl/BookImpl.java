@@ -7,11 +7,8 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.book.AuthorRole;
-import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
@@ -76,7 +73,6 @@ public class BookImpl implements Book{
     private final ReadingRecordFactory readingRecordFactory;
     private final DateFactory dateFactory;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-    private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
 
 
@@ -95,7 +91,6 @@ public class BookImpl implements Book{
             @NonNull List<Series> seriesList,
             @NonNull DateFactory dateFactory,
             @NonNull ReadingRecordFactory readingRecordFactory,
-            @NonNull AuthorsBooksRepository authorsBooksRepository,
             @NonNull SeriesFactory seriesFactory
     ) {
         this.bookId = bookId;
@@ -112,7 +107,6 @@ public class BookImpl implements Book{
         this.textAuthors = textAuthors;
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
-        this.authorsBooksRepository = authorsBooksRepository;
         this.seriesFactory = seriesFactory;
     }
 
@@ -123,12 +117,6 @@ public class BookImpl implements Book{
                 .orElseThrow(() -> new ServerException("Error while processing records"));
 
         return readingRecord.statusEquals(statusId);
-    }
-
-    // TODO: remove
-    @Override
-    public void delete() {
-        throw new NotImplementedException();
     }
 
     @Override
@@ -235,9 +223,6 @@ public class BookImpl implements Book{
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Author author: authorsToAdd) {
             textAuthors.add(author);
-
-            // TODO: Probably better to move to DAO layer. Should be behind BookRepository???
-            authorsBooksRepository.add(bookId, author.getId(), user.getId(), AuthorRole.TEXT_AUTHOR.getId());
         }
 
         // Remove existing authors
@@ -246,16 +231,7 @@ public class BookImpl implements Book{
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Author author: authorsToRemove) {
             textAuthors.remove(author);
-
-            // TODO: Same as previous
-            authorsBooksRepository.deleteByAuthor(author.getId());
         }
-    }
-
-    @Override
-    @Loggable(value = Loggable.DEBUG, prepend = true, trim = false, logThis = true)
-    public void save() {
-        throw new NotImplementedException();
     }
 
     @Override
@@ -331,7 +307,6 @@ public class BookImpl implements Book{
                 new ArrayList<>(seriesList),
                 dateFactory,
                 readingRecordFactory,
-                authorsBooksRepository,
                 seriesFactory
         );
     }

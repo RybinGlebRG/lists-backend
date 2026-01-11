@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.book.AuthorBookDto;
+import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.dao.book.BookRepository;
@@ -19,21 +21,17 @@ import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
 import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto;
-import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
 import ru.rerumu.lists.dao.tag.TagsRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.base.EntityState;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
 import ru.rerumu.lists.domain.book.BookFactory;
 import ru.rerumu.lists.domain.booktype.BookType;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.series.SeriesFactory;
-import ru.rerumu.lists.domain.series.SeriesItemRelationFactory;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
@@ -57,47 +55,38 @@ public class BookRepositoryImpl implements BookRepository {
 
     private final BookMapper bookMapper;
     private final AuthorsBooksRepository authorsBooksRepository;
-    private final SeriesMapper seriesMapper;
     private final SeriesBooksRepository seriesBooksRepository;
     private final SeriesRepository seriesRepository;
     private final ReadingRecordsRepository readingRecordsRepository;
     private final BookFactory bookFactory;
     private final TagsRepository tagsRepository;
     private final AuthorsRepository authorsRepository;
-    private final ReadingRecordFactory readingRecordFactory;
     private final SeriesFactory seriesFactory;
     private final UsersRepository usersRepository;
-    private final SeriesItemRelationFactory seriesItemRelationFactory;
 
     @Autowired
     public BookRepositoryImpl(
             BookMapper bookMapper,
             AuthorsBooksRepository authorsBooksRepository,
-            SeriesMapper seriesMapper,
             SeriesBooksRepository seriesBooksRepository,
             SeriesRepository seriesRepository,
             ReadingRecordsRepository readingRecordsRepository,
             BookFactory bookFactory,
             TagsRepository tagsRepository,
             AuthorsRepository authorsRepository,
-            ReadingRecordFactory readingRecordFactory,
             SeriesFactory seriesFactory,
-            UsersRepository usersRepository,
-            SeriesItemRelationFactory seriesItemRelationFactory
+            UsersRepository usersRepository
     ) {
         this.bookMapper = bookMapper;
         this.authorsBooksRepository = authorsBooksRepository;
-        this.seriesMapper = seriesMapper;
         this.seriesBooksRepository = seriesBooksRepository;
         this.seriesRepository = seriesRepository;
         this.readingRecordsRepository = readingRecordsRepository;
         this.bookFactory = bookFactory;
         this.tagsRepository = tagsRepository;
         this.authorsRepository = authorsRepository;
-        this.readingRecordFactory = readingRecordFactory;
         this.seriesFactory = seriesFactory;
         this.usersRepository = usersRepository;
-        this.seriesItemRelationFactory = seriesItemRelationFactory;
     }
 
 
@@ -185,7 +174,6 @@ public class BookRepositoryImpl implements BookRepository {
     @NonNull
     public Book findById(Long id, Long userId) {
         BookMyBatisEntity book = bookMapper.findById(id, userId);
-
         if (book == null) {
             throw new EntityNotFoundException();
         }
@@ -302,6 +290,7 @@ public class BookRepositoryImpl implements BookRepository {
     public void save(Book book) {
 
         BookPersistenceProxy bookPersistenceProxy = (BookPersistenceProxy) book;
+        Book bookPersistedCopy = bookPersistenceProxy.getPersistedCopy();
 
         // Save book
         log.debug("Saving book...");
@@ -347,6 +336,28 @@ public class BookRepositoryImpl implements BookRepository {
                 .collect(Collectors.toCollection(ArrayList::new));
         for (Tag tag: tagsToRemove) {
             tagsRepository.remove(book.getId(), tag.getId());
+        }
+
+        log.debug("Saving authors...");
+        // Add new authors
+        List<Author> authorsToAdd = book.getTextAuthors().stream()
+                .filter(author -> !bookPersistedCopy.getTextAuthors().contains(author))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Author author: authorsToAdd) {
+            authorsBooksRepository.add(
+                    book.getId(),
+                    author.getId(),
+                    book.getUser().getId(),
+                    AuthorRole.TEXT_AUTHOR.getId()
+            );
+        }
+
+        // Remove existing authors
+        List<Author> authorsToRemove = bookPersistedCopy.getTextAuthors().stream()
+                .filter(author -> !book.getTextAuthors().contains(author))
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (Author author: authorsToRemove) {
+            authorsBooksRepository.deleteByAuthor(author.getId());
         }
 
     }
@@ -451,7 +462,6 @@ public class BookRepositoryImpl implements BookRepository {
         List<ReadingRecord> readingRecords;
         if (bookMyBatisEntity.getReadingRecords() != null) {
             readingRecords = bookMyBatisEntity.getReadingRecords().stream()
-                    .map(readingRecordFactory::fromDTO)
                     .map(readingRecordsRepository::attach)
                     .collect(Collectors.toCollection(ArrayList::new));
         } else {
@@ -509,7 +519,7 @@ public class BookRepositoryImpl implements BookRepository {
                         seriesMyBatisEntity.getSeriesId(),
                         seriesMyBatisEntity.getTitle(),
                         usersRepository.findById(seriesMyBatisEntity.getUserId()),
-                        seriesItemRelationFactory.fromDTO(seriesItemRelationDTOList)
+                        seriesBooksRepository.fromDTO(seriesItemRelationDTOList)
                 );
 
                 series = seriesRepository.attach(series);

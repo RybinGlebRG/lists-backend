@@ -6,7 +6,7 @@ import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 
 import java.util.List;
 
-public interface Series extends Entity<Series>, DeepCopyable<Series> {
+public interface Series extends Entity, DeepCopyable<Series> {
 
     String getTitle();
 

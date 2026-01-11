@@ -2,7 +2,7 @@ package ru.rerumu.lists.dao.readingrecord.impl;
 
 import lombok.NonNull;
 import org.json.JSONObject;
-import ru.rerumu.lists.domain.base.EntityState;
+import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
@@ -16,6 +16,11 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     public ReadingRecordPersistenceProxy(ReadingRecord readingRecord, EntityState entityState) {
         super(entityState);
         this.readingRecord = readingRecord;
+
+        // If persisted, then should have persisted copy
+        if (entityState.equals(EntityState.PERSISTED)) {
+            initPersistedCopy();
+        }
     }
 
     @Override

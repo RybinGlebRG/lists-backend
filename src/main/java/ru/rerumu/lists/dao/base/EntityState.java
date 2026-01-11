@@ -1,4 +1,4 @@
-package ru.rerumu.lists.domain.base;
+package ru.rerumu.lists.dao.base;
 
 public enum EntityState {
     NEW,

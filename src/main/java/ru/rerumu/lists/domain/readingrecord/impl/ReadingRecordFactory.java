@@ -4,7 +4,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.readingrecord.ReadingRecordMyBatisEntity;
 import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
@@ -51,25 +50,35 @@ public class ReadingRecordFactory {
         );
     }
 
-    public ReadingRecord fromDTO(@NonNull ReadingRecordMyBatisEntity readingRecordMyBatisEntity){
-
-        LocalDateTime updateDate = readingRecordMyBatisEntity.getUpdateDate();
-        if (updateDate == null) {
-            updateDate = readingRecordMyBatisEntity.getStartDate();
+    @NonNull
+    public ReadingRecord build(
+            @NonNull Long recordId,
+            @NonNull Long bookId,
+            @NonNull ReadingRecordStatuses bookStatus,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Boolean isMigrated,
+            Long lastChapter,
+            LocalDateTime updateDate
+    ) {
+        if (startDate == null) {
+            startDate = dateFactory.getLocalDateTime();
         }
 
-        ReadingRecordImpl readingRecord = new ReadingRecordImpl(
-                readingRecordMyBatisEntity.getRecordId(),
-                readingRecordMyBatisEntity.getBookId(),
-                readingRecordMyBatisEntity.getBookStatus(),
-                readingRecordMyBatisEntity.getStartDate(),
-                readingRecordMyBatisEntity.getEndDate(),
-                readingRecordMyBatisEntity.getIsMigrated(),
-                readingRecordMyBatisEntity.getLastChapter(),
+        if (updateDate == null) {
+            updateDate = startDate;
+        }
+
+        return new ReadingRecordImpl(
+                recordId,
+                bookId,
+                bookStatus,
+                startDate,
+                endDate,
+                isMigrated,
+                lastChapter,
                 dateFactory,
                 updateDate
         );
-
-        return readingRecord;
     }
 }

@@ -34,4 +34,6 @@ public interface SeriesRepository {
     );
 
     Series attach(@NonNull Series series);
+
+    Series fromMyBatisEntity(SeriesMyBatisEntity myBatisEntity,  User user);
 }

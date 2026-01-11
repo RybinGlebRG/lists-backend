@@ -12,8 +12,8 @@ public interface BacklogItem extends Entity {
     String getNote();
     LocalDateTime getCreationDate();
 
-    void updateTitle(String title);
-    void updateType(SeriesItemType type);
-    void updateNote(String note);
-    void updateCreationDate(LocalDateTime creationDate);
+    void setTitle(String title);
+    void setType(SeriesItemType type);
+    void setNote(String note);
+    void setCreationDate(LocalDateTime creationDate);
 }

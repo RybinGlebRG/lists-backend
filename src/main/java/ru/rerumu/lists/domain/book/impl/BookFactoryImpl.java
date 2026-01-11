@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
-import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.book.Book;
 import ru.rerumu.lists.domain.book.BookChain;
@@ -28,19 +27,16 @@ public class BookFactoryImpl implements BookFactory {
 
     private final DateFactory dateFactory;
     private final ReadingRecordFactory readingRecordFactory;
-    private final AuthorsBooksRepository authorsBooksRepository;
     private final SeriesFactory seriesFactory;
 
     @Autowired
     public BookFactoryImpl(
             DateFactory dateFactory,
             ReadingRecordFactory readingRecordFactory,
-            AuthorsBooksRepository authorsBooksRepository,
             @NonNull SeriesFactory seriesFactory
     ) {
         this.dateFactory = dateFactory;
         this.readingRecordFactory = readingRecordFactory;
-        this.authorsBooksRepository = authorsBooksRepository;
         this.seriesFactory = seriesFactory;
     }
 
@@ -100,7 +96,6 @@ public class BookFactoryImpl implements BookFactory {
                 seriesList,
                 dateFactory,
                 readingRecordFactory,
-                authorsBooksRepository,
                 seriesFactory
         );
     }

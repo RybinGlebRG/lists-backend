@@ -2,7 +2,6 @@ package ru.rerumu.lists.domain.user.impl;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
 
@@ -18,15 +17,6 @@ import java.util.Base64;
 
 @Component
 public class UserFactoryImpl implements UserFactory {
-
-    @Override
-    public User fromDTO(UserDtoDao userDtoDao) {
-        return new UserImpl(
-                userDtoDao.getUserId(),
-                userDtoDao.getName(),
-                userDtoDao.getPassword()
-        );
-    }
 
     @Override
     public User build(Long userId, String name, char[] plainPassword) {
