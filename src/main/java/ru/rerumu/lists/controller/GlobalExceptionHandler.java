@@ -1,8 +1,10 @@
 package ru.rerumu.lists.controller;
 
+import com.jcabi.aspects.Loggable;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,13 +18,21 @@ import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Locale;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final MessageSource messageSource;
+
+    @Autowired
+    public GlobalExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     private String prepareAnswer(Exception e){
-        logger.error(e.getMessage(),e);
+        log.error(e.getMessage(),e);
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -43,7 +53,7 @@ public class GlobalExceptionHandler {
 
         String answer = prepareAnswer(e);
 
-        logger.error(answer);
+        log.error(answer);
 
         ResponseEntity<String> resEnt = new ResponseEntity<>(
                 answer,
@@ -52,9 +62,34 @@ public class GlobalExceptionHandler {
         return resEnt;
     }
 
+    @ExceptionHandler(value = {UserPermissionException.class})
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
+    public ResponseEntity<String> handleUserPermissionException(UserPermissionException e, WebRequest request){
 
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-    @ExceptionHandler(value = {UserIsNotOwnerException.class, IllegalCallerException.class, UserPermissionException.class})
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+
+        String errorMessage = JSONObject.NULL.toString();
+        if (e.getMessage() != null) {
+            errorMessage = messageSource.getMessage(e.getMessageCode(), e.getArgs(), Locale.ENGLISH);
+            log.trace("Resolved '{}' to '{}'", e.getMessageCode(), errorMessage);
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("error",sw.toString().strip());
+        obj.put("errorMessage", errorMessage);
+
+        return new ResponseEntity<>(
+                obj.toString(),
+                httpHeaders,
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = {IllegalCallerException.class, UserIsNotOwnerException.class})
     public ResponseEntity<String> handleForbidden(Exception e, WebRequest request){
 
         HttpHeaders httpHeaders = new HttpHeaders();

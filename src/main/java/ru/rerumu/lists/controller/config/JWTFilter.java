@@ -1,6 +1,5 @@
 package ru.rerumu.lists.controller.config;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.rerumu.lists.crosscut.exception.UnauthorizedException;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -34,24 +32,20 @@ public class JWTFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        try {
-            final String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-            if (header == null || !header.startsWith("Bearer ")){
-                throw new UnauthorizedException();
-            }
+        final String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith("Bearer ")) {
             final String token = header.split(" ")[1].trim();
             User user = userService.findByToken(token);
 
             httpServletRequest.setAttribute("username",user.getName());
             httpServletRequest.setAttribute("authUserId",user.getId());
+            httpServletRequest.setAttribute("authUser", user);
+
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                     user.getName(),
                     null,
                     new ArrayList<>()
             ));
-        }
-        catch (ExpiredJwtException e){
-            throw new UnauthorizedException();
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);

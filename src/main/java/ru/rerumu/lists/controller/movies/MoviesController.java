@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 import ru.rerumu.lists.controller.movies.views.out.MovieListView;
+import ru.rerumu.lists.controller.movies.views.out.MovieView;
 import ru.rerumu.lists.controller.movies.views.out.MoviesViewFactory;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.movie.Movie;
 import ru.rerumu.lists.services.WatchListService;
-import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 
 import java.util.List;
 
@@ -56,32 +56,26 @@ public class MoviesController {
             @PathVariable long watchListId,
             @RequestBody TitleCreateView newTitle,
             @RequestAttribute("username") String username) {
-        ResponseEntity<String> resEnt;
         try {
             Movie movie = watchListService.addTitle(watchListId, newTitle);
-            resEnt = new ResponseEntity<>(movie.toString(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            MovieView movieView = moviesViewFactory.buildMovieView(movie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.CREATED);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
         }
-        return resEnt;
     }
 
     @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> getOne(@PathVariable Long watchListId,
                                   @RequestAttribute("username") String username,
                                   @PathVariable Long titleId) {
-        ResponseEntity<String> resEnt;
         try {
             Movie movie = watchListService.getOne(watchListId, titleId);
-            resEnt = new ResponseEntity<>(movie.toString(), HttpStatus.OK);
-        } catch (Exception e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            MovieView movieView = moviesViewFactory.buildMovieView(movie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
         }
-        return resEnt;
     }
 
     @PutMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}",
@@ -91,16 +85,13 @@ public class MoviesController {
                                      @PathVariable Long titleId,
                                      @RequestBody Movie newMovie,
                                      @RequestAttribute("username") String username) {
-        ResponseEntity<String> resEnt;
         try {
             Movie updatedMovie = watchListService.updateTitle(watchListId, titleId, newMovie);
-            resEnt = new ResponseEntity<>(updatedMovie.toString(), HttpStatus.OK);
-        } catch (EmptyMandatoryParameterException e) {
-            resEnt = new ResponseEntity<>(
-                    "{\"errorMessage\":\"" + e.getMessage() + "\"}",
-                    HttpStatus.BAD_REQUEST);
+            MovieView movieView = moviesViewFactory.buildMovieView(updatedMovie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
         }
-        return resEnt;
     }
 
     @DeleteMapping(value = "/api/v0.2/titles/{titleId}")
@@ -109,8 +100,7 @@ public class MoviesController {
         // TODO: Check ownership
 
         watchListService.deleteOne(titleId);
-        ResponseEntity<String> resEnt = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return resEnt;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

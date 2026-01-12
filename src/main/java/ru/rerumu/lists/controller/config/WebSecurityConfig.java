@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig  {
     private static final String[] AUTH_WHITELIST = {
-            "/api/v1/tokens",
+            "/api/v1/users/tokens",
     };
 
     @Autowired
@@ -33,22 +33,13 @@ public class WebSecurityConfig  {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                             .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                            .requestMatchers(AUTH_WHITELIST).permitAll()
+                            .requestMatchers(AUTH_WHITELIST[0]).permitAll()
                             .anyRequest().authenticated()
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-//    // TODO: Properly configure Spring Security
-//    @Bean
-//    public AuthenticationManager noopAuthenticationManager() {
-//        return authentication -> {
-//            throw new AuthenticationServiceException("Authentication is done by JWT tokens");
-//        };
-//    }
 
     /**
      * <p>Making sure that filter is only added to Spring Security. So that it is not called twice according

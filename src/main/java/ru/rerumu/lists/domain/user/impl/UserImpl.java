@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.user.impl;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.rerumu.lists.crosscut.exception.AppException;
 import ru.rerumu.lists.domain.user.User;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
+@ToString
 public class UserImpl implements User {
 
     @Getter

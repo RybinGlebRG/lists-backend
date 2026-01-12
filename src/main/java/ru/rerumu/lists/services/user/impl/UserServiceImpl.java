@@ -1,5 +1,6 @@
 package ru.rerumu.lists.services.user.impl;
 
+import com.jcabi.aspects.Loggable;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -73,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public @NonNull User findByToken(@NonNull String token) {
         SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
 

@@ -84,7 +84,7 @@ public class BookServiceProtectionProxy implements BookService {
 
         // Check if actual user has access
         if (!user.equals(authUser)) {
-            throw new UserPermissionException();
+            throw new UserPermissionException("UserPermissionException.user_is_not_owner", authUser.getName());
         }
         
         return bookService.getAllBooks(search, userId);
