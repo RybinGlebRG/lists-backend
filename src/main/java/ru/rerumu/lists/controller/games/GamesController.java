@@ -1,6 +1,5 @@
 package ru.rerumu.lists.controller.games;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,8 @@ import ru.rerumu.lists.controller.games.views.GameAddView;
 import ru.rerumu.lists.controller.games.views.GameListView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.game.Game;
-import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
-import ru.rerumu.lists.services.user.UserService;
 
 import java.util.List;
 
@@ -24,16 +21,15 @@ import java.util.List;
 public class GamesController {
 
     private final GameService gameService;
-    @Deprecated
-    private final UserService userService;
 
-    public GamesController(GameService gameService, @Qualifier("UserServiceProtectionProxy") UserService userService) {
+    public GamesController(
+            GameService gameService
+    ) {
         this.gameService = gameService;
-        this.userService = userService;
     }
 
     @PostMapping(
-            value = "/api/v0.2/users/{userId}/games",
+            value = "/api/v1/users/{userId}/games",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<String> addOne(
@@ -41,21 +37,19 @@ public class GamesController {
             @RequestBody GameAddView gameAddView
     ) throws EntityNotFoundException {
 
-        User user = userService.findById(userId);
-        gameService.addGame(user, gameAddView);
+        gameService.addGame(userId, gameAddView);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/api/v0.2/users/{userId}/games/search",
+    @PostMapping(value = "/api/v1/users/{userId}/games/search",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> searchBooks(
             @PathVariable Long userId,
             @RequestBody Search search
     ) throws EntityNotFoundException {
-        User user = userService.findById(userId);
-        List<Game> gamesList = gameService.getAll(user, search);
+        List<Game> gamesList = gameService.getAll(userId, search);
         GameListView gameListView = new GameListView.Builder()
                 .gamesList(gamesList)
                 .build();
@@ -63,12 +57,13 @@ public class GamesController {
         return new ResponseEntity<>(gameListView.toString(), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/api/v0.2/games/{gameId}",
+    @DeleteMapping(value = "/api/v1/users/{userId}/games/{gameId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> deleteOne(
-            @PathVariable Integer gameId
+            @PathVariable Long userId,
+            @PathVariable Long gameId
     ) {
-        gameService.deleteGame(gameId);
+        gameService.deleteGame(gameId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,50 +1,62 @@
 package ru.rerumu.lists.services.game.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.rerumu.lists.controller.games.views.GameAddView;
+import ru.rerumu.lists.dao.game.GamesRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.game.Game;
-import ru.rerumu.lists.domain.game.impl.GameImpl;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.book.Search;
-import ru.rerumu.lists.dao.base.CrudRepository;
 import ru.rerumu.lists.services.game.GameService;
-import ru.rerumu.lists.controller.games.views.GameAddView;
 
 import java.util.List;
-import java.util.Optional;
 
+@Service("GameService")
 public class GameServiceImpl implements GameService {
 
-    private final CrudRepository<Game,Integer> crudRepository;
+    private final GamesRepository gamesRepository;
+    private final UsersRepository usersRepository;
 
-    public GameServiceImpl(CrudRepository<Game,Integer> crudRepository){
-        this.crudRepository = crudRepository;
+    @Autowired
+    public GameServiceImpl(
+            GamesRepository gamesRepository,
+            UsersRepository usersRepository
+    ){
+        this.gamesRepository = gamesRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void addGame(User user, GameAddView gameAddView){
-        Game newGame = new GameImpl.Builder()
-                .title(gameAddView.title())
-                .user(user)
-                .createDateUTC(gameAddView.createDateUTC())
-                .gameId(crudRepository.getNextId())
-                .note(gameAddView.note())
-                .build();
-        crudRepository.create(newGame);
+    public void addGame(Long userId, GameAddView gameAddView){
+        User user = usersRepository.findById(userId);
+        gamesRepository.create(
+                gameAddView.title(),
+                user,
+                gameAddView.createDateUTC(),
+                gameAddView.note()
+        );
     }
 
     // TODO: fix null
     @Override
-    public void deleteGame(Integer gameId) {
-        crudRepository.delete(gameId, null);
+    public void deleteGame(Long gameId, Long userId) {
+        User user = usersRepository.findById(userId);
+        Game game = gamesRepository.findById(gameId, user);
+        gamesRepository.delete(game);
     }
 
     // TODO: fix null
     @Override
-    public Optional<Game> findById(Integer gameId) {
-        return crudRepository.findById(gameId, null);
+    public Game findById(Long gameId, Long userId) {
+        User user = usersRepository.findById(userId);
+        return gamesRepository.findById(gameId, user);
     }
 
-    public List<Game> getAll(User user, Search search){
-        return crudRepository.findByUser(user);
+    @Override
+    public List<Game> getAll(Long userId, Search search){
+        User user = usersRepository.findById(userId);
+        return gamesRepository.findByUser(user);
     }
 }

@@ -8,27 +8,27 @@ import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public class GameImpl implements Game {
 
     private final static SeriesItemType SERIES_ITEM_TYPE = SeriesItemType.GAME;
 
-    private Integer gameId;
+    private final Long gameId;
 
     @Getter
     private String title;
 
     @Getter
-    private User user;
+    private final User user;
 
     @Getter
     private LocalDateTime createDateUTC;
 
+    @Getter
     private String note;
 
-    public GameImpl(Integer gameId, @NonNull String title, @NonNull User user, @NonNull LocalDateTime createDateUTC, String note) {
+    public GameImpl(Long gameId, @NonNull String title, @NonNull User user, @NonNull LocalDateTime createDateUTC, String note) {
         this.gameId = gameId;
         this.title = title;
         this.user = user;
@@ -46,48 +46,8 @@ public class GameImpl implements Game {
         return obj;
     }
 
-    public final static class Builder{
-        private Integer gameId;
-        private String title;
-        private User user;
-        private LocalDateTime createDateUTC;
-
-        private String note;
-
-        public Builder gameId(Integer gameId){
-            this.gameId = gameId;
-            return this;
-        }
-
-        public Builder title(String title){
-            this.title = title;
-            return this;
-        }
-
-        public Builder user(User user){
-            this.user = user;
-            return this;
-        }
-
-        public Builder createDateUTC(LocalDateTime createDateUTC){
-            this.createDateUTC = createDateUTC;
-            return this;
-        }
-
-        public Builder note(String note){
-            this.note = note;
-            return this;
-        }
-
-        public Game build(){
-            return new GameImpl(
-                    gameId,
-                    title,
-                    user,
-                    createDateUTC != null ? createDateUTC : LocalDateTime.now(ZoneOffset.UTC),
-                    note
-            );
-        }
+    @Override
+    public Long getId() {
+        return gameId;
     }
-
 }

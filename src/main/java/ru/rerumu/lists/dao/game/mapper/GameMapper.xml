@@ -4,21 +4,13 @@
 
 <mapper namespace="ru.rerumu.lists.dao.game.mapper.GameMapper">
 
-    <resultMap id="GameResultMap" type="ru.rerumu.lists.domain.game.Game">
+    <resultMap id="GameResultMap" type="ru.rerumu.lists.dao.game.impl.GameDTO">
         <constructor>
-            <idArg column="gameId" javaType="Integer"/>
-            <arg column="title" javaType="String"/>
-            <arg resultMap="UserResultMap" javaType="ru.rerumu.lists.domain.user.User"/>
-            <arg column="createDateUTC" javaType="java.time.LocalDateTime"/>
-            <arg column="note" javaType="String"/>
-        </constructor>
-    </resultMap>
-
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.User">
-        <constructor>
-            <idArg column="userId" javaType="Long"/>
-            <arg column="name" javaType="String"/>
-            <arg column="password" javaType="String"/>
+            <idArg column="gameId" name="gameId"/>
+            <arg column="userId" name="userId"/>
+            <arg column="title" name="title"/>
+            <arg column="insert_date" name="insertDate"/>
+            <arg column="note" name="note"/>
         </constructor>
     </resultMap>
 
@@ -28,7 +20,7 @@
                 u.USER_ID as userId,
                 u.name,
                 u.password,
-                g.insert_date as createDateUTC,
+                g.insert_date,
                 g.note
         from    games g
                 inner join users u
@@ -36,32 +28,34 @@
         where u.USER_ID=#{userId}
     </select>
 
-    <insert id="create" parameterType="ru.rerumu.lists.domain.game.Game">
+    <insert id="create" parameterType="ru.rerumu.lists.dao.game.impl.GameDTO">
         insert into games(game_id, user_user_id, title, insert_date, note)
-        values(#{gameId},#{user.userId},#{title},#{createDateUTC}, #{note})
+        values(#{gameId}, #{userId}, #{title}, #{insertDate}, #{note})
     </insert>
 
-    <select id="nextval" resultType="Integer">
+    <select id="getNextId" resultType="Long">
         SELECT nextval('game_id_seq');
     </select>
 
-    <select id="findById" parameterType="Integer" resultMap="GameResultMap">
+    <select id="findById" parameterType="Long" resultMap="GameResultMap">
         select  g.game_id as gameId,
                 g.title,
                 u.USER_ID as userId,
                 u.name,
                 u.password,
-                g.insert_date as createDateUTC,
+                g.insert_date,
                 g.note
         from    games g
                 inner join users u
                 on u.USER_ID = g.user_user_id
-        where g.game_id=#{gameId}
+        where g.game_id=#{id}
+          and g.user_user_id = #{userId}
     </select>
 
     <delete id="delete">
         delete from games
         where game_id=#{id}
+          and user_user_id = #{userId}
     </delete>
 
 
