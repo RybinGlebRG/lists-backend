@@ -32,15 +32,19 @@ public class UserServiceImpl implements UserService {
     private final UsersRepository usersRepository;
     private final byte[] jwtSecret;
     private final DateFactory dateFactory;
+    private final Long jwtDuration;
 
     @Autowired
     public UserServiceImpl(
             UsersRepository usersRepository,
-            @Value("${jwt.secret}") byte[] jwtSecret, DateFactory dateFactory
+            @Value("${jwt.secret}") byte[] jwtSecret,
+            DateFactory dateFactory,
+            @Value("${jwt.duration}") Long jwtDuration
     ) {
         this.usersRepository = usersRepository;
         this.jwtSecret = jwtSecret;
         this.dateFactory = dateFactory;
+        this.jwtDuration = jwtDuration;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -58,7 +62,7 @@ public class UserServiceImpl implements UserService {
         SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
 
         LocalDateTime issuedAt = dateFactory.getLocalDateTime();
-        LocalDateTime expiration = issuedAt.plusMinutes(15L);
+        LocalDateTime expiration = issuedAt.plusMinutes(jwtDuration);
 
         return Jwts.builder()
                 .header()
