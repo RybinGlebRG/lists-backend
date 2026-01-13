@@ -1,47 +1,60 @@
 package ru.rerumu.lists.domain.user.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
-import ru.rerumu.lists.dao.user.UserDtoDao;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.domain.user.UserFactory;
-import ru.rerumu.lists.dao.user.UsersRepository;
 
-import java.util.List;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.spec.KeySpec;
+import java.util.Base64;
 
 @Component
 public class UserFactoryImpl implements UserFactory {
 
-    private final UsersRepository usersRepository;
-
-    @Autowired
-    public UserFactoryImpl(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
-    }
-
     @Override
-    public User findById(Long userId) {
-        User user = usersRepository.findById(userId);
+    public User build(Long userId, String name, char[] plainPassword) {
 
-        if (user == null) {
-            throw new EntityNotFoundException();
+        Security.setProperty("crypto.policy", "unlimited");
+        Security.addProvider(new BouncyCastleProvider());
+
+        int iterations = 29000;
+        byte[] salt = new byte[32];
+
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+
+        String hashedPassword;
+
+        try {
+            KeySpec keySpec = new PBEKeySpec(plainPassword, salt, iterations, 256);
+            SecretKey secretKey2 = new SecretKeySpec(
+                    SecretKeyFactory
+                            .getInstance("PBKDF2WithHmacSHA256")
+                            .generateSecret(keySpec)
+                            .getEncoded()
+                    , "AES");
+            byte[] tmp = secretKey2.getEncoded();
+            hashedPassword=String.format(
+                    "$pbkdf2-sha256$%d$%s$%s",
+                    iterations,
+                    new String(Base64.getEncoder().encode(salt), StandardCharsets.UTF_8),
+                    new String(Base64.getEncoder().encode(tmp), StandardCharsets.UTF_8)
+            );
+        } catch (Exception e){
+            throw new RuntimeException(e);
         }
 
-        return user;
-    }
-
-    @Override
-    public List<User> findByIds(List<Long> userIds) {
-        return usersRepository.findByIds(userIds);
-    }
-
-    @Override
-    public User fromDTO(UserDtoDao userDtoDao) {
-        return new User(
-                userDtoDao.getUserId(),
-                userDtoDao.getName(),
-                userDtoDao.getPassword()
+        return new UserImpl(
+                userId,
+                name,
+                hashedPassword
         );
     }
 }

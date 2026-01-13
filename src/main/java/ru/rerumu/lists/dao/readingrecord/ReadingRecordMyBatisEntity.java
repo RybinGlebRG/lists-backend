@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ru.rerumu.lists.dao.base.MyBatisEntity;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 
@@ -22,10 +23,23 @@ public class ReadingRecordMyBatisEntity implements MyBatisEntity {
     
     private Long recordId;
     private Long bookId;
-    private BookStatusRecord bookStatus;
+    private ReadingRecordStatuses bookStatus;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Boolean isMigrated;
     private Long lastChapter;
     private LocalDateTime updateDate;
+
+    public static ReadingRecordMyBatisEntity fromDomain(ReadingRecord readingRecord) {
+        return new ReadingRecordMyBatisEntity(
+                readingRecord.getId(),
+                readingRecord.getBookId(),
+                readingRecord.getBookStatus(),
+                readingRecord.getStartDate(),
+                readingRecord.getEndDate(),
+                readingRecord.getIsMigrated(),
+                readingRecord.getLastChapter(),
+                readingRecord.getUpdateDate()
+        );
+    }
 }

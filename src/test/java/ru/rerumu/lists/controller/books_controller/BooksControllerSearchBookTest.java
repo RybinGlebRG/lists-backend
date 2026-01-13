@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.book.BooksController;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.author.AuthorsService;
-import ru.rerumu.lists.services.book.impl.ReadListService;
+import ru.rerumu.lists.services.book.impl.BookServiceImpl;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -30,7 +30,7 @@ class BooksControllerSearchBookTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReadListService readListService;
+    private BookServiceImpl bookServiceImpl;
 
     @MockBean(name="UserService")
     private UserService userService1;
@@ -43,9 +43,6 @@ class BooksControllerSearchBookTest {
 
     @MockBean
     private SeriesServiceImpl seriesService;
-
-    @MockBean
-    private AuthorsBooksRelationService authorsBooksRelationService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

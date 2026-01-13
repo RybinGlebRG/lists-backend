@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.views.AddAuthorView;
+import ru.rerumu.lists.controller.author.views.AddAuthorView;
 
 import java.util.List;
 
@@ -21,31 +21,31 @@ public class AuthorsService {
 
     private final AuthorsRepository authorsRepository;
     private final AuthorsBooksRepository authorsBooksRepository;
-    private final AuthorFactory authorFactory;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public AuthorsService(
             @NonNull AuthorsRepository authorsRepository,
             @NonNull AuthorsBooksRepository authorsBooksRepository,
-            @NonNull AuthorFactory authorFactory
+            @NonNull UsersRepository usersRepository
     ){
         this.authorsRepository = authorsRepository;
         this.authorsBooksRepository = authorsBooksRepository;
-        this.authorFactory = authorFactory;
+        this.usersRepository = usersRepository;
     }
 
-    public Author getAuthor(@NonNull Long authorId) {
-        return authorFactory.findById(authorId);
+    public Author getAuthor(@NonNull Long authorId, @NonNull Long userId) {
+        User user = usersRepository.findById(userId);
+        return authorsRepository.findById(authorId, user);
     }
 
     public List<Author> getAuthors(@NonNull User user) {
-        return authorFactory.findAll(user);
+        return authorsRepository.findByUser(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Author addAuthor(@NonNull AddAuthorView addAuthorView, @NonNull User user) throws EntityNotFoundException {
-        Author author = authorFactory.create(addAuthorView.getName(), user);
-        return author;
+        return authorsRepository.create(addAuthorView.getName(), user);
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 import ru.rerumu.lists.dao.author.AuthorDtoDao;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorBookDto;
+import ru.rerumu.lists.dao.book.AuthorRole;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.mapper.AuthorBookRelationMapper;
+import ru.rerumu.lists.domain.author.Author;
+import ru.rerumu.lists.domain.book.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +38,13 @@ public class AuthorsBooksRepositoryImpl implements AuthorsBooksRepository {
     }
 
     @Override
-    public void add(Long bookId, Long authorId, Long userId, Long roleId) {
+    public void addAuthorTo(Long bookId, Long authorId, Long userId, Long roleId) {
         authorBookRelationMapper.add(bookId, authorId, userId, roleId);
+    }
+
+    @Override
+    public void addAuthorTo(Author author, Book book, AuthorRole role) {
+        authorBookRelationMapper.add(book.getId(), author.getId(), book.getUser().getId(), role.getId());
     }
 
     @Override

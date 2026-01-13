@@ -9,8 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rerumu.lists.crosscut.DeepCopyable;
-import ru.rerumu.lists.controller.author.out.AuthorView2;
-import ru.rerumu.lists.controller.readingrecord.view.out.ReadingRecordView;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
 import ru.rerumu.lists.controller.tag.view.out.TagView;
 
 import java.time.LocalDateTime;
@@ -37,10 +36,6 @@ public class BookView implements DeepCopyable<BookView>{
     @Getter
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime insertDate;
-
-    @Getter
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private final LocalDateTime lastUpdateDate;
 
     @Getter
     private final Integer lastChapter;
@@ -85,7 +80,7 @@ public class BookView implements DeepCopyable<BookView>{
     private final List<TagView> tags;
 
     @Getter
-    private final List<AuthorView2> textAuthors;
+    private final List<AuthorView> textAuthors;
 
     @Setter
     @Getter
@@ -98,7 +93,6 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull String title,
             BookStatusView bookStatus,
             @NonNull LocalDateTime insertDate,
-            @NonNull LocalDateTime lastUpdateDate,
             Integer lastChapter,
             String note,
             BookType bookType,
@@ -107,7 +101,7 @@ public class BookView implements DeepCopyable<BookView>{
             @NonNull List<ReadingRecordView> readingRecords,
             String URL,
             @NonNull List<TagView> tags,
-            List<AuthorView2> textAuthors,
+            List<AuthorView> textAuthors,
             List<SeriesView> seriesList
     ) {
         this.bookId = bookId;
@@ -120,7 +114,6 @@ public class BookView implements DeepCopyable<BookView>{
             this.bookStatus = null;
         }
         this.insertDate = insertDate;
-        this.lastUpdateDate = lastUpdateDate;
         this.lastChapter = lastChapter;
         this.note = note;
 

@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.domain.title.Title;
-import ru.rerumu.lists.domain.TitlesList;
 import ru.rerumu.lists.dao.title.TitlesRepository;
-import ru.rerumu.lists.views.TitleCreateView;
+import ru.rerumu.lists.domain.movie.Movie;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
 
 import java.util.List;
 
@@ -19,38 +18,35 @@ public class WatchListService {
 
     // TODO: Test
     @Transactional(rollbackFor = Exception.class)
-    public Title updateTitle(Long watchListId, Long titleId, Title newTitle) throws EmptyMandatoryParameterException {
-        Title currentTitle = titlesRepository.getOne(watchListId, titleId);
+    public Movie updateTitle(Long watchListId, Long titleId, Movie newMovie) throws EmptyMandatoryParameterException {
+        Movie currentMovie = titlesRepository.getOne(watchListId, titleId);
 
-        currentTitle.setName(newTitle.getName());
-        currentTitle.setCreateDateUTC(newTitle.getCreateDateUTC());
-        currentTitle.setStatusId(newTitle.getStatusId());
-        currentTitle.setVideoType(newTitle.getVideoType());
+        currentMovie.setName(newMovie.getName());
+        currentMovie.setCreateDateUTC(newMovie.getCreateDateUTC());
+        currentMovie.setStatusId(newMovie.getStatusId());
+        currentMovie.setVideoType(newMovie.getVideoType());
 
-        Title updatedTitle = titlesRepository.update(currentTitle);
-        return updatedTitle;
+        Movie updatedMovie = titlesRepository.update(currentMovie);
+        return updatedMovie;
 
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Title addTitle(Long watchListId, TitleCreateView newTitleView) throws EmptyMandatoryParameterException {
+    public Movie addTitle(Long watchListId, TitleCreateView newTitleView) throws EmptyMandatoryParameterException {
         newTitleView.setWatchListId(watchListId);
         Long titleId = titlesRepository.getNextId();
         newTitleView.setTitleId(titleId);
         newTitleView.validate();
-        Title createdTitle = titlesRepository.addOne(newTitleView);
-        return createdTitle;
+        Movie createdMovie = titlesRepository.addOne(newTitleView);
+        return createdMovie;
     }
 
-    public Title getOne(Long watchListId, Long titleId){
+    public Movie getOne(Long watchListId, Long titleId){
         return this.titlesRepository.getOne(watchListId,titleId);
     }
 
-    public TitlesList getAll(Long watchListId){
-        List<Title> titles = titlesRepository.getAll(watchListId);
-        TitlesList titlesList = new TitlesList(titles);
-        titlesList.sort();
-        return titlesList;
+    public List<Movie> getAll(Long watchListId){
+        return titlesRepository.getAll(watchListId);
     }
 
     @Transactional(rollbackFor = Exception.class)

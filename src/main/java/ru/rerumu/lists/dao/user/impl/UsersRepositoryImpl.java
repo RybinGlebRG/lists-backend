@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.user.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
@@ -7,6 +8,7 @@ import ru.rerumu.lists.dao.base.impl.CrudRepositoryEntityImpl;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.dao.user.mapper.UserMapper;
 import ru.rerumu.lists.domain.user.User;
+import ru.rerumu.lists.domain.user.UserFactory;
 
 import java.util.List;
 
@@ -15,11 +17,13 @@ public class UsersRepositoryImpl extends CrudRepositoryEntityImpl<User,Long>  im
 
 
     private final UserMapper userMapper;
+    private final UserFactory userFactory;
 
     @Autowired
-    public UsersRepositoryImpl(UserMapper userMapper) {
+    public UsersRepositoryImpl(UserMapper userMapper, UserFactory userFactory) {
         super(userMapper);
         this.userMapper = userMapper;
+        this.userFactory = userFactory;
     }
 
     @Override
@@ -63,5 +67,12 @@ public class UsersRepositoryImpl extends CrudRepositoryEntityImpl<User,Long>  im
     @Override
     public List<User> findByIds(List<Long> userIds) {
         return userMapper.findByIds(userIds, null);
+    }
+
+    @Override
+    public @NonNull User create(@NonNull Long userId, @NonNull String name, char[] plainPassword) {
+        User user = userFactory.build(userId, name, plainPassword);
+        userMapper.create(user);
+        return user;
     }
 }

@@ -1,15 +1,14 @@
 package ru.rerumu.lists.domain.series;
 
+import ru.rerumu.lists.crosscut.DeepCopyable;
 import ru.rerumu.lists.domain.base.Entity;
-import ru.rerumu.lists.domain.series.item.SeriesItem;
+import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 
 import java.util.List;
 
-public interface Series extends Entity {
+public interface Series extends Entity, DeepCopyable<Series> {
 
     String getTitle();
-
-    SeriesDTOv2 toDTO();
 
     List<SeriesItem> getItemsList();
 
@@ -18,10 +17,16 @@ public interface Series extends Entity {
     /**
      * Add relation between book and series
      */
-    void addBookRelation(Long bookId);
+    boolean addBookRelation(Long bookId);
 
     /**
      * Remove relation between book and series
      */
-    void removeBookRelation(Long bookId);
+    boolean removeBookRelation(Long bookId);
+
+
+    /*
+    ???
+     */
+    List<SeriesItemRelation> getSeriesItemRelations();
 }

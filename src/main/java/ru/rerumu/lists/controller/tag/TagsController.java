@@ -1,5 +1,7 @@
 package ru.rerumu.lists.controller.tag;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.rerumu.lists.controller.tag.view.in.TagAddView;
+import ru.rerumu.lists.controller.tag.view.out.TagListView;
+import ru.rerumu.lists.controller.tag.view.out.TagViewFactory;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.services.tag.TagService;
-import ru.rerumu.lists.views.tag.TagListView;
 
 import java.util.List;
 
@@ -23,10 +27,14 @@ import java.util.List;
 public class TagsController {
 
     private final TagService tagService;
+    private final TagViewFactory tagViewFactory;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public TagsController(TagService tagService) {
+    public TagsController(TagService tagService, TagViewFactory tagViewFactory, ObjectMapper objectMapper) {
         this.tagService = tagService;
+        this.tagViewFactory = tagViewFactory;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping(
@@ -48,11 +56,13 @@ public class TagsController {
     public ResponseEntity<String> getAll(
             @PathVariable Long userId
     ) {
-        List<Tag> tags = tagService.getAll(userId);
-        TagListView tagListView = new TagListView(tags);
-        tagListView.sort();
-
-        return new ResponseEntity<>(tagListView.toString(), HttpStatus.OK);
+        try {
+            List<Tag> tags = tagService.getAll(userId);
+            TagListView tagListView = tagViewFactory.buildTagListView(tags);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(tagListView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping(

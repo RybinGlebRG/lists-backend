@@ -1,3 +1,18 @@
+# v0.71.0
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- N/A
+
+## Other
+
+- Refactoring
+
+============================================
 # v0.70.1
 
 ## Features

@@ -34,6 +34,8 @@ public class ITBooksGetAll {
     static void configureProperties(DynamicPropertyRegistry registry) {
 
         log.info("jdbcUrl: {}", postgres.getJdbcUrl());
+        log.info("username: {}", postgres.getUsername());
+        log.info("password: {}", postgres.getPassword());
 
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);

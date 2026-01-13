@@ -5,181 +5,190 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rerumu.lists.dao.base.impl.CrudRepositoryDtoImpl;
-import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
+import ru.rerumu.lists.dao.series.SeriesBooksRepository;
+import ru.rerumu.lists.dao.series.SeriesItemRelationDTO;
+import ru.rerumu.lists.dao.series.SeriesMyBatisEntity;
 import ru.rerumu.lists.dao.series.SeriesRepository;
 import ru.rerumu.lists.dao.series.mapper.SeriesBookMapper;
 import ru.rerumu.lists.dao.series.mapper.SeriesMapper;
-import ru.rerumu.lists.domain.book.BookDTO;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecordDTO;
-import ru.rerumu.lists.domain.series.SeriesBookRelationDto;
-import ru.rerumu.lists.domain.series.SeriesDTO;
-import ru.rerumu.lists.domain.series.SeriesDTOv2;
+import ru.rerumu.lists.dao.user.UsersRepository;
+import ru.rerumu.lists.dao.base.EntityState;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.series.SeriesBookRelation;
+import ru.rerumu.lists.domain.series.SeriesFactory;
+import ru.rerumu.lists.domain.series.SeriesItemRelation;
+import ru.rerumu.lists.domain.user.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class SeriesRepositoryImpl extends CrudRepositoryDtoImpl<SeriesDTOv2,Long> implements SeriesRepository{
+public class SeriesRepositoryImpl implements SeriesRepository{
 
     private final SeriesMapper seriesMapper;
     private final SeriesBookMapper seriesBookMapper;
-    private final ReadingRecordsRepository readingRecordsRepository;
+    private final SeriesFactory seriesFactory;
+    private final SeriesBooksRepository seriesBooksRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public SeriesRepositoryImpl(
             SeriesMapper seriesMapper,
-            SeriesBookMapper seriesBookMapper, ReadingRecordsRepository readingRecordsRepository
+            SeriesBookMapper seriesBookMapper,
+            SeriesFactory seriesFactory,
+            SeriesBooksRepository seriesBooksRepository,
+            UsersRepository usersRepository
     ) {
-        super(seriesMapper);
         this.seriesMapper = seriesMapper;
         this.seriesBookMapper = seriesBookMapper;
-        this.readingRecordsRepository = readingRecordsRepository;
-    }
-
-    @Deprecated
-    @Override
-    public SeriesDTO getOne(Long readListId, Long seriesId) {
-        SeriesDTO seriesDTO = seriesMapper.getOne(readListId, seriesId);
-
-        List<Long> bookIds = seriesDTO.seriesItemOrderDTOList.stream()
-                .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
-                .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        List<ReadingRecord> readingRecords = readingRecordsRepository.findByBookIds(bookIds);
-
-        Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
-                .collect(Collectors.groupingBy(
-                        ReadingRecord::getBookId,
-                        HashMap::new,
-                        Collectors.toCollection(ArrayList::new)
-                ));
-
-        List<BookDTO> bookDTOList = seriesDTO.seriesItemOrderDTOList.stream()
-                .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
-                .map(seriesItemOrderDTO -> (BookDTO)seriesItemOrderDTO.itemDTO)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        for(BookDTO bookDTO: bookDTOList){
-            List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
-
-            if (records == null){
-                records = new ArrayList<>();
-            }
-
-            bookDTO.setReadingRecords(
-                    records.stream()
-                            .map(ReadingRecordDTO::fromDomain)
-                            .collect(Collectors.toCollection(ArrayList::new))
-            );
-        }
-
-
-
-        return seriesDTO;
-    }
-
-    @Override
-    public List<SeriesDTO> getAll(Long seriesListId) {
-
-        try {
-            List<SeriesDTO> res = seriesMapper.getAll(seriesListId);
-
-            List<Long> bookIds = res.stream()
-                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
-                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
-                    .map(seriesItemOrderDTO -> ((BookDTO)seriesItemOrderDTO.itemDTO).getBookId())
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            List<ReadingRecord> readingRecords = readingRecordsRepository.findByBookIds(bookIds);
-
-            Map<Long, List<ReadingRecord>> bookId2ReadingRecordMap = readingRecords.stream()
-                    .collect(Collectors.groupingBy(
-                            ReadingRecord::getBookId,
-                            HashMap::new,
-                            Collectors.toCollection(ArrayList::new)
-                    ));
-
-            List<BookDTO> bookDTOList = res.stream()
-                    .flatMap(seriesDTO -> seriesDTO.seriesItemOrderDTOList.stream())
-                    .filter(seriesItemOrderDTO -> seriesItemOrderDTO.itemDTO instanceof BookDTO)
-                    .map(seriesItemOrderDTO -> (BookDTO)seriesItemOrderDTO.itemDTO)
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            for(BookDTO bookDTO: bookDTOList){
-                List<ReadingRecord> records = bookId2ReadingRecordMap.get(bookDTO.getBookId());
-
-                if (records == null){
-                    records = new ArrayList<>();
-                }
-
-                bookDTO.setReadingRecords(
-                        records.stream()
-                                .map(ReadingRecordDTO::fromDomain)
-                                .collect(Collectors.toCollection(ArrayList::new))
-                );
-            }
-
-            List<SeriesDTO> resList = new ArrayList<>(res);
-            return resList;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    @Override
-    public int getBookCount(Long readListId, Long seriesId) {
-        return seriesMapper.getBookCount(readListId, seriesId);
+        this.seriesFactory = seriesFactory;
+        this.seriesBooksRepository = seriesBooksRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
     public Long getNextId() {
-        return seriesMapper.nextval();
+        return seriesMapper.getNextId();
     }
 
     @Override
-    public void add(SeriesDTO series) {
-        seriesMapper.add(
-                series.seriesListId,
-                series.seriesId,
-                series.title
+    @NonNull
+    public List<Series> findByUser(@NonNull User user) {
+        List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesMapper.findByUser(user);
+
+        List<Series> seriesList = new ArrayList<>();
+
+        for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
+            seriesList.add(fromMyBatisEntity(seriesMyBatisEntity, user));
+        }
+
+        return seriesList;
+    }
+
+    @Override
+    @NonNull
+    public Series findById(@NonNull Long seriesId, @NonNull User user) {
+        SeriesMyBatisEntity seriesMyBatisEntity = seriesMapper.findById(seriesId, user.getId());
+        if (seriesMyBatisEntity == null) {
+            throw new EntityNotFoundException();
+        }
+
+        Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
+
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+    }
+
+    @Override
+    public @NonNull Series create(@NonNull String title, @NonNull User user) {
+        Long id = getNextId();
+
+        Series series = seriesFactory.buildSeries(id, title, user);
+
+        seriesMapper.create(SeriesMyBatisEntity.fromDomain(series));
+
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+    }
+
+    @Override
+    public Series attach(@NonNull Series series) {
+        return new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+    }
+
+    @Override
+    public Series fromMyBatisEntity(SeriesMyBatisEntity seriesMyBatisEntity, User user) {
+
+        List<SeriesItemRelationDTO> seriesItemRelationDTOList = seriesMyBatisEntity.getSeriesBookRelationDtoList().stream()
+                .map(item -> (SeriesItemRelationDTO)item)
+                .sorted(Comparator.comparingLong(SeriesItemRelationDTO::getOrder))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<SeriesItemRelation> seriesItemRelations = seriesBooksRepository.fromDTO(seriesItemRelationDTOList);
+
+        return seriesFactory.buildSeries(
+                seriesMyBatisEntity.getSeriesId(),
+                seriesMyBatisEntity.getTitle(),
+                user,
+                seriesItemRelations
         );
     }
 
     @Override
     public void delete(long seriesId) {
+        List<SeriesBookRelation> seriesBookRelationList = seriesBooksRepository.getBySeriesId(seriesId);
+        if (!seriesBookRelationList.isEmpty()) {
+            throw new ServerException("EntityHasChildrenException");
+        }
+
         seriesMapper.delete(seriesId);
     }
 
     @Override
-    public List<SeriesDTOv2> findByBook(@NonNull Long bookId, @NonNull Long userId) {
-        return seriesMapper.findByBook(bookId, userId);
+    public List<Series> findByBook(@NonNull Long bookId, @NonNull Long userId) {
+        List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesMapper.findByBook(bookId, userId);
+
+        User user = usersRepository.findById(userId);
+
+        List<Series> seriesList = new ArrayList<>();
+
+        for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
+            Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
+            series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+            seriesList.add(series);
+        }
+
+        return seriesList;
     }
 
     @Override
-    public List<SeriesDTOv2> findByIds(@NonNull List<Long> seriesIds, @NonNull Long userId) {
-        return seriesMapper.findByIds(seriesIds, userId);
+    public List<Series> findByIds(@NonNull List<Long> seriesIds, @NonNull Long userId) {
+        List<SeriesMyBatisEntity> seriesMyBatisEntities = seriesMapper.findByIds(seriesIds, userId);
+
+        User user = usersRepository.findById(userId);
+
+        List<Series> seriesList = new ArrayList<>();
+
+        for (SeriesMyBatisEntity seriesMyBatisEntity: seriesMyBatisEntities) {
+            Series series = fromMyBatisEntity(seriesMyBatisEntity, user);
+            series = new SeriesPersistenceProxy(series, EntityState.PERSISTED);
+            seriesList.add(series);
+        }
+
+        return seriesList;
     }
 
     @Override
-    public void update(SeriesDTOv2 entity) {
-        seriesMapper.update(entity);
+    public void save(@NonNull Series series) {
 
-        for (SeriesBookRelationDto seriesBookRelationDto: entity.getSeriesBookRelationDtoList()) {
-            seriesBookMapper.merge(seriesBookRelationDto);
+        SeriesPersistenceProxy seriesPersistenceProxy = (SeriesPersistenceProxy) series;
+
+        switch (seriesPersistenceProxy.getEntityState()) {
+            case NEW -> {
+                create(SeriesMyBatisEntity.fromDomain(series));
+                seriesPersistenceProxy.onSave();
+            }
+            case DIRTY -> {
+                update(
+                    SeriesMyBatisEntity.fromDomain(seriesPersistenceProxy.getPersistedCopy()),
+                    SeriesMyBatisEntity.fromDomain(series)
+                );
+                seriesPersistenceProxy.onSave();
+            }
+            case PERSISTED -> log.warn("Entity is not altered");
+            default -> throw new ServerException("Incorrect entity state");
         }
     }
 
-    @Override
+    private void create(SeriesMyBatisEntity myBatisEntity) {
+        seriesMapper.create(myBatisEntity);
+    }
+
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
-    public void update(SeriesDTOv2 originalEntity, SeriesDTOv2 currentEntity) {
+    private void update(SeriesMyBatisEntity originalEntity, SeriesMyBatisEntity currentEntity) {
         seriesMapper.update(currentEntity);
 
         List<SeriesBookRelationDto> relationsToRemove = originalEntity.getSeriesBookRelationDtoList().stream()

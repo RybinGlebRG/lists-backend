@@ -2,26 +2,19 @@ package ru.rerumu.lists.controller.books_controller;
 
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.book.BooksController;
-import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.services.*;
 import ru.rerumu.lists.services.author.AuthorsService;
-import ru.rerumu.lists.services.book.impl.ReadListService;
+import ru.rerumu.lists.services.book.impl.BookServiceImpl;
 import ru.rerumu.lists.services.series.impl.SeriesServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @WebMvcTest(BooksController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -31,7 +24,7 @@ class BooksControllerUpdateBookTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReadListService readListService;
+    private BookServiceImpl bookServiceImpl;
 
     @MockBean(name="UserService")
     private UserService userService1;
@@ -44,9 +37,6 @@ class BooksControllerUpdateBookTest {
 
     @MockBean
     private SeriesServiceImpl seriesService;
-
-    @MockBean
-    private AuthorsBooksRelationService authorsBooksRelationService;
 
     @MockBean
     private BookSeriesRelationService bookSeriesRelationService;

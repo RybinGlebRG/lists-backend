@@ -22,7 +22,7 @@ public class CrudRepositoryDtoImpl<T extends MyBatisEntity,ID> implements CrudRe
 
     @Override
     public Optional<T> findById(ID id, User user){
-        T entityDTO = mapper.findById(id, user.userId());
+        T entityDTO = mapper.findById(id, user.getId());
         return Optional.ofNullable(entityDTO);
     }
 
@@ -70,6 +70,6 @@ public class CrudRepositoryDtoImpl<T extends MyBatisEntity,ID> implements CrudRe
 
     @Override
     public void delete(ID id, User user) {
-        mapper.delete(id, user.userId());
+        mapper.delete(id, user.getId());
     }
 }

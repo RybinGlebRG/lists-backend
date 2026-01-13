@@ -1,0 +1,107 @@
+package ru.rerumu.lists.controller.movies;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import ru.rerumu.lists.controller.movies.views.TitleCreateView;
+import ru.rerumu.lists.controller.movies.views.out.MovieListView;
+import ru.rerumu.lists.controller.movies.views.out.MovieView;
+import ru.rerumu.lists.controller.movies.views.out.MoviesViewFactory;
+import ru.rerumu.lists.crosscut.exception.ServerException;
+import ru.rerumu.lists.domain.movie.Movie;
+import ru.rerumu.lists.services.WatchListService;
+
+import java.util.List;
+
+@CrossOrigin
+@RestController
+public class MoviesController {
+
+    private final WatchListService watchListService;
+    private final MoviesViewFactory moviesViewFactory;
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public MoviesController(WatchListService watchListService, MoviesViewFactory moviesViewFactory, ObjectMapper objectMapper) {
+        this.watchListService = watchListService;
+        this.moviesViewFactory = moviesViewFactory;
+        this.objectMapper = objectMapper;
+    }
+
+    @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> getAll(@PathVariable long watchListId, @RequestAttribute("username") String username) {
+        try {
+            List<Movie> movies = watchListService.getAll(watchListId);
+            MovieListView movieListView = moviesViewFactory.buildMovieListView(movies);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieListView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
+    }
+
+    @PostMapping(value = "/api/v0.2/watchLists/{watchListId}/titles", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> addOne(
+            @PathVariable long watchListId,
+            @RequestBody TitleCreateView newTitle,
+            @RequestAttribute("username") String username) {
+        try {
+            Movie movie = watchListService.addTitle(watchListId, newTitle);
+            MovieView movieView = moviesViewFactory.buildMovieView(movie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.CREATED);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> getOne(@PathVariable Long watchListId,
+                                  @RequestAttribute("username") String username,
+                                  @PathVariable Long titleId) {
+        try {
+            Movie movie = watchListService.getOne(watchListId, titleId);
+            MovieView movieView = moviesViewFactory.buildMovieView(movie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping(value = "/api/v0.2/watchLists/{watchListId}/titles/{titleId}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<String> updateOne(@PathVariable Long watchListId,
+                                     @PathVariable Long titleId,
+                                     @RequestBody Movie newMovie,
+                                     @RequestAttribute("username") String username) {
+        try {
+            Movie updatedMovie = watchListService.updateTitle(watchListId, titleId, newMovie);
+            MovieView movieView = moviesViewFactory.buildMovieView(updatedMovie);
+            return new ResponseEntity<>(objectMapper.writeValueAsString(movieView), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping(value = "/api/v0.2/titles/{titleId}")
+    ResponseEntity<String> updateOne(@PathVariable Long titleId,
+                                     @RequestAttribute("username") String username) {
+        // TODO: Check ownership
+
+        watchListService.deleteOne(titleId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+}

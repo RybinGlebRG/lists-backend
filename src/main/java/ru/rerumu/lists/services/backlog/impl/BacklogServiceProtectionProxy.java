@@ -12,9 +12,9 @@ import ru.rerumu.lists.controller.backlog.view.in.BacklogItemCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.backlog.BacklogService;
 
@@ -27,20 +27,20 @@ import java.util.List;
 public class BacklogServiceProtectionProxy implements BacklogService {
 
     private final User authUser;
-    private final UserFactory userFactory;
     private final BacklogService backlogService;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public BacklogServiceProtectionProxy(
-            UserFactory userFactory,
-            @Qualifier("backlogServiceImpl") BacklogService backlogService
+            @Qualifier("backlogServiceImpl") BacklogService backlogService,
+            UsersRepository usersRepository
     ) {
-        this.userFactory = userFactory;
         this.backlogService = backlogService;
+        this.usersRepository = usersRepository;
 
         Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
-        this.authUser = userFactory.findById(authUserId);
-        log .info(String.format("GOT USER %d", authUser.userId()));
+        this.authUser = usersRepository.findById(authUserId);
+        log .info(String.format("GOT USER %d", authUser.getId()));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BacklogServiceProtectionProxy implements BacklogService {
 
     private void checkUser(@NonNull Long userId) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
         log.debug("user: {}", user);
 
         // Check if actual user has access

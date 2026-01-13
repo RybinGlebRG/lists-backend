@@ -7,15 +7,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
 import ru.rerumu.lists.dao.book.AuthorsBooksRepository;
 import ru.rerumu.lists.dao.book.BookRepository;
-import ru.rerumu.lists.domain.author.AuthorFactory;
 import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.readingrecords.impl.ReadingRecordFactory;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
-import ru.rerumu.lists.domain.booktype.BookTypeFactory;
-import ru.rerumu.lists.domain.tag.TagFactory;
+import ru.rerumu.lists.domain.readingrecord.impl.ReadingRecordFactory;
 import ru.rerumu.lists.domain.user.UserFactory;
-
-import static org.mockito.Mockito.mock;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -34,22 +28,10 @@ public class BookFactoryImplTest {
     private ReadingRecordFactory readingRecordFactory;
 
     @Mock
-    private BookTypeFactory bookTypeFactory;
-
-    @Mock
     private UserFactory userFactory;
 
     @Mock
-    private TagFactory tagFactory;
-
-    @Mock
-    private StatusFactory statusFactory;
-
-    @Mock
     private AuthorsBooksRepository authorsBooksRepository;
-
-    @Mock
-    private AuthorFactory authorFactory;
 
 
 //    @BeforeEach

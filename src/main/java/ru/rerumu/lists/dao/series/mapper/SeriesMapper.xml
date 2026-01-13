@@ -4,32 +4,32 @@
 
 <mapper namespace="ru.rerumu.lists.dao.series.mapper.SeriesMapper">
 
-    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.domain.series.SeriesDTO">
-        <id column="series_id" property="seriesId" javaType="Long"/>
-        <result column="list_list_id" property="seriesListId" javaType="Long"/>
-        <result column="title" property="title" javaType="String"/>
-        <result column="book_count" property="bookCount" javaType="Integer"/>
-        <collection
-                property="seriesItemOrderDTOList"
-                ofType="ru.rerumu.lists.domain.dto.SeriesItemOrderDTO"
-                resultMap="SeriesItemOrderDTOResultMap"
-        />
-    </resultMap>
+<!--    <resultMap id="SeriesResultMap" type="ru.rerumu.lists.domain.series.SeriesDTO">-->
+<!--        <id column="series_id" property="seriesId" javaType="Long"/>-->
+<!--        <result column="list_list_id" property="seriesListId" javaType="Long"/>-->
+<!--        <result column="title" property="title" javaType="String"/>-->
+<!--        <result column="book_count" property="bookCount" javaType="Integer"/>-->
+<!--        <collection-->
+<!--                property="seriesItemOrderDTOList"-->
+<!--                ofType="ru.rerumu.lists.dao.series.item.SeriesItemOrderDTO"-->
+<!--                resultMap="SeriesItemOrderDTOResultMap"-->
+<!--        />-->
+<!--    </resultMap>-->
 
-    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.domain.dto.SeriesItemOrderDTO">
+    <resultMap id="SeriesItemOrderDTOResultMap" type="ru.rerumu.lists.dao.series.item.SeriesItemOrderDTO">
         <result property="order" column="series_order" javaType="Long"/>
         <association property="itemDTO" resultMap="SeriesItemDTOResultMap"/>
     </resultMap>
 
-    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.domain.series.item.SeriesItemDTO">
+    <resultMap id="SeriesItemDTOResultMap" type="ru.rerumu.lists.dao.series.item.SeriesItemDTO">
         <discriminator javaType="int" column="item_type">
             <case value="1" resultMap="ru.rerumu.lists.dao.book.mapper.BookMapper.BookResultMap"/>
             <case value="2" resultMap="TitleDtoResultMap"/>
-            <case value="3" resultType="ru.rerumu.lists.domain.base.NullDTO"/>
+            <case value="3" resultType="ru.rerumu.lists.dao.base.NullDTO"/>
         </discriminator>
     </resultMap>
 
-    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.domain.title.TitleDTO">
+    <resultMap id="TitleDtoResultMap" type="ru.rerumu.lists.dao.movie.MovieDTO">
         <id property="titleId" column="title_id"/>
         <result property="name" column="title_name"/>
         <result property="createDateUTC" column="title_create_date_utc"/>
@@ -38,28 +38,28 @@
         <association property="videoType" resultMap="VideoTypeResultMap"/>
     </resultMap>
 
-    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.VideoType">
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.movietype.MovieType">
         <constructor>
             <idArg column="title_type_id" name="typeId" javaType="Long"/>
             <arg column="title_type_name" name="name" javaType="String"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.domain.title.TitleStatus">
+    <resultMap id="TitleStatusResultMap" type="ru.rerumu.lists.dao.movie.MovieStatus">
         <constructor>
             <idArg column="title_status_id" name="statusId" javaType="_int"/>
             <arg column="title_status_name" name="statusName" javaType="String"/>
         </constructor>
     </resultMap>
 
-    <resultMap id="SeriesResultMapV2" type="ru.rerumu.lists.domain.series.SeriesDTOv2">
+    <resultMap id="SeriesResultMapV2" type="ru.rerumu.lists.dao.series.SeriesMyBatisEntity">
         <id column="series_id" property="seriesId"/>
         <result column="title" property="title"/>
         <result column="user_user_id" property="userId"/>
         <collection property="seriesBookRelationDtoList" resultMap="SeriesBookRelationDtoResultMapV2"/>
     </resultMap>
 
-    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.domain.series.SeriesBookRelationDto">
+    <resultMap id="SeriesBookRelationDtoResultMapV2" type="ru.rerumu.lists.dao.series.impl.SeriesBookRelationDto">
         <constructor>
             <arg column="series_series_id" name="seriesId"/>
             <arg column="book_book_id" name="bookId"/>
@@ -330,21 +330,21 @@
 
     </sql>
 
-    <select id="getAll" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.list_list_id=#{readListId}
-    </select>
+<!--    <select id="getAll" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.list_list_id=#{readListId}-->
+<!--    </select>-->
 
-    <select id="getOne" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.series_id=#{seriesId}
-        and s_data.list_list_id=#{readListId}
-    </select>
+<!--    <select id="getOne" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.series_id=#{seriesId}-->
+<!--        and s_data.list_list_id=#{readListId}-->
+<!--    </select>-->
 
-    <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">
-        <include refid="selectAll"/>
-        and s_data.series_id=#{seriesId}
-    </select>
+<!--    <select id="getOneBySeriesOnly" resultMap="SeriesResultMap">-->
+<!--        <include refid="selectAll"/>-->
+<!--        and s_data.series_id=#{seriesId}-->
+<!--    </select>-->
 
     <select id="findById" resultMap="SeriesResultMapV2">
         select

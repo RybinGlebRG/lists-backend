@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.author.AuthorsController;
 import ru.rerumu.lists.services.author.AuthorsService;
-import ru.rerumu.lists.services.book.impl.ReadListService;
+import ru.rerumu.lists.services.book.impl.BookServiceImpl;
 import ru.rerumu.lists.services.user.UserService;
 
 import static org.hamcrest.Matchers.is;
@@ -26,7 +26,7 @@ class AuthorsControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReadListService readListService;
+    private BookServiceImpl bookServiceImpl;
 
     @MockBean
     private AuthorsService authorsService;

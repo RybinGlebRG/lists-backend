@@ -1,0 +1,71 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ru.rerumu.lists.dao.movie.mapper.TitleMapper">
+
+    <resultMap id="TitleResultMap" type="ru.rerumu.lists.domain.movie.impl.MovieImpl">
+        <constructor>
+            <idArg column="title_id" name="titleId"/>
+            <arg column="list_list_id" name="watchListId"/>
+            <arg column="name" name="name"/>
+            <arg column="create_date_utc" name="createDateUTC"/>
+            <arg column="status_status_id" name="statusId"/>
+            <arg resultMap="VideoTypeResultMap" name="videoType" javaType="ru.rerumu.lists.domain.movietype.MovieType"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="VideoTypeResultMap" type="ru.rerumu.lists.domain.movietype.MovieType">
+        <result column="type_id" property="typeId" />
+        <result column="type_name" property="name" />
+    </resultMap>
+
+    <sql id="selectAll">
+        select  title_id,
+                list_list_id,
+                t.name as name,
+                create_date_utc  AT TIME ZONE 'UTC' as create_date_utc,
+                status_status_id,
+                vt.type_id,
+                vt.name as type_name
+        from titles t
+             inner join lists.video_types vt
+                        on vt.type_id = t.type_type_id
+    </sql>
+
+    <select id="getAllTitles" resultMap="TitleResultMap">
+        <include refid="selectAll"/>
+        where list_list_id=#{watchListId}
+    </select>
+
+    <select id="getOne" resultMap="TitleResultMap">
+        <include refid="selectAll"/>
+        where list_list_id=#{watchListId}
+          and title_id=#{titleId}
+    </select>
+
+    <select id="getNextId" resultType="Long">
+        select max("title_id")+1 as res
+        from titles
+    </select>
+
+    <update id="update">
+        update titles
+        set name=#{name},
+            create_date_utc=#{createDateUTC},
+            status_status_id=#{statusId},
+            type_type_id=#{videoType}
+        where title_id=#{titleId}
+        and list_list_id=#{watchListId}
+    </update>
+
+    <insert id="addOne">
+        insert into titles(title_id, name, create_date_utc, list_list_id, status_status_id, type_type_id)
+        values(#{titleId},#{name},#{createDateUTC},#{watchListId},#{statusId},#{typeId})
+    </insert>
+
+    <delete id="delete">
+        delete from titles
+        where title_id=#{titleId}
+    </delete>
+</mapper>

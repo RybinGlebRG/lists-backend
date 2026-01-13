@@ -9,19 +9,17 @@ import ru.rerumu.lists.controller.backlog.view.in.BacklogItemEventCreateView;
 import ru.rerumu.lists.controller.backlog.view.in.BacklogItemUpdateView;
 import ru.rerumu.lists.crosscut.exception.ClientException;
 import ru.rerumu.lists.crosscut.utils.DateFactory;
+import ru.rerumu.lists.dao.backlog.BacklogItemRepository;
+import ru.rerumu.lists.dao.book.BookRepository;
 import ru.rerumu.lists.dao.readingrecord.ReadingRecordsRepository;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.backlog.BacklogItem;
 import ru.rerumu.lists.domain.backlog.BacklogItemEventType;
-import ru.rerumu.lists.domain.backlog.BacklogItemFactory;
 import ru.rerumu.lists.domain.book.Book;
-import ru.rerumu.lists.domain.book.BookFactory;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.bookstatus.StatusFactory;
-import ru.rerumu.lists.domain.bookstatus.Statuses;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
-import ru.rerumu.lists.domain.series.item.SeriesItemType;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
+import ru.rerumu.lists.domain.seriesitem.SeriesItemType;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
 import ru.rerumu.lists.services.backlog.BacklogService;
 
 import java.util.List;
@@ -30,34 +28,31 @@ import java.util.List;
 @Slf4j
 public class BacklogServiceImpl implements BacklogService {
 
-    private final BacklogItemFactory backlogItemFactory;
-    private final UserFactory userFactory;
-    private final BookFactory bookFactory;
     private final DateFactory dateFactory;
-    private final StatusFactory statusFactory;
     private final ReadingRecordsRepository readingRecordsRepository;
+    private final BookRepository bookRepository;
+    private final UsersRepository usersRepository;
+    private final BacklogItemRepository backlogItemRepository;
 
     @Autowired
     public BacklogServiceImpl(
-            BacklogItemFactory backlogItemFactory,
-            UserFactory userFactory,
-            BookFactory bookFactory,
             DateFactory dateFactory,
-            StatusFactory statusFactory,
-            ReadingRecordsRepository readingRecordsRepository
+            ReadingRecordsRepository readingRecordsRepository,
+            BookRepository bookRepository,
+            UsersRepository usersRepository,
+            BacklogItemRepository backlogItemRepository
     ) {
-        this.backlogItemFactory = backlogItemFactory;
-        this.userFactory = userFactory;
-        this.bookFactory = bookFactory;
         this.dateFactory = dateFactory;
-        this.statusFactory = statusFactory;
         this.readingRecordsRepository = readingRecordsRepository;
+        this.bookRepository = bookRepository;
+        this.usersRepository = usersRepository;
+        this.backlogItemRepository = backlogItemRepository;
     }
 
     @Override
     public BacklogItem addItemToBacklog(@NonNull Long userId, @NonNull BacklogItemCreateView backlogItemCreateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get type and check correctness
         SeriesItemType seriesItemType = SeriesItemType.findById(backlogItemCreateView.getType());
@@ -66,7 +61,7 @@ public class BacklogServiceImpl implements BacklogService {
         }
 
         // Create backlog item
-        BacklogItem backlogItem = backlogItemFactory.create(
+        BacklogItem backlogItem = backlogItemRepository.create(
                 backlogItemCreateView.getTitle(),
                 seriesItemType,
                 backlogItemCreateView.getNote(),
@@ -75,7 +70,7 @@ public class BacklogServiceImpl implements BacklogService {
         );
 
         // Save created backlog item
-        backlogItem.save();
+        backlogItemRepository.save(backlogItem);
 
         return backlogItem;
     }
@@ -83,22 +78,22 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public List<BacklogItem> getBacklog(@NonNull Long userId) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Load and return backlog items
-        return backlogItemFactory.loadByUser(user);
+        return backlogItemRepository.findByUser(user);
     }
 
     @Override
     public BacklogItem updateBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemUpdateView backlogItemUpdateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
-        BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
+        BacklogItem backlogItem = backlogItemRepository.findById(backlogItemId, user);
 
         // Update title
-        backlogItem.updateTitle(backlogItemUpdateView.getTitle());
+        backlogItem.setTitle(backlogItemUpdateView.getTitle());
 
         // Get type and check correctness
         SeriesItemType seriesItemType = SeriesItemType.findById(backlogItemUpdateView.getType());
@@ -107,16 +102,16 @@ public class BacklogServiceImpl implements BacklogService {
         }
 
         // Update type
-        backlogItem.updateType(seriesItemType);
+        backlogItem.setType(seriesItemType);
 
         // Update note
-        backlogItem.updateNote(backlogItemUpdateView.getNote());
+        backlogItem.setNote(backlogItemUpdateView.getNote());
 
         // Update creation date
-        backlogItem.updateCreationDate(backlogItemUpdateView.getCreationDate());
+        backlogItem.setCreationDate(backlogItemUpdateView.getCreationDate());
 
         // Save updated backlog item
-        backlogItem.save();
+        backlogItemRepository.save(backlogItem);
 
         return backlogItem;
     }
@@ -124,22 +119,22 @@ public class BacklogServiceImpl implements BacklogService {
     @Override
     public void deleteBacklogItem(@NonNull Long userId, @NonNull Long backlogItemId) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
-        BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
+        BacklogItem backlogItem = backlogItemRepository.findById(backlogItemId, user);
 
         // Delete backlog item
-        backlogItem.delete();
+        backlogItemRepository.delete(backlogItem);
     }
 
     @Override
     public void processEvent(@NonNull Long userId, @NonNull Long backlogItemId, @NonNull BacklogItemEventCreateView backlogItemEventCreateView) {
         // Get user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Get backlog item
-        BacklogItem backlogItem = backlogItemFactory.loadById(user, backlogItemId);
+        BacklogItem backlogItem = backlogItemRepository.findById(backlogItemId, user);
 
         // Get type and check correctness
         BacklogItemEventType backlogItemEventType = BacklogItemEventType.findById(backlogItemEventCreateView.getEventTypeId());
@@ -150,13 +145,13 @@ public class BacklogServiceImpl implements BacklogService {
         // If moving to lists
         if (backlogItemEventType.equals(BacklogItemEventType.MOVE_TO_LIST)) {
 
-            // If item is book
+            // If item is a book
             if (backlogItem.getType().equals(SeriesItemType.BOOK)) {
-                Book book = bookFactory.createBook(
+                Book book = bookRepository.create(
                         backlogItem.getTitle(),
                         null,
                         backlogItem.getNote(),
-                        statusFactory.findById(Statuses.IN_PROGRESS.getId()),
+                        ReadingRecordStatuses.IN_PROGRESS,
                         dateFactory.getLocalDateTime(),
                         null,
                         null,
@@ -164,7 +159,7 @@ public class BacklogServiceImpl implements BacklogService {
                 );
 
                 // Find status
-                BookStatusRecord bookStatusRecord = statusFactory.findById(Statuses.IN_PROGRESS.getId());
+                ReadingRecordStatuses bookStatusRecord = ReadingRecordStatuses.IN_PROGRESS;
 
                 // Create reading record
                 ReadingRecord readingRecord = readingRecordsRepository.create(
@@ -178,9 +173,9 @@ public class BacklogServiceImpl implements BacklogService {
                 // Add reading record to book
                 book.addReadingRecord(readingRecord);
 
-                book.save();
+                bookRepository.save(book);
 
-                backlogItem.delete();
+                backlogItemRepository.delete(backlogItem);
             }
         }
     }

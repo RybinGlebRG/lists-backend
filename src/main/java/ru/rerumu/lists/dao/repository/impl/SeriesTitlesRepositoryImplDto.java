@@ -1,7 +1,7 @@
 package ru.rerumu.lists.dao.repository.impl;
 
 import ru.rerumu.lists.dao.repository.SeriesTitlesRepository;
-import ru.rerumu.lists.dao.mappers.SeriesTitlesRelationDtoMapper;
+import ru.rerumu.lists.dao.series.mapper.SeriesTitlesRelationDtoMapper;
 
 public class SeriesTitlesRepositoryImplDto implements SeriesTitlesRepository {
 

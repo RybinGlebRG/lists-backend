@@ -7,7 +7,7 @@ public record SeriesBookRelation(
 ) implements SeriesItemRelation {
 
     @Override
-    public Long getBookId() {
+    public Long getItemId() {
         return bookId;
     }
 }

@@ -1,35 +1,51 @@
 package ru.rerumu.lists.services.series.impl;
 
-import ru.rerumu.lists.controller.series.view.in.SeriesUpdateView;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.request.RequestContextHolder;
+import ru.rerumu.lists.controller.series.views.BookSeriesAddView;
+import ru.rerumu.lists.controller.series.views.in.SeriesUpdateView;
 import ru.rerumu.lists.crosscut.exception.NotImplementedException;
 import ru.rerumu.lists.crosscut.exception.UserPermissionException;
+import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.series.Series;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.domain.user.UserFactory;
+import ru.rerumu.lists.services.AuthUserParser;
 import ru.rerumu.lists.services.series.SeriesService;
-import ru.rerumu.lists.services.user.UserService;
-import ru.rerumu.lists.views.BookSeriesAddView;
 
 import java.util.List;
 
+@Service("seriesServiceProtectionProxy")
+@Primary
+@RequestScope
+@Slf4j
 public class SeriesServiceProtectionProxy implements SeriesService {
+
     private final SeriesService seriesService;
-    private final UserService userService;
     private final User authUser;
-    private final UserFactory userFactory;
+    private final UsersRepository usersRepository;
 
-
-    public SeriesServiceProtectionProxy(SeriesService seriesService, UserService userService, User authUser, UserFactory userFactory) {
+    @Autowired
+    public SeriesServiceProtectionProxy(
+            @Qualifier("seriesServiceImpl") SeriesService seriesService,
+            UsersRepository usersRepository
+    ) {
         this.seriesService = seriesService;
-        this.userService = userService;
-        this.authUser = authUser;
-        this.userFactory = userFactory;
+        this.usersRepository = usersRepository;
+
+        Long authUserId = AuthUserParser.getAuthUser(RequestContextHolder.currentRequestAttributes());
+        authUser = usersRepository.findById(authUserId);
+        log.info(String.format("GOT USER %d", authUser.getId()));
     }
 
     @Override
     public List<Series> findAll(Long userId) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {
@@ -47,7 +63,7 @@ public class SeriesServiceProtectionProxy implements SeriesService {
     @Override
     public Series add(Long userId, BookSeriesAddView bookSeriesAddView) {
         // Get passed user
-        User user = userFactory.findById(userId);
+        User user = usersRepository.findById(userId);
 
         // Check if actual user has access
         if (!user.equals(authUser)) {

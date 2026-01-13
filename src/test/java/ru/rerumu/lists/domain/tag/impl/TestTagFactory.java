@@ -1,18 +1,14 @@
 package ru.rerumu.lists.domain.tag.impl;
 
-import ru.rerumu.lists.dao.tag.TagsRepository;
-
 public class TestTagFactory {
 
     public static TagImpl prepareTagImpl(
-            Long tagId,
-            TagsRepository tagsRepository
+            Long tagId
     ) {
         TagImpl tag = new TagImpl(
                 tagId,
                 "Test tag",
-                null,
-                tagsRepository
+                null
         );
 
         return tag;

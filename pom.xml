@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.70.1</version>
+	<version>0.71.0</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -23,7 +23,7 @@
 			<mybatis.version>3.5.19</mybatis.version>
 			<postgresql.version>42.7.5</postgresql.version>
 			<json.version>20231013</json.version>
-			<jjwt.version>0.12.5</jjwt.version>
+			<jjwt.version>0.13.0</jjwt.version>
 			<jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
 			<liquibase-core.version>4.31.1</liquibase-core.version>
 			<bcpkix-jdk15on.version>1.69</bcpkix-jdk15on.version>

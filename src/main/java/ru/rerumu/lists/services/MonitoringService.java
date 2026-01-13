@@ -2,8 +2,6 @@ package ru.rerumu.lists.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.rerumu.lists.domain.Metric;
-import ru.rerumu.lists.domain.MetricType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

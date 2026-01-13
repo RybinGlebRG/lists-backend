@@ -122,9 +122,6 @@ class ITBookAdd {
                     "insertDate": {
                       "type": "string"
                     },
-                    "lastUpdateDate": {
-                      "type": "string"
-                    },
                     "lastChapter": {
                       "type": "null"
                     },
@@ -235,7 +232,6 @@ class ITBookAdd {
                     "title",
                     "bookStatus",
                     "insertDate",
-                    "lastUpdateDate",
                     "lastChapter",
                     "note",
                     "bookType",

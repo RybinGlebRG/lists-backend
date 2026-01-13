@@ -22,7 +22,7 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
 
     @Override
     public Optional<T> findById(ID id, User user) {
-        return Optional.ofNullable(mapper.findById(id, user.userId()));
+        return Optional.ofNullable(mapper.findById(id, user.getId()));
     }
 
 
@@ -63,6 +63,6 @@ public class CrudRepositoryEntityImpl<T,ID> implements CrudRepository<T,ID> {
 
     @Override
     public void delete(ID id, User user) {
-        mapper.delete(id, user.userId());
+        mapper.delete(id, user.getId());
     }
 }

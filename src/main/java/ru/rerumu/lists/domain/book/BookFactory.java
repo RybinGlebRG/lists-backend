@@ -1,10 +1,11 @@
 package ru.rerumu.lists.domain.book;
 
 import lombok.NonNull;
-import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
-import ru.rerumu.lists.dao.book.BookMyBatisEntity;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
+import ru.rerumu.lists.domain.author.Author;
 import ru.rerumu.lists.domain.booktype.BookType;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.series.Series;
+import ru.rerumu.lists.domain.tag.Tag;
 import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
@@ -12,24 +13,19 @@ import java.util.List;
 
 public interface BookFactory {
 
-    Book getBook(Long bookId, Long userId);
-    List<Book> findAll(User user, Boolean isChained);
-    Book fromDTO(@NonNull BookDTO bookDTO);
-    Book fromDTO(@NonNull BookMyBatisEntity bookDTO);
-
-    @Deprecated
-    List<Book> fromDTOOld(@NonNull List<BookDTO> bookDTOList);
-
-    List<Book> fromDTO(@NonNull List<BookMyBatisEntity> bookDTOList);
-
-    Book createBook(
-            String title,
-            Integer lastChapter,
-            String note,
-            BookStatusRecord bookStatus,
+    @NonNull
+    Book build(
+            @NonNull Long bookId,
+            @NonNull String title,
             LocalDateTime insertDate,
             BookType bookType,
+            BookChain previousBooks,
+            String note,
+            List<ReadingRecord> readingRecords,
             String URL,
-            User user
-    ) throws EmptyMandatoryParameterException;
+            @NonNull User user,
+            List<Tag> tags,
+            List<Author> textAuthors,
+            List<Series> seriesList
+    );
 }

@@ -1,8 +1,8 @@
 package ru.rerumu.lists.dao.readingrecord;
 
 import lombok.NonNull;
-import ru.rerumu.lists.domain.bookstatus.BookStatusRecord;
-import ru.rerumu.lists.domain.readingrecords.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
+import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +26,7 @@ public interface ReadingRecordsRepository {
 
     ReadingRecord create(
             @NonNull Long bookId,
-            @NonNull BookStatusRecord bookStatusRecord,
+            @NonNull ReadingRecordStatuses bookStatusRecord,
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long lastChapter
@@ -48,4 +48,6 @@ public interface ReadingRecordsRepository {
      * Wraps instance of ReadingRecord in persistence proxy
      */
     ReadingRecord attach(ReadingRecord readingRecord);
+
+    ReadingRecord attach(ReadingRecordMyBatisEntity readingRecordMyBatisEntity);
 }
