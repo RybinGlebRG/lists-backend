@@ -16,5 +16,6 @@ public class UserDtoDao {
     private Long userId;
     private String name;
     private String password;
+    private String refreshTokenId;
 
 }

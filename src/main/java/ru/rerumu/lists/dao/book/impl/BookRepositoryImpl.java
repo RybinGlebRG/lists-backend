@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -173,7 +172,7 @@ public class BookRepositoryImpl implements BookRepository {
     public Book findById(Long id, Long userId) {
         BookMyBatisEntity book = bookMapper.findById(id, userId);
         if (book == null) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("EntityNotFoundException.entity_does_not_exists", id, userId);
         }
 
         List<Long> seriesIds= bookMapper.findSeriesIds(book.getBookId());
@@ -277,11 +276,6 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public void delete(Long bookId, User user) {
         bookMapper.delete(bookId, user.getId());
-    }
-
-    @Override
-    public Optional<User> getBookUser(Long bookId) {
-        return Optional.ofNullable(bookMapper.getBookUser(bookId));
     }
 
     @Override

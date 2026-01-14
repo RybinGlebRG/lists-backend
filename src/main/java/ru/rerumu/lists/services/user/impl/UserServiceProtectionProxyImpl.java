@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.request.RequestContextHolder;
+import ru.rerumu.lists.controller.users.views.in.RefreshTokenView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
@@ -15,6 +16,7 @@ import ru.rerumu.lists.crosscut.exception.UserPermissionException;
 import ru.rerumu.lists.controller.users.TokenRequest;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.AuthUserParser;
+import ru.rerumu.lists.services.user.TokenPair;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.security.NoSuchAlgorithmException;
@@ -53,7 +55,7 @@ public class UserServiceProtectionProxyImpl implements UserService {
     }
 
     @Override
-    public String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException {
+    public TokenPair createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException {
         return userService.createToken(tokenRequest);
     }
 
@@ -65,5 +67,10 @@ public class UserServiceProtectionProxyImpl implements UserService {
     @Override
     public @NonNull User create(Long id, @NonNull String name, char @NonNull [] plainPassword) {
         return userService.create(id, name, plainPassword);
+    }
+
+    @Override
+    public @NonNull TokenPair refreshToken(@NonNull RefreshTokenView refreshTokenView) {
+        return userService.refreshToken(refreshTokenView);
     }
 }

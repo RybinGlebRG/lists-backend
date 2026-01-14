@@ -74,14 +74,6 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="UserResultMap" type="ru.rerumu.lists.domain.user.impl.UserImpl">
-        <constructor>
-            <idArg column="user_id" name="userId" javaType="Long"/>
-            <arg column="name" name="name" javaType="String"/>
-            <arg column="password" name="password" javaType="String"/>
-        </constructor>
-    </resultMap>
-
     <resultMap id="UserDtoResultMap" type="ru.rerumu.lists.dao.user.UserDtoDao">
         <id property="userId" column="user_id"/>
         <result property="name" column="user_name"/>
@@ -290,20 +282,6 @@
             book_id = #{id}
             and user_user_id = #{userId}
     </delete>
-
-    <select id="getBookUser" resultMap="UserResultMap">
-        select
-            user_id,
-            name,
-            password
-        from books b
-            inner join lists l
-                on l.list_id = b.list_list_id
-            inner join users u
-                on u.user_id = l.USER_USER_ID
-        where
-            b.book_id=#{bookId}
-    </select>
 
     <select id="findSeriesIds" resultType="Long">
         select

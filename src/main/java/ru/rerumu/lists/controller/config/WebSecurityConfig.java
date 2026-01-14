@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig  {
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/users/tokens",
+            "/api/v1/users/refreshtoken"
     };
 
     @Autowired
@@ -34,6 +35,7 @@ public class WebSecurityConfig  {
                         authorizationManagerRequestMatcherRegistry
                             .requestMatchers(HttpMethod.OPTIONS).permitAll()
                             .requestMatchers(AUTH_WHITELIST[0]).permitAll()
+                            .requestMatchers(AUTH_WHITELIST[1]).permitAll()
                             .anyRequest().authenticated()
                 );
 

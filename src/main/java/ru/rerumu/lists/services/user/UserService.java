@@ -1,6 +1,7 @@
 package ru.rerumu.lists.services.user;
 
 import lombok.NonNull;
+import ru.rerumu.lists.controller.users.views.in.RefreshTokenView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.crosscut.exception.IncorrectPasswordException;
 import ru.rerumu.lists.crosscut.exception.UserIsNotOwnerException;
@@ -16,8 +17,7 @@ public interface UserService {
     @Deprecated
     void checkOwnershipAuthor(String username, Long authorId)throws UserIsNotOwnerException;
 
-    @Deprecated
-    String createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException;
+    TokenPair createToken(TokenRequest tokenRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, IncorrectPasswordException;
 
     @NonNull
     User findByToken(@NonNull String token);
@@ -30,4 +30,7 @@ public interface UserService {
             @NonNull String name,
             char @NonNull [] plainPassword
     );
+
+    @NonNull
+    TokenPair refreshToken(@NonNull RefreshTokenView refreshTokenView);
 }

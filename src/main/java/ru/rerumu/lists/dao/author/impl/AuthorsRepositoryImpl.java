@@ -80,7 +80,8 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
         UserDtoDao userDtoDao = new UserDtoDao(
                 user.getId(),
                 user.getName(),
-                user.getPassword()
+                user.getPassword(),
+                user.getRefreshTokenId()
         );
         AuthorDtoDao authorDtoDao = new AuthorDtoDao(
                 newAuthor.getId(),

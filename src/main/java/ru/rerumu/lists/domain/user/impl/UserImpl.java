@@ -1,6 +1,7 @@
 package ru.rerumu.lists.domain.user.impl;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.rerumu.lists.crosscut.exception.AppException;
@@ -30,11 +31,16 @@ public class UserImpl implements User {
     @Getter
     private final String password;
 
+    @Getter
+    @Setter
+    private String refreshTokenId;
 
-    public UserImpl(Long userId, String name, String password) {
+
+    public UserImpl(Long userId, String name, String password, String refreshTokenId) {
         this.userId = userId;
         this.name = name;
         this.password = password;
+        this.refreshTokenId = refreshTokenId;
     }
 
     @Override

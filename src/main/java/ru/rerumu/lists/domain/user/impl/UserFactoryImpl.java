@@ -54,7 +54,8 @@ public class UserFactoryImpl implements UserFactory {
         return new UserImpl(
                 userId,
                 name,
-                hashedPassword
+                hashedPassword,
+                null
         );
     }
 }

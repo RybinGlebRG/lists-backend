@@ -9,6 +9,7 @@
             <idArg column="user_id" name="userId" javaType="Long"/>
             <arg column="name" name="name" javaType="String"/>
             <arg column="password" name="password" javaType="String"/>
+            <arg column="refresh_token_id" name="refreshTokenId"/>
         </constructor>
     </resultMap>
 
@@ -16,7 +17,8 @@
     <select id="getOne" resultMap="UserResultMap">
         select user_id as user_id,
                 name,
-                password
+                password,
+                refresh_token_id
         from users
         where name=#{name}
     </select>
@@ -25,7 +27,8 @@
         select
             user_id as user_id,
             name,
-            password
+            password,
+            refresh_token_id
         from
             users
         where
@@ -36,7 +39,8 @@
         select
             user_id as user_id,
             name,
-            password
+            password,
+            refresh_token_id
         from
             users
         <where>
@@ -50,7 +54,8 @@
         select
             user_id as user_id,
             name,
-            password
+            password,
+            refresh_token_id
         from
             users
     </select>
@@ -98,8 +103,17 @@
     </select>
 
     <insert id="create" parameterType="ru.rerumu.lists.domain.user.User">
-        insert into users(user_id, name, password)
-        values(#{userId},#{name},#{password})
+        insert into users(user_id, name, password, refresh_token_id)
+        values(#{userId},#{name},#{password}, #{refreshTokenId})
     </insert>
+
+    <update id="save">
+        update
+            users
+        set
+            refresh_token_id = #{refreshTokenId}
+        where
+            user_id = #{userId}
+    </update>
 
 </mapper>
