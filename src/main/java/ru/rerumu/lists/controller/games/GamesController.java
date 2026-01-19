@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,6 @@ import ru.rerumu.lists.controller.games.views.GameAddView;
 import ru.rerumu.lists.controller.games.views.GameListView;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.game.Game;
-import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 
 import java.util.List;
@@ -42,14 +42,13 @@ public class GamesController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/api/v1/users/{userId}/games/search",
+    @GetMapping(value = "/api/v1/users/{userId}/games",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<String> searchBooks(
-            @PathVariable Long userId,
-            @RequestBody Search search
+    ResponseEntity<String> getAll(
+            @PathVariable Long userId
     ) throws EntityNotFoundException {
-        List<Game> gamesList = gameService.getAll(userId, search);
+        List<Game> gamesList = gameService.getAll(userId);
         GameListView gameListView = new GameListView.Builder()
                 .gamesList(gamesList)
                 .build();

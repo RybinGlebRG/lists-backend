@@ -8,7 +8,6 @@ import ru.rerumu.lists.dao.game.GamesRepository;
 import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
-import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Game> getAll(Long userId, Search search){
+    public List<Game> getAll(Long userId){
         User user = usersRepository.findById(userId);
         return gamesRepository.findByUser(user);
     }
