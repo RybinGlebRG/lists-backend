@@ -1,3 +1,18 @@
+# v0.72.0
+
+## Features
+
+- Refresh tokens
+
+## Bugfixes
+
+- N/A
+
+## Other
+
+- Refactoring
+
+============================================
 # v0.71.0
 
 ## Features

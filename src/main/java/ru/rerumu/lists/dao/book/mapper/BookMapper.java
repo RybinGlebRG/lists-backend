@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import ru.rerumu.lists.dao.base.CrudMapper;
 import ru.rerumu.lists.dao.book.BookMyBatisEntity;
 import ru.rerumu.lists.domain.author.Author;
-import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,8 +39,6 @@ public interface BookMapper extends CrudMapper<BookMyBatisEntity, Long, BookMyBa
                 String URL,
                 Long userId
     );
-
-    User getBookUser(Long bookId);
 
     List<Author> getAuthors(Long bookId, Long roleId);
 

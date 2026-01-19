@@ -13,7 +13,6 @@ import ru.rerumu.lists.dao.user.UsersRepository;
 import ru.rerumu.lists.domain.game.Game;
 import ru.rerumu.lists.domain.user.User;
 import ru.rerumu.lists.services.AuthUserParser;
-import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.game.GameService;
 import ru.rerumu.lists.services.user.UserService;
 
@@ -41,12 +40,12 @@ public class GameServiceProtectionProxy implements GameService {
     }
 
     @Override
-    public List<Game> getAll(Long userId, Search search) {
+    public List<Game> getAll(Long userId) {
         User user = usersRepository.findById(userId);
         if (!user.equals(authUser)){
             throw new UserPermissionException("UserPermissionException.user_is_not_owner");
         }
-        return gameService.getAll(userId, search);
+        return gameService.getAll(userId);
     }
 
     @Override

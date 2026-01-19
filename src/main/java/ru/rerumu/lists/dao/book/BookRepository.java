@@ -8,7 +8,6 @@ import ru.rerumu.lists.domain.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookRepository {
 
@@ -28,8 +27,6 @@ public interface BookRepository {
     void addOne(Book book);
 
     void delete(Long bookId, User user);
-
-    Optional<User> getBookUser(Long bookId);
 
     void save(Book book);
 

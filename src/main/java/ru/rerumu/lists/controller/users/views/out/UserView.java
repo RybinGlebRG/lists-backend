@@ -12,11 +12,18 @@ public class UserView {
 
     private final Long id;
     private final String name;
-    private final String token;
+    private final String accessToken;
+    private final String refreshToken;
 
-    public UserView(@NonNull Long id, @NonNull String name, @NonNull String token) {
+    public UserView(
+            @NonNull Long id,
+            @NonNull String name,
+            @NonNull String accessToken,
+            @NonNull String refreshToken
+    ) {
         this.id = id;
         this.name = name;
-        this.token = token;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

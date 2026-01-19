@@ -5,5 +5,9 @@ public interface User {
     String getName();
     Long getId();
 
+    String getRefreshTokenId();
+
+    void setRefreshTokenId(String refreshTokenId);
+
     boolean isValidPassword(char[] password);
 }
