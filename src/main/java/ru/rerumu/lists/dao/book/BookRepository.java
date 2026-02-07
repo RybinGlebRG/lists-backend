@@ -49,7 +49,4 @@ public interface BookRepository {
             String URL,
             User user
     );
-
-    @NonNull
-    Book attach(@NonNull BookMyBatisEntity bookMyBatisEntity);
 }

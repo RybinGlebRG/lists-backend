@@ -8,6 +8,7 @@ import ru.rerumu.lists.domain.readingrecord.ReadingRecord;
 import ru.rerumu.lists.domain.readingrecordstatus.ReadingRecordStatuses;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecord> implements ReadingRecord {
 
@@ -95,5 +96,16 @@ public class ReadingRecordPersistenceProxy extends PersistenceProxy<ReadingRecor
     @Override
     public ReadingRecord deepCopy() {
         return readingRecord.deepCopy();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ReadingRecordPersistenceProxy that)) return false;
+        return Objects.equals(readingRecord, that.readingRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(readingRecord);
     }
 }

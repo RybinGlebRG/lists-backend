@@ -1,5 +1,6 @@
 package ru.rerumu.lists.integration.book;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import ru.rerumu.lists.integration.TestCommon;
+
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -77,10 +80,10 @@ public class ITBooksGetAll {
         log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");
-        TestCommon.addBook("TestBook 1", null);
-        TestCommon.addBook("TestBook 2", 1L);
-        TestCommon.addBook("TestBook 3", 1L);
-        TestCommon.addBook("TestBook 4", null);
+        TestCommon.addBook("TestBook 1", null, null);
+        TestCommon.addBook("TestBook 2", 1L, null);
+        TestCommon.addBook("TestBook 3", 1L, null);
+        TestCommon.addBook("TestBook 4", null, null);
 
         String responseBody = RestAssuredMockMvc
                 .given()
@@ -245,5 +248,46 @@ public class ITBooksGetAll {
                 responseBody,
                 false
         );
+    }
+
+    /**
+     * Only one book in series
+     */
+    @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    public void shouldGetSingleInSeries() throws Exception {
+
+        TestCommon.addSeries("TestSeries 1");
+        TestCommon.addBook("TestBook 1", 1L, null);
+
+        RestAssuredMockMvc
+                .given()
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
+                    .body("""
+                            {
+                                "sort": [
+                                    {
+                                        "field": "createDate",
+                                        "ordering": "DESC"
+                                    }
+                                ],
+                                "isChainBySeries": true,
+                                "filters": [
+                                    {
+                                        "field": "bookStatusIds",
+                                        "values": ["1", "2", "3", "4"]
+                                    }
+                                ]
+                            }
+                            """
+                    )
+                    .log().all()
+                .when()
+                    .post("/api/v1/users/{userId}/books/search", "0")
+                .then()
+                    .log().all()
+                    .statusCode(200)
+                    .body("items", hasSize(1));
     }
 }

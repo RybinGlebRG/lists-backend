@@ -1,3 +1,19 @@
+# v0.72.1
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Fixed disappearing series
+- Fixed missing books when only one book in series
+
+## Other
+
+- N/A
+
+============================================
 # v0.72.0
 
 ## Features

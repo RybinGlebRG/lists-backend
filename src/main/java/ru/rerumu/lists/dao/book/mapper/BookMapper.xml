@@ -161,7 +161,6 @@
             select
                 s_books.book_id as join_id,
                 s_books2.*,
-                max(sb.series_order) over (partition by sb.series_series_id) as mtop,
                 sb2.series_order
             from s_books
                 inner join series_books sb
@@ -169,11 +168,11 @@
                 inner join s_top
                             on s_top.series_series_id = sb.series_series_id
                             and s_top.top_order = sb.series_order
-                inner join series_books sb2
+                left outer join series_books sb2
                             on sb2.series_series_id = sb.series_series_id
-                inner join s_books s_books2
+                            and sb2.book_book_id != sb.book_book_id
+                left outer join s_books s_books2
                             on s_books2.book_id = sb2.book_book_id
-                            and s_books2.book_Id != s_books.book_id
              order by s_books.book_id,  sb2.series_order desc
 
         ), s_wo_chain as

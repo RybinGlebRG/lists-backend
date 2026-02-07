@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ru.rerumu</groupId>
 	<artifactId>lists-backend</artifactId>
-	<version>0.72.0</version>
+	<version>0.72.1</version>
 	<name>lists-backend</name>
 	<description>lists-backend</description>
 	<properties>
@@ -263,6 +263,14 @@
 							<outputDirectory>${project.build.directory}/unwoven-classes</outputDirectory>
 						</configuration>
 					</execution>
+
+                    <execution>
+                        <id>default-testCompile</id>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/unwoven-test-classes</outputDirectory>
+                        </configuration>
+                    </execution>
+
 				</executions>
 			</plugin>
 
@@ -282,6 +290,7 @@
 					<showWeaveInfo>false</showWeaveInfo>
 
 					<sources/>
+                    <testSources/>
 					<forceAjcCompile>true</forceAjcCompile>
 
 					<aspectLibraries>
@@ -299,6 +308,7 @@
 
 					<execution>
 						<!-- Compile and weave aspects after all classes compiled by javac -->
+                        <id>default</id>
 						<phase>process-classes</phase>
 						<goals>
 							<goal>compile</goal>
@@ -309,6 +319,20 @@
 							</weaveDirectories>
 						</configuration>
 					</execution>
+
+                    <execution>
+                        <!-- Compile and weave aspects after all classes compiled by javac -->
+                        <id>default-test-compile</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <weaveDirectories>
+                                <weaveDirectory>${project.build.directory}/unwoven-test-classes</weaveDirectory>
+                            </weaveDirectories>
+                        </configuration>
+                    </execution>
 
 				</executions>
 			</plugin>

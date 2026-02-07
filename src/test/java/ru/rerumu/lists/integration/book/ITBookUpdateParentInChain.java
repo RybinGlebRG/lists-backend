@@ -77,7 +77,7 @@ class ITBookUpdateParentInChain {
 
         TestCommon.addSeries("TestSeries");
         TestCommon.addSeries("TestSeries 2");
-        TestCommon.addBook("TestBook 1", 1L);
+        TestCommon.addBook("TestBook 1", 1L, null);
 
 
         String searchResponseBody = RestAssuredMockMvc

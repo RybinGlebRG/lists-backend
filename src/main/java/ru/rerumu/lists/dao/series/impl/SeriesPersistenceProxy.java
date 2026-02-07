@@ -1,5 +1,6 @@
 package ru.rerumu.lists.dao.series.impl;
 
+import lombok.ToString;
 import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.series.Series;
@@ -8,7 +9,9 @@ import ru.rerumu.lists.domain.seriesitem.SeriesItem;
 import ru.rerumu.lists.domain.user.User;
 
 import java.util.List;
+import java.util.Objects;
 
+@ToString(callSuper = true, doNotUseGetters = true)
 public class SeriesPersistenceProxy extends PersistenceProxy<Series> implements Series {
 
     private final Series series;
@@ -88,5 +91,16 @@ public class SeriesPersistenceProxy extends PersistenceProxy<Series> implements 
     @Override
     public Series deepCopy() {
         return new SeriesPersistenceProxy(series.deepCopy(), entityState);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SeriesPersistenceProxy that)) return false;
+        return Objects.equals(series, that.series);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(series);
     }
 }

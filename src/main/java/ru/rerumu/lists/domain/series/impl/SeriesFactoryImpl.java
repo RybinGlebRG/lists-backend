@@ -17,7 +17,7 @@ public class SeriesFactoryImpl implements SeriesFactory {
 
     @Override
     @NonNull
-    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public Series buildSeries(
             @NonNull Long id,
             @NonNull String title,
@@ -35,7 +35,7 @@ public class SeriesFactoryImpl implements SeriesFactory {
 
     @Override
     @NonNull
-    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public Series buildSeries(
             @NonNull Long id,
             @NonNull String title,

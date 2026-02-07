@@ -1,6 +1,7 @@
 package ru.rerumu.lists.dao.book.impl;
 
 import lombok.NonNull;
+import lombok.ToString;
 import ru.rerumu.lists.dao.base.EntityState;
 import ru.rerumu.lists.dao.base.PersistenceProxy;
 import ru.rerumu.lists.domain.author.Author;
@@ -16,9 +17,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@ToString(callSuper = true, doNotUseGetters = true)
 public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book {
 
     private final Book book;
@@ -245,5 +248,16 @@ public class BookPersistenceProxy extends PersistenceProxy<Book> implements Book
         seriesSet.addAll(getPersistedCopy().getSeriesList());
 
         return seriesSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BookPersistenceProxy that)) return false;
+        return Objects.equals(book, that.book);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(book);
     }
 }
