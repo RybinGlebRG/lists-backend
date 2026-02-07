@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-@ToString
+@ToString(doNotUseGetters = true)
 @Slf4j
 public class BookImpl implements Book{
 
@@ -320,5 +321,16 @@ public class BookImpl implements Book{
                 readingRecordFactory,
                 seriesFactory
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BookImpl book)) return false;
+        return Objects.equals(bookId, book.bookId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(bookId);
     }
 }

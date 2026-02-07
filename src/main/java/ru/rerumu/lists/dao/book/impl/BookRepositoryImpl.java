@@ -106,7 +106,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     /**
-     * Find books by user and chain then by series. Last book in series is the head of a chain.
+     * Find books by user and chain them by series. Last book in series is the head of a chain.
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)
@@ -403,8 +403,8 @@ public class BookRepositoryImpl implements BookRepository {
         return bookPersistenceProxy;
     }
 
-    @Override
-    public @NonNull Book attach(@NonNull BookMyBatisEntity bookMyBatisEntity) {
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
+    private @NonNull Book attach(@NonNull BookMyBatisEntity bookMyBatisEntity) {
 
         // Get authors
         List<Author> authors;

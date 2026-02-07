@@ -79,7 +79,7 @@ class ITBookUpdateRemoveSeries {
 
         TestCommon.addSeries("TestSeries");
         TestCommon.addSeries("TestSeries 2");
-        TestCommon.addBook("TestBook", null);
+        TestCommon.addBook("TestBook", null, null);
 
         /*
         Add series

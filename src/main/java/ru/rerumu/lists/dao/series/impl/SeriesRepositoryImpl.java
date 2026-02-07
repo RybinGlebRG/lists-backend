@@ -72,6 +72,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
 
     @Override
     @NonNull
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public Series findById(@NonNull Long seriesId, @NonNull User user) {
         SeriesMyBatisEntity seriesMyBatisEntity = seriesMapper.findById(seriesId, user.getId());
         if (seriesMyBatisEntity == null) {
@@ -162,6 +163,7 @@ public class SeriesRepositoryImpl implements SeriesRepository{
     }
 
     @Override
+    @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
     public void save(@NonNull Series series) {
 
         SeriesPersistenceProxy seriesPersistenceProxy = (SeriesPersistenceProxy) series;

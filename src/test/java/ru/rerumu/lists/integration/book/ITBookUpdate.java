@@ -74,7 +74,7 @@ class ITBookUpdate {
 
         TestCommon.addSeries("TestSeries");
         TestCommon.addSeries("TestSeries 2");
-        TestCommon.addBook("TestBook", null);
+        TestCommon.addBook("TestBook", null, null);
 
         String requestBody = """
                 {
