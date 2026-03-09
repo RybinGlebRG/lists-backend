@@ -1,3 +1,18 @@
+# v0.72.2
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Fixed books order
+
+## Other
+
+- N/A
+
+============================================
 # v0.72.1
 
 ## Features

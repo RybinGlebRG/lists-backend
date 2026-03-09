@@ -107,6 +107,8 @@ public class BookRepositoryImpl implements BookRepository {
 
     /**
      * Find books by user and chain them by series. Last book in series is the head of a chain.
+     *
+     * TODO: Chain without SQL
      */
     @Override
     @Loggable(value = Loggable.DEBUG, trim = false, prepend = true)

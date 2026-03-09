@@ -25,7 +25,7 @@ public interface BookService {
     /**
      * Get all books of user
      */
-    List<Book> getAllBooks(Search search, Long userId);
+    List<Book> getAllBooks(Search search, @NonNull Long userId);
 
     /**
      * Update book of user

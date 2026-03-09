@@ -207,15 +207,17 @@ public class BookServiceImpl implements BookService {
      * Get all book
      */
     @Override
-    public List<Book> getAllBooks(Search search, Long userId) {
-        List<Book> bookList;
-
+    public List<Book> getAllBooks(Search search, @NonNull Long userId) {
         User user = usersRepository.findById(userId);
-        if (search.getChainBySeries()) {
-            bookList = bookRepository.findByUserChained(user);
-        } else {
-            bookList = bookRepository.findByUser(user);
-        }
+
+//        List<Book> bookList;
+//        if (search.getChainBySeries()) {
+//            bookList = bookRepository.findByUserChained(user);
+//        } else {
+//            bookList = bookRepository.findByUser(user);
+//        }
+
+        List<Book> bookList = bookRepository.findByUser(user);
 
         Stream<Book> bookStream = bookList.stream();
         for (Filter filter : search.filters()) {

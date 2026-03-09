@@ -78,7 +78,7 @@ public class BookServiceProtectionProxy implements BookService {
     }
 
     @Override
-    public List<Book> getAllBooks(Search search, Long userId) {
+    public List<Book> getAllBooks(Search search, @NonNull Long userId) {
         // Get passed user
         User user = usersRepository.findById(userId);
 
