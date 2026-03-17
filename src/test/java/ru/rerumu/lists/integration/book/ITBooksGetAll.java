@@ -87,32 +87,32 @@ public class ITBooksGetAll {
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .body("""
-                        {
-                            "sort": [
-                                {
-                                    "field": "createDate",
-                                    "ordering": "DESC"
-                                }
-                            ],
-                            "isChainBySeries": true,
-                            "filters": [
-                                {
-                                    "field": "bookStatusIds",
-                                    "values": ["1", "2", "3", "4"]
-                                }
-                            ]
-                        }
-                        """)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
+                    .body("""
+                            {
+                                "sort": [
+                                    {
+                                        "field": "createDate",
+                                        "ordering": "DESC"
+                                    }
+                                ],
+                                "isChainBySeries": true,
+                                "filters": [
+                                    {
+                                        "field": "bookStatusIds",
+                                        "values": ["1", "2", "3", "4"]
+                                    }
+                                ]
+                            }
+                            """)
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
                 .when()
-                .post("/api/v1/users/0/books/search")
+                    .post("/api/v1/users/0/books/search")
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                    .extract()
+                    .body()
+                    .asString();
         log.info("responseBody: {}", responseBody);
 
         String expectedResponseBodyWithoutDates = """
@@ -185,7 +185,12 @@ public class ITBooksGetAll {
                                     ],
                                     "tags": [],
                                     "textAuthors": [],
-                                    "seriesList": [],
+                                    "seriesList": [
+                                        {
+                                            "seriesId": 1,
+                                            "title": "TestSeries 1"
+                                        }
+                                    ],
                                     "url": null
                                 }
                             ],

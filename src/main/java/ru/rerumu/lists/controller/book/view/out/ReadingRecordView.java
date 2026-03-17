@@ -32,6 +32,7 @@ public class ReadingRecordView implements DeepCopyable<ReadingRecordView> {
 
     private final Long lastChapter;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime updateDate;
 
     public ReadingRecordView(

@@ -184,8 +184,9 @@ public class BookViewFactory {
             if (sortItem.getSortField().equals("readingRecords.updateDate") ) {
 
                 comparator = comparator.thenComparing( book -> {
+
+                    // Get most recent record
                     ReadingRecord readingRecord = book.getReadingRecords().stream()
-                            // Get most recent record
                             .max(Comparator.comparing(ReadingRecord::getStartDate))
                             .orElseThrow(() -> new ServerException("Error while processing records"));
 
@@ -204,7 +205,12 @@ public class BookViewFactory {
         // Chain books by series
         if (search.isChainBySeries()) {
             Map<Book, List<Book>> booksChain = chainBooksBySeries(books);
+
+            Comparator<Book> finalComparator = comparator;
+            Comparator<Map.Entry<Book, List<Book>>> mapEntryComparator = (e1, e2) -> finalComparator.compare(e1.getKey(), e2.getKey());
+
             List<BookView> bookViewList = booksChain.entrySet().stream()
+                    .sorted(mapEntryComparator)
                     .map(item -> buildBookView(item.getKey(), item.getValue()))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new BookListView(bookViewList);
@@ -260,6 +266,13 @@ public class BookViewFactory {
             return readingRecord.getUpdateDate();
         }).reversed();
 
+        List<Book> booksWithoutSeries = new ArrayList<>();
+
+        if (series2booksMap.get(null) != null) {
+            booksWithoutSeries.addAll(series2booksMap.get(null));
+            series2booksMap.remove(null);
+        }
+
         series2booksMap.forEach((series, booksList) -> booksList.sort(booksComparator));
 
         Map<Book, List<Book>> bookChain = new HashMap<>();
@@ -270,6 +283,10 @@ public class BookViewFactory {
             previousBooks.remove(lastBookInSeries);
 
             bookChain.put(lastBookInSeries, previousBooks);
+        }
+
+        for (Book book: booksWithoutSeries) {
+            bookChain.put(book, new ArrayList<>());
         }
 
         return bookChain;
