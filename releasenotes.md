@@ -1,3 +1,18 @@
+# v0.72.3
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Fixed incorrect grouping
+
+## Other
+
+- N/A
+
+============================================
 # v0.72.2
 
 ## Features
