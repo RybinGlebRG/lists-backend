@@ -27,7 +27,10 @@ public interface Book extends SeriesItem, Entity, DeepCopyable<Book> {
 
     User getUser();
     List<ReadingRecord> getReadingRecords();
+
+    @NonNull
     List<Series> getSeriesList();
+
     BookChain getPreviousBooks();
     BookType getBookType();
     List<Tag> getTags();

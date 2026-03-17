@@ -18,6 +18,9 @@
   To completely disable a check, just comment it out or delete it from the file.
   To suppress certain violations please review suppression filters.
   Finally, it is worth reading the documentation.
+
+  TODO:
+    - Repositories should not import other repositories???
 -->
 
 <module name="Checker">
@@ -126,7 +129,7 @@
 
         <!-- Layers Control -->
         <module name="ImportControl">
-            <property name="file" value="checkstyle/layout-control.xml"/>
+            <property name="file" value="checkstyle/layers-control.xml"/>
             <property name="path" value="^.*[\\/]src[\\/]main[\\/].*$"/>
         </module>
 
