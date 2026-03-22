@@ -3,7 +3,6 @@ package ru.rerumu.lists.integration.book;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,24 +12,20 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
+import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
 
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @Slf4j
-class ITBookUpdateRemoveSeries {
-
-    private static PostgreSQLContainer<?> postgres;
+class ITBookUpdateRemoveSeries extends ITBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -51,11 +46,6 @@ class ITBookUpdateRemoveSeries {
 
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
@@ -63,13 +53,7 @@ class ITBookUpdateRemoveSeries {
         log.info("beforeEach");
 
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     @Test

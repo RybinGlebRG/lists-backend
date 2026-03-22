@@ -5,7 +5,11 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @deprecated Common methods should be placed in {@link ITBase}
+ */
 @Slf4j
+@Deprecated
 public class TestCommon {
 
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)

@@ -3,7 +3,6 @@ package ru.rerumu.lists.integration.book;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,22 +12,21 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
+import ru.rerumu.lists.controller.series.views.out.SeriesView;
+import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
+
+import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @Slf4j
-class ITBookUpdateParentInChain {
-
-    private static PostgreSQLContainer<?> postgres;
+class ITBookUpdateParentInChain extends ITBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -49,11 +47,6 @@ class ITBookUpdateParentInChain {
 
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
@@ -61,13 +54,7 @@ class ITBookUpdateParentInChain {
         log.info("beforeEach");
 
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     @Test
@@ -76,46 +63,48 @@ class ITBookUpdateParentInChain {
 
 
         TestCommon.addSeries("TestSeries");
+        SeriesView seriesView = getSeriesByTitle("TestSeries");
+        Objects.requireNonNull(seriesView);
+
         TestCommon.addSeries("TestSeries 2");
         TestCommon.addBook("TestBook 1", 1L, null);
 
 
         String searchResponseBody = RestAssuredMockMvc
                 .given()
-                .body("""
-                        {
-                            "sort": [
-                                {
-                                    "field": "createDate",
-                                    "ordering": "DESC"
-                                }
-                            ],
-                            "isChainBySeries": true,
-                            "filters": [
-                                {
-                                    "field": "bookStatusIds",
-                                    "values": ["1", "2", "3", "4"]
-                                }
-                            ]
-                        }
-                        """)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
+                    .body("""
+                            {
+                                "sort": [
+                                    {
+                                        "field": "createDate",
+                                        "ordering": "DESC"
+                                    }
+                                ],
+                                "isChainBySeries": true,
+                                "filters": [
+                                    {
+                                        "field": "bookStatusIds",
+                                        "values": ["1", "2", "3", "4"]
+                                    }
+                                ]
+                            }
+                            """)
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
                 .when()
-                .post("/api/v1/users/0/books/search")
+                    .post("/api/v1/users/0/books/search")
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                .extract().body().asString();
         log.info("searchResponseBody: {}", searchResponseBody);
 
-        String requestBody = """
+        String requestBody = String.format(
+                """
                 {
                     "title": "TestBook 1",
                     "authorId": null,
                     "status": 1,
-                    "seriesIds": [1],
+                    "seriesIds": [%d],
                     "order": null,
                     "lastChapter": null,
                     "bookTypeId": 1,
@@ -133,24 +122,25 @@ class ITBookUpdateParentInChain {
                     ],
                     "tagIds": []
                 }
-                """;
+                """,
+                seriesView.seriesId()
+        );
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .body(requestBody)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
+                    .body(requestBody)
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
                 .when()
-                .put("/api/v1/users/0/books/0")
+                    .put("/api/v1/users/0/books/0")
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                .extract().body().asString();
         log.info("responseBody: {}", responseBody);
 
 
-        String expectedResponseBodyWithoutDates = """
+        String expectedResponseBodyWithoutDates = String.format(
+                """
                 {
                     "bookId": 0,
                     "readListId": null,
@@ -184,13 +174,15 @@ class ITBookUpdateParentInChain {
                     "textAuthors": [],
                     "seriesList": [
                         {
-                            "seriesId": 1,
+                            "seriesId": %d,
                             "title": "TestSeries"
                         }
                     ],
                     "url": null
                 }
-                """;
+                """,
+                seriesView.seriesId()
+        );
 
         JSONAssert.assertEquals(
                 "Incorrect response",

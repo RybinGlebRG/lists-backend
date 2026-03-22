@@ -1,3 +1,18 @@
+# v0.72.4
+
+## Features
+
+- N/A
+
+## Bugfixes
+
+- Fixed filter by status
+
+## Other
+
+- N/A
+
+============================================
 # v0.72.3
 
 ## Features

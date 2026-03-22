@@ -3,7 +3,6 @@ package ru.rerumu.lists.integration.backlog;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,17 +17,15 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
 import ru.rerumu.lists.crosscut.Profiles;
+import ru.rerumu.lists.integration.ITBase;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles(Profiles.TEST)
 @ExtendWith(SpringExtension.class)
 @Slf4j
-public class ITBacklogItemAdd {
-
-    private static PostgreSQLContainer<?> postgres;
+public class ITBacklogItemAdd extends ITBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -49,11 +46,6 @@ public class ITBacklogItemAdd {
 
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
@@ -61,13 +53,7 @@ public class ITBacklogItemAdd {
         log.info("beforeEach");
 
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     /**

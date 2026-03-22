@@ -2,6 +2,7 @@ package ru.rerumu.lists.controller.book;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import ru.rerumu.lists.services.book.BookService;
 import ru.rerumu.lists.services.book.Search;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -128,12 +130,19 @@ public class BooksController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> searchBooks(
             @PathVariable Long userId,
-            @RequestBody Search search
+            @RequestBody @NonNull Search search
     ) {
         try {
-            List<Book> books = bookService.getAllBooks(search, userId);
-            BookListView bookListView = bookViewFactory.buildBookListView(books, search);
-            String result = objectMapper.writeValueAsString(bookListView);
+            String result;
+            if (search.isChainBySeries()) {
+                Map<Book, List<Book>> booksBySeries = bookService.getAllBooksChainedBySeries(search, userId);
+                BookListView bookListView = bookViewFactory.buildBookListView(booksBySeries, search);
+                result = objectMapper.writeValueAsString(bookListView);
+            } else {
+                List<Book> books = bookService.getAllBooks(search, userId);
+                BookListView bookListView = bookViewFactory.buildBookListView(books, search);
+                result = objectMapper.writeValueAsString(bookListView);
+            }
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             throw new ServerException(e.getMessage(), e);

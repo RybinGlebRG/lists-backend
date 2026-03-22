@@ -224,6 +224,52 @@ public class BookViewFactory {
         }
     }
 
+    public BookListView buildBookListView(Map<Book, List<Book>> booksBySeries, Search search) {
+
+        Comparator<Book> comparator = Comparator.comparing(book -> 0);
+
+        for (SortItem sortItem : search.getSortItemList()) {
+            if (sortItem.getSortField().equals("createDate")) {
+
+                comparator = comparator.thenComparing(Book::getInsertDate);
+
+                if (sortItem.getSearchOrder() == SearchOrder.DESC) {
+                    comparator = comparator.reversed();
+                }
+            }
+
+            if (sortItem.getSortField().equals("readingRecords.updateDate") ) {
+
+                comparator = comparator.thenComparing( book -> {
+
+                    // Get most recent record
+                    ReadingRecord readingRecord = book.getReadingRecords().stream()
+                            .max(Comparator.comparing(ReadingRecord::getStartDate))
+                            .orElseThrow(() -> new ServerException("Error while processing records"));
+
+                    // Compare update date
+                    return readingRecord.getUpdateDate();
+                });
+
+                if (sortItem.getSearchOrder() == SearchOrder.DESC) {
+                    comparator = comparator.reversed();
+                }
+            }
+        }
+
+        comparator = comparator.thenComparing(Book::getId);
+
+        Comparator<Book> finalComparator = comparator;
+        Comparator<Map.Entry<Book, List<Book>>> mapEntryComparator = (e1, e2) -> finalComparator.compare(e1.getKey(), e2.getKey());
+
+        List<BookView> bookViewList = booksBySeries.entrySet().stream()
+                .sorted(mapEntryComparator)
+                .map(item -> buildBookView(item.getKey(), item.getValue()))
+                .collect(Collectors.toCollection(ArrayList::new));
+        return new BookListView(bookViewList);
+
+    }
+
     @NonNull
     public Map<Book, List<Book>> chainBooksBySeries(@NonNull List<Book> books) {
         Map<Series, List<Book>> series2booksMap = new HashMap<>();

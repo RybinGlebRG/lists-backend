@@ -15,6 +15,9 @@ import java.util.stream.Stream;
 public class FuzzyMatchingService {
     private final static int LIMIT = 10;
 
+    /**
+     * Filter stream by title
+     */
     public Stream<Book> findMatchingBooksByTitle(List<String> titles, Stream<Book> books){
         List<Book> bookList = books.collect(Collectors.toCollection(ArrayList::new));
         Map<Book, Float> booksDistances = new HashMap<>();

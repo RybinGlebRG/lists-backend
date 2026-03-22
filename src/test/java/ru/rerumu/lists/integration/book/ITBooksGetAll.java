@@ -4,7 +4,6 @@ import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,24 +13,24 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
+import ru.rerumu.lists.controller.series.views.out.SeriesListView;
+import ru.rerumu.lists.controller.series.views.out.SeriesView;
+import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
+
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @Slf4j
-public class ITBooksGetAll {
-
-    private static PostgreSQLContainer<?> postgres;
+public class ITBooksGetAll extends ITBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -54,11 +53,6 @@ public class ITBooksGetAll {
 
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
@@ -66,13 +60,7 @@ public class ITBooksGetAll {
         log.info("beforeEach");
 
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     @Test
@@ -80,9 +68,12 @@ public class ITBooksGetAll {
         log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");
+        SeriesView seriesView = getSeriesByTitle("TestSeries 1");
+        Objects.requireNonNull(seriesView);
+
         TestCommon.addBook("TestBook 1", null, null);
-        TestCommon.addBook("TestBook 2", 1L, null);
-        TestCommon.addBook("TestBook 3", 1L, null);
+        TestCommon.addBook("TestBook 2", seriesView.seriesId(), null);
+        TestCommon.addBook("TestBook 3", seriesView.seriesId(), null);
         TestCommon.addBook("TestBook 4", null, null);
 
         String responseBody = RestAssuredMockMvc
@@ -263,7 +254,11 @@ public class ITBooksGetAll {
     public void shouldGetSingleInSeries() throws Exception {
 
         TestCommon.addSeries("TestSeries 1");
-        TestCommon.addBook("TestBook 1", 1L, null);
+
+        SeriesView seriesView = getSeriesByTitle("TestSeries 1");
+        Objects.requireNonNull(seriesView);
+
+        TestCommon.addBook("TestBook 1", seriesView.seriesId(), null);
 
         RestAssuredMockMvc
                 .given()
