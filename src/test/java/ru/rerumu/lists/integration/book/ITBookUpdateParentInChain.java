@@ -1,5 +1,6 @@
 package ru.rerumu.lists.integration.book;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
@@ -7,15 +8,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
@@ -24,7 +25,7 @@ import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Slf4j
 class ITBookUpdateParentInChain extends ITBase {
 
@@ -42,25 +43,22 @@ class ITBookUpdateParentInChain extends ITBase {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
         cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public void shouldUpdateBook(TestInfo testInfo) throws Exception{
-        log.info("Test: {}", testInfo.getDisplayName());
-
 
         TestCommon.addSeries("TestSeries");
         SeriesView seriesView = getSeriesByTitle("TestSeries");
@@ -68,6 +66,8 @@ class ITBookUpdateParentInChain extends ITBase {
 
         TestCommon.addSeries("TestSeries 2");
         TestCommon.addBook("TestBook 1", 1L, null);
+        BookView bookView = getBookByTitle("TestBook 1");
+        Objects.requireNonNull(bookView);
 
 
         String searchResponseBody = RestAssuredMockMvc
@@ -132,7 +132,7 @@ class ITBookUpdateParentInChain extends ITBase {
                     .header("Content-Type", "application/json")
                     .attribute("authUserId", 0L)
                 .when()
-                    .put("/api/v1/users/0/books/0")
+                    .put("/api/v1/users/0/books/{bookId}", bookView.getBookId().toString())
                 .then()
                     .statusCode(200)
                 .extract().body().asString();
@@ -142,7 +142,7 @@ class ITBookUpdateParentInChain extends ITBase {
         String expectedResponseBodyWithoutDates = String.format(
                 """
                 {
-                    "bookId": 0,
+                    "bookId": %d,
                     "readListId": null,
                     "title": "TestBook 1",
                     "bookStatus": {
@@ -160,7 +160,7 @@ class ITBookUpdateParentInChain extends ITBase {
                     "readingRecords": [
                         {
                             "recordId": 0,
-                            "bookId": 0,
+                            "bookId": %d,
                             "bookStatus": {
                                 "statusId": 1,
                                 "statusName": "In progress"
@@ -181,6 +181,8 @@ class ITBookUpdateParentInChain extends ITBase {
                     "url": null
                 }
                 """,
+                bookView.getBookId(),
+                bookView.getBookId(),
                 seriesView.seriesId()
         );
 

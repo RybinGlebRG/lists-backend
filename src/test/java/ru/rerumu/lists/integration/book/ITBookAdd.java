@@ -1,5 +1,6 @@
 package ru.rerumu.lists.integration.book;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -13,6 +14,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,7 +27,7 @@ import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Slf4j
 class ITBookAdd extends ITBase {
 
@@ -43,24 +45,22 @@ class ITBookAdd extends ITBase {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
         cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public void shouldAddBook(TestInfo testInfo) throws Exception{
-        log.info("Test: {}", testInfo.getDisplayName());
 
         TestCommon.addSeries("TestSeries 1");
         SeriesView seriesView = getSeriesByTitle("TestSeries 1");
@@ -252,9 +252,8 @@ class ITBookAdd extends ITBase {
         log.info("responseBody: {}", responseBody);
 
 
-        String expectedResponseBodyWithoutDates = """
+        String expectedResponseBodyWithoutDatesAndId = """
                 {
-                    "bookId": 0,
                     "readListId": null,
                     "title": "TestBook",
                     "bookStatus": {
@@ -270,8 +269,6 @@ class ITBookAdd extends ITBase {
                     "itemType": "BOOK",
                     "chain": [],
                     "readingRecords": [{
-                            "recordId": 0,
-                            "bookId": 0,
                             "bookStatus": {
                                 "statusId": 1,
                                 "statusName": "In progress"
@@ -295,7 +292,7 @@ class ITBookAdd extends ITBase {
 
         JSONAssert.assertEquals(
                 "Incorrect response",
-                expectedResponseBodyWithoutDates,
+                expectedResponseBodyWithoutDatesAndId,
                 responseBody,
                 false
         );

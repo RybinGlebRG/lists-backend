@@ -1,5 +1,6 @@
 package ru.rerumu.lists.integration.book;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
@@ -7,14 +8,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
@@ -25,7 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Slf4j
 class ITBookUpdateChapter extends ITBase {
 
@@ -43,25 +44,22 @@ class ITBookUpdateChapter extends ITBase {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
         cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public void shouldUpdateBook(TestInfo testInfo) throws Exception{
-        log.info("Test: {}", testInfo.getDisplayName());
-
 
         TestCommon.addSeries("TestSeries");
         SeriesView seriesView = getSeriesByTitle("TestSeries");
@@ -69,7 +67,10 @@ class ITBookUpdateChapter extends ITBase {
 
         TestCommon.addAuthor("TestAuthor");
         TestCommon.addBook("TestBook1", seriesView.seriesId(), 0L);
+
         TestCommon.addBook("TestBook2", seriesView.seriesId(), 0L);
+        BookView bookView = getBookByTitle("TestBook2");
+        Objects.requireNonNull(bookView);
 
         RestAssuredMockMvc
                 .given()
@@ -106,7 +107,7 @@ class ITBookUpdateChapter extends ITBase {
                     )
                     .log().all()
                 .when()
-                    .put("/api/v1/users/{userId}/books/{bookId}", "0", "1")
+                    .put("/api/v1/users/{userId}/books/{bookId}", "0", bookView.getBookId().toString())
                 .then()
                     .log().all()
                     .statusCode(200);
@@ -117,7 +118,7 @@ class ITBookUpdateChapter extends ITBase {
                     .attribute("authUserId", 0L)
                     .log().all()
                 .when()
-                    .get("/api/v1/users/{userId}/books/{bookId}", "0", "1")
+                    .get("/api/v1/users/{userId}/books/{bookId}", "0", bookView.getBookId().toString())
                 .then()
                     .log().all()
                     .statusCode(200)

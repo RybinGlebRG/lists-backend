@@ -1,5 +1,7 @@
 package ru.rerumu.lists.controller.book.view.out;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,7 +20,10 @@ public class BookListView implements DeepCopyable<BookListView> {
 
     private final List<BookView> items;
 
-    public BookListView(@NonNull List<BookView> items) {
+    @JsonCreator
+    public BookListView(
+            @JsonProperty("items") @NonNull List<BookView> items
+    ) {
         this.items = new ArrayList<>(items);
     }
 

@@ -8,16 +8,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rerumu.lists.controller.series.views.out.SeriesListView;
+import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
 import ru.rerumu.lists.integration.TestCommon;
@@ -28,7 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Slf4j
 public class ITBooksGetAll extends ITBase {
 
@@ -48,33 +47,29 @@ public class ITBooksGetAll extends ITBase {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
         cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public void shouldGetAll(TestInfo testInfo) throws Exception {
-        log.info("Test: {}", testInfo.getDisplayName());
 
-        TestCommon.addSeries("TestSeries 1");
-        SeriesView seriesView = getSeriesByTitle("TestSeries 1");
-        Objects.requireNonNull(seriesView);
+        SeriesView seriesView = addSeries("TestSeries 1");
 
-        TestCommon.addBook("TestBook 1", null, null);
-        TestCommon.addBook("TestBook 2", seriesView.seriesId(), null);
-        TestCommon.addBook("TestBook 3", seriesView.seriesId(), null);
-        TestCommon.addBook("TestBook 4", null, null);
+        BookView bookView1 = addBook("TestBook 1", null, null);
+        BookView bookView2 = addBook("TestBook 2", seriesView.seriesId(), null);
+        BookView bookView3 = addBook("TestBook 3", seriesView.seriesId(), null);
+        BookView bookView4 = addBook("TestBook 4", null, null);
 
         String responseBody = RestAssuredMockMvc
                 .given()
@@ -106,10 +101,11 @@ public class ITBooksGetAll extends ITBase {
                     .asString();
         log.info("responseBody: {}", responseBody);
 
-        String expectedResponseBodyWithoutDates = """
+        String expectedResponseBodyWithoutDates = String.format(
+                """
                 {
                     "items": [{
-                            "bookId": 3,
+                            "bookId": %d,
                             "readListId": null,
                             "title": "TestBook 4",
                             "bookStatus": {
@@ -122,8 +118,8 @@ public class ITBooksGetAll extends ITBase {
                             "itemType": "BOOK",
                             "chain": [],
                             "readingRecords": [{
-                                    "recordId": 3,
-                                    "bookId": 3,
+                                    "recordId": %d,
+                                    "bookId": %d,
                                     "bookStatus": {
                                         "statusId": 1,
                                         "statusName": "In progress"
@@ -138,7 +134,7 @@ public class ITBooksGetAll extends ITBase {
                             "seriesList": [],
                             "url": null
                         }, {
-                            "bookId": 2,
+                            "bookId": %d,
                             "readListId": null,
                             "title": "TestBook 3",
                             "bookStatus": {
@@ -150,7 +146,7 @@ public class ITBooksGetAll extends ITBase {
                             "bookType": null,
                             "itemType": "BOOK",
                             "chain": [{
-                                    "bookId": 1,
+                                    "bookId": %d,
                                     "readListId": null,
                                     "title": "TestBook 2",
                                     "bookStatus": {
@@ -163,8 +159,8 @@ public class ITBooksGetAll extends ITBase {
                                     "itemType": "BOOK",
                                     "chain": [],
                                     "readingRecords": [{
-                                            "recordId": 1,
-                                            "bookId": 1,
+                                            "recordId": %d,
+                                            "bookId": %d,
                                             "bookStatus": {
                                                 "statusId": 1,
                                                 "statusName": "In progress"
@@ -178,7 +174,7 @@ public class ITBooksGetAll extends ITBase {
                                     "textAuthors": [],
                                     "seriesList": [
                                         {
-                                            "seriesId": 1,
+                                            "seriesId": %d,
                                             "title": "TestSeries 1"
                                         }
                                     ],
@@ -186,8 +182,8 @@ public class ITBooksGetAll extends ITBase {
                                 }
                             ],
                             "readingRecords": [{
-                                    "recordId": 2,
-                                    "bookId": 2,
+                                    "recordId": %d,
+                                    "bookId": %d,
                                     "bookStatus": {
                                         "statusId": 1,
                                         "statusName": "In progress"
@@ -200,13 +196,13 @@ public class ITBooksGetAll extends ITBase {
                             "tags": [],
                             "textAuthors": [],
                             "seriesList": [{
-                                    "seriesId": 1,
+                                    "seriesId": %d,
                                     "title": "TestSeries 1"
                                 }
                             ],
                             "url": null
                         }, {
-                            "bookId": 0,
+                            "bookId": %d,
                             "readListId": null,
                             "title": "TestBook 1",
                             "bookStatus": {
@@ -219,8 +215,8 @@ public class ITBooksGetAll extends ITBase {
                             "itemType": "BOOK",
                             "chain": [],
                             "readingRecords": [{
-                                    "recordId": 0,
-                                    "bookId": 0,
+                                    "recordId": %d,
+                                    "bookId": %d,
                                     "bookStatus": {
                                         "statusId": 1,
                                         "statusName": "In progress"
@@ -237,7 +233,24 @@ public class ITBooksGetAll extends ITBase {
                         }
                     ]
                 }
-                """;
+                """,
+                bookView4.getBookId(),
+                bookView4.getReadingRecords().get(0).getRecordId(),
+                bookView4.getBookId(),
+
+                bookView3.getBookId(),
+                bookView2.getBookId(),
+                bookView2.getReadingRecords().get(0).getRecordId(),
+                bookView2.getBookId(),
+                seriesView.seriesId(),
+                bookView3.getReadingRecords().get(0).getRecordId(),
+                bookView3.getBookId(),
+                seriesView.seriesId(),
+
+                bookView1.getBookId(),
+                bookView1.getReadingRecords().get(0).getRecordId(),
+                bookView1.getBookId()
+        );
         JSONAssert.assertEquals(
                 "Incorrect response",
                 expectedResponseBodyWithoutDates,
