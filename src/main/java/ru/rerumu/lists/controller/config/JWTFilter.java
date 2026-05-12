@@ -63,6 +63,7 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
+            throw e;
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
