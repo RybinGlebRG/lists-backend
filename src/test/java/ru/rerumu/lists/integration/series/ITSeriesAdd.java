@@ -24,12 +24,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITSeriesAdd extends ITBase {
 
     @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    public static void configureProperties(DynamicPropertyRegistry registry) {
 
         log.info("jdbcUrl: {}", postgres.getJdbcUrl());
 
@@ -57,6 +58,7 @@ public class ITSeriesAdd extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAdd(TestInfo testInfo) throws Exception{
 
         SeriesListView seriesListView = getSeriesList();
@@ -69,6 +71,7 @@ public class ITSeriesAdd extends ITBase {
                             }
                             """)
                     .header("Content-Type", "application/json")
+                    .header("Accept-Type", "application/json")
                     .attribute("authUserId", 0L)
                 .when()
                     .post("/api/v1/users/0/series")
@@ -91,7 +94,9 @@ public class ITSeriesAdd extends ITBase {
                                 },
                                 "items": {
                                     "type": "array",
-                                    "items": []
+                                    "items": {
+                                        "type": "object"
+                                    }
                                 }
                               },
                               "additionalProperties": false,
@@ -104,7 +109,7 @@ public class ITSeriesAdd extends ITBase {
                             }
                             """
                     ))
-                    .body("userId", equalTo(0L))
+                    .body("userId", equalTo(0))
                     .body("title", equalTo("TestSeries"))
                     .extract().body().asString();
         log.info("responseBody: {}", responseBody);

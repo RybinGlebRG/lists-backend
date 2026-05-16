@@ -15,18 +15,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
 import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.TestCommon;
-
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 class ITBookUpdateChapter extends ITBase {
 
@@ -59,29 +57,25 @@ class ITBookUpdateChapter extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBook(TestInfo testInfo) throws Exception{
 
-        TestCommon.addSeries("TestSeries");
-        SeriesView seriesView = getSeriesByTitle("TestSeries");
-        Objects.requireNonNull(seriesView);
+        SeriesView seriesView = addSeries("TestSeries");
 
-        TestCommon.addAuthor("TestAuthor");
-        TestCommon.addBook("TestBook1", seriesView.seriesId(), 0L);
+        AuthorView authorView = addAuthor("TestAuthor");
+        addBook("TestBook1", seriesView.seriesId(), 0L);
 
-        TestCommon.addBook("TestBook2", seriesView.seriesId(), 0L);
-        BookView bookView = getBookByTitle("TestBook2");
-        Objects.requireNonNull(bookView);
+        BookView bookView = addBook("TestBook2", seriesView.seriesId(), 0L);
 
         RestAssuredMockMvc
                 .given()
                     .header("Content-Type", "application/json")
                     .attribute("authUserId", 0L)
-                    .body(
-                            String.format(
+                    .body(String.format(
                                 """
                                 {
                                     "title": "TestBook2",
-                                    "authorId": 0,
+                                    "authorId": %d,
                                     "status": 1,
                                     "seriesIds": [%d],
                                     "order": null,
@@ -92,7 +86,7 @@ class ITBookUpdateChapter extends ITBase {
                                     "URL": null,
                                     "readingRecords": [
                                         {
-                                            "readingRecordId": 1,
+                                            "readingRecordId": %d,
                                             "statusId": 1,
                                             "startDate": "2025-08-27T17:12:00",
                                             "endDate": null,
@@ -102,7 +96,9 @@ class ITBookUpdateChapter extends ITBase {
                                     "tagIds": []
                                 }
                                 """,
-                                seriesView.seriesId()
+                                authorView.getAuthorId(),
+                                seriesView.seriesId(),
+                                bookView.getReadingRecords().get(0).getRecordId()
                             )
                     )
                     .log().all()

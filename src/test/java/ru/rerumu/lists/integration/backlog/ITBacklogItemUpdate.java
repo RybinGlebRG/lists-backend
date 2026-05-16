@@ -16,12 +16,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.MockFactoryBacklog;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITBacklogItemUpdate extends ITBase {
 
@@ -54,9 +54,10 @@ public class ITBacklogItemUpdate extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdate(TestInfo testInfo) throws Exception {
 
-        MockFactoryBacklog.addBacklogItem(
+        BacklogItemOutView backlogItemOutView = addBacklogItem(
                 "Test Backlog Item 1",
                 null
         );
@@ -74,7 +75,7 @@ public class ITBacklogItemUpdate extends ITBase {
                 .header("Content-Type", "application/json")
                 .attribute("authUserId", 0L)
                 .when()
-                .put("/api/v1/users/0/backlogItems/0")
+                .put("/api/v1/users/0/backlogItems/{backlogItemId}", backlogItemOutView.getId().toString())
                 .then()
                 .statusCode(200)
                 .extract()
@@ -84,15 +85,18 @@ public class ITBacklogItemUpdate extends ITBase {
 
         JSONAssert.assertEquals(
                 "Incorrect response",
-                """
-                        {
-                            "id": 0,
-                            "title": "Test Backlog Item",
-                            "type": 1,
-                            "note": "Test note",
-                            "creationDate": "2025-10-04T01:02:00"
-                        }
-                        """,
+                String.format(
+                    """
+                    {
+                        "id": %d,
+                        "title": "Test Backlog Item",
+                        "type": 1,
+                        "note": "Test note",
+                        "creationDate": "2025-10-04T01:02:00"
+                    }
+                    """,
+                    backlogItemOutView.getId()
+                ),
                 responseBody,
                 true
         );

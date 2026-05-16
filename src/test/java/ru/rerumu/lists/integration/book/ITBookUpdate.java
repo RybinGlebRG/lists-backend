@@ -19,13 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.TestCommon;
-
-import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 class ITBookUpdate extends ITBase {
 
@@ -58,13 +55,13 @@ class ITBookUpdate extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBook(TestInfo testInfo) throws Exception{
 
-        TestCommon.addSeries("TestSeries");
-        SeriesView seriesView = getSeriesByTitle("TestSeries");
-        Objects.requireNonNull(seriesView);
+        SeriesView seriesView = addSeries("TestSeries");
 
-        TestCommon.addSeries("TestSeries 2");
+        addSeries("TestSeries 2");
+
         BookView bookView = addBook("TestBook", null, null);
 
         String requestBody = String.format(
@@ -82,7 +79,7 @@ class ITBookUpdate extends ITBase {
                     "URL": null,
                     "readingRecords": [
                         {
-                            "readingRecordId": 0,
+                            "readingRecordId": %d,
                             "statusId": 1,
                             "startDate": "2025-08-27T17:12:00",
                             "endDate": null,
@@ -92,7 +89,8 @@ class ITBookUpdate extends ITBase {
                     "tagIds": []
                 }
                 """,
-                seriesView.seriesId()
+                seriesView.seriesId(),
+                bookView.getReadingRecords().get(0).getRecordId()
         );
 
         String responseBody = RestAssuredMockMvc
@@ -128,7 +126,7 @@ class ITBookUpdate extends ITBase {
                     "chain": [],
                     "readingRecords": [
                         {
-                            "recordId": 0,
+                            "recordId": %d,
                             "bookId": %d,
                             "bookStatus": {
                                 "statusId": 1,
@@ -151,6 +149,7 @@ class ITBookUpdate extends ITBase {
                 }
                 """,
                 bookView.getBookId(),
+                bookView.getReadingRecords().get(0).getRecordId(),
                 bookView.getBookId(),
                 seriesView.seriesId()
         );

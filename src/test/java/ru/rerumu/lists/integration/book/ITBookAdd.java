@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,17 +16,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.TestCommon;
-
-import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 class ITBookAdd extends ITBase {
 
@@ -60,11 +55,10 @@ class ITBookAdd extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddBook(TestInfo testInfo) throws Exception{
 
-        TestCommon.addSeries("TestSeries 1");
-        SeriesView seriesView = getSeriesByTitle("TestSeries 1");
-        Objects.requireNonNull(seriesView);
+        SeriesView seriesView = addSeries("TestSeries 1");
 
         String addBookRequestBody = String.format(
                 """
@@ -252,7 +246,8 @@ class ITBookAdd extends ITBase {
         log.info("responseBody: {}", responseBody);
 
 
-        String expectedResponseBodyWithoutDatesAndId = """
+        String expectedResponseBodyWithoutDatesAndId = String.format(
+                """
                 {
                     "readListId": null,
                     "title": "TestBook",
@@ -282,13 +277,15 @@ class ITBookAdd extends ITBase {
                     "textAuthors": [],
                     "seriesList": [
                         {
-                            "seriesId": 1,
+                            "seriesId": %d,
                             "title": "TestSeries 1"
                         }
                     ],
                     "url": null
                 }
-                """;
+                """,
+                seriesView.seriesId()
+        );
 
         JSONAssert.assertEquals(
                 "Incorrect response",

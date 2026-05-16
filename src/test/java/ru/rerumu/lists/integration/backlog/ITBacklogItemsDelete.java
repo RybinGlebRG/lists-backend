@@ -16,17 +16,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.MockFactoryBacklog;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITBacklogItemsDelete extends ITBase {
 
     @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    public static void configureProperties(DynamicPropertyRegistry registry) {
 
         log.info("jdbcUrl: {}", postgres.getJdbcUrl());
 
@@ -54,31 +55,32 @@ public class ITBacklogItemsDelete extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDelete(TestInfo testInfo) throws Exception {
 
-        MockFactoryBacklog.addBacklogItem(
+        BacklogItemOutView backlogItemOutView = addBacklogItem(
                 "Test Backlog Item 1",
                 null
         );
 
         RestAssuredMockMvc
                 .given()
-                .attribute("authUserId", 0L)
+                    .attribute("authUserId", 0L)
                 .when()
-                .delete("/api/v1/users/0/backlogItems/0")
+                    .delete("/api/v1/users/0/backlogItems/{backlogItemId}", backlogItemOutView.getId().toString())
                 .then()
-                .statusCode(204);
+                    .statusCode(204);
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .attribute("authUserId", 0L)
+                    .attribute("authUserId", 0L)
                 .when()
-                .get("/api/v1/users/0/backlogItems")
+                    .get("/api/v1/users/0/backlogItems")
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                    .extract()
+                    .body()
+                    .asString();
         log.info("responseBody: {}", responseBody);
 
         JSONAssert.assertEquals(

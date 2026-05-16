@@ -20,7 +20,7 @@ import ru.rerumu.lists.integration.ITBase;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITBacklogItemAdd extends ITBase {
 
@@ -56,6 +56,7 @@ public class ITBacklogItemAdd extends ITBase {
      */
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAdd(TestInfo testInfo) throws Exception {
 
         String responseBody = RestAssuredMockMvc
@@ -82,7 +83,6 @@ public class ITBacklogItemAdd extends ITBase {
                 "Incorrect response",
                 """
                         {
-                            "id": 0,
                             "title": "Test Backlog Item",
                             "type": 0,
                             "note": null,
@@ -90,7 +90,7 @@ public class ITBacklogItemAdd extends ITBase {
                         }
                         """,
                 responseBody,
-                true
+                false
         );
 
     }

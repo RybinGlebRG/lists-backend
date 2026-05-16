@@ -16,12 +16,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.MockFactoryBacklog;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITBacklogItemsGetAll extends ITBase {
 
@@ -54,51 +54,54 @@ public class ITBacklogItemsGetAll extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldGet(TestInfo testInfo) throws Exception {
 
-        MockFactoryBacklog.addBacklogItem(
+        BacklogItemOutView backlogItemOutView1 = addBacklogItem(
                 "Test Backlog Item 1",
                 null
         );
-        MockFactoryBacklog.addBacklogItem(
+        BacklogItemOutView backlogItemOutView2 = addBacklogItem(
                 "Test Backlog Item 2",
                 null
         );
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .attribute("authUserId", 0L)
+                    .attribute("authUserId", 0L)
                 .when()
-                .get("/api/v1/users/0/backlogItems")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .get("/api/v1/users/0/backlogItems")
+                    .then()
+                    .statusCode(200)
+                .extract().body().asString();
         log.info("responseBody: {}", responseBody);
 
         JSONAssert.assertEquals(
                 "Incorrect response",
-                """
-                        {
-                            "items": [
-                                {
-                                    "id": 0,
-                                    "title": "Test Backlog Item 1",
-                                    "type": 0,
-                                    "note": null,
-                                    "creationDate": "2025-10-04T01:01:00"
-                                },
-                                {
-                                    "id": 1,
-                                    "title": "Test Backlog Item 2",
-                                    "type": 0,
-                                    "note": null,
-                                    "creationDate": "2025-10-04T01:01:00"
-                                }
-                            ]
-                        }
-                        """,
+                String.format(
+                    """
+                    {
+                        "items": [
+                            {
+                                "id": %d,
+                                "title": "Test Backlog Item 1",
+                                "type": 0,
+                                "note": null,
+                                "creationDate": "2025-10-04T01:01:00"
+                            },
+                            {
+                                "id": %d,
+                                "title": "Test Backlog Item 2",
+                                "type": 0,
+                                "note": null,
+                                "creationDate": "2025-10-04T01:01:00"
+                            }
+                        ]
+                    }
+                    """,
+                    backlogItemOutView1.getId(),
+                    backlogItemOutView2.getId()
+                ),
                 responseBody,
                 true
         );

@@ -19,13 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.TestCommon;
-
-import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 class ITBookUpdateParentInChain extends ITBase {
 
@@ -58,16 +55,14 @@ class ITBookUpdateParentInChain extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBook(TestInfo testInfo) throws Exception{
 
-        TestCommon.addSeries("TestSeries");
-        SeriesView seriesView = getSeriesByTitle("TestSeries");
-        Objects.requireNonNull(seriesView);
+        SeriesView seriesView = addSeries("TestSeries");
 
-        TestCommon.addSeries("TestSeries 2");
-        TestCommon.addBook("TestBook 1", 1L, null);
-        BookView bookView = getBookByTitle("TestBook 1");
-        Objects.requireNonNull(bookView);
+        addSeries("TestSeries 2");
+
+        BookView bookView = addBook("TestBook 1", 1L, null);
 
 
         String searchResponseBody = RestAssuredMockMvc

@@ -48,7 +48,7 @@ public class BookViewFactory {
 
         ReadingRecordView maxRecord = readingRecordViews.stream()
                 .max(Comparator.comparing(ReadingRecordView::getStartDate))
-                .orElseThrow(() -> new ServerException("Error while processing records"));
+                .orElseThrow(() -> new ServerException("Failed to find latest record"));
 
         BookView.BookType bookType = null;
         if (book.getBookType() != null) {

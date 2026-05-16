@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.integration.ITBase;
-import ru.rerumu.lists.integration.TestCommon;
 
 import java.util.Objects;
 
@@ -27,7 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
 public class ITBooksGetAll extends ITBase {
 
@@ -62,6 +61,7 @@ public class ITBooksGetAll extends ITBase {
 
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldGetAll(TestInfo testInfo) throws Exception {
 
         SeriesView seriesView = addSeries("TestSeries 1");
@@ -264,14 +264,15 @@ public class ITBooksGetAll extends ITBase {
      */
     @Test
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldGetSingleInSeries() throws Exception {
 
-        TestCommon.addSeries("TestSeries 1");
+        addSeries("TestSeries 1");
 
         SeriesView seriesView = getSeriesByTitle("TestSeries 1");
         Objects.requireNonNull(seriesView);
 
-        TestCommon.addBook("TestBook 1", seriesView.seriesId(), null);
+        addBook("TestBook 1", seriesView.seriesId(), null);
 
         RestAssuredMockMvc
                 .given()

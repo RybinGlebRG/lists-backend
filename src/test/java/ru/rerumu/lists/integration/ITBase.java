@@ -6,16 +6,20 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.ext.ScriptUtils;
-import org.testcontainers.jdbc.JdbcDatabaseDelegate;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import ru.rerumu.lists.controller.author.views.out.AuthorView;
+import ru.rerumu.lists.controller.backlog.view.out.BacklogItemOutView;
 import ru.rerumu.lists.controller.book.view.out.BookListView;
 import ru.rerumu.lists.controller.book.view.out.BookView;
 import ru.rerumu.lists.controller.series.views.out.SeriesListView;
 import ru.rerumu.lists.controller.series.views.out.SeriesView;
 import ru.rerumu.lists.crosscut.Profiles;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Objects;
 
 
@@ -24,19 +28,23 @@ import java.util.Objects;
 public class ITBase {
 
     protected static PostgreSQLContainer postgres;
-    private static JdbcDatabaseDelegate databaseDelegate;
 
     static {
         postgres = new PostgreSQLContainer("postgres:16-alpine");
         postgres.start();
-        databaseDelegate = new JdbcDatabaseDelegate(postgres, "");
     }
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private DataSource dataSource;
 
     protected void cleanSQL() {
-        ScriptUtils.runInitScript(databaseDelegate, "ru/rerumu/lists/integration/clean.sql");
+        try (Connection connection = dataSource.getConnection()) {
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("ru/rerumu/lists/integration/clean.sql"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Loggable(value = Loggable.TRACE, prepend = true, trim = false)
@@ -158,7 +166,7 @@ public class ITBase {
 
     @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     @NonNull
-    public SeriesView addSeries(@NonNull String title) throws Exception {
+    protected SeriesView addSeries(@NonNull String title) throws Exception {
         String body = RestAssuredMockMvc
                 .given()
                     .body(String.format("""
@@ -178,6 +186,67 @@ public class ITBase {
         Objects.requireNonNull(seriesView);
 
         return seriesView;
+    }
+
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @NonNull
+    protected BacklogItemOutView addBacklogItem(@NonNull String title, String note) throws Exception {
+        String actualNote = null;
+        if ( note != null) {
+            actualNote = String.format("\"%s\"", note);
+        }
+
+        String responseBody = RestAssuredMockMvc
+                .given()
+                    .body(String.format("""
+                            {
+                                "title": "%s",
+                                "type": 0,
+                                "creationDate": "2025-10-04T01:01:00",
+                                "note": %s
+                            }
+                            """,
+                            title,
+                            actualNote
+                    ))
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
+                .when()
+                    .post("/api/v1/users/0/backlogItems")
+                .then()
+                    .statusCode(200)
+                    .extract().body().asString();
+        log.info("responseBody: {}", responseBody);
+
+        BacklogItemOutView backlogItemOutView = objectMapper.readValue(responseBody, BacklogItemOutView.class);
+        Objects.requireNonNull(backlogItemOutView);
+
+        return backlogItemOutView;
+    }
+
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @NonNull
+    protected AuthorView addAuthor(@NonNull String name) throws Exception {
+        String responseBody = RestAssuredMockMvc
+                .given()
+                    .body(String.format("""
+                                {
+                                    "name": "%s"
+                                }
+                                """, name))
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
+                .when()
+                    .post("/api/v1/users/{userId}/authors", "0")
+                .then()
+                    .statusCode(200)
+                    .extract().body().asString();
+        log.info("responseBody: {}", responseBody);
+
+        AuthorView authorView = objectMapper.readValue(responseBody, AuthorView.class);
+        Objects.requireNonNull(authorView);
+
+        return authorView;
     }
 
 }
