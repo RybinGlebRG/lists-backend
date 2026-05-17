@@ -1,5 +1,7 @@
 package ru.rerumu.lists.controller.author.views.out;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,5 +18,14 @@ public class AuthorView {
     public AuthorView(Author author) {
         this.authorId = author.getId();
         this.name = author.getName();
+    }
+
+    @JsonCreator
+    public AuthorView(
+            @JsonProperty("authorId") Long authorId,
+            @JsonProperty("name") String name
+    ) {
+        this.authorId = authorId;
+        this.name = name;
     }
 }

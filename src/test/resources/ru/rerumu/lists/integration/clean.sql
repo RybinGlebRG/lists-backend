@@ -1,0 +1,11 @@
+DELETE FROM books_tags;
+DELETE FROM reading_records;
+DELETE FROM books_authors;
+DELETE FROM series_books;
+DELETE FROM series_titles;
+DELETE FROM books;
+DELETE FROM tags;
+DELETE FROM games;
+DELETE FROM backlog;
+DELETE FROM authors;
+DELETE FROM series;

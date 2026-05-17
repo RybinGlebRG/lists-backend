@@ -12,6 +12,7 @@ import ru.rerumu.lists.controller.book.view.in.BookAddView;
 import ru.rerumu.lists.controller.book.view.in.BookUpdateView;
 import ru.rerumu.lists.crosscut.exception.EmptyMandatoryParameterException;
 import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
+import ru.rerumu.lists.crosscut.exception.ServerException;
 import ru.rerumu.lists.crosscut.utils.FuzzyMatchingService;
 import ru.rerumu.lists.dao.author.AuthorsRepository;
 import ru.rerumu.lists.dao.book.AuthorRole;
@@ -37,6 +38,7 @@ import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.booktype.BookTypesService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -247,6 +249,124 @@ public class BookServiceImpl implements BookService {
 
         logger.debug(bookList.toString());
         return bookList;
+    }
+
+    @Override
+    public Map<Book, List<Book>> getAllBooksChainedBySeries(Search search, @NonNull Long userId) {
+        User user = usersRepository.findById(userId);
+
+        // Get all books
+        List<Book> bookList = bookRepository.findByUser(user);
+
+        // Group book by series
+        Map<Book, List<Book>> booksBySeries = chainBooksBySeries(bookList);
+
+        // Apply filters only to the last book of the series
+        Stream<Map.Entry<Book, List<Book>>> booksBySeriesStream = booksBySeries.entrySet().stream();
+        for (Filter filter: search.filters()) {
+            switch (filter.field()) {
+                case "bookStatusIds" -> {
+                    List<Long> statusIds = filter.values().stream()
+                            .map(Long::valueOf)
+                            .collect(Collectors.toCollection(ArrayList::new));
+
+                    booksBySeriesStream = booksBySeriesStream
+                            .filter(item -> {
+                                for (Long statusId: statusIds) {
+                                    if (item.getKey().currentStatusEquals(statusId)) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                }
+                case "titles" -> {
+                    List<Map.Entry<Book, List<Book>>> tmpList = booksBySeriesStream.collect(Collectors.toCollection(ArrayList::new));
+                    List<Book> filteredBooks = fuzzyMatchingService.findMatchingBooksByTitle(
+                            filter.values(),
+                            tmpList.stream()
+                                    .map(Map.Entry::getKey)
+                    )
+                            .collect(Collectors.toCollection(ArrayList::new));
+                    booksBySeriesStream = tmpList.stream()
+                            .filter(item -> filteredBooks.contains(item.getKey()));
+                }
+                default -> throw new IllegalArgumentException();
+            }
+        }
+
+        Map<Book, List<Book>> booksBySeriesResult = new HashMap<>();
+        booksBySeriesStream.forEach(entry -> booksBySeriesResult.put(entry.getKey(), entry.getValue()));
+
+        return booksBySeriesResult;
+    }
+
+    @NonNull
+    private Map<Book, List<Book>> chainBooksBySeries(@NonNull List<Book> books) {
+        Map<Series, List<Book>> series2booksMap = new HashMap<>();
+
+        for (Book book: books) {
+
+            // If book is not in series
+            if (book.getSeriesList().isEmpty()) {
+
+                // Initialize list for null key
+                if (!series2booksMap.containsKey(null)) {
+                    series2booksMap.put(null, new ArrayList<>());
+                }
+
+
+                series2booksMap.get(null).add(book);
+            } else {
+
+                // For each series book is in
+                for (Series series: book.getSeriesList()) {
+
+                    // Initialize list for key
+                    if (!series2booksMap.containsKey(series)) {
+                        series2booksMap.put(series, new ArrayList<>());
+                    }
+
+                    series2booksMap.get(series).add(book);
+                }
+            }
+        }
+
+        // Find last book in series
+        Comparator<Book> booksComparator = Comparator.comparing( (Book book) -> {
+            // Get most recent record
+            ReadingRecord readingRecord = book.getReadingRecords().stream()
+                    .max(Comparator.comparing(ReadingRecord::getStartDate))
+                    .orElseThrow(() -> new ServerException("Error while processing records"));
+
+            // Compare update date
+            return readingRecord.getUpdateDate();
+        }).reversed();
+
+        List<Book> booksWithoutSeries = new ArrayList<>();
+
+        if (series2booksMap.get(null) != null) {
+            booksWithoutSeries.addAll(series2booksMap.get(null));
+            series2booksMap.remove(null);
+        }
+
+        series2booksMap.forEach((series, booksList) -> booksList.sort(booksComparator));
+
+        Map<Book, List<Book>> bookChain = new HashMap<>();
+        for (Map.Entry<Series, List<Book>> entry: series2booksMap.entrySet()) {
+            Book lastBookInSeries = entry.getValue().get(0);
+
+            List<Book> previousBooks = new ArrayList<>(entry.getValue());
+            previousBooks.remove(lastBookInSeries);
+
+            bookChain.put(lastBookInSeries, previousBooks);
+        }
+
+        for (Book book: booksWithoutSeries) {
+            bookChain.put(book, new ArrayList<>());
+        }
+
+        return bookChain;
     }
 
     /**

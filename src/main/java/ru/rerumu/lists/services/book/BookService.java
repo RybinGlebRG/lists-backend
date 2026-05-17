@@ -8,6 +8,7 @@ import ru.rerumu.lists.crosscut.exception.EntityNotFoundException;
 import ru.rerumu.lists.domain.book.Book;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BookService {
 
@@ -26,6 +27,11 @@ public interface BookService {
      * Get all books of user
      */
     List<Book> getAllBooks(Search search, @NonNull Long userId);
+
+    /**
+     * Get all books of user chained by series
+     */
+    Map<Book, List<Book>> getAllBooksChainedBySeries(Search search, @NonNull Long userId);
 
     /**
      * Update book of user

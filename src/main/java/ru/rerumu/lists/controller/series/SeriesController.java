@@ -75,7 +75,8 @@ public class SeriesController {
 
     @PostMapping(
             value = "/api/v1/users/{userId}/series",
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<String> add(
             @PathVariable Long userId,

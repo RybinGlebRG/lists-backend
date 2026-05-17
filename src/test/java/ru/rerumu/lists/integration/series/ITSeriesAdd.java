@@ -1,37 +1,36 @@
 package ru.rerumu.lists.integration.series;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
+import ru.rerumu.lists.controller.series.views.out.SeriesListView;
+import ru.rerumu.lists.integration.ITBase;
+
+import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
-public class ITSeriesAdd {
-
-    private static PostgreSQLContainer<?> postgres;
+public class ITSeriesAdd extends ITBase {
 
     @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    public static void configureProperties(DynamicPropertyRegistry registry) {
 
         log.info("jdbcUrl: {}", postgres.getJdbcUrl());
 
@@ -44,66 +43,76 @@ public class ITSeriesAdd {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAdd(TestInfo testInfo) throws Exception{
-        log.info("Test: {}", testInfo.getDisplayName());
+
+        SeriesListView seriesListView = getSeriesList();
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .body("""
-                        {
-                            "title": "TestSeries"
-                        }
-                        """)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
+                    .body("""
+                            {
+                                "title": "TestSeries"
+                            }
+                            """)
+                    .header("Content-Type", "application/json")
+                    .header("Accept-Type", "application/json")
+                    .attribute("authUserId", 0L)
                 .when()
-                .post("/api/v1/users/0/series")
+                    .post("/api/v1/users/0/series")
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                    .body(JsonSchemaValidator.matchesJsonSchema(
+                            """
+                            {
+                              "$schema": "http://json-schema.org/draft-04/schema#",
+                              "type": "object",
+                              "properties": {
+                                "seriesId": {
+                                  "type": "integer"
+                                },
+                                "userId": {
+                                  "type": "integer"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                              },
+                              "additionalProperties": false,
+                              "required": [
+                                "seriesId",
+                                "userId",
+                                "title",
+                                "items"
+                              ]
+                            }
+                            """
+                    ))
+                    .body("userId", equalTo(0))
+                    .body("title", equalTo("TestSeries"))
+                    .extract().body().asString();
         log.info("responseBody: {}", responseBody);
-
-        JSONAssert.assertEquals(
-                "Incorrect response",
-                """
-                        {
-                            "seriesId": 1,
-                            "userId": 0,
-                            "title": "TestSeries"
-                        }
-                        """,
-                responseBody,
-                false
-        );
     }
 
 }

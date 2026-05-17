@@ -83,9 +83,16 @@ public class AuthorsController {
             @PathVariable Long userId,
             @RequestBody AddAuthorView addAuthorView
     ) {
-        User user = userService.findById(userId);
-        authorsService.addAuthor(addAuthorView, user);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            User user = userService.findById(userId);
+            Author author = authorsService.addAuthor(addAuthorView, user);
+            AuthorView authorView = authorViewFactory.buildAuthorView(author);
+            String result = objectMapper.writeValueAsString(authorView);
+            ResponseEntity<String> resEnt = new ResponseEntity<>(result, HttpStatus.OK);
+            return resEnt;
+        } catch (JsonProcessingException e) {
+            throw new ServerException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping(

@@ -1,35 +1,30 @@
 package ru.rerumu.lists.integration.book;
 
+import com.jcabi.aspects.Loggable;
 import io.restassured.RestAssured;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import ru.rerumu.lists.integration.TestCommon;
+import ru.rerumu.lists.controller.series.views.out.SeriesView;
+import ru.rerumu.lists.integration.ITBase;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Slf4j
-class ITBookAdd {
-
-    private static PostgreSQLContainer<?> postgres;
+class ITBookAdd extends ITBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -45,50 +40,41 @@ class ITBookAdd {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     public static void beforeAll() {
-        log.info("beforeAll");
-
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
-
-        postgres = new PostgreSQLContainer<>(
-                "postgres:16-alpine"
-        );
-        postgres.start();
     }
 
     @BeforeEach
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
     void beforeEach() {
-        log.info("beforeEach");
-
         RestAssuredMockMvc.mockMvc(mockMvc);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        log.info("afterAll");
-
-        postgres.stop();
+        cleanSQL();
     }
 
     @Test
+    @Loggable(value = Loggable.INFO, prepend = true, trim = false)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddBook(TestInfo testInfo) throws Exception{
-        log.info("Test: {}", testInfo.getDisplayName());
 
-        TestCommon.addSeries("TestSeries 1");
+        SeriesView seriesView = addSeries("TestSeries 1");
 
-        String addBookRequestBody = """
+        String addBookRequestBody = String.format(
+                """
                 {
                     "title": "TestBook",
                     "authorId": null,
                     "status": 1,
-                    "seriesId": 1,
+                    "seriesId": %d,
                     "lastChapter": 123,
                     "bookTypeId": 1,
                     "insertDate": null,
                     "note": "test note",
                     "URL": null
-                }""";
+                }""",
+                seriesView.seriesId()
+                );
 
         String expectedSchema = """
                 {
@@ -248,23 +234,21 @@ class ITBookAdd {
 
         String responseBody = RestAssuredMockMvc
                 .given()
-                .body(addBookRequestBody)
-                .header("Content-Type", "application/json")
-                .attribute("authUserId", 0L)
+                    .body(addBookRequestBody)
+                    .header("Content-Type", "application/json")
+                    .attribute("authUserId", 0L)
                 .when()
-                .post("/api/v1/users/0/books")
+                    .post("/api/v1/users/0/books")
                 .then()
-                .statusCode(200)
-                .body(JsonSchemaValidator.matchesJsonSchema(expectedSchema))
-                .extract()
-                .body()
-                .asString();
+                    .statusCode(200)
+                    .body(JsonSchemaValidator.matchesJsonSchema(expectedSchema))
+                .extract().body().asString();
         log.info("responseBody: {}", responseBody);
 
 
-        String expectedResponseBodyWithoutDates = """
+        String expectedResponseBodyWithoutDatesAndId = String.format(
+                """
                 {
-                    "bookId": 0,
                     "readListId": null,
                     "title": "TestBook",
                     "bookStatus": {
@@ -280,8 +264,6 @@ class ITBookAdd {
                     "itemType": "BOOK",
                     "chain": [],
                     "readingRecords": [{
-                            "recordId": 0,
-                            "bookId": 0,
                             "bookStatus": {
                                 "statusId": 1,
                                 "statusName": "In progress"
@@ -295,17 +277,19 @@ class ITBookAdd {
                     "textAuthors": [],
                     "seriesList": [
                         {
-                            "seriesId": 1,
+                            "seriesId": %d,
                             "title": "TestSeries 1"
                         }
                     ],
                     "url": null
                 }
-                """;
+                """,
+                seriesView.seriesId()
+        );
 
         JSONAssert.assertEquals(
                 "Incorrect response",
-                expectedResponseBodyWithoutDates,
+                expectedResponseBodyWithoutDatesAndId,
                 responseBody,
                 false
         );

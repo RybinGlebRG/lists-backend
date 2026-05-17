@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: "${SPRING_DATASOURCE_URL}"
+    username: "${SPRING_DATASOURCE_USERNAME}"
+    password: "${SPRING_DATASOURCE_PASSWORD}"
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: "${HIKARI_MAXIMUM_POOL_SIZE:10}"
+#     initialization-fail-timeout: -1
+  liquibase:
+    change-log: classpath:liquibase-changeLog.xml
+  jmx:
+    enabled: true
+
+jwt:
+  secret: "${JWT_SECRET}"
+  # Duration in minutes
+  duration: "${JWT_ACCESS_DURATION:15}"
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:ru/rerumu/lists/mappers/*Mapper.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          loggers,jolokia
+  server:
+    port: 9090

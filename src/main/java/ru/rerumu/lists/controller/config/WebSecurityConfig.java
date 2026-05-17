@@ -1,10 +1,11 @@
 package ru.rerumu.lists.controller.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,11 +21,11 @@ public class WebSecurityConfig  {
             "/api/v1/users/refreshtoken"
     };
 
-    @Autowired
-    private JWTFilter jwtFilter;
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            JWTFilter jwtFilter
+    ) throws Exception {
         http
 //                .cors().and()
                 .csrf(AbstractHttpConfigurer::disable)
@@ -37,7 +38,8 @@ public class WebSecurityConfig  {
                             .requestMatchers(AUTH_WHITELIST[0]).permitAll()
                             .requestMatchers(AUTH_WHITELIST[1]).permitAll()
                             .anyRequest().authenticated()
-                );
+                )
+        ;
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -52,6 +54,13 @@ public class WebSecurityConfig  {
         FilterRegistrationBean<JWTFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+            JwtAuthenticationProvider jwtAuthenticationProvider
+    ) {
+        return new ProviderManager(jwtAuthenticationProvider);
     }
 
 }

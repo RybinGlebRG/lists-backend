@@ -22,6 +22,7 @@ import ru.rerumu.lists.services.book.Search;
 import ru.rerumu.lists.services.user.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service("BookServiceProtectionProxy")
@@ -88,6 +89,19 @@ public class BookServiceProtectionProxy implements BookService {
         }
         
         return bookService.getAllBooks(search, userId);
+    }
+
+    @Override
+    public Map<Book, List<Book>> getAllBooksChainedBySeries(Search search, @NonNull Long userId) {
+        // Get passed user
+        User user = usersRepository.findById(userId);
+
+        // Check if actual user has access
+        if (!user.equals(authUser)) {
+            throw new UserPermissionException("UserPermissionException.user_is_not_owner", authUser.getName());
+        }
+
+        return bookService.getAllBooksChainedBySeries(search, userId);
     }
 
     @Override
